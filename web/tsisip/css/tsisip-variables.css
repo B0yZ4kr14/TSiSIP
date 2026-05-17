@@ -1,0 +1,68 @@
+/* TSiAPP Premium Theme Variables */
+:root {
+  /* Primary palette — deep navy with teal accent */
+  --tsisip-primary-blue: #1A3A5C;
+  --tsisip-primary-blue-light: #2E5E8C;
+  --tsisip-primary-blue-dark: #0D1F33;
+
+  /* Premium accent gradient */
+  --tsisip-accent-teal: #0D8A6E;
+  --tsisip-accent-blue: #2563A8;
+  --tsisip-accent-gradient: linear-gradient(135deg, #0D8A6E 0%, #2563A8 100%);
+
+  /* Surfaces */
+  --tsisip-surface-base: #F4F6F8;
+  --tsisip-surface-card: #FFFFFF;
+  --tsisip-surface-header: #0A1628;
+  --tsisip-surface-glass: rgba(255, 255, 255, 0.85);
+
+  /* Text */
+  --tsisip-text-primary: #1A1A2E;
+  --tsisip-text-secondary: #5A6573;
+  --tsisip-text-on-dark: #E8ECF0;
+  --tsisip-text-muted: #8896A4;
+
+  /* Feedback colors */
+  --tsisip-accent-success: #0D8A6E;
+  --tsisip-accent-warning: #C4860C;
+  --tsisip-accent-error: #B83232;
+  --tsisip-accent-info: #2563A8;
+
+  /* Borders & dividers */
+  --tsisip-border-subtle: #D1D5DB;
+  --tsisip-border-light: #E8ECF0;
+
+  /* Typography — premium stack */
+  --tsisip-font-heading: 'Inter', 'Segoe UI', system-ui, -apple-system, sans-serif;
+  --tsisip-font-body: 'Inter', 'Segoe UI', system-ui, -apple-system, sans-serif;
+  --tsisip-font-mono: 'JetBrains Mono', 'Fira Code', 'Consolas', monospace;
+
+  /* Scale */
+  --tsisip-text-xs: 0.75rem;
+  --tsisip-text-sm: 0.875rem;
+  --tsisip-text-base: 1rem;
+  --tsisip-text-lg: 1.125rem;
+  --tsisip-text-xl: 1.25rem;
+  --tsisip-text-2xl: 1.5rem;
+  --tsisip-text-3xl: 1.875rem;
+  --tsisip-text-4xl: 2.25rem;
+
+  /* Shadows — premium depth */
+  --tsisip-shadow-sm: 0 1px 2px rgba(10, 22, 40, 0.05);
+  --tsisip-shadow-md: 0 4px 12px rgba(10, 22, 40, 0.08);
+  --tsisip-shadow-lg: 0 10px 40px rgba(10, 22, 40, 0.12);
+  --tsisip-shadow-glow: 0 0 24px rgba(13, 138, 110, 0.15);
+
+  /* Radii */
+  --tsisip-radius-sm: 6px;
+  --tsisip-radius-md: 10px;
+  --tsisip-radius-lg: 14px;
+  --tsisip-radius-xl: 20px;
+
+  /* Breakpoints */
+  --tsisip-breakpoint-tablet: 1024px;
+  --tsisip-breakpoint-mobile: 768px;
+
+  /* Asset version */
+  --tsisip-asset-version: "dev";
+}

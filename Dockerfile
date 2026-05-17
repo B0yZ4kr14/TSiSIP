@@ -26,7 +26,7 @@ FROM debian:bookworm-slim
 ENV DEBIAN_FRONTEND=noninteractive
 
 RUN apt-get update \
- && apt-get install -y --no-install-recommends ca-certificates gettext-base libpq5 libssl3 \
+ && apt-get install -y --no-install-recommends ca-certificates gettext-base libpq5 libssl3 netcat-openbsd procps \
  && rm -rf /var/lib/apt/lists/*
 
 COPY --from=builder /usr/local/sbin/opensips /usr/local/sbin/opensips

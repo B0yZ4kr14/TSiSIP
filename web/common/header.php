@@ -1,7 +1,7 @@
 <?php
 /**
- * TSiSIP OpenSIPS Control Panel - Header Injection
- * OCP v9 Compatible Theme Layer
+ * TSiAPP Platform — TSiSIP Control Panel Header
+ * Premium branded theme layer for the TSiAPP ecosystem
  */
 
 // Asset manifest loading with graceful fallback
@@ -40,16 +40,16 @@ $ocpLocale = isset($_SESSION['lang']) ? $_SESSION['lang'] : 'en_US';
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta name="theme-color" content="#1A3A5C">
-    <title><?php echo _('TSiSIP -- OpenSIPS Control Panel'); ?></title>
+    <meta name="theme-color" content="#0A1628">
+    <title><?php echo _('TSiAPP — TSiSIP Control Panel'); ?></title>
 
     <!-- OCP Base Styles -->
     <link rel="stylesheet" href="css/main.css">
 
-    <!-- TSiSIP Theme Variables -->
+    <!-- TSiAPP Premium Theme Variables -->
     <link rel="stylesheet" href="<?php echo tsisip_asset('tsisip-variables.css', 'css'); ?>">
 
-    <!-- TSiSIP Theme Override Layer -->
+    <!-- TSiAPP Premium Theme Override Layer -->
     <link rel="stylesheet" href="<?php echo tsisip_asset('tsisip-theme.css', 'css'); ?>">
 
     <!-- TSiSIP Chart Module (loads D3.js on demand in chart views) -->
@@ -58,15 +58,15 @@ $ocpLocale = isset($_SESSION['lang']) ? $_SESSION['lang'] : 'en_US';
 <body data-tsisip-role="<?php echo htmlspecialchars($userRole); ?>">
     <header class="tsisip-header">
         <div class="tsisip-brand">
-            <a href="./" class="logo-full" aria-label="<?php echo _('TSiSIP Home'); ?>">
-                <img src="<?php echo tsisip_asset('tsisip-logo-full.svg', 'svg'); ?>"
-                     width="200" height="48"
-                     alt="<?php echo _('TSiSIP Logo'); ?>">
+            <a href="./" class="logo-full" aria-label="<?php echo _('TSiAPP Home'); ?>">
+                <img src="<?php echo tsisip_asset('tsiapp-logo-full.svg', 'svg'); ?>"
+                     width="220" height="48"
+                     alt="<?php echo _('TSiAPP Platform'); ?>">
             </a>
-            <a href="./" class="logo-compact" aria-label="<?php echo _('TSiSIP Home'); ?>">
-                <img src="<?php echo tsisip_asset('tsisip-logo-compact.svg', 'svg'); ?>"
+            <a href="./" class="logo-compact" aria-label="<?php echo _('TSiAPP Home'); ?>">
+                <img src="<?php echo tsisip_asset('tsiapp-logo-compact.svg', 'svg'); ?>"
                      width="48" height="48"
-                     alt="<?php echo _('TSiSIP Logo'); ?>">
+                     alt="<?php echo _('TSiAPP Platform'); ?>">
             </a>
         </div>
         <button type="button"

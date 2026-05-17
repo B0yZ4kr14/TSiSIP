@@ -1,0 +1,16 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 48 48" width="48" height="48" aria-label="TSiAPP">
+  <defs>
+    <linearGradient id="tsiapp-grad-c" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#0A1628"/>
+      <stop offset="100%" stop-color="#1A3A5C"/>
+    </linearGradient>
+    <linearGradient id="tsiapp-accent-c" x1="0%" y1="0%" x2="100%" y2="0%">
+      <stop offset="0%" stop-color="#0D8A6E"/>
+      <stop offset="100%" stop-color="#2563A8"/>
+    </linearGradient>
+  </defs>
+  <rect width="48" height="48" rx="12" fill="url(#tsiapp-grad-c)"/>
+  <text x="24" y="29" text-anchor="middle" font-family="'Inter', system-ui, sans-serif" font-size="14" font-weight="800" fill="#E8ECF0" letter-spacing="0.05em">TA</text>
+  <circle cx="38" cy="10" r="5" fill="url(#tsiapp-accent-c)"/>
+  <circle cx="39" cy="9" r="2" fill="#E8ECF0" opacity="0.9"/>
+</svg>

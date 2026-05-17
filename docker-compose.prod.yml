@@ -1,6 +1,6 @@
 services:
   postgres:
-    image: tsisip/postgres:latest
+    image: ghcr.io/b0yz4kr14/tsisip/postgres:latest
     networks:
     - db_internal
     restart: unless-stopped
@@ -33,7 +33,7 @@ services:
       tsisip.environment: production
       tsisip.deployed-by: ansible
   rtpengine:
-    image: tsisip/rtpengine:latest
+    image: ghcr.io/b0yz4kr14/tsisip/rtpengine:latest
     networks:
     - sip_edge
     - sip_internal
@@ -67,7 +67,7 @@ services:
       tsisip.environment: production
       tsisip.deployed-by: ansible
   opensips:
-    image: tsisip/opensips:test
+    image: ghcr.io/b0yz4kr14/tsisip/opensips:latest
     networks:
     - sip_edge
     - sip_internal
@@ -117,48 +117,8 @@ services:
     labels:
       tsisip.environment: production
       tsisip.deployed-by: ansible
-  asterisk-pbx-1:
-    image: tsisip/asterisk:latest
-    networks:
-    - sip_internal
-    restart: on-failure
-    expose:
-    - 5060/udp
-    - 5060/tcp
-    healthcheck:
-      test:
-      - CMD-SHELL
-      - /usr/local/bin/healthcheck.sh
-      interval: 15s
-      timeout: 5s
-      retries: 3
-      start_period: 25s
-      start_interval: 5s
-    labels:
-      tsisip.environment: production
-      tsisip.deployed-by: ansible
-  asterisk-pbx-2:
-    image: tsisip/asterisk:latest
-    networks:
-    - sip_internal
-    restart: on-failure
-    expose:
-    - 5060/udp
-    - 5060/tcp
-    healthcheck:
-      test:
-      - CMD-SHELL
-      - /usr/local/bin/healthcheck.sh
-      interval: 15s
-      timeout: 5s
-      retries: 3
-      start_period: 30s
-      start_interval: 5s
-    labels:
-      tsisip.environment: production
-      tsisip.deployed-by: ansible
   ocp:
-    image: tsisip/ocp:latest
+    image: ghcr.io/b0yz4kr14/tsisip/ocp:latest
     networks:
     - sip_internal
     - db_internal
@@ -191,7 +151,7 @@ services:
       tsisip.environment: production
       tsisip.deployed-by: ansible
   prometheus:
-    image: tsisip/prometheus:latest
+    image: ghcr.io/b0yz4kr14/tsisip/prometheus:latest
     networks:
     - db_internal
     restart: on-failure
@@ -238,7 +198,7 @@ services:
       tsisip.environment: production
       tsisip.deployed-by: ansible
   anomaly-detector:
-    image: tsisip/anomaly-detector:latest
+    image: ghcr.io/b0yz4kr14/tsisip/anomaly-detector:latest
     networks:
     - sip_internal
     restart: on-failure
@@ -256,7 +216,7 @@ services:
       tsisip.environment: production
       tsisip.deployed-by: ansible
   grafana:
-    image: tsisip/grafana:latest
+    image: ghcr.io/b0yz4kr14/tsisip/grafana:latest
     networks:
     - db_internal
     restart: on-failure
@@ -283,7 +243,7 @@ services:
       tsisip.environment: production
       tsisip.deployed-by: ansible
   opensips-exporter:
-    image: tsisip/opensips-exporter:latest
+    image: ghcr.io/b0yz4kr14/tsisip/opensips-exporter:latest
     networks:
     - sip_internal
     - db_internal
@@ -307,7 +267,7 @@ services:
       tsisip.environment: production
       tsisip.deployed-by: ansible
   backup:
-    image: tsisip/backup:latest
+    image: ghcr.io/b0yz4kr14/tsisip/backup:latest
     networks:
     - db_internal
     restart: on-failure
@@ -343,6 +303,52 @@ services:
     labels:
       tsisip.environment: production
       tsisip.deployed-by: ansible
+  asterisk-pbx-1:
+    image: ghcr.io/b0yz4kr14/tsisip/asterisk:latest
+    networks:
+    - sip_internal
+    restart: on-failure
+    expose:
+    - 5060/udp
+    - 5060/tcp
+    - 5038/tcp
+    volumes:
+    - asterisk_config:/etc/asterisk
+    healthcheck:
+      test:
+      - CMD-SHELL
+      - /usr/local/bin/healthcheck.sh
+      interval: 15s
+      timeout: 5s
+      retries: 3
+      start_period: 25s
+      start_interval: 5s
+    labels:
+      tsisip.environment: production
+      tsisip.deployed-by: ansible
+  asterisk-pbx-2:
+    image: ghcr.io/b0yz4kr14/tsisip/asterisk:latest
+    networks:
+    - sip_internal
+    restart: on-failure
+    expose:
+    - 5060/udp
+    - 5060/tcp
+    - 5038/tcp
+    volumes:
+    - asterisk_config:/etc/asterisk
+    healthcheck:
+      test:
+      - CMD-SHELL
+      - /usr/local/bin/healthcheck.sh
+      interval: 15s
+      timeout: 5s
+      retries: 3
+      start_period: 25s
+      start_interval: 5s
+    labels:
+      tsisip.environment: production
+      tsisip.deployed-by: ansible
 networks:
   sip_edge:
     driver: bridge
@@ -358,6 +364,7 @@ volumes:
   prometheus_data: null
   alertmanager_data: null
   grafana_data: null
+  asterisk_config: {}
 secrets:
   db_password:
     file: ./secrets/db_password
