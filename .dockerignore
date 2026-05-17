@@ -1,0 +1,21 @@
+# Git
+.git/
+.gitignore
+
+# Secrets
+secrets/
+.env
+.env.*
+!.env.example
+
+# Local artifacts
+*.log
+*.pid
+
+# Documentation (not needed in image)
+docs/
+*.md
+
+# Speckit specs
+specs/
+.specify/

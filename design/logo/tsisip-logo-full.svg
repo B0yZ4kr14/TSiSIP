@@ -1,0 +1,6 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 200 48" width="200" height="48" aria-label="TSiSIP">
+  <rect width="200" height="48" rx="6" fill="#1A3A5C"/>
+  <text x="20" y="32" font-family="Inter, system-ui, sans-serif" font-size="22" font-weight="700" fill="#E8ECF0" letter-spacing="0.05em">TSiSIP</text>
+  <circle cx="178" cy="24" r="10" fill="#0D8A6E" opacity="0.9"/>
+  <circle cx="182" cy="20" r="4" fill="#E8ECF0" opacity="0.8"/>
+</svg>

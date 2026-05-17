@@ -1,0 +1,11 @@
+{
+  "timestamp": "2026-05-16T19:13:47.636Z",
+  "projectRoot": "/home/b0yz4kr14/Projects/TSiSIP",
+  "structure": {
+    "hasPackageJson": false,
+    "hasTsConfig": false,
+    "hasClaudeConfig": true,
+    "hasClaudeFlow": true
+  },
+  "scannedAt": 1778958827636
+}

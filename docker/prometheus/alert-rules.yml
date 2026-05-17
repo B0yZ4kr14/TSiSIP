@@ -1,0 +1,72 @@
+groups:
+  - name: tsisip-opensips
+    interval: 15s
+    rules:
+      # Dispatcher target degradation
+      - alert: OpenSIPSDispatcherDegradation
+        expr: opensips_dispatcher_target_response_ms > 500
+        for: 2m
+        labels:
+          severity: critical
+          service: opensips
+        annotations:
+          summary: "OpenSIPS dispatcher target {{ $labels.target }} response time high"
+          description: "Dispatcher target {{ $labels.target }} response time is {{ $value }}ms for more than 2 minutes"
+          runbook_url: "https://docs.tsiapp.io/runbooks/opensips-dispatcher-degradation"
+
+      # Authentication spike
+      - alert: OpenSIPSAuthSpike
+        expr: rate(opensips_auth_failures_total[1m]) > 10
+        for: 2m
+        labels:
+          severity: warning
+          service: opensips
+        annotations:
+          summary: "High authentication failure rate"
+          description: "Authentication failures are {{ $value }}/min for more than 2 minutes"
+          runbook_url: "https://docs.tsiapp.io/runbooks/opensips-auth-spike"
+
+  - name: tsisip-rtpengine
+    interval: 30s
+    rules:
+      # RTPengine high port utilization
+      - alert: RTPengineHighUtilization
+        expr: (rtpengine_ports_used / rtpengine_ports_total) > 0.8
+        for: 5m
+        labels:
+          severity: warning
+          service: rtpengine
+        annotations:
+          summary: "RTPengine port utilization above 80%"
+          description: "RTPengine port utilization is {{ $value | humanizePercentage }} for more than 5 minutes"
+          runbook_url: "https://docs.tsiapp.io/runbooks/rtpengine-high-utilization"
+
+  - name: tsisip-postgres
+    interval: 30s
+    rules:
+      # PostgreSQL slow queries
+      - alert: PostgreSQLSlowQueries
+        expr: pg_stat_statements_mean_time > 100
+        for: 5m
+        labels:
+          severity: warning
+          service: postgres
+        annotations:
+          summary: "PostgreSQL query latency high"
+          description: "Average query time is {{ $value }}ms for more than 5 minutes"
+          runbook_url: "https://docs.tsiapp.io/runbooks/postgresql-slow-queries"
+
+  - name: tsisip-infrastructure
+    interval: 15s
+    rules:
+      # Prometheus disk full
+      - alert: PrometheusDiskFull
+        expr: (prometheus_tsdb_storage_blocks_bytes / prometheus_tsdb_retention_limit_bytes) > 0.85
+        for: 5m
+        labels:
+          severity: critical
+          service: prometheus
+        annotations:
+          summary: "Prometheus disk usage above 85%"
+          description: "Prometheus TSDB is {{ $value | humanizePercentage }} full"
+          runbook_url: "https://docs.tsiapp.io/runbooks/prometheus-disk-full"

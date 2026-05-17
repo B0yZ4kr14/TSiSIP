@@ -1,0 +1,7 @@
+{
+  "branch_numbering": "sequential",
+  "spec_template": ".specify/templates/spec-template.md",
+  "feature_directory": "specs",
+  "auto_create_checklists": true,
+  "max_clarifications": 3
+}

@@ -1,0 +1,44 @@
+# TSiSIP runtime secrets
+secrets/
+
+# Local environment files
+.env
+.env.*
+!.env.example
+
+# Local runtime/log artifacts
+*.log
+*.pid
+
+# Universal
+.DS_Store
+Thumbs.db
+*.tmp
+*.swp
+.vscode/
+.idea/
+
+# Node.js / build artifacts
+node_modules/
+build/node_modules/
+dist/
+build/dist/
+
+# PHP
+vendor/
+*.cache
+
+# Generated TSiSIP assets (build output)
+web/tsisip/assets/
+web/tsisip/css/*.css
+!web/tsisip/css/.gitkeep
+web/tsisip/js/*.js
+!web/tsisip/js/.gitkeep
+web/tsisip/asset-manifest.json
+*.mo
+
+# Test artifacts
+coverage/
+tests/visual-regression/
+tests/accessibility/
+tests/performance/

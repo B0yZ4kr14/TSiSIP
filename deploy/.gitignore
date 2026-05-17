@@ -1,0 +1,9 @@
+# TSiSIP Deploy Artifacts — Ignore secrets and temporary files
+secrets/
+*.tmp
+*.bak
+.env*
+!/.env.example
+tsisi-vault
+credentials.yml
+vault.yml

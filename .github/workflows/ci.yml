@@ -1,0 +1,89 @@
+name: TSiSIP CI
+
+on:
+  push:
+    branches: [main, master]
+  pull_request:
+    branches: [main, master]
+
+jobs:
+  validate:
+    name: Validate Configs
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Validate Docker Compose
+        run: docker compose config > /dev/null
+
+      - name: Check for committed secrets
+        run: |
+          if grep -rE 'password.*=.*["'\''"].{4,}["'\''"]' --include='*.php' --include='*.js' --include='*.json' . 2>/dev/null; then
+            echo "ERROR: Potential plaintext password committed"
+            exit 1
+          fi
+          if [ -f secrets/db_password ] || [ -f secrets/auth_secret ] || [ -f secrets/topology_secret ]; then
+            echo "ERROR: Secret files should not be committed"
+            exit 1
+          fi
+
+  test-theme:
+    name: Test OCP Theme
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '24'
+
+      - name: Install gettext
+        run: sudo apt-get update && sudo apt-get install -y gettext
+
+      - name: Build theme assets
+        run: ./scripts/build-ocp-theme.sh
+
+      - name: Run D3.js coexistence test
+        run: node tests/d3-jquery-coexistence.test.js
+
+      - name: Run accessibility audit
+        run: node tests/accessibility-audit.test.js
+
+      - name: Validate asset payload size
+        run: |
+          PAYLOAD=$(find web/tsisip -type f \( -name '*.css' -o -name '*.js' -o -name '*.svg' -o -name '*.mo' \) -not -name 'd3.v7.min.js' -not -name 'd3.v7.min.*.js' | xargs -I{} stat -c%s {} | awk '{s+=$1} END {print s}')
+          MAX=153600
+          echo "Base asset payload: ${PAYLOAD} bytes (max: ${MAX})"
+          if [ "$PAYLOAD" -gt "$MAX" ]; then
+            echo "ERROR: Asset payload exceeds budget"
+            exit 1
+          fi
+
+      - name: Validate CSS specificity
+        run: |
+          IMPORTANT=$(grep -c '!important' web/tsisip/css/tsisip-theme.css || echo 0)
+          TOTAL=$(grep -cE '^\s*[^/\s].*\{' web/tsisip/css/tsisip-theme.css || echo 1)
+          PCT=$(( IMPORTANT * 100 / TOTAL ))
+          echo "!important usage: ${IMPORTANT}/${TOTAL} (${PCT}%)"
+          if [ "$PCT" -gt 20 ]; then
+            echo "ERROR: !important usage exceeds 20%"
+            exit 1
+          fi
+
+  build-ocp:
+    name: Build OCP Image
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Build OCP Docker image
+        run: docker build -t tsisip/ocp:ci -f docker/ocp/Dockerfile .
+
+      - name: Test OCP container health
+        run: |
+          docker run -d --name ocp-ci -p 8080:80 tsisip/ocp:ci
+          sleep 5
+          curl -fsSL http://localhost:8080/login.php | grep -q 'TSiSIP'
+          docker stop ocp-ci
+          docker rm ocp-ci
