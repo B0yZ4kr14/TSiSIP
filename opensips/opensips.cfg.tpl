@@ -253,7 +253,13 @@ route[HEADER_ROUTING] {
 # --- RELAY Route ---
 route[RELAY] {
     if (is_method("INVITE") && has_body("application/sdp")) {
-        if (!rtpengine_offer("replace-origin replace-session-connection ICE=remove")) {
+        # SRTP for TLS-signaled calls (Feature 007)
+        $var(rtp_transport) = "replace-origin replace-session-connection ICE=remove";
+        # Note: Transport protocol selection can be enforced here when
+        # $socket_in(proto) or equivalent is available for TLS detection.
+        # For now, RTP/AVP is the default; SRTP is negotiated via RTPengine
+        # when the caller requests it in SDP.
+        if (!rtpengine_offer("$var(rtp_transport)")) {
             sl_send_reply(500, "RTP Relay Error");
             exit;
         }

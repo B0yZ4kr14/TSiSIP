@@ -132,8 +132,8 @@ A session refresh or hold/re-invite generates new SDP. RTPengine must update the
 ## Notes
 
 - OpenSIPS is the only public SIP endpoint; TLS termination happens only in OpenSIPS, not in a separate reverse proxy.
-- Use `db_postgres` for subscriber and location lookups; do not introduce MySQL.
-- The `sanity` module is forbidden.
+> **Constitution Reference**: See `.specify/memory/constitution.md` §2 — PostgreSQL is the sole persistence layer; `db_postgres` is the only OpenSIPS DB module.
+> **Constitution Reference**: See `.specify/memory/constitution.md` §3 — The `sanity` module is forbidden in OpenSIPS 3.6 LTS.
 - All certificate files and keys must be injected via Docker secrets or mounted read-only volumes; never commit them to Git.
 - Service and network names use lowercase snake_case (e.g., `sip_edge`, `sip_internal`).
 - Backend RTP addresses must not leak externally; SRTP ensures media confidentiality even if addresses are discovered.

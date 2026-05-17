@@ -134,7 +134,7 @@ If the encrypted backup fails decryption or the decompressed SQL contains syntax
 ## Notes
 
 - All PostgreSQL identifiers and Docker service names must use lowercase snake_case (e.g., `db_internal`, `backup_sidecar`).
-- Use `db_postgres` module in OpenSIPS; do not introduce MySQL/MariaDB variants.
+> **Constitution Reference**: See `.specify/memory/constitution.md` §2 — PostgreSQL is the sole persistence layer; `db_postgres` is the only OpenSIPS DB module.
 - WAL archives must be stored outside the PostgreSQL container to survive container deletion.
 - Retention policy must respect compliance requirements; the default 30 days is a baseline and may be increased per deployment.
 - Validation test containers must be destroyed immediately after test completion to free resources.

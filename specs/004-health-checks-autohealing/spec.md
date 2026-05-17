@@ -133,7 +133,7 @@ If the health status dashboard (e.g., Prometheus/Grafana) is down, health probes
 
 ## Notes
 
-- Use `db_postgres` only for subscriber and location tables; no MySQL fallback.
-- Avoid the `sanity` module; it is not available in OpenSIPS 3.6.
+> **Constitution Reference**: See `.specify/memory/constitution.md` §2 — PostgreSQL is the sole persistence layer; `db_postgres` is the only OpenSIPS DB module.
+> **Constitution Reference**: See `.specify/memory/constitution.md` §3 — The `sanity` module is forbidden in OpenSIPS 3.6 LTS.
 - Store any probe credentials (e.g., MI authentication) as Docker secrets, never in the image layer.
 - All service names and network names must use lowercase snake_case (e.g., `sip_edge`, `sip_internal`, `db_internal`).

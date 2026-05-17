@@ -131,7 +131,7 @@ Requests originate from thousands of IPs, each under the individual threshold. T
 ## Notes
 
 - OpenSIPS is the only public SIP endpoint; no host-level SIP processes compete for ports.
-- Use `db_postgres` for subscriber lookups; do not introduce MySQL.
-- The `sanity` module is forbidden; use `maxfwd`, `uri`, and `t_check_trans` for minimal request validation instead.
+> **Constitution Reference**: See `.specify/memory/constitution.md` §2 — PostgreSQL is the sole persistence layer; `db_postgres` is the only OpenSIPS DB module.
+> **Constitution Reference**: See `.specify/memory/constitution.md` §3 — The `sanity` module is forbidden in OpenSIPS 3.6 LTS. Use `maxfwd`, `uri`, and `t_check_trans` for minimal request validation.
 - All `htable` names must use lowercase snake_case (e.g., `ip_throttle`, `auth_failures`, `ban_list`).
 - Ban list TTLs must be short enough to avoid permanent lockout but long enough to deter brute force (default 300s).

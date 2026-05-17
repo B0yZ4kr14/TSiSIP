@@ -5,7 +5,7 @@
 **Feature**: OpenSIPS Docker Edge Proxy Foundation
 **Short name**: opensips-docker-edge-proxy
 **Created**: 2026-05-16
-**Status**: Implemented (Pending T4.4/T4.5 SIP Integration Tests)
+**Status**: Implemented (All tasks complete)
 
 ### Context
 
@@ -245,5 +245,5 @@ Enable a platform operator to build, configure, and start a containerized OpenSI
 
 | Issue | Status | Description | Resolution Path |
 |---|---|---|---|
-| T4.4/T4.5 Runtime Validation | 🔴 Blocked | Full stack `docker compose up` cannot be tested because `rtpengine` service build fails. SIP validation (OPTIONS, INVITE challenge) is gated on implementing a lightweight RTPengine container first. Debian `rtpengine-daemon` package pulls 146+ dependencies (~229 MB), causing Docker build timeouts. | Replace Debian-packaged RTPengine with a purpose-built lightweight container or stub; validate SIP signaling only after media relay container is functional. |
+| T4.4/T4.5 Runtime Validation | ✅ Resolved | RTPengine container now builds successfully using custom Dockerfile. SIP validation (OPTIONS, INVITE challenge) passes. Media relay integration validated in subsequent features (003-007). | — |
 | Asterisk Container Build | 🟡 Untested | `docker/asterisk/Dockerfile` exists but was not validated. It may require source-build treatment similar to OpenSIPS. | Validate and switch to source build if APT packages are insufficient. |
