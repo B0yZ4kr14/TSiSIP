@@ -48,6 +48,7 @@ services:
       RTPENGINE_HOST: 127.0.0.1
       RTPENGINE_NG_PORT: 22222
     command:
+      - rtpengine
       - --interface=${RTPENGINE_PRIVATE_IP:-172.19.0.1}/${HOST_PUBLIC_IP:-127.0.0.1}
       - --listen-ng=${RTPENGINE_INTERNAL_IP:-172.21.0.1}:22222
       - --port-min=10000
