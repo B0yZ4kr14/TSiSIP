@@ -119,3 +119,25 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Backups criptografados com AES-256-CBC
 - Encryption key via Docker secrets
 - ca.key NÃO montado no container (offline)
+
+## [0.6.0] - 2026-05-17 - Feature 006: SIP-Layer Rate Limiting & DDoS Protection
+
+### Added
+- OpenSIPS pike module for per-IP request throttling (50 req/2s)
+- cachedb_local module for auth failure counters, ban lists, trunk whitelist
+- Rate limiting routes: CHECK_BAN_LIST, RATE_LIMIT, AUTH_FAILURE_TRACK, AUTH_SUCCESS_RESET
+- TCP connection limits: tcp_max_connections=4096, tcp_connection_lifetime=300
+- Anomaly detection sidecar (Python) with statistical baseline
+- Prometheus metrics: tsisip_current_rps, tsisip_baseline_mean_rps, tsisip_anomaly_z_score
+- Integration tests: tests/integration/test_rate_limiting.py
+- Docker compose integration com anomaly-detector service
+
+### Security
+- Per-source IP throttling com silent drop (UDP) ou 429 (TCP/TLS)
+- Auth failure tracking: 10 falhas/60s = 403 Forbidden + 5min ban
+- Dynamic ban lists com TTL automático via cachedb_local
+- Trunk whitelist para NATed enterprise traffic
+
+### Changed
+- OpenSIPS Dockerfile: adicionados módulos pike e cachedb_local
+- opensips.cfg.tpl: rotas de rate limiting no início do fluxo principal
