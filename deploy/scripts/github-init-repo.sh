@@ -56,7 +56,6 @@ if [ "$DRY_RUN" = true ]; then
     info "  - description: TSiSIP — Docker-First SIP Edge Proxy Platform"
     info "  - private: false"
     info "  - auto_init: true"
-    info "  - gitignore_template: Docker"
     info "  - license_template: apache-2.0"
     info "[DRY-RUN] Token user $TOKEN_USER has access to create repos under $OWNER"
     exit 0
@@ -116,7 +115,6 @@ elif [ "$HTTP_STATUS" = "404" ]; then
             "description": "TSiSIP — Docker-First SIP Edge Proxy Platform",
             "private": false,
             "auto_init": true,
-            "gitignore_template": "Docker",
             "license_template": "apache-2.0"
         }' \
         "$API_BASE/user/repos" | jq -r '.html_url // .message'

@@ -1,14 +1,14 @@
 ---
-- name: TSiSIP OCP v9 Docker Deploy on TSiAPP
+# TSiSIP Docker-First Deploy on TSiAPP
+# RULE: All TSiSIP services run as Docker containers. No bare-metal installation.
+- name: TSiSIP Stack Deploy on TSiAPP VPS
   hosts: tsisip_vps
   gather_facts: true
   vars:
     tsisip_app_dir: "/opt/tsisip"
-    tsisip_compose_file: "docker-compose.yml"
-    tsisip_image: "tsisip/ocp:latest"
-    tsisip_web_port: 8080
-    tsisip_internal_network: "tsisip_internal"
-    min_disk_space_gb: 1
+    tsisip_compose_file: "docker-compose.prod.yml"
+    tsisip_web_port: 8084
+    min_disk_space_gb: 5
 
   pre_tasks:
     - name: Pre-flight — Check disk space
@@ -31,7 +31,7 @@
       changed_when: false
       ignore_errors: true
 
-    - name: Pre-flight — Verify network connectivity
+    - name: Pre-flight — Verify Docker registry reachability
       ansible.builtin.uri:
         url: "https://registry-1.docker.io/v2/"
         status_code: [200, 401]
@@ -46,12 +46,14 @@
           - "Registry: {{ 'reachable' if registry_check.status | default(0) in [200, 401] else 'unreachable' }}"
 
   tasks:
-    - name: Ensure Docker is installed
-      ansible.builtin.package:
+    - name: Ensure Docker engine is installed
+      ansible.builtin.apt:
         name:
           - docker.io
           - docker-compose-plugin
         state: present
+        update_cache: true
+        cache_valid_time: 3600
       become: true
 
     - name: Ensure Docker service is running
@@ -61,14 +63,14 @@
         enabled: true
       become: true
 
-    - name: Ensure tsisip user exists
+    - name: Ensure deploy user is in docker group
       ansible.builtin.user:
         name: "{{ ansible_user }}"
         groups: docker
         append: true
       become: true
 
-    - name: Create application directory
+    - name: Create TSiSIP application directory
       ansible.builtin.file:
         path: "{{ tsisip_app_dir }}"
         state: directory
@@ -76,23 +78,18 @@
         owner: "{{ ansible_user }}"
         group: "{{ ansible_user }}"
 
-    - name: Deploy Docker Compose stack file
+    - name: Deploy production Docker Compose file
       ansible.builtin.copy:
-        src: "../../docker-compose.yml"
-        dest: "{{ tsisip_app_dir }}/docker-compose.yml"
+        src: "../../docker-compose.prod.yml"
+        dest: "{{ tsisip_app_dir }}/docker-compose.prod.yml"
         mode: '0640'
 
-    - name: Validate Docker Compose configuration
-      ansible.builtin.command:
-        cmd: "docker compose -f {{ tsisip_app_dir }}/docker-compose.yml config"
-      become: true
-      changed_when: false
-
-    - name: Deploy OCP web assets
-      ansible.builtin.copy:
-        src: "../../web/"
-        dest: "{{ tsisip_app_dir }}/web/"
-        mode: '0755'
+    - name: Deploy environment template
+      ansible.builtin.template:
+        src: "../../.env.example"
+        dest: "{{ tsisip_app_dir }}/.env"
+        mode: '0600'
+      ignore_errors: true
 
     - name: Deploy secrets directory
       ansible.builtin.file:
@@ -100,17 +97,33 @@
         state: directory
         mode: '0700'
 
-    - name: Verify image is from trusted namespace
-      ansible.builtin.fail:
-        msg: "Image {{ tsisip_image }} must be from tsisip/ namespace"
-      when: "'tsisip/' not in tsisip_image"
-
-    - name: Pull latest OCP image
+    - name: Validate Docker Compose configuration
       ansible.builtin.command:
-        cmd: "docker pull {{ tsisip_image }}"
+        cmd: "docker compose -f {{ tsisip_app_dir }}/{{ tsisip_compose_file }} config"
+      become: true
+      changed_when: false
+
+    - name: Pull all TSiSIP images (Docker-image-first)
+      ansible.builtin.command:
+        cmd: "docker compose -f {{ tsisip_app_dir }}/{{ tsisip_compose_file }} pull"
       become: true
       changed_when: true
-      no_log: true
+      register: pull_result
+      retries: 3
+      delay: 10
+      until: pull_result.rc == 0
+
+    - name: Verify all images use trusted namespace
+      ansible.builtin.shell: |
+        docker compose -f {{ tsisip_app_dir }}/{{ tsisip_compose_file }} config | \
+        grep -E '^\s+image:' | grep -v 'tsisip/' | grep -v 'prom/' || true
+      register: untrusted_images
+      changed_when: false
+
+    - name: Fail if untrusted images detected
+      ansible.builtin.fail:
+        msg: "Untrusted images found: {{ untrusted_images.stdout }}"
+      when: untrusted_images.stdout | length > 0
 
     - name: Start TSiSIP stack
       ansible.builtin.command:
@@ -119,15 +132,25 @@
       become: true
       changed_when: true
 
-    - name: Verify OCP container health
+    - name: Wait for OCP container to be healthy
       ansible.builtin.uri:
         url: "http://localhost:{{ tsisip_web_port }}/login.php"
         return_content: true
+        status_code: 200
       register: ocp_health
       until: "'TSiSIP' in ocp_health.content"
-      retries: 10
+      retries: 12
       delay: 5
+
+    - name: Verify OpenSIPS container is running
+      ansible.builtin.command:
+        cmd: "docker ps --filter name=opensips --filter status=running --format '{% raw %}{{.Names}}{% endraw %}'"
+      register: opensips_container
+      changed_when: false
 
     - name: Report deployment success
       ansible.builtin.debug:
-        msg: "TSiSIP OCP deployed successfully. Health check passed."
+        msg:
+          - "TSiSIP stack deployed successfully on {{ inventory_hostname }}"
+          - "OCP health check: PASSED"
+          - "OpenSIPS container: {{ opensips_container.stdout | default('not found') }}"

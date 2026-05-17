@@ -1,69 +1,82 @@
 services:
   postgres:
-    build:
-      context: .
-      dockerfile: docker/postgres/Dockerfile
     image: tsisip/postgres:latest
-    networks: [db_internal]
+    networks:
+    - db_internal
     restart: unless-stopped
     environment:
       POSTGRES_DB: opensips
       POSTGRES_USER: opensips
       POSTGRES_PASSWORD_FILE: /run/secrets/db_password
       PGDATA: /var/lib/postgresql/data
-      ARCHIVE_MODE: "on"
-      ARCHIVE_COMMAND: "test ! -f /backup/wal/%f && gzip < %p > /backup/wal/%f.gz"
+      ARCHIVE_MODE: 'on'
+      ARCHIVE_COMMAND: test ! -f /backup/wal/%f && gzip < %p > /backup/wal/%f.gz
       ARCHIVE_TIMEOUT: 300
       WAL_LEVEL: replica
       MAX_WAL_SENDERS: 2
-    secrets: [db_password]
+    secrets:
+    - db_password
     volumes:
-      - postgres_data:/var/lib/postgresql/data
-      - ./db/init:/docker-entrypoint-initdb.d:ro
-      - backup_data:/backup
+    - postgres_data:/var/lib/postgresql/data
+    - ./db/init:/docker-entrypoint-initdb.d:ro
+    - backup_data:/backup
     healthcheck:
-      test: ["CMD-SHELL", "pg_isready -U opensips -d opensips"]
+      test:
+      - CMD-SHELL
+      - pg_isready -U opensips -d opensips
       interval: 5s
       timeout: 3s
       retries: 5
       start_period: 20s
       start_interval: 5s
-
+    labels:
+      tsisip.environment: production
+      tsisip.deployed-by: ansible
   rtpengine:
-    build:
-      context: ./docker/rtpengine
     image: tsisip/rtpengine:latest
-    networks: [sip_edge, sip_internal]
+    networks:
+    - sip_edge
+    - sip_internal
     restart: on-failure
     ports:
-      - "10000-20000:10000-20000/udp"
+    - 10000-20000:10000-20000/udp
     command:
-      - --interface=${RTPENGINE_PRIVATE_IP}/${HOST_PUBLIC_IP}
-      - --listen-ng=${RTPENGINE_INTERNAL_IP}:22222
-      - --port-min=10000
-      - --port-max=20000
-      - --log-stderr
-      - --foreground
-    cap_drop: [ALL]
-    cap_add: [NET_BIND_SERVICE, NET_ADMIN]
-    security_opt: ["no-new-privileges:true"]
+    - --interface=${RTPENGINE_PRIVATE_IP}/${HOST_PUBLIC_IP}
+    - --listen-ng=${RTPENGINE_INTERNAL_IP}:22222
+    - --port-min=10000
+    - --port-max=20000
+    - --log-stderr
+    - --foreground
+    cap_drop:
+    - ALL
+    cap_add:
+    - NET_BIND_SERVICE
+    - NET_ADMIN
+    security_opt:
+    - no-new-privileges:true
     healthcheck:
-      test: ["CMD-SHELL", "/usr/local/bin/healthcheck.sh"]
+      test:
+      - CMD-SHELL
+      - /usr/local/bin/healthcheck.sh
       interval: 15s
       timeout: 5s
       retries: 3
       start_period: 25s
       start_interval: 5s
-
+    labels:
+      tsisip.environment: production
+      tsisip.deployed-by: ansible
   opensips:
-    build: .
     image: tsisip/opensips:test
-    networks: [sip_edge, sip_internal, db_internal]
+    networks:
+    - sip_edge
+    - sip_internal
+    - db_internal
     restart: unless-stopped
     ports:
-      - "5060:5060/udp"
-      - "5060:5060/tcp"
-      - "5061:5061/tcp"
+    - 5060:5060/udp
+    - 5060:5060/tcp
+    - 5061:5061/tcp
     environment:
       OPENSIPS_LISTEN_IP: ${OPENSIPS_LISTEN_IP}
       HOST_PUBLIC_IP: ${HOST_PUBLIC_IP}
@@ -72,131 +85,162 @@ services:
       DB_USER: opensips
       RTPENGINE_HOST: rtpengine
     secrets:
-      - db_password
-      - auth_secret
-      - topology_secret
-      - ca.crt
-      - server.crt
-      - server.key
-      - crl.pem
+    - db_password
+    - auth_secret
+    - topology_secret
+    - ca.crt
+    - server.crt
+    - server.key
+    - crl.pem
     depends_on:
       postgres:
         condition: service_healthy
       rtpengine:
         condition: service_started
-    cap_drop: [ALL]
-    cap_add: [NET_BIND_SERVICE, SETUID, SETGID]
-    security_opt: ["no-new-privileges:true"]
+    cap_drop:
+    - ALL
+    cap_add:
+    - NET_BIND_SERVICE
+    - SETUID
+    - SETGID
+    security_opt:
+    - no-new-privileges:true
     healthcheck:
-      test: ["CMD-SHELL", "/usr/local/bin/healthcheck.sh"]
+      test:
+      - CMD-SHELL
+      - /usr/local/bin/healthcheck.sh
       interval: 15s
       timeout: 5s
       retries: 3
       start_period: 30s
       start_interval: 5s
-
+    labels:
+      tsisip.environment: production
+      tsisip.deployed-by: ansible
   asterisk-pbx-1:
-    build:
-      context: ./docker/asterisk
     image: tsisip/asterisk:latest
-    networks: [sip_internal]
+    networks:
+    - sip_internal
     restart: on-failure
     expose:
-      - "5060/udp"
-      - "5060/tcp"
+    - 5060/udp
+    - 5060/tcp
     healthcheck:
-      test: ["CMD-SHELL", "/usr/local/bin/healthcheck.sh"]
+      test:
+      - CMD-SHELL
+      - /usr/local/bin/healthcheck.sh
       interval: 15s
       timeout: 5s
       retries: 3
       start_period: 25s
       start_interval: 5s
-
+    labels:
+      tsisip.environment: production
+      tsisip.deployed-by: ansible
   asterisk-pbx-2:
     image: tsisip/asterisk:latest
-    networks: [sip_internal]
+    networks:
+    - sip_internal
     restart: on-failure
     expose:
-      - "5060/udp"
-      - "5060/tcp"
+    - 5060/udp
+    - 5060/tcp
     healthcheck:
-      test: ["CMD-SHELL", "/usr/local/bin/healthcheck.sh"]
+      test:
+      - CMD-SHELL
+      - /usr/local/bin/healthcheck.sh
       interval: 15s
       timeout: 5s
       retries: 3
       start_period: 30s
       start_interval: 5s
-
+    labels:
+      tsisip.environment: production
+      tsisip.deployed-by: ansible
   ocp:
-    build:
-      context: .
-      dockerfile: docker/ocp/Dockerfile
     image: tsisip/ocp:latest
-    networks: [sip_internal, db_internal]
+    networks:
+    - sip_internal
+    - db_internal
     restart: on-failure
     environment:
       DB_HOST: postgres
       DB_NAME: opensips
       DB_USER: opensips
-    secrets: [db_password]
+    secrets:
+    - db_password
     depends_on:
       postgres:
         condition: service_healthy
-    cap_drop: [ALL]
-    cap_add: [SETUID, SETGID]
-    security_opt: ["no-new-privileges:true"]
+    cap_drop:
+    - ALL
+    cap_add:
+    - SETUID
+    - SETGID
+    security_opt:
+    - no-new-privileges:true
     healthcheck:
-      test: ["CMD-SHELL", "curl -fsSL http://localhost/login.php | grep -q 'TSiSIP' || exit 1"]
+      test:
+      - CMD-SHELL
+      - curl -fsSL http://localhost/login.php | grep -q 'TSiSIP' || exit 1
       interval: 30s
       timeout: 5s
       retries: 3
       start_period: 20s
-
-  # --- Observability Stack ---
+    labels:
+      tsisip.environment: production
+      tsisip.deployed-by: ansible
   prometheus:
-    build:
-      context: ./docker/prometheus
     image: tsisip/prometheus:latest
-    networks: [db_internal]
+    networks:
+    - db_internal
     restart: on-failure
     environment:
       ALERTMANAGER_WEBHOOK_URL: ${ALERTMANAGER_WEBHOOK_URL:-http://localhost:5000/alerts}
       ALERTMANAGER_SMTP_HOST: ${ALERTMANAGER_SMTP_HOST:-localhost:25}
       ALERTMANAGER_SMTP_FROM: ${ALERTMANAGER_SMTP_FROM:-alerts@tsiapp.io}
     volumes:
-      - prometheus_data:/prometheus
+    - prometheus_data:/prometheus
     healthcheck:
-      test: ["CMD-SHELL", "wget -qO- http://localhost:9090/-/healthy | grep -q 'Prometheus'"]
+      test:
+      - CMD-SHELL
+      - wget -qO- http://localhost:9090/-/healthy | grep -q 'Prometheus'
       interval: 15s
       timeout: 5s
       retries: 3
       start_period: 30s
-
+    labels:
+      tsisip.environment: production
+      tsisip.deployed-by: ansible
   alertmanager:
     image: prom/alertmanager:v0.27.0
-    networks: [db_internal]
+    networks:
+    - db_internal
     restart: on-failure
     environment:
       ALERTMANAGER_WEBHOOK_URL: ${ALERTMANAGER_WEBHOOK_URL:-http://localhost:5000/alerts}
     volumes:
-      - ./docker/prometheus/alertmanager.yml.tpl:/etc/alertmanager/alertmanager.yml.tpl:ro
-      - alertmanager_data:/alertmanager
+    - ./docker/prometheus/alertmanager.yml.tpl:/etc/alertmanager/alertmanager.yml.tpl:ro
+    - alertmanager_data:/alertmanager
     command:
-      - '--config.file=/etc/alertmanager/alertmanager.yml'
-      - '--storage.path=/alertmanager'
-      - '--web.external-url=http://alertmanager:9093'
+    - --config.file=/etc/alertmanager/alertmanager.yml
+    - --storage.path=/alertmanager
+    - --web.external-url=http://alertmanager:9093
     healthcheck:
-      test: ["CMD-SHELL", "wget -qO- http://localhost:9093/-/healthy | grep -q 'OK'"]
+      test:
+      - CMD-SHELL
+      - wget -qO- http://localhost:9093/-/healthy | grep -q 'OK'
       interval: 15s
       timeout: 5s
       retries: 3
       start_period: 10s
-
+    labels:
+      tsisip.environment: production
+      tsisip.deployed-by: ansible
   anomaly-detector:
-    build:
-      context: ./docker/anomaly-detector
     image: tsisip/anomaly-detector:latest
-    networks: [sip_internal]
+    networks:
+    - sip_internal
     restart: on-failure
     environment:
       ANOMALY_WINDOW_SECONDS: 60
@@ -204,40 +248,45 @@ services:
       BASELINE_WINDOW_HOURS: 24
       ALERT_COOLDOWN_SECONDS: 300
     ports:
-      - "127.0.0.1:8080:8080"
+    - 127.0.0.1:8080:8080
     depends_on:
       opensips:
         condition: service_healthy
-
+    labels:
+      tsisip.environment: production
+      tsisip.deployed-by: ansible
   grafana:
-    build:
-      context: ./docker/grafana
     image: tsisip/grafana:latest
-    networks: [db_internal]
+    networks:
+    - db_internal
     restart: on-failure
     environment:
       GF_SECURITY_ADMIN_PASSWORD__FILE: /run/secrets/grafana_admin_password
       GF_USERS_DEFAULT_THEME: light
       GF_SERVER_ROOT_URL: ${GRAFANA_ROOT_URL:-http://localhost:3000}
-      GF_INSTALL_PLUGINS: ""
+      GF_INSTALL_PLUGINS: ''
     secrets:
-      - grafana_admin_password
+    - grafana_admin_password
     volumes:
-      - grafana_data:/var/lib/grafana
+    - grafana_data:/var/lib/grafana
     depends_on:
-      - prometheus
+    - prometheus
     healthcheck:
-      test: ["CMD-SHELL", "curl -fsSL http://localhost:3000/api/health | grep -q 'ok'"]
+      test:
+      - CMD-SHELL
+      - curl -fsSL http://localhost:3000/api/health | grep -q 'ok'
       interval: 15s
       timeout: 5s
       retries: 3
       start_period: 30s
-
+    labels:
+      tsisip.environment: production
+      tsisip.deployed-by: ansible
   opensips-exporter:
-    build:
-      context: ./docker/opensips-exporter
     image: tsisip/opensips-exporter:latest
-    networks: [sip_internal, db_internal]
+    networks:
+    - sip_internal
+    - db_internal
     restart: on-failure
     environment:
       OPENSIPS_MI_HOST: opensips
@@ -245,26 +294,28 @@ services:
       EXPORTER_PORT: 9442
       CACHE_TTL_SECONDS: 10
     depends_on:
-      - opensips
+    - opensips
     healthcheck:
-      test: ["CMD-SHELL", "curl -fsSL http://localhost:9442/metrics | grep -q 'opensips'"]
+      test:
+      - CMD-SHELL
+      - curl -fsSL http://localhost:9442/metrics | grep -q 'opensips'
       interval: 15s
       timeout: 5s
       retries: 3
       start_period: 10s
-
-  # --- Backup Service ---
+    labels:
+      tsisip.environment: production
+      tsisip.deployed-by: ansible
   backup:
-    build:
-      context: ./docker/backup
     image: tsisip/backup:latest
-    networks: [db_internal]
+    networks:
+    - db_internal
     restart: on-failure
     environment:
-      BACKUP_SCHEDULE: "0 2 * * *"
-      PURGE_SCHEDULE: "0 3 * * *"
-      VALIDATE_SCHEDULE: "0 4 * * *"
-      REPLICATE_SCHEDULE: "0 * * * *"
+      BACKUP_SCHEDULE: 0 2 * * *
+      PURGE_SCHEDULE: 0 3 * * *
+      VALIDATE_SCHEDULE: 0 4 * * *
+      REPLICATE_SCHEDULE: 0 * * * *
       BACKUP_RETENTION_DAYS: 30
       WAL_RETENTION_DAYS: 37
       PGHOST: postgres
@@ -282,14 +333,16 @@ services:
       RCLONE_REMOTE_PATH: ${RCLONE_REMOTE_PATH:-tsisip-backups}
       RCLONE_BW_LIMIT: ${RCLONE_BW_LIMIT:-50M}
     secrets:
-      - db_password
-      - backup_encryption_key
+    - db_password
+    - backup_encryption_key
     volumes:
-      - backup_data:/backup
+    - backup_data:/backup
     depends_on:
       postgres:
         condition: service_healthy
-
+    labels:
+      tsisip.environment: production
+      tsisip.deployed-by: ansible
 networks:
   sip_edge:
     driver: bridge
@@ -299,14 +352,12 @@ networks:
   db_internal:
     driver: bridge
     internal: true
-
 volumes:
-  postgres_data:
-  backup_data:
-  prometheus_data:
-  alertmanager_data:
-  grafana_data:
-
+  postgres_data: null
+  backup_data: null
+  prometheus_data: null
+  alertmanager_data: null
+  grafana_data: null
 secrets:
   db_password:
     file: ./secrets/db_password
