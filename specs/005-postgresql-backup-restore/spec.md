@@ -16,12 +16,13 @@
 ### Scenario 1: Nightly Logical Backup Completes and Encrypts
 **Given** the backup scheduler is configured,
 **When** the cron job triggers at 02:00 UTC,
-**Then** a `pg_dump` logical backup is created, compressed with `gzip`, encrypted with AES-256-GCM, and uploaded to the backup storage backend.
+**Then** a `pg_dump` logical backup is created, compressed with `gzip`, encrypted with AES-256-CBC+PBKDF2, and uploaded to the backup storage backend.
 
 ### Scenario 2: Point-in-Time Recovery to 15 Minutes Before Accidental Deletion
 **Given** WAL archiving is active and continuous archiving streams to the backup store,
 **When** an operator requests recovery to `2026-05-16T13:45:00Z`,
 **Then** PostgreSQL replays WAL segments up to that timestamp and restores the database to the requested point in time.
+> **PITR Scope**: Logical backup (`pg_dump`) + WAL archive replay. Physical base backup (`pg_basebackup`) is not required for the current scope.
 
 ### Scenario 3: Restore Validation Test Passes in Staging
 **Given** a backup artifact exists from the previous night,
@@ -51,19 +52,25 @@ If the encrypted backup fails decryption or the decompressed SQL contains syntax
 - **Acceptance Criteria**: `pg_switch_wal()` results in a new archived segment visible in the backup store within 60 seconds.
 
 ### FR-003: Backup Encryption at Rest
-- All logical backups and WAL segments are encrypted using AES-256-GCM with a key derived from a Docker secret.
+- All logical backups and WAL segments are encrypted using **AES-256-CBC with PBKDF2** (OpenSSL `-aes-256-cbc -pbkdf2 -iter 10000`) using a key derived from a Docker secret.
+- A separate HMAC-SHA256 integrity check is applied post-encryption to detect tampering.
 - Key rotation is supported by re-encrypting the last N backups with the new key.
-- **Acceptance Criteria**: Backup file magic bytes do not match plaintext PostgreSQL custom format; decryption with the correct key restores successfully.
+- **Acceptance Criteria**: Encrypted file header does not match plaintext PostgreSQL custom format (`pg_restore -l` fails on encrypted file); decryption with the correct key restores identical byte-for-byte content (verified by SHA-256 checksum).
 
 ### FR-004: Retention Policies
 - Logical backups retained for 30 days; WAL segments retained for 7 days beyond the oldest logical backup.
 - Automated purge job runs daily at 03:00 UTC.
 - **Acceptance Criteria**: No backup or WAL segment older than the retention window exists in the store; at least one backup per day is retained.
+- **Storage Quota**: When backup volume usage exceeds 80% of allocated quota (`BACKUP_QUOTA_GB`, default 100GB), oldest segments beyond retention are purged immediately.
 
 ### FR-005: Restore Validation Tests
-- An ephemeral PostgreSQL container is spawned from the latest logical backup daily.
-- Validation queries verify: `subscriber` row count, `location` AOR uniqueness, `dispatcher` set integrity.
+- An ephemeral PostgreSQL container (`docker run --rm postgres:16`) is spawned from the latest logical backup daily.
+- Validation queries verify:
+  - `subscriber`: row count > 0
+  - `location`: COUNT(DISTINCT username) = COUNT(*) (AOR uniqueness)
+  - `dispatcher`: COUNT(*) > 0 and MAX(setid) ≥ MIN(setid)
 - **Acceptance Criteria**: All validation queries pass within 10 minutes; failures trigger a critical alert.
+- **RTO Benchmark**: Restore from latest logical backup to SIP-ready state must complete within 15 minutes (measured by `validate.sh` timer).
 
 ### FR-006: Offsite Backup Replication
 - Encrypted backups and WAL segments are replicated to an offsite object store (e.g., S3-compatible) using `rclone` or `s3cmd`.
@@ -75,10 +82,10 @@ If the encrypted backup fails decryption or the decompressed SQL contains syntax
 | ID | Criterion | Target | Measurement Method |
 |----|-----------|--------|-------------------|
 | SC-001 | Logical backup duration | ≤ 30 minutes for 10GB | Timer on backup job logs |
-| SC-002 | RPO (Recovery Point Objective) | ≤ 5 minutes | WAL archiving lag monitoring |
-| SC-003 | RTO (Recovery Time Objective) | ≤ 15 minutes for PITR | Stopwatch from restore request to SIP service ready |
+| SC-002 | RPO (Recovery Point Objective) | ≤ 5 minutes | `pg_stat_archiver.last_archived_time` lag vs. current time |
+| SC-003 | RTO (Recovery Time Objective) | ≤ 15 minutes for PITR | `validate.sh` timer from restore start to `pg_isready` |
 | SC-004 | Restore validation pass rate | 100% daily | Automated test report |
-| SC-005 | Backup encryption strength | AES-256-GCM | File inspection and decryption test |
+| SC-005 | Backup encryption strength | AES-256-CBC + PBKDF2 + HMAC-SHA256 | `openssl` cipher verification + checksum match |
 | SC-006 | Offsite replication lag | ≤ 1 hour | Object store listing timestamp comparison |
 
 ## Key Entities

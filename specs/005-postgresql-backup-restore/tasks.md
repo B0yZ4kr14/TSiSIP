@@ -26,27 +26,34 @@
 ## Phase 2 — WAL Archiving
 
 ### [x] T2.1: Configure PostgreSQL WAL archiving
-**Description**: Update PostgreSQL configuration via `db/init/03-archive-config.sql` or environment: `archive_mode = on`, `archive_command = 'cp %p /backup/wal/%f'`, `archive_timeout = 300`, `wal_level = replica`, `max_wal_senders = 2`.
+**Description**: Update PostgreSQL configuration via environment: `archive_mode = on`, `archive_command = '/usr/local/bin/wal-archive.sh %p %f'`, `archive_timeout = 300`, `wal_level = replica`, `max_wal_senders = 2`.
 **Phase**: 2
 **Depends on**: T1.3
 **Parallel**: No
 **Acceptance**: `pg_switch_wal()` creates file in `/backup/wal/` within 60s.
 
 ### [x] T2.2: Create WAL archive management script
-**Description**: Create `docker/backup/wal-archive.sh` that: verifies WAL segment integrity, compresses with `gzip`, encrypts, moves to `/backup/wal/YYYY/MM/DD/`. Called by `archive_command`.
+**Description**: Create `docker/backup/wal-archive.sh` that: compresses with `gzip`, encrypts via `encrypt.sh`, stores in `/backup/wal/YYYY/MM/DD/`. Called by `archive_command`.
 **Phase**: 2
 **Depends on**: T2.1
 **Parallel**: No
 **Acceptance**: WAL segments are archived, compressed, and encrypted.
 
+### [x] T2.3: RPO monitoring and alerting
+**Description**: Create `docker/backup/rpo-monitor.sh` that: queries `pg_stat_archiver` to compute lag between `last_archived_time` and current time. Exposes metric `/backup/metrics/rpo_lag_seconds`. Alert if lag > 300 seconds (5 minutes).
+**Phase**: 2
+**Depends on**: T2.1
+**Parallel**: Yes
+**Acceptance**: Metric file updated every 60s; alert triggered when WAL lag exceeds 5 minutes.
+
 ## Phase 3 — Encryption & Security
 
-### [x] T3.1: Implement AES-256-GCM encryption wrapper
-**Description**: Create `docker/backup/encrypt.sh` that: derives key from Docker secret using PBKDF2, encrypts input file, outputs `.enc`. Support decrypt mode. Use `openssl enc -aes-256-gcm`.
+### [x] T3.1: Implement AES-256-CBC encryption wrapper with integrity
+**Description**: Create `docker/backup/encrypt.sh` that: derives key from Docker secret using PBKDF2 (`-iter 10000`), encrypts with `openssl enc -aes-256-cbc`, outputs `.enc`. Generates HMAC-SHA256 checksum post-encryption for tamper detection. Support decrypt mode with checksum verification.
 **Phase**: 3
 **Depends on**: T2.2
 **Parallel**: No
-**Acceptance**: Encrypted file cannot be identified as PostgreSQL format; decryption restores original.
+**Acceptance**: Encrypted file cannot be identified as PostgreSQL format (`pg_restore -l` fails); decryption restores identical content (SHA-256 match).
 
 ### [x] T3.2: Add encryption to backup and WAL scripts
 **Description**: Update `backup.sh` and `wal-archive.sh` to call `encrypt.sh` after compression. Store encryption key in Docker secret `backup_encryption_key`.
@@ -87,6 +94,13 @@
 **Parallel**: No
 **Acceptance**: `pytest tests/integration/test_backup_restore.py` passes.
 
+### [x] T5.3: RTO benchmark and alerting
+**Description**: Extend `validate.sh` to measure total restore duration (decrypt → decompress → pg_restore → pg_isready). Log timer to stdout and to a metric file `/backup/metrics/rto_last_seconds`. Alert if duration exceeds 900 seconds (15 minutes).
+**Phase**: 5
+**Depends on**: T5.1
+**Parallel**: No
+**Acceptance**: Manual restore completes within 15 minutes for a 10GB database; metric file is updated after each validation run.
+
 ## Phase 6 — Offsite Replication
 
 ### [x] T6.1: Configure rclone for S3-compatible storage
@@ -109,3 +123,12 @@
 **Depends on**: T6.2
 **Parallel**: No
 **Acceptance**: Runbook contains actionable procedures for all backup scenarios.
+
+## Phase 7 — Observability & SLA Monitoring
+
+### [x] T7.1: Prometheus metrics exporter for backup SLA
+**Description**: Create `docker/backup/metrics-exporter.sh` that: serves RPO lag (`rpo_lag_seconds`), RTO duration (`rto_last_seconds`), backup success/failure counter, storage quota usage (`backup_quota_used_percent`) in Prometheus text format on `0.0.0.0:9101/metrics`.
+**Phase**: 7
+**Depends on**: T2.3, T5.3
+**Parallel**: No
+**Acceptance**: `curl localhost:9101/metrics` returns valid Prometheus metrics; Grafana dashboard displays all 4 series.

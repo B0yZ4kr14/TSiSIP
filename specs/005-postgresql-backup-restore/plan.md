@@ -15,9 +15,7 @@ This plan translates the feature specification into an executable implementation
 
 ### Backup Tools
 - **pg_dump**: Logical backups in custom format (`-Fc`)
-- **pg_basebackup**: Physical base backup for PITR
-- **WAL-G**: WAL archiving and PITR management (optional, evaluated)
-- **openssl**: AES-256-GCM encryption
+- **openssl**: AES-256-CBC + PBKDF2 encryption (HMAC-SHA256 for integrity)
 
 ### Storage Backend
 - Local volume: `/backup` on host for immediate recovery
@@ -44,8 +42,8 @@ This plan translates the feature specification into an executable implementation
 - archive_timeout configuration
 
 ### Phase 3 — Encryption & Security
-- AES-256-GCM encryption with Docker secrets
-- Key derivation (PBKDF2)
+- AES-256-CBC + PBKDF2 encryption with Docker secrets
+- HMAC-SHA256 integrity verification
 - Key rotation support
 
 ### Phase 4 — Retention & Purge
@@ -53,12 +51,18 @@ This plan translates the feature specification into an executable implementation
 - Automated purge job
 - Storage quota monitoring
 
-### Phase 5 — Restore Validation
+### Phase 5 — Restore Validation & RTO Benchmark
 - Ephemeral restore container
 - Validation queries for critical tables
-- Alerting on validation failure
+- RTO timer: restore-to-ready must complete within 15 minutes
+- Alerting on validation failure or RTO breach
 
 ### Phase 6 — Offsite Replication
+### Phase 7 — Observability & SLA Monitoring
+- RPO monitor: query `pg_stat_archiver` lag every 60s; alert if > 5 minutes
+- RTO benchmark: `validate.sh` logs restore duration; alert if > 15 minutes
+- Backup success/failure metrics exposed for Prometheus scraping
+- Grafana dashboard: backup status, RPO/RTO trends, storage quota usage
 - rclone configuration for S3-compatible store
 - Bandwidth throttling (50 Mbps)
 - Checksum verification
@@ -90,6 +94,6 @@ opensips/
 | Build | Backup image builds | `docker compose build backup` |
 | Backup | Logical backup completes | `docker compose exec backup backup.sh` |
 | WAL | Archive segment created | `ls /backup/wal/` |
-| Encrypt | Backup is encrypted | `file /backup/*.dump.gz.enc` |
+| Encrypt | Backup is encrypted | `openssl enc -aes-256-cbc -d -pbkdf2 ...` |
 | Restore | Validation passes | `docker compose exec backup validate.sh` |
 | Offsite | rclone sync completes | `rclone ls remote:tsisip-backups` |
