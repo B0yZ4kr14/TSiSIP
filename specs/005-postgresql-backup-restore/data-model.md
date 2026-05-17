@@ -31,25 +31,27 @@
 - **archived_at**: timestamp
 - **retention_until**: timestamp
 
-## Entity: RestorePoint
-- **point_id**: UUID
-- **point_type**: enum (full, pitr)
+## Entity: RestoreJob
+- **job_id**: UUID
+- **job_type**: enum (scheduled, manual, pitr)
 - **target_timestamp**: timestamp (nullable, for PITR)
 - **artifact_id**: UUID (FK to BackupArtifact)
-- **status**: enum (requested, in_progress, completed, failed)
+- **status**: enum (pending, running, success, failed)
 - **started_at**: timestamp
 - **completed_at**: timestamp (nullable)
-- **validated**: boolean
+- **duration_ms**: integer
+- **validation_results**: JSON (nullable)
 
 ## Entity: ValidationResult
 - **result_id**: UUID
-- **restore_point_id**: UUID (FK to RestorePoint)
+- **restore_job_id**: UUID (FK to RestoreJob)
 - **table_name**: string
 - **validation_type**: enum (row_count, checksum, uniqueness, integrity)
 - **expected_value**: string
 - **actual_value**: string
 - **passed**: boolean
 - **checked_at**: timestamp
+- **skip_reason**: string (nullable, e.g., "no backup artifact found")
 
 ## Entity: OffsiteReplication
 - **replication_id**: UUID
@@ -63,6 +65,11 @@
 ## Relationships
 - BackupArtifact (1) -> (*) BackupJob (one artifact has many jobs)
 - BackupArtifact (1) -> (*) WALSegment (logical backup references WAL)
-- BackupArtifact (1) -> (*) RestorePoint (restores use artifacts)
-- RestorePoint (1) -> (*) ValidationResult (validations per restore)
+- BackupArtifact (1) -> (*) RestoreJob (restores use artifacts)
+- RestoreJob (1) -> (*) ValidationResult (validations per restore)
 - BackupArtifact (1) -> (*) OffsiteReplication (replications per artifact)
+
+## Compliance Notes
+- Retention policies must respect LGPD (Lei 13.709/2018): data retention must be proportional to the processing purpose.
+- Default 30-day retention is a baseline; increase only if required by specific data processing agreements.
+- Encryption (AES-256-CBC + PBKDF2) and integrity (HMAC-SHA256) align with LGPD security requirements.

@@ -38,6 +38,9 @@ When WAL storage exceeds 80% of the retention quota, the oldest archived WAL seg
 ### Edge Case 3: Corrupted Backup Artifact Detected
 If the encrypted backup fails decryption or the decompressed SQL contains syntax errors, the validation test must fail, alert the operator, and reference the previous valid backup.
 
+### Edge Case 4: First-Day Validation with No Prior Backup
+On the first day of operation, no backup artifact exists yet. The validation job must return `skipped` without triggering an alert, and log the skip reason for audit purposes.
+
 ## Functional Requirements
 
 ### FR-001: Scheduled Logical Backups
@@ -94,7 +97,7 @@ If the encrypted backup fails decryption or the decompressed SQL contains syntax
 |--------|-------------|------------|
 | BackupArtifact | A single logical backup file | id, created_at, size_bytes, checksum, encryption_key_id, retention_until |
 | WALSegment | A single Write-Ahead Log segment | name, start_lsn, end_lsn, archived_at, size_bytes |
-| RestoreJob | An execution of a restore or validation test | trigger_type, target_timestamp, status, duration_ms, validation_results |
+| RestoreJob | An execution of a restore or validation test | trigger_type, target_timestamp, status (`pending`\|`running`\|`success`\|`failed`), duration_ms, validation_results |
 
 ## Scope
 
@@ -117,6 +120,7 @@ If the encrypted backup fails decryption or the decompressed SQL contains syntax
 | Dependency | Description | Impact if Missing |
 |------------|-------------|-------------------|
 | PostgreSQL 15+ | WAL archiving, PITR, `pg_dump` custom format | Cannot implement backup or PITR |
+| MinIO (TSiHomeLab) | Offsite S3-compatible storage via Tailscale | Sem replicação offsite; dados vulneráveis a perda local |
 | Object Store / Volume | Local and offsite storage for artifacts | No durability or offsite protection |
 | Docker Compose | Orchestration of backup sidecar and ephemeral validation containers | Cannot run isolated validation jobs |
 | Encryption Key Management | Docker secrets or external KMS for AES keys | Cannot meet at-rest encryption requirement |
@@ -138,10 +142,21 @@ If the encrypted backup fails decryption or the decompressed SQL contains syntax
 | R-004 | Offsite replication saturates network and impacts SIP signaling | Medium | Medium | Throttle bandwidth; schedule replication outside peak hours |
 | R-005 | PITR restore overshoots target due to overlapping transactions | Low | Medium | Document that PITR restores to the end of the last committed transaction before the target time |
 
+## Clarifications
+
+### Session 2026-05-17
+
+- Q: Como o operador deve ser alertado quando um backup falha ou um backup corrompido e detectado? → A: Prometheus Alertmanager via webhook (Option B). Metricas de backup expostas em `/metrics`; alertas definidos via regras YAML no Alertmanager. Canal de notificacao final (Slack/email/PagerDuty) configurado no Alertmanager, nao acoplado ao container de backup.
+- Q: Qual provedor de storage offsite deve ser usado para replicação de backups? → A: MinIO self-hosted no TSiHomeLab (Option C). Replicação via `rclone sync` para endpoint MinIO acessível pela rede Tailscale (100.64.0.0/10). Elimina custos recorrentes de cloud e mantém dados dentro da rede privada.
+- Q: Quais são os estados válidos de um RestoreJob? → A: 4 estados simples (Option A): `pending` → `running` → `success` ou `failed`. Mapeáveis para métrica Prometheus gauge (0=pending, 1=running, 2=success, 3=failed).
+- Q: Qual o comportamento da validação no primeiro dia (quando não há backup anterior)? → A: Skip com log informativo (Option B). Validação retorna `skipped`; nenhum alerta é disparado; log registra "no backup artifact found" para auditoria.
+- Q: Qual framework de compliance governa a retenção e criptografia de dados? → A: LGPD (Lei Geral de Proteção de Dados) — Option A. Requer segurança e retenção proporcional à finalidade. As decisões de arquitetura (AES-256-CBC, retenção 30 dias, auditoria via logs) já estão alinhadas com LGPD.
+
 ## Notes
 
 - All PostgreSQL identifiers and Docker service names must use lowercase snake_case (e.g., `db_internal`, `backup_sidecar`).
 > **Constitution Reference**: See `.specify/memory/constitution.md` §2 — PostgreSQL is the sole persistence layer; `db_postgres` is the only OpenSIPS DB module.
 - WAL archives must be stored outside the PostgreSQL container to survive container deletion.
-- Retention policy must respect compliance requirements; the default 30 days is a baseline and may be increased per deployment.
+- Retention policy must respect LGPD (Lei 13.709/2018); the default 30 days is a baseline and may be increased per deployment if required by specific data processing agreements.
+- Backup container expoe metricas Prometheus em `/backup/metrics` (RPO lag, RTO ultimo, status do backup). Alertas de falha sao roteados pelo Alertmanager ja presente no stack TSiSIP.
 - Validation test containers must be destroyed immediately after test completion to free resources.

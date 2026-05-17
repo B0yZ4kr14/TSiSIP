@@ -19,8 +19,8 @@ This plan translates the feature specification into an executable implementation
 
 ### Storage Backend
 - Local volume: `/backup` on host for immediate recovery
-- Offsite: S3-compatible object store (configurable)
-- **rclone**: Bandwidth-throttled replication
+- Offsite: MinIO self-hosted no TSiHomeLab, acessível via Tailscale (100.64.0.0/10)
+- **rclone**: Bandwidth-throttled replication (50 Mbps)
 
 ### Scheduler
 - **cron** inside backup container
@@ -55,15 +55,17 @@ This plan translates the feature specification into an executable implementation
 - Ephemeral restore container
 - Validation queries for critical tables
 - RTO timer: restore-to-ready must complete within 15 minutes
-- Alerting on validation failure or RTO breach
+- Alerting via Prometheus Alertmanager (webhook) em caso de falha de validação ou RTO breach
+- Edge case: no primeiro dia sem backup anterior, validação retorna `skipped` com log informativo; nenhum alerta é disparado
 
 ### Phase 6 — Offsite Replication
 ### Phase 7 — Observability & SLA Monitoring
 - RPO monitor: query `pg_stat_archiver` lag every 60s; alert if > 5 minutes
 - RTO benchmark: `validate.sh` logs restore duration; alert if > 15 minutes
-- Backup success/failure metrics exposed for Prometheus scraping
+- Backup success/failure metrics expostas em `/backup/metrics` para Prometheus scraping
+- Alertas roteados pelo Alertmanager (webhook); canal final configurável (Slack/email/PagerDuty)
 - Grafana dashboard: backup status, RPO/RTO trends, storage quota usage
-- rclone configuration for S3-compatible store
+- rclone configuration para endpoint MinIO no TSiHomeLab
 - Bandwidth throttling (50 Mbps)
 - Checksum verification
 
