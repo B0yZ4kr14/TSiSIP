@@ -9,7 +9,8 @@ WAL_DIR="${WAL_DIR:-/backup/wal}"
 RCLONE_CONFIG="${RCLONE_CONFIG:-/etc/rclone/rclone.conf}"
 REMOTE_NAME="${RCLONE_REMOTE_NAME:-remote}"
 REMOTE_PATH="${RCLONE_REMOTE_PATH:-tsisip-backups}"
-BW_LIMIT="${RCLONE_BW_LIMIT:-50M}"
+# 50 Mbps = 6.25 MB/s (rclone --bwlimit uses MB/s by default)
+BW_LIMIT="${RCLONE_BW_LIMIT:-6.25M}"
 
 log() {
     echo "[$(date '+%Y-%m-%d %H:%M:%S')] $*"

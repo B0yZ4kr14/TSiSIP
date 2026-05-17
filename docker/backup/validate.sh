@@ -19,9 +19,17 @@ log() {
 # Find latest backup
 LATEST_BACKUP="$(readlink -f "${BACKUP_DIR}/latest" 2>/dev/null || ls -t ${BACKUP_DIR}/*.gz* 2>/dev/null | head -1)"
 
+# First-day edge case: no backup exists yet
 if [ -z "$LATEST_BACKUP" ] || [ ! -f "$LATEST_BACKUP" ]; then
-    echo "ERROR: No backup found in $BACKUP_DIR"
-    exit 1
+    log "SKIPPED: No backup artifact found in $BACKUP_DIR (first-day or missing backup)"
+    # Write skip metric for Prometheus
+    mkdir -p /backup/metrics
+    echo "# HELP backup_validation_status Validation status: 0=skipped, 1=success, 2=failed" > /backup/metrics/validation_status.prom
+    echo "# TYPE backup_validation_status gauge" >> /backup/metrics/validation_status.prom
+    echo "backup_validation_status 0" >> /backup/metrics/validation_status.prom
+    echo "# HELP backup_validation_skip_reason Reason for skip (1=yes)" >> /backup/metrics/validation_status.prom
+    echo "backup_validation_skip_reason{reason=\"no_backup_artifact\"} 1" >> /backup/metrics/validation_status.prom
+    exit 0
 fi
 
 log "Validating backup: $LATEST_BACKUP"
@@ -81,6 +89,15 @@ fi
 
 # Cleanup
 rm -rf "$VALIDATE_DIR"
+
+# Write success metric for Prometheus
+mkdir -p /backup/metrics
+echo "# HELP backup_validation_status Validation status: 0=skipped, 1=success, 2=failed" > /backup/metrics/validation_status.prom
+echo "# TYPE backup_validation_status gauge" >> /backup/metrics/validation_status.prom
+echo "backup_validation_status 1" >> /backup/metrics/validation_status.prom
+echo "# HELP backup_validation_timestamp Unix timestamp of last validation" >> /backup/metrics/validation_status.prom
+echo "# TYPE backup_validation_timestamp gauge" >> /backup/metrics/validation_status.prom
+echo "backup_validation_timestamp $(date +%s)" >> /backup/metrics/validation_status.prom
 
 log "Validation completed successfully"
 exit 0
