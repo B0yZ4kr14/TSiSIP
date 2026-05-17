@@ -141,3 +141,29 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Changed
 - OpenSIPS Dockerfile: adicionados módulos pike e cachedb_local
 - opensips.cfg.tpl: rotas de rate limiting no início do fluxo principal
+
+## [0.8.0] - 2026-05-17 - Feature 008: DevSecOps Deployment Automation
+
+### Added
+- playbook-hardening.yml: UFW, fail2ban, unattended-upgrades, tsisip-deploy user
+- validate.sh: Deployment validation script (12 checks)
+- SPoF falsification tests: test-spof-01-env-missing, test-spof-03-token-leak, test-spof-04-ssh-perms
+- Nginx hardening: HSTS, CSP, Permissions-Policy, OCSP stapling, nginx_status
+- Makefile targets: hardening, validate, test-spof
+- Secret scope separation documentation
+- --check-only and --dry-run modes para scripts
+- Pre-flight checks no Ansible: disk space, Docker daemon, registry connectivity
+
+### Security
+- UFW firewall rules para SIP (5060), RTP (10000-20000), HTTPS (443)
+- fail2ban para SSH brute-force protection
+- unattended-upgrades para security patches automáticos
+- tsisip-deploy user com sudo limitado a Docker commands
+- Nginx rate limiting: 30r/m, burst=10, connection limit=10
+
+### Changed
+- discover-and-secrets.sh: validação SSH Ed25519, permissões, --check-only
+- github-init-repo.sh: --dry-run, validação token, verificação settings
+- playbook-deploy.yml: pre-flight checks, docker compose validation, no_log
+- nginx config: upstream backend, keepalive, security headers, error pages
+- deploy/README.md: documentação completa com troubleshooting

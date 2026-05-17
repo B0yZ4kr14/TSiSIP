@@ -8,6 +8,42 @@
     tsisip_image: "tsisip/ocp:latest"
     tsisip_web_port: 8080
     tsisip_internal_network: "tsisip_internal"
+    min_disk_space_gb: 1
+
+  pre_tasks:
+    - name: Pre-flight — Check disk space
+      ansible.builtin.shell: |
+        set -o pipefail
+        df -BG / | awk 'NR==2 {print $4}' | tr -d 'G'
+      args:
+        executable: /bin/bash
+      register: disk_space
+      changed_when: false
+
+    - name: Pre-flight — Verify minimum disk space
+      ansible.builtin.fail:
+        msg: "Insufficient disk space: {{ disk_space.stdout }}GB available, {{ min_disk_space_gb }}GB required"
+      when: disk_space.stdout | int < min_disk_space_gb
+
+    - name: Pre-flight — Check Docker daemon
+      ansible.builtin.command: docker version --format '{{.Server.Version}}'
+      register: docker_version
+      changed_when: false
+      ignore_errors: true
+
+    - name: Pre-flight — Verify network connectivity
+      ansible.builtin.uri:
+        url: "https://registry-1.docker.io/v2/"
+        status_code: [200, 401]
+      register: registry_check
+      ignore_errors: true
+
+    - name: Pre-flight — Report status
+      ansible.builtin.debug:
+        msg:
+          - "Disk space: {{ disk_space.stdout }}GB available"
+          - "Docker: {{ docker_version.stdout | default('not installed') }}"
+          - "Registry: {{ 'reachable' if registry_check.status | default(0) in [200, 401] else 'unreachable' }}"
 
   tasks:
     - name: Ensure Docker is installed
@@ -40,11 +76,17 @@
         owner: "{{ ansible_user }}"
         group: "{{ ansible_user }}"
 
-    - name: Deploy Docker Compose stack
+    - name: Deploy Docker Compose stack file
       ansible.builtin.copy:
         src: "../../docker-compose.yml"
         dest: "{{ tsisip_app_dir }}/docker-compose.yml"
         mode: '0640'
+
+    - name: Validate Docker Compose configuration
+      ansible.builtin.command:
+        cmd: "docker compose -f {{ tsisip_app_dir }}/docker-compose.yml config"
+      become: true
+      changed_when: false
 
     - name: Deploy OCP web assets
       ansible.builtin.copy:
@@ -63,6 +105,7 @@
         cmd: "docker pull {{ tsisip_image }}"
       become: true
       changed_when: true
+      no_log: true
 
     - name: Start TSiSIP stack
       ansible.builtin.command:

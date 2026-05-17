@@ -14,17 +14,24 @@ SSH_DIR="${SSH_DIR:-$HOME/.ssh}"
 RED='\033[0;31m'
 GREEN='\033[0;32m'
 YELLOW='\033[1;33m'
+BLUE='\033[0;34m'
 NC='\033[0m'
 
 info()  { echo -e "${GREEN}[INFO]${NC} $*"; }
 warn()  { echo -e "${YELLOW}[WARN]${NC} $*"; }
 error() { echo -e "${RED}[ERROR]${NC} $*" >&2; }
+dbg()   { echo -e "${BLUE}[DEBUG]${NC} $*"; }
+
+CHECK_ONLY=false
+if [ "${1:-}" = "--check-only" ]; then
+    CHECK_ONLY=true
+    info "Running in check-only mode..."
+fi
 
 # --- 1. Vault Discovery ---
 info "Checking TSi-Vault..."
 TSI_VAULT_KEY=""
 if [ -f "$VAULT_FILE" ]; then
-    # Extract canonical key TSiHomeLab from vault
     TSI_VAULT_KEY=$(grep -E '^TSiHomeLab=' "$VAULT_FILE" 2>/dev/null | cut -d'=' -f2- || true)
     if [ -n "$TSI_VAULT_KEY" ]; then
         info "Vault key found (redacted)"
@@ -41,7 +48,6 @@ GITHUB_TOKEN=""
 VPS_HOST=""
 VPS_USER=""
 if [ -f "$ENV_FILE" ]; then
-    # Source safely without exporting to shell history
     while IFS='=' read -r key value; do
         case "$key" in
             GITHUB_TOKEN) GITHUB_TOKEN="$value" ;;
@@ -63,13 +69,35 @@ fi
 # --- 3. SSH Key Discovery ---
 info "Checking SSH keys..."
 SSH_KEY_FOUND=""
+SSH_KEY_TYPE=""
 for keyfile in "$SSH_DIR"/id_ed25519 "$SSH_DIR"/id_rsa "$SSH_DIR"/tsiapp_key; do
     if [ -f "$keyfile" ]; then
-        info "SSH key found: $keyfile"
         SSH_KEY_FOUND="$keyfile"
+        if head -1 "$keyfile" | grep -q "OPENSSH PRIVATE KEY"; then
+            SSH_KEY_TYPE="openssh"
+        else
+            SSH_KEY_TYPE="legacy"
+        fi
+        info "SSH key found: $keyfile (type: $SSH_KEY_TYPE)"
         break
     fi
 done
+
+# T1.1: Validate SSH key format (Ed25519 preferred)
+if [ -n "$SSH_KEY_FOUND" ]; then
+    if echo "$SSH_KEY_FOUND" | grep -q "ed25519"; then
+        info "SSH key uses Ed25519 (recommended)"
+    else
+        warn "SSH key is not Ed25519. Consider: ssh-keygen -t ed25519 -f ~/.ssh/id_ed25519"
+    fi
+    
+    # Check key file permissions
+    KEY_PERMS=$(stat -c "%a" "$SSH_KEY_FOUND" 2>/dev/null || stat -f "%Lp" "$SSH_KEY_FOUND" 2>/dev/null)
+    if [ "$KEY_PERMS" != "600" ]; then
+        warn "SSH key permissions are $KEY_PERMS (should be 600). Run: chmod 600 $SSH_KEY_FOUND"
+    fi
+fi
+
 if [ -z "$SSH_KEY_FOUND" ]; then
     warn "No SSH private key found in $SSH_DIR"
 fi
@@ -89,12 +117,19 @@ if [ ${#MISSING[@]} -gt 0 ]; then
     exit 1
 fi
 
-# --- 5. Export for downstream tools (securely) ---
-# Write to a temp file that is deleted after sourcing by the caller
+# --- 5. Check-only mode exit ---
+if [ "$CHECK_ONLY" = true ]; then
+    info "All secrets validated successfully (check-only mode)."
+    exit 0
+fi
+
+# --- 6. Export for downstream tools (securely) ---
 SECRETS_TEMP=$(mktemp /tmp/tsisip-secrets.XXXXXX)
 chmod 600 "$SECRETS_TEMP"
 cat > "$SECRETS_TEMP" << EOF
 # TSiSIP Secrets — Auto-generated, delete after use
+# Generated: $(date -Iseconds)
+# WARNING: This file contains sensitive data. Delete immediately after use.
 export TSI_VAULT_KEY='${TSI_VAULT_KEY}'
 export GITHUB_TOKEN='${GITHUB_TOKEN}'
 export TSiAPP_HOST='${VPS_HOST}'

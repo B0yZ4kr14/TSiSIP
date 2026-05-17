@@ -1,86 +1,146 @@
-# TSiSIP DevSecOps Deployment Automation
+# TSiSIP DevSecOps Deployment
 
-This directory contains all infrastructure-as-code, automation scripts, and security auditing artifacts for deploying the TSiSIP OCP v9 Portal on the VPS `TSiAPP`.
+## Overview
 
-## Directory Structure
+This directory contains the complete DevSecOps automation for deploying TSiSIP OCP v9 to VPS 'TSiAPP'.
+
+## Architecture
 
 ```
-deploy/
-├── README.md                          # This file
-├── ansible/
-│   ├── inventory.yml                  # Ansible inventory for TSiAPP VPS
-│   └── playbook-deploy.yml            # Main deployment playbook
-├── audit/
-│   └── DEVSECOPS-AUDIT.md             # Socratic + Popper security audit
-├── nginx/
-│   └── tsisip-reverse-proxy.conf      # Nginx reverse proxy config
-└── scripts/
-    ├── discover-and-secrets.sh        # Secret discovery & validation
-    └── github-init-repo.sh            # GitHub repository initialization
+Developer Workstation
+  |-- deploy/scripts/discover-and-secrets.sh  (secret discovery)
+  |-- deploy/scripts/github-init-repo.sh      (repo initialization)
+  |
+  +-- Ansible Controller
+        |-- deploy/ansible/inventory.yml           (target definition)
+        |-- deploy/ansible/playbook-deploy.yml     (main deploy)
+        |-- deploy/ansible/playbook-hardening.yml  (server hardening)
+        |
+        +-- TSiAPP VPS
+              |-- Docker Engine + Compose V2
+              |-- TSiSIP Stack (OCP, OpenSIPS, PostgreSQL, etc.)
+              |
+              +-- Nginx Reverse Proxy
+                    |-- TLS 1.2/1.3 termination
+                    |-- Rate limiting
+                    +-- https://tsiapp.io/TSiSIP
 ```
 
-## Prerequisites
+## Secret Scope Separation
 
-1. **VPS Access**: SSH key-based access to `TSiAPP` (host configured in `~/.env`)
-2. **GitHub Token**: Personal access token with `repo` scope in `~/.env`
-3. **Vault Key**: `TSiHomeLab` key in `~/.tsi-vault` (for backup/restore operations)
-4. **Ansible**: Installed locally (`pip install ansible`)
-5. **Docker & Compose**: Available on target VPS
+### Deploy Secrets (required for provisioning)
+| Secret | Source | Used By |
+|--------|--------|---------|
+| GITHUB_TOKEN | ~/.env | github-init-repo.sh |
+| TSiAPP_HOST | ~/.env | Ansible inventory |
+| TSiAPP_USER | ~/.env | Ansible inventory |
+| SSH private key | ~/.ssh | Ansible SSH connection |
 
-## Deployment Workflow
+### Operational Secrets (required for runtime)
+| Secret | Source | Used By |
+|--------|--------|---------|
+| TSiHomeLab | ~/.tsi-vault | Backup/restore encryption |
+| DB_PASSWORD | Docker secrets | PostgreSQL auth |
+| AUTH_SECRET | Docker secrets | SIP digest auth |
 
-### Step 1: Discover & Validate Secrets
+**Important**: Deploy secrets and operational secrets must NEVER be mixed. The deploy scripts only access deploy secrets.
+
+## Quick Start
+
+### 1. Prepare Local Secrets
+
+Create `~/.env`:
+```bash
+GITHUB_TOKEN=ghp_xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx
+TSiAPP_HOST=tsiapp.io
+TSiAPP_USER=tsi
+```
+
+Ensure SSH key exists:
+```bash
+ls ~/.ssh/id_ed25519  # or id_rsa, tsiapp_key
+```
+
+### 2. Discover and Validate Secrets
 
 ```bash
-./deploy/scripts/discover-and-secrets.sh
-# Source the generated temp file:
-source /tmp/tsisip-secrets.XXXXXX
+cd deploy
+make secrets
+# Or directly:
+./scripts/discover-and-secrets.sh
 ```
 
-### Step 2: Initialize GitHub Repository (First Time Only)
+### 3. Initialize GitHub Repository (optional)
 
 ```bash
-./deploy/scripts/github-init-repo.sh
+source /tmp/tsisip-secrets.XXXXXX  # from step 2
+./scripts/github-init-repo.sh
 ```
 
-### Step 3: Deploy to VPS
+### 4. Deploy to TSiAPP
 
 ```bash
-cd deploy/ansible
+make deploy
+# Or directly:
+cd ansible
 ansible-playbook -i inventory.yml playbook-deploy.yml
 ```
 
-### Step 4: Configure Reverse Proxy
+### 5. Validate Deployment
 
-Copy `deploy/nginx/tsisip-reverse-proxy.conf` to `/etc/nginx/sites-available/` on the VPS and reload Nginx.
+```bash
+make validate
+# Or:
+./validate.sh
+```
 
-## Security Notes
+## Makefile Targets
 
-- **Secrets are never logged**: All scripts use `set +x` and redirect stderr
-- **Temporary files**: `discover-and-secrets.sh` generates a temp file with `chmod 600`. Delete after sourcing.
-- **SSH keys**: Use Ed25519, protect with passphrase, rotate every 90 days
-- **Docker privileges**: The `tsi` user has Docker group access. Consider rootless Docker for production.
+| Target | Description |
+|--------|-------------|
+| `make secrets` | Discover and validate secrets |
+| `make check` | Ansible dry-run |
+| `make deploy` | Full deployment |
+| `make hardening` | Server hardening |
+| `make validate` | Run all validation checks |
+| `make audit` | Run security audit |
+| `make clean` | Remove temporary files |
 
-## Audit & Compliance
+## Security Considerations
 
-See `deploy/audit/DEVSECOPS-AUDIT.md` for:
-- Socratic self-analysis of architectural decisions
-- Popper falsification tests for single points of failure
-- Hardening recommendations
-- Automated test matrix
+- Secrets are never logged by discovery scripts
+- SSH keys should use Ed25519 format
+- Key file permissions must be 600
+- Ansible tasks use `no_log: true` for sensitive operations
+- Nginx rate limiting prevents web-layer abuse
 
 ## Troubleshooting
 
-| Issue | Solution |
-|---|---|
-| `GITHUB_TOKEN not set` | Run `discover-and-secrets.sh` and source the temp file |
-| `ansible_host unreachable` | Verify `TSiAPP_HOST` in `~/.env` and SSH connectivity |
-| `docker pull denied` | Ensure `tsisip/ocp:latest` is built and tagged locally |
-| `502 Bad Gateway` | Check OCP container health: `docker ps` and logs |
-| `permission denied` | Verify `tsi` user is in `docker` group on VPS |
+### Secret discovery fails
+- Verify `~/.env` exists with required variables
+- Check SSH key permissions: `chmod 600 ~/.ssh/id_ed25519`
+- Run with `--check-only` to identify missing secrets
 
-## References
+### Ansible connection fails
+- Verify SSH key is added to agent: `ssh-add -l`
+- Test direct SSH: `ssh -i ~/.ssh/id_ed25519 tsi@tsiapp.io`
+- Check inventory.yml has correct host/user
 
-- `docs/TSiSIP-CANONICAL-SPEC.md` — Architecture & tech baseline
-- `docs/TSiSIP-OPERATOR-RUNBOOK.md` — Operational procedures
-- `AGENTS.md` — Repository guidelines
+### Nginx returns 502
+- Verify OCP container is running: `docker ps`
+- Check OCP logs: `docker logs tsisip-ocp-1`
+- Verify proxy_pass points to correct port
+
+## Files
+
+| File | Purpose |
+|------|---------|
+| `scripts/discover-and-secrets.sh` | Secret discovery and validation |
+| `scripts/github-init-repo.sh` | GitHub repository initialization |
+| `ansible/inventory.yml` | Ansible target inventory |
+| `ansible/playbook-deploy.yml` | Main deployment playbook |
+| `ansible/playbook-hardening.yml` | Server hardening playbook |
+| `nginx/tsisip-reverse-proxy.conf` | Nginx reverse proxy config |
+| `audit/DEVSECOPS-AUDIT.md` | Security audit (Socratic + Popper) |
+| `Makefile` | Convenience targets |
+| `validate.sh` | Deployment validation script |
