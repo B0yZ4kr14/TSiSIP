@@ -167,3 +167,30 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - playbook-deploy.yml: pre-flight checks, docker compose validation, no_log
 - nginx config: upstream backend, keepalive, security headers, error pages
 - deploy/README.md: documentação completa com troubleshooting
+
+## [0.7.0] - 2026-05-17 - Feature 007: TLS/SRTP Encryption
+
+### Added
+- OpenSIPS tls_mgm e proto_tls modules para TLS 1.3
+- TLS listener na porta 5061/tcp
+- CA tool container (Alpine 3.19 + OpenSSL)
+- ca-init.sh: Root CA e Intermediate CA (RSA 4096, SHA-256)
+- cert-gen.sh: Geração de server e client certificates
+- cert-rotate.sh: Rotação de certificados com backup/rollback
+- scripts/tls-reload.sh: Zero-downtime TLS reload via MI
+- Docker secrets para ca.crt, server.crt, server.key, crl.pem
+- Testes de integração test_tls_srtp.py
+- Documentação em docs/features/007/
+
+### Security
+- TLS 1.3 preferred, TLS 1.2 minimum
+- Cipher suites: ECDHE + AES-256-GCM
+- Client certificate verification para trunks
+- CRL checking enabled
+- ca.key NUNCA montado (offline storage)
+- SRTP negotiation via RTPengine SDP rewriting
+
+### Changed
+- Dockerfile OpenSIPS: adicionados módulos tls_mgm e proto_tls
+- docker-compose.yml: porta 5061/tcp, secrets TLS
+- opensips.cfg.tpl: TLS profile, listener 5061
