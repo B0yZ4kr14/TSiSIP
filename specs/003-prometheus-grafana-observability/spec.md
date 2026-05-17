@@ -54,7 +54,7 @@ Deliver a real-time observability platform that exposes TSiSIP infrastructure me
 - Metric names follow Prometheus naming conventions (`opensips_active_dialogs_total`)
 
 ### FR-002: Prometheus Time-Series Collection
-**Description**: Prometheus must scrape OpenSIPS, RTPengine, PostgreSQL, and host-level metrics at configurable intervals. Data retention must support 30 days of high-resolution (15s) data and 1 year of downsampled data.
+**Description**: Prometheus must scrape OpenSIPS, RTPengine, PostgreSQL, and host-level metrics at configurable intervals. Data retention supports 30 days of high-resolution (15s) data. Long-term retention (1 year downsampled) is planned for future implementation.
 **Acceptance Criteria**:
 - Prometheus configuration file defines scrape jobs for all TSiSIP services
 - Scrapes succeed with HTTP 200 and valid metric format

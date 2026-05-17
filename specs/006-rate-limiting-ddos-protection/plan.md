@@ -11,7 +11,7 @@ This plan translates the feature specification into an executable implementation
 ### Container Platform
 - **Docker Engine** with Docker Compose V2
 - OpenSIPS modules: `pike`, `htable`, `dispatcher`, `auth_db`
-- Anomaly detection sidecar (Python + Redis)
+- Anomaly detection sidecar (Python + in-memory statistics)
 
 ### Rate Limiting Stack
 | Component | Module/Tool | Purpose |

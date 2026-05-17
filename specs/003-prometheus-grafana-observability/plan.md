@@ -33,7 +33,7 @@ This plan translates the feature specification into an executable implementation
 ### Phase 1 — Prometheus Infrastructure
 - Prometheus server container with TSDB configuration
 - Scrape job definitions for OpenSIPS, RTPengine, PostgreSQL, host metrics
-- Retention policies: 30 days high-resolution (15s), 1 year downsampled
+- Retention policies: 30 days high-resolution (15s); long-term downsampled retention planned
 
 ### Phase 2 — OpenSIPS Metric Exporter
 - Lightweight exporter sidecar that queries OpenSIPS MI interface

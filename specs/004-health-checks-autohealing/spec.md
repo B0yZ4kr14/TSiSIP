@@ -51,7 +51,7 @@ If the health status dashboard (e.g., Prometheus/Grafana) is down, health probes
 
 ### FR-003: Circuit Breaker for Dispatcher Targets
 - OpenSIPS `dispatcher` module must use `ds_ping_method=OPTIONS` and `ds_ping_interval=10` with `ds_probing_mode=1`.
-- After `ds_ping_reply_codes` threshold (5xx or timeout) exceeds 5 failures in 30s, the target is set to inactive (`ds_set_state`).
+- After dispatcher probing threshold (5 consecutive failures) exceeds the configured limit (`ds_probing_threshold=5`), the target is set to inactive (`ds_set_state`).
 - A half-open retry is attempted every 60 seconds.
 - **Acceptance Criteria**: Packet capture shows no new INVITEs routed to the failed target; `opensipsctl fifo ds_list` reports `state=inactive`.
 
