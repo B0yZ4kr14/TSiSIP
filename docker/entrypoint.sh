@@ -14,6 +14,15 @@ if [ -f /run/secrets/topology_secret ]; then
     export TOPOLOGY_SECRET
 fi
 
+# Preparar diretório TLS se secrets existirem
+mkdir -p /etc/opensips/tls
+for cert in ca.crt server.crt server.key crl.pem; do
+    if [ -f "/run/secrets/${cert}" ]; then
+        cp "/run/secrets/${cert}" "/etc/opensips/tls/${cert}"
+        chmod 644 "/etc/opensips/tls/${cert}"
+    fi
+done
+
 envsubst '
   $OPENSIPS_LISTEN_IP
   $HOST_PUBLIC_IP
