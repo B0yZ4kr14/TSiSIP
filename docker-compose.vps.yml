@@ -1,0 +1,183 @@
+# TSiSIP VPS-Lite Profile
+# Para VPS com 4GB RAM ou menos. 
+# Serviços essenciais apenas: SIP edge, media relay, DB, OCP, backup.
+# Monitoring (prometheus/grafana) e asterisk são desabilitados por padrão.
+# Cada container tem mem_limit para evitar OOM do kernel.
+
+services:
+  postgres:
+    image: ghcr.io/b0yz4kr14/tsisip/postgres:latest
+    networks: [db_internal]
+    restart: unless-stopped
+    mem_limit: 512m
+    memswap_limit: 512m
+    environment:
+      POSTGRES_DB: opensips
+      POSTGRES_USER: opensips
+      POSTGRES_PASSWORD_FILE: /run/secrets/db_password
+      PGDATA: /var/lib/postgresql/data
+      ARCHIVE_MODE: "on"
+      ARCHIVE_COMMAND: "test ! -f /backup/wal/%f && gzip < %p > /backup/wal/%f.gz"
+      ARCHIVE_TIMEOUT: 300
+      WAL_LEVEL: replica
+      MAX_WAL_SENDERS: 2
+    secrets: [db_password]
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+      - ./db/init:/docker-entrypoint-initdb.d:ro
+      - backup_data:/backup
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U opensips -d opensips"]
+      interval: 5s
+      timeout: 3s
+      retries: 5
+      start_period: 20s
+      start_interval: 5s
+
+  rtpengine:
+    image: ghcr.io/b0yz4kr14/tsisip/rtpengine:latest
+    networks: [sip_edge, sip_internal]
+    restart: on-failure
+    mem_limit: 256m
+    memswap_limit: 256m
+    ports:
+      - "10000-20000:10000-20000/udp"
+    command:
+      - --interface=${RTPENGINE_PRIVATE_IP:-172.19.0.1}/${HOST_PUBLIC_IP:-127.0.0.1}
+      - --listen-ng=${RTPENGINE_INTERNAL_IP:-172.21.0.1}:22222
+      - --port-min=10000
+      - --port-max=20000
+      - --log-stderr
+      - --foreground
+    cap_drop: [ALL]
+    cap_add: [NET_BIND_SERVICE, NET_ADMIN]
+    security_opt: ["no-new-privileges:true"]
+    healthcheck:
+      test: ["CMD-SHELL", "/usr/local/bin/healthcheck.sh"]
+      interval: 15s
+      timeout: 5s
+      retries: 3
+      start_period: 25s
+      start_interval: 5s
+
+  opensips:
+    image: ghcr.io/b0yz4kr14/tsisip/opensips:latest
+    networks: [sip_edge, sip_internal, db_internal]
+    restart: unless-stopped
+    mem_limit: 256m
+    memswap_limit: 256m
+    ports:
+      - "5060:5060/udp"
+      - "5060:5060/tcp"
+      - "5061:5061/tcp"
+    environment:
+      OPENSIPS_LISTEN_IP: ${OPENSIPS_LISTEN_IP:-0.0.0.0}
+      HOST_PUBLIC_IP: ${HOST_PUBLIC_IP:-127.0.0.1}
+      RTPENGINE_HOST: rtpengine
+      DB_HOST: postgres
+      DB_NAME: opensips
+      DB_USER: opensips
+    secrets:
+      - db_password
+      - auth_secret
+      - topology_secret
+      - ca.crt
+      - server.crt
+      - server.key
+      - crl.pem
+    depends_on:
+      postgres:
+        condition: service_healthy
+      rtpengine:
+        condition: service_started
+    cap_drop: [ALL]
+    cap_add: [NET_BIND_SERVICE, SETUID, SETGID]
+    security_opt: ["no-new-privileges:true"]
+    healthcheck:
+      test: ["CMD-SHELL", "/usr/local/bin/healthcheck.sh"]
+      interval: 15s
+      timeout: 5s
+      retries: 3
+      start_period: 25s
+      start_interval: 5s
+
+  ocp:
+    image: ghcr.io/b0yz4kr14/tsisip/ocp:latest
+    networks: [sip_internal]
+    restart: unless-stopped
+    mem_limit: 256m
+    memswap_limit: 256m
+    ports:
+      - "8084:80"
+    environment:
+      - DB_HOST=postgres
+      - DB_NAME=opensips
+      - DB_USER=opensips
+      - DB_PASSWORD_FILE=/run/secrets/db_password
+    secrets:
+      - db_password
+    depends_on:
+      postgres:
+        condition: service_healthy
+    healthcheck:
+      test: ["CMD-SHELL", "wget --no-verbose --tries=1 --spider http://127.0.0.1/login.php || exit 1"]
+      interval: 30s
+      timeout: 5s
+      retries: 3
+      start_period: 10s
+
+  backup:
+    image: ghcr.io/b0yz4kr14/tsisip/backup:latest
+    networks: [db_internal]
+    restart: on-failure
+    mem_limit: 128m
+    memswap_limit: 128m
+    environment:
+      PGHOST: postgres
+      PGPORT: 5432
+      PGUSER: opensips
+      PGDATABASE: opensips
+      PGPASSWORD_FILE: /run/secrets/db_password
+      BACKUP_DIR: /backup/daily
+      WAL_DIR: /backup/wal
+      BACKUP_RETENTION_DAYS: "30"
+      BACKUP_SCHEDULE: "0 2 * * *"
+      ENCRYPTION_KEY_FILE: /run/secrets/backup_encryption_key
+    secrets:
+      - db_password
+      - backup_encryption_key
+    volumes:
+      - backup_data:/backup
+    depends_on:
+      postgres:
+        condition: service_healthy
+
+networks:
+  sip_edge:
+    internal: false
+  sip_internal:
+    internal: true
+  db_internal:
+    internal: true
+
+volumes:
+  postgres_data:
+  backup_data:
+
+secrets:
+  db_password:
+    file: ./secrets/db_password
+  auth_secret:
+    file: ./secrets/auth_secret
+  topology_secret:
+    file: ./secrets/topology_secret
+  backup_encryption_key:
+    file: ./secrets/backup_encryption_key
+  ca.crt:
+    file: ./secrets/ca.crt
+  server.crt:
+    file: ./secrets/server.crt
+  server.key:
+    file: ./secrets/server.key
+  crl.pem:
+    file: ./secrets/crl.pem
