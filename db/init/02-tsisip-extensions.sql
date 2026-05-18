@@ -78,3 +78,15 @@ CREATE INDEX IF NOT EXISTS idx_auth_audit_user_domain
     ON auth_audit_log(username, domain);
 CREATE INDEX IF NOT EXISTS idx_auth_audit_source_ip
     ON auth_audit_log(source_ip);
+
+-- userblacklist: per-user and global ban/allow lists for OpenSIPS userblacklist module
+CREATE TABLE IF NOT EXISTS userblacklist (
+    id SERIAL PRIMARY KEY,
+    username VARCHAR(64) NOT NULL DEFAULT '',
+    domain VARCHAR(255) NOT NULL DEFAULT '',
+    prefix VARCHAR(64) NOT NULL DEFAULT '',
+    whitelist SMALLINT NOT NULL DEFAULT 0
+);
+
+CREATE INDEX IF NOT EXISTS idx_userblacklist_lookup
+    ON userblacklist(username, domain, prefix);

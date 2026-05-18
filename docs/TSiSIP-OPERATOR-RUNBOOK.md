@@ -251,6 +251,84 @@ docker compose exec backup cat /backup/metrics/quota_usage.prom
 curl http://backup:9101/metrics
 ```
 
+## Rate Limiting & DDoS Protection
+
+### Architecture
+
+Feature 006 implements multi-layer rate limiting:
+- **pike**: Per-source IP request throttling (50 req / 2s window)
+- **ratelimit**: Per-user auth attempt throttling (10 attempts / 60s)
+- **userblacklist**: Persistent ban lists via PostgreSQL
+- **anomaly-detector**: Statistical anomaly detection sidecar
+
+### Inspecting Current Blocks
+
+```bash
+# Check pike blocked sources (via MI)
+docker compose exec opensips opensips-cli -x mi get_statistics pike
+
+# Check ratelimit pipe status
+docker compose exec opensips opensips-cli -x mi get_statistics rl_stats
+
+# List userblacklist entries
+docker compose exec postgres psql -U opensips -c "SELECT * FROM userblacklist;"
+```
+
+### Manually Banning a Source
+
+```bash
+# Add IP or user to blacklist
+docker compose exec postgres psql -U opensips -c "INSERT INTO userblacklist (username, domain, prefix, whitelist) VALUES ('attacker', '', '1', 0);"
+
+# Reload blacklist in OpenSIPS
+docker compose exec opensips opensips-cli -x mi reload_blacklist
+```
+
+### Unbanning
+
+```bash
+# Remove from blacklist
+docker compose exec postgres psql -U opensips -c "DELETE FROM userblacklist WHERE username = 'attacker';"
+
+# Reload
+docker compose exec opensips opensips-cli -x mi reload_blacklist
+```
+
+### Tuning Pike Thresholds
+
+Edit `opensips/opensips.cfg.tpl`:
+```
+modparam("pike", "sampling_time_unit", 2)
+modparam("pike", "reqs_density_per_unit", 50)
+```
+
+Rebuild and restart OpenSIPS:
+```bash
+docker compose build opensips
+docker compose up -d opensips
+```
+
+### Anomaly Detector
+
+```bash
+# View anomaly detector logs
+docker compose logs -f anomaly-detector
+
+# Check current z-score
+curl -s http://anomaly-detector:8080/metrics | grep z_score
+```
+
+### Troubleshooting False Positives
+
+1. **Enterprise PBX behind NAT blocked**: Add trusted IP to `permissions` address table:
+   ```bash
+   docker compose exec postgres psql -U opensips -c "INSERT INTO address (grp, ip_addr, mask, port, tag) VALUES (1, '203.0.113.10', 32, 0, 'trusted_pbx');"
+   ```
+
+2. **Auth rate limit too aggressive**: Increase `rl_check` limit in `route[AUTH]`.
+
+3. **Global throttle misfiring**: Adjust `rl_check("global", 500, ...)` threshold.
+
 ## Rollback Procedures
 
 ### OCP Theme Rollback
