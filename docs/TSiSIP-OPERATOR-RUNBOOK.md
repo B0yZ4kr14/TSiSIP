@@ -615,3 +615,67 @@ RTPengine generates ICE candidates and handles STUN/DTLS-SRTP negotiation.
 | TLS handshake fails on wss | Invalid/missing certs | Check `tls_mgm` certificates and CA list |
 | No audio in WebRTC | ICE failure | Verify RTPengine ICE flags; check UDP 10000-20000 |
 | Browser blocks ws | Mixed content policy | Use `wss://` (TLS) when page is HTTPS |
+
+## CDR / Billing Foundation (Feature 001)
+
+### Architecture
+
+The `acc` module logs call details to the PostgreSQL `cdr` table:
+
+| Field | Description |
+|-------|-------------|
+| `call_id` | SIP Call-ID |
+| `call_start` | INVITE timestamp |
+| `call_end` | BYE or dialog end timestamp |
+| `duration` | Call duration in seconds |
+| `from_user` / `to_user` | Caller / callee |
+| `source_ip` | Originating IP |
+| `call_status` | completed, failed, missed, etc. |
+| `tenant_id` | Tenant scope for billing segregation |
+
+### Querying CDRs
+
+```bash
+# Recent calls
+docker compose exec postgres psql -U opensips -d opensips -c "
+    SELECT call_id, from_user, to_user, duration, call_status, call_start
+    FROM cdr ORDER BY call_start DESC LIMIT 10;
+"
+
+# Calls per tenant (billing report)
+docker compose exec postgres psql -U opensips -d opensips -c "
+    SELECT t.name, COUNT(*) as calls, SUM(duration) as total_seconds
+    FROM cdr c
+    JOIN tenants t ON c.tenant_id = t.id
+    WHERE call_start > NOW() - INTERVAL '24 hours'
+    GROUP BY t.name;
+"
+
+# Failed calls analysis
+docker compose exec postgres psql -U opensips -d opensips -c "
+    SELECT call_status, COUNT(*) FROM cdr
+    WHERE call_start > NOW() - INTERVAL '1 hour'
+    GROUP BY call_status;
+"
+```
+
+### Billing Integration
+
+Export CDRs to external billing system:
+
+```bash
+# CSV export
+docker compose exec postgres psql -U opensips -d opensips -c "
+    COPY (SELECT * FROM cdr WHERE call_start > NOW() - INTERVAL '1 day')
+    TO '/tmp/cdr_export.csv' WITH CSV HEADER;
+"
+```
+
+### Troubleshooting
+
+| Symptom | Cause | Fix |
+|---------|-------|-----|
+| No CDR records | `setflag(1)` not set | Verify flag in `HANDLE_INVITE` route |
+| CDR table empty | `acc` module not loaded | Check `loadmodule "acc.so"` |
+| Missing `call_end` | Dialog not tracked | Verify `create_dialog("B")` |
+| Tenant_id NULL | Subscriber missing tenant FK | Check `subscriber.tenant_id` population |

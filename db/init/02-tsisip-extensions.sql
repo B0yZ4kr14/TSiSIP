@@ -90,3 +90,32 @@ CREATE TABLE IF NOT EXISTS userblacklist (
 
 CREATE INDEX IF NOT EXISTS idx_userblacklist_lookup
     ON userblacklist(username, domain, prefix);
+
+-- cdr: Call Detail Records for billing and analytics
+CREATE TABLE IF NOT EXISTS cdr (
+    id BIGSERIAL PRIMARY KEY,
+    call_id VARCHAR(255) NOT NULL,
+    call_start TIMESTAMPTZ NOT NULL DEFAULT NOW(),
+    call_end TIMESTAMPTZ,
+    duration INTEGER DEFAULT 0,
+    from_user VARCHAR(64) NOT NULL,
+    from_domain VARCHAR(255) NOT NULL,
+    to_user VARCHAR(64) NOT NULL,
+    to_domain VARCHAR(255) NOT NULL,
+    source_ip INET NOT NULL,
+    destination_ip INET,
+    sip_method VARCHAR(16) NOT NULL,
+    call_status VARCHAR(32) NOT NULL DEFAULT 'unknown',
+    setup_time_ms INTEGER,
+    dialog_id VARCHAR(64),
+    tenant_id UUID,
+    dispatcher_setid INTEGER,
+    backend_label VARCHAR(128),
+    created_at TIMESTAMPTZ NOT NULL DEFAULT NOW()
+);
+
+CREATE INDEX IF NOT EXISTS idx_cdr_call_id ON cdr(call_id);
+CREATE INDEX IF NOT EXISTS idx_cdr_call_start ON cdr(call_start);
+CREATE INDEX IF NOT EXISTS idx_cdr_from_user ON cdr(from_user);
+CREATE INDEX IF NOT EXISTS idx_cdr_tenant ON cdr(tenant_id);
+CREATE INDEX IF NOT EXISTS idx_cdr_status ON cdr(call_status);

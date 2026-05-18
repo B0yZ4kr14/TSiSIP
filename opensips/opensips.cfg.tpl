@@ -48,6 +48,7 @@ loadmodule "proto_tcp.so"
 loadmodule "proto_tls.so"
 loadmodule "proto_ws.so"
 loadmodule "proto_wss.so"
+loadmodule "acc.so"
 
 # --- Module parameters ---
 
@@ -108,6 +109,15 @@ modparam("tls_mgm", "require_cert", "[default]0")
 # tm
 modparam("tm", "fr_timeout", 5)
 modparam("tm", "fr_inv_timeout", 60)
+
+# acc (CDR logging)
+modparam("acc", "db_url", "postgres://${DB_USER}:${DB_PASSWORD}@${DB_HOST}:5432/${DB_NAME}")
+modparam("acc", "db_table_acc", "cdr")
+modparam("acc", "log_flag", 1)
+modparam("acc", "log_missed_flag", 1)
+modparam("acc", "db_flag", 1)
+modparam("acc", "db_missed_flag", 1)
+modparam("acc", "acc_prepare_always", 1)
 
 # rr
 modparam("rr", "enable_double_rr", 1)
@@ -329,6 +339,9 @@ route[HANDLE_INVITE] {
         sl_send_reply("500", "Internal Server Error");
         exit;
     }
+
+    # Enable CDR accounting for this call
+    setflag(1);
 
     # Topology hiding
     topology_hiding("U");
