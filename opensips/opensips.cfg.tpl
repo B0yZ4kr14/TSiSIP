@@ -4,6 +4,8 @@
 # --- Memory ---
 shm_mem_size=512
 pkg_mem_size=16
+memdump=1
+memlog=30
 
 # --- Network listeners ---
 socket=udp:${OPENSIPS_LISTEN_IP}:5060 as ${HOST_PUBLIC_IP}:5060
