@@ -418,3 +418,60 @@ docker compose start asterisk-pbx-1
 | `403 Forbidden` from Asterisk | IP not in identify range | Check `opensips-identify` match ranges in `pjsip.conf` |
 | `484 Temporarily Unavailable` | All backends down | Start Asterisk containers, check dispatcher state |
 | No audio | RTPengine not running | `docker compose ps rtpengine`, verify UDP 10000-20000 |
+
+## Anomaly Detection Operations (Feature 008)
+
+### Architecture
+
+OpenSIPS event routes (`E_PIKE_BLOCKED`, `E_AUTH_FAILURE`, `E_DISPATCHER_STATUS`) log events that the anomaly detector consumes to establish a statistical baseline.
+
+| Metric | Window | Threshold | Action |
+|--------|--------|-----------|--------|
+| Z-Score | 60s | 3.0 | Log alert |
+| Z-Score | 60s | 6.0 | Critical alert to Alertmanager |
+| Consecutive alerts | 2 windows | — | Send webhook to Alertmanager |
+
+### Viewing Anomaly Metrics
+
+```bash
+# Current detector status
+curl -s http://localhost:8080/api/v1/status | jq .
+
+# Prometheus metrics
+curl -s http://localhost:8080/metrics | grep tsisip_anomaly
+
+# Grafana dashboard
+# Navigate to "TSiSIP - Anomaly Detection" dashboard
+```
+
+### Alertmanager Integration
+
+The detector sends alerts to Alertmanager at `http://alertmanager:9093/api/v1/alerts`:
+
+```bash
+# Verify Alertmanager is receiving alerts
+curl -s http://localhost:9093/api/v1/alerts | jq '.data[] | select(.labels.alertname == "TSiSIPAnomaly")'
+```
+
+### Simulating an Attack (Testing)
+
+```bash
+# Send a burst of events to trigger an alert
+for i in $(seq 1 500); do
+    curl -s -X POST http://localhost:8080/api/v1/event \
+        -H "Content-Type: application/json" \
+        -d '{"event_type":"E_AUTH_FAILURE","source_ip":"192.0.2.1","sip_method":"INVITE"}'
+done
+
+# Wait 2 analysis windows (120s) and check for alerts
+curl -s http://localhost:8080/api/v1/status | jq .
+```
+
+### Troubleshooting
+
+| Symptom | Cause | Fix |
+|---------|-------|-----|
+| Z-score always 0 | Not enough baseline samples | Wait 24h for baseline or seed with synthetic data |
+| No alerts firing | Z-score below threshold | Verify event volume; check `tsisip_current_rps` |
+| Alertmanager errors | Network unreachable | Verify `ALERTMANAGER_URL` env var in compose |
+| High false positives | Baseline too narrow | Increase `BASELINE_WINDOW_HOURS` to 48+ |

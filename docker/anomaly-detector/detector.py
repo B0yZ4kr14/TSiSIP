@@ -12,7 +12,8 @@ import time
 from collections import defaultdict
 from datetime import datetime, timedelta
 
-from flask import Flask, jsonify
+import requests
+from flask import Flask, jsonify, request
 from prometheus_client import Counter, Gauge, Histogram, generate_latest
 
 from baseline import TrafficBaseline
@@ -25,6 +26,8 @@ WINDOW_SECONDS = int(os.environ.get("ANOMALY_WINDOW_SECONDS", "60"))
 Z_THRESHOLD = float(os.environ.get("ANOMALY_Z_THRESHOLD", "3.0"))
 BASELINE_WINDOW_HOURS = int(os.environ.get("BASELINE_WINDOW_HOURS", "24"))
 ALERT_COOLDOWN_SECONDS = int(os.environ.get("ALERT_COOLDOWN_SECONDS", "300"))
+ALERTMANAGER_URL = os.environ.get("ALERTMANAGER_URL", "http://alertmanager:9093/api/v1/alerts")
+ENABLE_ALERTMANAGER = os.environ.get("ENABLE_ALERTMANAGER", "true").lower() == "true"
 
 # Prometheus metrics
 ANOMALY_ALERTS = Counter(
@@ -37,6 +40,11 @@ BASELINE_MEAN = Gauge("tsisip_baseline_mean_rps", "Baseline mean RPS")
 BASELINE_STDDEV = Gauge("tsisip_baseline_stddev_rps", "Baseline stddev RPS")
 Z_SCORE = Gauge("tsisip_anomaly_z_score", "Current Z-score")
 BANNED_IPS = Gauge("tsisip_anomaly_banned_ips", "IPs banned by anomaly detector")
+EVENTS_RECEIVED = Counter(
+    "tsisip_anomaly_events_received_total",
+    "Total events received from OpenSIPS",
+    ["event_type"]
+)
 
 app = Flask(__name__)
 
@@ -50,6 +58,7 @@ class AnomalyDetector:
         self.ip_tracker = defaultdict(int)
         self.banned_ips = set()
         self.last_alert_time = None
+        self.consecutive_alerts = 0
         self.lock = threading.Lock()
         self.running = True
 
@@ -58,6 +67,7 @@ class AnomalyDetector:
         with self.lock:
             self.event_buffer[event_type] += 1
             self.ip_tracker[source_ip] += 1
+        EVENTS_RECEIVED.labels(event_type=event_type).inc()
 
     def analyze_window(self) -> dict:
         """Analyze current window for anomalies."""
@@ -87,15 +97,19 @@ class AnomalyDetector:
                 result["z_score"] = z_score
                 Z_SCORE.set(z_score)
 
-                # Check threshold
+                # Check threshold with consecutive window requirement
                 if z_score > Z_THRESHOLD:
-                    if (self.last_alert_time is None or
-                        (datetime.utcnow() - self.last_alert_time).seconds > ALERT_COOLDOWN_SECONDS):
-                        result["alert"] = True
-                        result["alert_type"] = "distributed_flood"
-                        result["severity"] = "critical" if z_score > Z_THRESHOLD * 2 else "high"
-                        self.last_alert_time = datetime.utcnow()
-                        self._trigger_alert(result)
+                    self.consecutive_alerts += 1
+                    if self.consecutive_alerts >= 2:
+                        if (self.last_alert_time is None or
+                            (datetime.utcnow() - self.last_alert_time).seconds > ALERT_COOLDOWN_SECONDS):
+                            result["alert"] = True
+                            result["alert_type"] = "distributed_flood"
+                            result["severity"] = "critical" if z_score > Z_THRESHOLD * 2 else "high"
+                            self.last_alert_time = datetime.utcnow()
+                            self._trigger_alert(result)
+                else:
+                    self.consecutive_alerts = 0
 
             # Update metrics
             CURRENT_RPS.set(current_rps)
@@ -110,7 +124,7 @@ class AnomalyDetector:
             return result
 
     def _trigger_alert(self, result: dict):
-        """Trigger alert and optional global throttle."""
+        """Trigger alert via Prometheus and optional Alertmanager."""
         ANOMALY_ALERTS.labels(
             alert_type=result["alert_type"],
             severity=result["severity"]
@@ -120,6 +134,33 @@ class AnomalyDetector:
             result["alert_type"], result["severity"],
             result["z_score"], result["current_rps"]
         )
+        if ENABLE_ALERTMANAGER:
+            self._send_alertmanager(result)
+
+    def _send_alertmanager(self, result: dict):
+        """Send alert to Alertmanager webhook."""
+        try:
+            alert = {
+                "labels": {
+                    "alertname": "TSiSIPAnomaly",
+                    "severity": result["severity"],
+                    "type": result["alert_type"],
+                },
+                "annotations": {
+                    "summary": f"Anomaly detected: {result['alert_type']}",
+                    "description": (
+                        f"Z-score: {result['z_score']:.2f}, "
+                        f"RPS: {result['current_rps']:.2f}, "
+                        f"Baseline: {result['baseline_mean']:.2f} ± {result['baseline_stddev']:.2f}"
+                    ),
+                },
+                "startsAt": result["timestamp"],
+            }
+            resp = requests.post(ALERTMANAGER_URL, json=[alert], timeout=5)
+            if resp.status_code not in (200, 201, 202):
+                logger.error("Alertmanager rejected alert: %s %s", resp.status_code, resp.text)
+        except Exception as e:
+            logger.error("Failed to send alert to Alertmanager: %s", e)
 
     def run_analysis_loop(self):
         """Run periodic analysis."""
@@ -165,12 +206,11 @@ def status():
         "z_score": Z_SCORE._value.get(),
         "banned_ips": len(detector.banned_ips),
         "last_alert": detector.last_alert_time.isoformat() if detector.last_alert_time else None,
+        "consecutive_alerts": detector.consecutive_alerts,
     })
 
 
 if __name__ == "__main__":
-    from flask import request  # noqa
-
     # Start analysis thread
     analysis_thread = threading.Thread(target=detector.run_analysis_loop, daemon=True)
     analysis_thread.start()
