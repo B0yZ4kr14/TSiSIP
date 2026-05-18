@@ -51,6 +51,7 @@ services:
       - rtpengine
       - --interface=${RTPENGINE_PRIVATE_IP:-127.0.0.1}/${HOST_PUBLIC_IP:-127.0.0.1}
       - --listen-ng=172.19.0.1:22222
+      - --listen-tcp-ng=172.19.0.1:22223
       - --port-min=10000
       - --port-max=20000
       - --log-stderr
