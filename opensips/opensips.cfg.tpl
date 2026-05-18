@@ -1,6 +1,10 @@
 # TSiSIP OpenSIPS 3.6 LTS Edge Proxy Configuration
 # Generated from template at container startup
 
+# --- Memory ---
+shm_mem_size=512
+pkg_mem_size=16
+
 # --- Network listeners ---
 socket=udp:${OPENSIPS_LISTEN_IP}:5060 as ${HOST_PUBLIC_IP}:5060
 socket=tcp:${OPENSIPS_LISTEN_IP}:5060 as ${HOST_PUBLIC_IP}:5060

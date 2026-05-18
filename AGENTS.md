@@ -19,7 +19,7 @@ In plain terms:
 
 ## 2. Repository State
 
-- **Documentation-first greenfield with foundation committed**: Dockerfile, Docker Compose, OpenSIPS config template, PostgreSQL schema, and container entrypoint are committed. No application source code, language manifest, CI workflow, or test runner exists yet.
+- **Documentation-first greenfield with foundation committed**: Dockerfile, Docker Compose, OpenSIPS config template, PostgreSQL schema, container entrypoint, CI workflow, integration tests, and operator runbooks are committed.
 - Git is initialized but has **no commits**.
 - The repository currently contains:
   - Canonical architecture specification (`docs/`)
@@ -274,6 +274,15 @@ rg --files -uuu -g '!**/.git/**' -g '!**/node_modules/**'
 
 # Search for canonical keywords across documentation
 rg -n "OpenSIPS|PostgreSQL|RTPengine|Asterisk|db_postgres|sanity" docs .github AGENTS.md CLAUDE.md .mcp.json
+
+# Brownfield scan (spec drift, tech debt, anti-patterns)
+# Skill: speckit-brownfield-scan
+
+# Version guard (dependency pinning, version consistency)
+# Skill: speckit-version-guard
+
+# Memory lint (resource limits, memory misconfiguration)
+# Skill: speckit-memorylint
 ```
 
 > `CLAUDE.md` contains a generic `npm run build && npm test` example. **Ignore it for TSiSIP** until a `package.json` or equivalent manifest is committed.
