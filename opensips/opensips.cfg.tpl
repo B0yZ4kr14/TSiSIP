@@ -84,14 +84,10 @@ modparam("topology_hiding", "force_dialog", 1)
 modparam("topology_hiding", "th_callid_passwd", "${TOPOLOGY_SECRET}")
 modparam("topology_hiding", "th_callid_prefix", "TSISIP_")
 
-# tls_mgm
-modparam("tls_mgm", "server_domain", "default")
-modparam("tls_mgm", "certificate", "/etc/opensips/tls/server.crt")
-modparam("tls_mgm", "private_key", "/etc/opensips/tls/server.key")
-modparam("tls_mgm", "ca_list", "/etc/opensips/tls/ca.crt")
-modparam("tls_mgm", "crl", "/etc/opensips/tls/crl.pem")
-modparam("tls_mgm", "verify_cert", "1")
-modparam("tls_mgm", "require_cert", "0")
+# tls_mgm — parameters disabled until real certificates are provisioned.
+# When certificates are ready, use the correct tls_mgm server_domain syntax:
+# modparam("tls_mgm", "server_domain", "dom=default cert=/etc/opensips/tls/server.crt pkey=/etc/opensips/tls/server.key ca=/etc/opensips/tls/ca.crt crl=/etc/opensips/tls/crl.pem verify_cert=1 require_cert=0")
+# Note: OpenSIPS 3.6 tls_mgm uses server_domain string syntax, not individual params.
 
 # tm
 modparam("tm", "fr_timeout", 5)
