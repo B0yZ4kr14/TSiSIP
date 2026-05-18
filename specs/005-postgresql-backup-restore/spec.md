@@ -41,6 +41,9 @@ If the encrypted backup fails decryption or the decompressed SQL contains syntax
 ### Edge Case 4: First-Day Validation with No Prior Backup
 On the first day of operation, no backup artifact exists yet. The validation job must return `skipped` without triggering an alert, and log the skip reason for audit purposes.
 
+### Edge Case 5: Concurrent Restore Requests
+If a restore is already in progress on a given target (e.g., the ephemeral validation container), subsequent restore attempts to the same target must wait or fail gracefully with a clear error message. Restores to different targets may proceed concurrently.
+
 ## Functional Requirements
 
 ### FR-001: Scheduled Logical Backups
@@ -95,7 +98,7 @@ On the first day of operation, no backup artifact exists yet. The validation job
 
 | Entity | Description | Attributes |
 |--------|-------------|------------|
-| BackupArtifact | A single logical backup file | id, created_at, size_bytes, checksum, encryption_key_id, retention_until |
+| BackupArtifact | A single logical backup file | id (timestamp_iso + 8-char content hash), created_at, size_bytes, checksum, encryption_key_id, retention_until |
 | WALSegment | A single Write-Ahead Log segment | name, start_lsn, end_lsn, archived_at, size_bytes |
 | RestoreJob | An execution of a restore or validation test | trigger_type, target_timestamp, status (`pending`\|`running`\|`success`\|`failed`), duration_ms, validation_results |
 
@@ -151,6 +154,11 @@ On the first day of operation, no backup artifact exists yet. The validation job
 - Q: Quais são os estados válidos de um RestoreJob? → A: 4 estados simples (Option A): `pending` → `running` → `success` ou `failed`. Mapeáveis para métrica Prometheus gauge (0=pending, 1=running, 2=success, 3=failed).
 - Q: Qual o comportamento da validação no primeiro dia (quando não há backup anterior)? → A: Skip com log informativo (Option B). Validação retorna `skipped`; nenhum alerta é disparado; log registra "no backup artifact found" para auditoria.
 - Q: Qual framework de compliance governa a retenção e criptografia de dados? → A: LGPD (Lei Geral de Proteção de Dados) — Option A. Requer segurança e retenção proporcional à finalidade. As decisões de arquitetura (AES-256-CBC, retenção 30 dias, auditoria via logs) já estão alinhadas com LGPD.
+- Q: Quem executa operações de backup e restore no TSiSIP? → A: **Persona única: TSiSIP Operator** (Option A). Um único papel técnico é responsável por configurar, agendar, executar restores e monitorar métricas. RBAC granular será tratado em feature futura de IAM.
+- Q: Qual o limite de escala do banco de dados para o backup lógico? → A: **10GB baseline, >10GB compatible** (Option B). O target de teste é 10GB, mas a mesma arquitetura (`pg_dump -Fc`, WAL archiving) suporta bancos maiores sem redesign. Paralelismo (`pg_dump -j`) pode ser adicionado futuramente se necessário.
+- Q: Restore simultâneos são permitidos? → A: **Serialize same-target, allow different-target** (Option B). Vários restores podem rodar simultaneamente em targets diferentes (ex: staging vs. validação efêmera), mas o mesmo target usa lock file (`/tmp/restore.lock`) para evitar conflito de portas e dados.
+- Q: Como limitar o impacto de I/O do backup no PostgreSQL? → A: **Process-level I/O throttling** (Option A). O script `backup.sh` usa `ionice -c2 -n7` (best-effort, lowest priority) e `nice -n 10` para reduzir impacto de I/O e CPU durante o backup, complementando o `--lock-wait-timeout=5000`.
+- Q: Como identificadores de BackupArtifact devem ser gerados? → A: **Timestamp + short hash** (Option B). Nome baseado em timestamp ISO + hash de 8 chars do conteúdo (ex: `opensips_20260516_020000Z_a3f7b2d1.dump.gz.enc`). Legível para operadores e suficientemente único.
 
 ## Notes
 
