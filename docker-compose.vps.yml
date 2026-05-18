@@ -7,7 +7,7 @@
 services:
   postgres:
     image: ghcr.io/b0yz4kr14/tsisip/postgres:latest
-    pull_policy: never
+    pull_policy: always
     networks: [db_internal]
     restart: unless-stopped
     mem_limit: 512m
@@ -37,18 +37,20 @@ services:
 
   rtpengine:
     image: ghcr.io/b0yz4kr14/tsisip/rtpengine:latest
-    pull_policy: never
-    networks: [sip_internal]
+    pull_policy: always
+    networks: [sip_edge, sip_internal]
     restart: on-failure
     mem_limit: 256m
     memswap_limit: 256m
+    ports:
+      - "10000-20000:10000-20000/udp"
     environment:
       RTPENGINE_HOST: rtpengine
       RTPENGINE_NG_PORT: 22222
     command:
       - rtpengine
       - --interface=${RTPENGINE_PRIVATE_IP:-127.0.0.1}/${HOST_PUBLIC_IP:-127.0.0.1}
-      - --listen-ng=0.0.0.0:22222
+      - --listen-ng=${RTPENGINE_INTERNAL_IP:-0.0.0.0}:22222
       - --port-min=10000
       - --port-max=20000
       - --log-stderr
@@ -66,7 +68,7 @@ services:
 
   opensips:
     image: ghcr.io/b0yz4kr14/tsisip/opensips:latest
-    pull_policy: never
+    pull_policy: always
     networks: [sip_edge, sip_internal, db_internal]
     restart: unless-stopped
     mem_limit: 256m
@@ -109,8 +111,8 @@ services:
 
   ocp:
     image: ghcr.io/b0yz4kr14/tsisip/ocp:latest
-    pull_policy: never
-    networks: [sip_internal]
+    pull_policy: always
+    networks: [sip_internal, db_internal]
     restart: unless-stopped
     mem_limit: 256m
     memswap_limit: 256m
@@ -135,7 +137,7 @@ services:
 
   backup:
     image: ghcr.io/b0yz4kr14/tsisip/backup:latest
-    pull_policy: never
+    pull_policy: always
     networks: [db_internal]
     restart: on-failure
     mem_limit: 128m

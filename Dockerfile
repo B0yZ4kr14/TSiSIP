@@ -40,7 +40,7 @@ RUN chmod +x /entrypoint.sh
 
 EXPOSE 5060/udp 5060/tcp 5061/tcp
 ENTRYPOINT ["/entrypoint.sh"]
-CMD ["/usr/local/sbin/opensips", "-F", "-f", "/etc/opensips/opensips.cfg"]
+CMD ["/usr/local/sbin/opensips", "-F", "-f", "/etc/opensips/opensips.cfg", "-m", "512", "-M", "16"]
 
 # --- Health Check ---
 COPY docker/healthcheck/opensips-health.sh /usr/local/bin/healthcheck.sh

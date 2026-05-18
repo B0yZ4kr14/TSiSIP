@@ -38,3 +38,8 @@ Validate OpenSIPS-specific implementation details against the official OpenSIPS 
 For requests that create or modify documentation, specifications, architecture, DevOps guidance, OpenSIPS configuration guidance, PostgreSQL schemas, or canonical project decisions, follow `docs/TSiSIP-AGENT-ORCHESTRATION-PLAYBOOK.md` before finalizing the work.
 
 The required review model is simultaneous multi-agent validation when available, covering documentation forensics, OpenSIPS/RFC validation, solution architecture, DevOps documentation, data specifications, implementation specifications, and Socratic/Popperian falsifiability review.
+
+<!-- SPECKIT START -->
+For additional context about technologies to be used, project structure,
+shell commands, and other important information, read the current plan
+<!-- SPECKIT END -->

@@ -1,12 +1,6 @@
 # TSiSIP OpenSIPS 3.6 LTS Edge Proxy Configuration
 # Generated from template at container startup
 
-# --- Memory ---
-shm_mem_size=512
-pkg_mem_size=16
-memdump=1
-memlog=30
-
 # --- Network listeners ---
 socket=udp:${OPENSIPS_LISTEN_IP}:5060 as ${HOST_PUBLIC_IP}:5060
 socket=tcp:${OPENSIPS_LISTEN_IP}:5060 as ${HOST_PUBLIC_IP}:5060
@@ -110,14 +104,9 @@ modparam("tls_mgm", "require_cert", "[default]0")
 modparam("tm", "fr_timeout", 5)
 modparam("tm", "fr_inv_timeout", 60)
 
-# acc (CDR logging)
+# acc (CDR logging) — OpenSIPS 3.6 uses do_accounting() in routing script
 modparam("acc", "db_url", "postgres://${DB_USER}:${DB_PASSWORD}@${DB_HOST}:5432/${DB_NAME}")
 modparam("acc", "db_table_acc", "cdr")
-modparam("acc", "log_flag", 1)
-modparam("acc", "log_missed_flag", 1)
-modparam("acc", "db_flag", 1)
-modparam("acc", "db_missed_flag", 1)
-modparam("acc", "acc_prepare_always", 1)
 
 # rr
 modparam("rr", "enable_double_rr", 1)
@@ -262,11 +251,27 @@ branch_route[BRANCH_MANAGE] {
 
 route[SANITIZE] {
     # Remove potentially dangerous headers from untrusted sources
+    # Canonical spec §17: strip all untrusted inbound routing/identity headers
     remove_hf("X-TSiSIP-Internal");
     remove_hf("X-Backend-IP");
+    remove_hf("P-Asserted-Identity");
+    remove_hf("P-Preferred-Identity");
+    remove_hf("X-Tenant-ID");
+    remove_hf("X-Backend-ID");
+    remove_hf("X-Route-Override");
+    # Strip credentials before forwarding (prevent credential leakage)
+    remove_hf("Authorization");
+    remove_hf("Proxy-Authorization");
 }
 
 route[AUTH] {
+    # SQL injection guard: validate auth username (RFC 3261: user-unreserved chars, max 128)
+    if ($au != NULL && !($au =~ "^[a-zA-Z0-9_.!~*'()&=+$,;?/-]{1,128}$")) {
+        xlog("L_WARN", "AUTH: rejected malformed username from $si\n");
+        sl_send_reply("400", "Bad Request");
+        exit;
+    }
+
     # Auth rate limiting per user (10 attempts per 60s window)
     if (!rl_check("auth_$au", 10, "TAILDROP")) {
         xlog("L_WARN", "Auth rate limited for $au ($si)\n");
@@ -290,8 +295,14 @@ route[AUTH] {
 }
 
 route[AUTH_AUDIT] {
+    # SQL injection guard: truncate Call-ID to 128 chars and validate charset
+    # $ci (Call-ID) is attacker-controlled; $si (source IP) and $rm (method) are proxy-internal
+    $var(safe_callid) = $ci;
+    if ($var(safe_callid) == NULL || !($var(safe_callid) =~ "^[a-zA-Z0-9_.@:;=+*%!~()-]{1,128}$")) {
+        $var(safe_callid) = "INVALID";
+    }
     # Insert auth audit record
-    sql_query("db_default", "INSERT INTO auth_audit_log (event_time, username, domain, source_ip, sip_method, result, call_id) VALUES (NOW(), '$fU', '$fd', '$si', '$rm', '$var(audit_result)', '$ci')");
+    sql_query("db_default", "INSERT INTO auth_audit_log (event_time, username, domain, source_ip, sip_method, result, call_id) VALUES (NOW(), '$fU', '$fd', '$si', '$rm', '$var(audit_result)', '$var(safe_callid)')");
 }
 
 route[HEADER_ROUTING] {
@@ -303,12 +314,19 @@ route[HEADER_ROUTING] {
 
     # 1. Try header_routing_rules match on X-Route-Key
     if ($hdr(X-Route-Key) != "") {
-        sql_query("db_default", "SELECT dispatcher_setid FROM header_routing_rules WHERE tenant_id = '$var(tenant_id)' AND header_name = 'X-Route-Key' AND match_value = '$hdr(X-Route-Key)' AND enabled = true ORDER BY priority LIMIT 1", "ra");
+        # SQL injection guard: validate X-Route-Key (alphanumeric + ._- only, max 64 chars)
+        $var(route_key) = $hdr(X-Route-Key);
+        if (!($var(route_key) =~ "^[a-zA-Z0-9._-]{1,64}$")) {
+            xlog("L_WARN", "HEADER_ROUTING: rejected invalid X-Route-Key from $si\n");
+            sl_send_reply("400", "Bad Request");
+            exit;
+        }
+        sql_query("db_default", "SELECT dispatcher_setid FROM header_routing_rules WHERE tenant_id = '$var(tenant_id)' AND header_name = 'X-Route-Key' AND match_value = '$var(route_key)' AND enabled = true ORDER BY priority LIMIT 1", "ra");
         if ($avp(ra) != 0) {
             $var(ds_set) = $avp(ra);
             xlog("L_INFO", "HEADER_ROUTING: matched X-Route-Key=$hdr(X-Route-Key) -> set $var(ds_set) for tenant $var(tenant_id)\n");
         }
-        avp_delete("$avp(ra)");
+        $avp(ra) = NULL;
     }
 
     # 2. Fall back to subscriber routing_group
@@ -340,11 +358,11 @@ route[HANDLE_INVITE] {
         exit;
     }
 
-    # Enable CDR accounting for this call
-    setflag(1);
+    # Enable CDR accounting for this call (OpenSIPS 3.6 API)
+    do_accounting("db", "cdr");
 
     # Topology hiding
-    topology_hiding("U");
+    topology_hiding("C");
 
     # Media relay offer
     rtpengine_offer("replace-origin replace-session-connection");

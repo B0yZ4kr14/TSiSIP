@@ -46,3 +46,4 @@ tests/performance/
 # Python cache
 __pycache__/
 *.pyc
+ca-offline/

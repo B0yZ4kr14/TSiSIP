@@ -470,3 +470,8 @@ When editing files in this repo, the hooks may trigger automatically. If you enc
 ---
 
 *Last updated: 2026-05-17. This file must be updated whenever new build tooling, manifests, or canonical architecture decisions are committed.*
+
+<!-- SPECKIT START -->
+For additional context about technologies to be used, project structure,
+shell commands, and other important information, read the current plan
+<!-- SPECKIT END -->
