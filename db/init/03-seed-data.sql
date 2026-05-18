@@ -39,3 +39,39 @@ VALUES (
     true
 )
 ON CONFLICT DO NOTHING;
+
+-- Feature 002: Multi-Tenant Header Routing seed data
+-- Route calls to different PBX pools based on X-Route-Key header
+
+INSERT INTO header_routing_rules (tenant_id, header_name, match_value, match_type, dispatcher_setid, priority, enabled)
+VALUES
+    (
+        (SELECT id FROM tenants WHERE sip_domain = 'dev.tsisip.local' LIMIT 1),
+        'X-Route-Key',
+        'premium',
+        'exact',
+        1,
+        10,
+        true
+    ),
+    (
+        (SELECT id FROM tenants WHERE sip_domain = 'dev.tsisip.local' LIMIT 1),
+        'X-Route-Key',
+        'standard',
+        'exact',
+        1,
+        20,
+        true
+    )
+ON CONFLICT (tenant_id, header_name, match_value) DO NOTHING;
+
+-- PBX backends metadata linking tenants to dispatcher sets
+INSERT INTO pbx_backends (tenant_id, dispatcher_setid, label, enabled)
+VALUES
+    (
+        (SELECT id FROM tenants WHERE sip_domain = 'dev.tsisip.local' LIMIT 1),
+        1,
+        'default-pool',
+        true
+    )
+ON CONFLICT (tenant_id, label) DO NOTHING;

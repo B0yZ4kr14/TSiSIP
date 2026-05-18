@@ -475,3 +475,78 @@ curl -s http://localhost:8080/api/v1/status | jq .
 | No alerts firing | Z-score below threshold | Verify event volume; check `tsisip_current_rps` |
 | Alertmanager errors | Network unreachable | Verify `ALERTMANAGER_URL` env var in compose |
 | High false positives | Baseline too narrow | Increase `BASELINE_WINDOW_HOURS` to 48+ |
+
+## Multi-Tenant Header Routing (Feature 002)
+
+### Architecture
+
+OpenSIPS routes calls through a priority system:
+
+1. **Header Routing Rules** — `X-Route-Key` header match in `header_routing_rules`
+2. **Subscriber Routing Group** — `routing_group` column from authenticated subscriber
+3. **Default Set** — Fallback to dispatcher set `1`
+
+### Tenant Isolation
+
+Each tenant has:
+- Unique `sip_domain` in `tenants` table
+- Scoped `subscriber` entries (FK via `tenant_id`)
+- Scoped `header_routing_rules` for per-tenant routing
+- Scoped `pbx_backends` for PBX pool ownership
+
+### Managing Routing Rules
+
+```bash
+# List active routing rules for a tenant
+docker compose exec postgres psql -U opensips -d opensips -c "
+    SELECT h.header_name, h.match_value, h.dispatcher_setid, h.priority
+    FROM header_routing_rules h
+    JOIN tenants t ON h.tenant_id = t.id
+    WHERE t.sip_domain = 'dev.tsisip.local' AND h.enabled = true
+    ORDER BY h.priority;
+"
+
+# Add a new routing rule
+docker compose exec postgres psql -U opensips -d opensips -c "
+    INSERT INTO header_routing_rules (tenant_id, header_name, match_value, dispatcher_setid, priority)
+    SELECT id, 'X-Route-Key', 'premium-v2', 2, 5
+    FROM tenants WHERE sip_domain = 'dev.tsisip.local';
+"
+
+# Disable a rule
+docker compose exec postgres psql -U opensips -d opensips -c "
+    UPDATE header_routing_rules SET enabled = false
+    WHERE match_value = 'standard';
+"
+```
+
+### Managing PBX Backends per Tenant
+
+```bash
+# List PBX backends for a tenant
+docker compose exec postgres psql -U opensips -d opensips -c "
+    SELECT p.label, p.dispatcher_setid, p.enabled
+    FROM pbx_backends p
+    JOIN tenants t ON p.tenant_id = t.id
+    WHERE t.sip_domain = 'dev.tsisip.local';
+"
+```
+
+### Testing Tenant Isolation
+
+```bash
+# Register as devuser@dev.tsisip.local (should route to set 1)
+sipsak -U -s sip:devuser@dev.tsisip.local:5060 -a devpass -vv
+
+# Register with X-Route-Key header (should match routing rule)
+# Requires custom SIP client or sipp scenario
+```
+
+### Troubleshooting
+
+| Symptom | Cause | Fix |
+|---------|-------|-----|
+| `480 Temporarily Unavailable` | Dispatcher set empty | Verify `dispatcher` table has backends for the set |
+| `404 Not Here` | In-dialog route failure | Check Record-Route and loose_route |
+| Calls land on wrong PBX | Header rule misconfigured | Check `header_routing_rules` priority and match_value |
+| Tenant data leaking | Missing WHERE tenant_id | Audit queries for tenant scoping |

@@ -280,13 +280,36 @@ route[AUTH_AUDIT] {
 }
 
 route[HEADER_ROUTING] {
-    # Select dispatcher destination based on routing group
-    $var(ds_set) = $avp(route_setid);
-    if ($var(ds_set) == 0) {
-        $var(ds_set) = 1;
+    # Feature 002: Multi-Tenant Header Routing
+    # Priority: header_routing_rules -> subscriber routing_group -> default set 1
+
+    $var(ds_set) = 0;
+    $var(tenant_id) = $avp(tenant_id);
+
+    # 1. Try header_routing_rules match on X-Route-Key
+    if ($hdr(X-Route-Key) != "") {
+        sql_query("db_default", "SELECT dispatcher_setid FROM header_routing_rules WHERE tenant_id = '$var(tenant_id)' AND header_name = 'X-Route-Key' AND match_value = '$hdr(X-Route-Key)' AND enabled = true ORDER BY priority LIMIT 1", "ra");
+        if ($avp(ra) != 0) {
+            $var(ds_set) = $avp(ra);
+            xlog("L_INFO", "HEADER_ROUTING: matched X-Route-Key=$hdr(X-Route-Key) -> set $var(ds_set) for tenant $var(tenant_id)\n");
+        }
+        avp_delete("$avp(ra)");
     }
 
-    # Load-based selection with capacity check
+    # 2. Fall back to subscriber routing_group
+    if ($var(ds_set) == 0) {
+        $var(ds_set) = $avp(route_setid);
+        if ($var(ds_set) == 0) {
+            $var(ds_set) = 1;
+        }
+        xlog("L_INFO", "HEADER_ROUTING: fallback to subscriber routing_group -> set $var(ds_set) for tenant $var(tenant_id)\n");
+    }
+
+    # 3. Sanitize routing headers before relay to backend
+    remove_hf("X-Route-Key");
+    remove_hf("X-Routing-Key");
+
+    # 4. Load-based selection with capacity check
     if (!ds_select_dst("$var(ds_set)", "f")) {
         sl_send_reply("480", "Temporarily Unavailable");
         exit;
