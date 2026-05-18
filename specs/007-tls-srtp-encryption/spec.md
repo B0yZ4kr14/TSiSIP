@@ -71,8 +71,8 @@ A session refresh or hold/re-invite generates new SDP. RTPengine must update the
 
 | ID | Criterion | Target | Measurement Method |
 |----|-----------|--------|-------------------|
-| SC-001 | TLS handshake success rate for valid trunks | 100% | sipp TLS registration test |
-| SC-002 | TLS handshake failure for missing/invalid client cert | 100% | sipp TLS test without cert |
+| SC-001 | TLS handshake success rate for valid trunks | 100% | TLS registration test via openssl s_client or container-based SIP tool |
+| SC-002 | TLS handshake failure for missing/invalid client cert | 100% | TLS handshake test without client cert via openssl s_client |
 | SC-003 | Certificate rotation downtime | 0 seconds | Active call stability test during reload |
 | SC-004 | SRTP media encryption coverage | 100% of TLS-signaled calls | Packet capture + RTPengine logs |
 | SC-005 | Weak cipher negotiation blocked | 100% | `openssl s_client` with deprecated ciphers |

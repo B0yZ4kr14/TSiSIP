@@ -33,14 +33,14 @@
 ## Phase 2 — OpenSIPS Metric Exporter
 
 ### [X] T2.1: Create OpenSIPS exporter sidecar
-**Description**: Create `docker/opensips-exporter/Dockerfile` from `python:3.11-slim-bookworm`. Create `docker/opensips-exporter/exporter.py` that: polls OpenSIPS MI via `mi_json` on `sip_internal`, transforms output to Prometheus exposition format, exposes `/metrics` on port 9442. Metrics: `opensips_active_dialogs_total`, `opensips_registered_subscribers`, `opensips_dispatcher_target_state`, `opensips_auth_failures_total`, `opensips_sip_requests_total{method,status}`. Implement scrape caching (cache TTL = 10s) to prevent MI overload.
+**Description**: Create `docker/opensips-exporter/Dockerfile` from `python:3.11-slim-bookworm`. Create `docker/opensips-exporter/exporter.py` that: polls OpenSIPS MI via `jsonrpc` or `mi_http` on `sip_internal`, transforms output to Prometheus exposition format, exposes `/metrics` on port 9442. Metrics: `opensips_active_dialogs_total`, `opensips_registered_subscribers`, `opensips_dispatcher_target_state`, `opensips_auth_failures_total`, `opensips_sip_requests_total{method,status}`. Implement scrape caching (cache TTL = 10s) to prevent MI overload.
 **Phase**: 2
 **Depends on**: T1.4
 **Parallel**: No
 **Acceptance**: Exporter responds with valid Prometheus format; cache prevents duplicate MI queries within TTL.
 
 ### [X] T2.2: Add MI module to OpenSIPS configuration
-**Description**: Add `loadmodule "mi_json.so"` and `modparam("mi_json", "mi_json_root", "/mi")` to `opensips/opensips.cfg.tpl`. Ensure MI socket listens on `sip_internal` interface only. Add `mi_json` to the module package list in the OpenSIPS Dockerfile if not already present.
+**Description**: Add MI interface module to OpenSIPS configuration. Validate against OpenSIPS 3.6 LTS docs for the correct module (`jsonrpc`, `mi_fifo`, or `mi_http` depending on upstream deprecation status). Configure MI socket to listen on `sip_internal` interface only. Add the selected MI module to the module package list in the OpenSIPS Dockerfile if not already present.
 **Phase**: 2
 **Depends on**: T2.1
 **Parallel**: No

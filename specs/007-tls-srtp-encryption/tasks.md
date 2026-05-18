@@ -33,14 +33,14 @@
 ## Phase 2 — TLS Configuration
 
 ### [x] T2.1: Configure OpenSIPS TLS module
-**Description**: Update `opensips/opensips.cfg.tpl` with `loadmodule "tls_mgm.so"`, `modparam("tls_mgm", "tls_method", "TLSv1.3")`, `modparam("tls_mgm", "verify_cert", "1")`, `modparam("tls_mgm", "require_cert", "1")`, `modparam("tls_mgm", "certificate", "/run/secrets/server.crt")`, `modparam("tls_mgm", "private_key", "/run/secrets/server.key")`, `modparam("tls_mgm", "ca_list", "/run/secrets/ca.crt")`, `modparam("tls_mgm", "crl", "/run/secrets/crl.pem")`.
+**Description**: Update `opensips/opensips.cfg.tpl` with `loadmodule "tls_mgm.so"`, `modparam("tls_mgm", "server_domain", "default")`, `modparam("tls_mgm", "tls_method", "[default]TLSv1.3")`, `modparam("tls_mgm", "verify_cert", "[default]1")`, `modparam("tls_mgm", "require_cert", "[default]1")`, `modparam("tls_mgm", "certificate", "[default]/run/secrets/server.crt")`, `modparam("tls_mgm", "private_key", "[default]/run/secrets/server.key")`, `modparam("tls_mgm", "ca_list", "[default]/run/secrets/ca.crt")`, `modparam("tls_mgm", "crl", "[default]/run/secrets/crl.pem")`.
 **Phase**: 2
 **Depends on**: T1.4
 **Parallel**: No
 **Acceptance**: `opensips -c` passes; TLS profile loaded.
 
 ### [x] T2.2: Add TLS listener
-**Description**: Add `listen=tls:OPENSIPS_LISTEN_IP:5061` to `opensips/opensips.cfg.tpl`. Update advertised address. Add TLS-specific route handling.
+**Description**: Add `socket=tls:OPENSIPS_LISTEN_IP:5061` to `opensips/opensips.cfg.tpl`. Update advertised address. Add TLS-specific route handling.
 **Phase**: 2
 **Depends on**: T2.1
 **Parallel**: No
@@ -56,7 +56,7 @@
 ## Phase 3 — Certificate Rotation
 
 ### [x] T3.1: Implement tls_reload via MI
-**Description**: Add `tls_reload` MI command support. Create script `scripts/tls-reload.sh` that calls `opensipsctl fifo tls_reload` and verifies new cert is active.
+**Description**: Add `tls_reload` MI command support. Create script `scripts/tls-reload.sh` that calls `opensips-cli -x mi tls_reload` and verifies new cert is active.
 **Phase**: 3
 **Depends on**: T2.3
 **Parallel**: No

@@ -43,7 +43,7 @@ Requests originate from thousands of IPs, each under the individual threshold. T
 - OpenSIPS `pike` module monitors request rate per source IP across all SIP methods.
 - Default threshold: 100 requests per 10-second window per IP; 200 requests per 60-second window.
 - Exceeding the threshold results in silent drop for UDP and `429` for TCP/TLS.
-- **Acceptance Criteria**: `sipp` flood test at 200 rps from one IP shows ≥95% dropped after threshold; no impact on traffic from other IPs.
+- **Acceptance Criteria**: Container-based flood test at 200 rps from one IP shows ≥95% dropped after threshold; no impact on traffic from other IPs.
 
 ### FR-002: Subscriber Authentication Rate Limits
 - OpenSIPS `auth_db` module tracks failed auth attempts per `auth_username` using `htable` counters.
@@ -71,7 +71,7 @@ Requests originate from thousands of IPs, each under the individual threshold. T
 
 | ID | Criterion | Target | Measurement Method |
 |----|-----------|--------|-------------------|
-| SC-001 | Legitimate call success rate during flood | ≥ 99% | sipp load test with concurrent flood |
+| SC-001 | Legitimate call success rate during flood | ≥ 99% | Container-based load test with concurrent flood |
 | SC-002 | Time to block a single abusive IP | ≤ 1 second | Packet capture + log timestamp analysis |
 | SC-003 | False-positive block rate for NATed enterprise | ≤ 0.1% | 24-hour production-like simulation |
 | SC-004 | Dispatcher redistribution latency under load | ≤ 2 seconds | Load test instrumentation |

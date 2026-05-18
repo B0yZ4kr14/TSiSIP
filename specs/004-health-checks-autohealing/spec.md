@@ -53,7 +53,7 @@ If the health status dashboard (e.g., Prometheus/Grafana) is down, health probes
 - OpenSIPS `dispatcher` module must use `ds_ping_method=OPTIONS` and `ds_ping_interval=10` with `ds_probing_mode=1`.
 - After dispatcher probing threshold (5 consecutive failures) exceeds the configured limit (`ds_probing_threshold=5`), the target is set to inactive (`ds_set_state`).
 - A half-open retry is attempted every 60 seconds.
-- **Acceptance Criteria**: Packet capture shows no new INVITEs routed to the failed target; `opensipsctl fifo ds_list` reports `state=inactive`.
+- **Acceptance Criteria**: Packet capture shows no new INVITEs routed to the failed target; `opensips-cli -x mi ds_list` reports `state=inactive`.
 
 ### FR-004: Graceful Degradation
 - If RTPengine is unreachable, OpenSIPS must skip `rtpengine_offer()` / `rtpengine_answer()` and reply `488 Not Acceptable Here` for calls requiring relay.

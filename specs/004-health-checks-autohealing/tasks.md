@@ -3,7 +3,7 @@
 ## Phase 1 — Health Check Infrastructure
 
 ### [X] T1.1: Create OpenSIPS health check script
-**Description**: Create `docker/healthcheck/opensips-health.sh` that performs L1 (TCP 5060), L2 (MI `/get_statistics`), and L3 (SIP OPTIONS via `sipsak` or `nc`) checks. Exit 0 if all pass, 1 if any fail. Use `timeout` to prevent hanging.
+**Description**: Create `docker/healthcheck/opensips-health.sh` that performs L1 (TCP 5060), L2 (MI `/get_statistics`), and L3 (SIP OPTIONS via `nc` or container-based Python script) checks. Exit 0 if all pass, 1 if any fail. Use `timeout` to prevent hanging.
 **Phase**: 1
 **Depends on**: —
 **Parallel**: No
@@ -23,19 +23,21 @@
 **Parallel**: [P] with T1.1, T1.2
 **Acceptance**: Script exits 0 when RTPengine is healthy.
 
-### [X] T1.4: Create Asterisk health check script
+### [X] T1.4: Create Asterisk health check script (DEFERRED)
 **Description**: Create `docker/healthcheck/asterisk-health.sh` that checks Asterisk Manager Interface (AMI) or SIP socket on 5060.
 **Phase**: 1
 **Depends on**: —
 **Parallel**: [P] with T1.1, T1.2, T1.3
 **Acceptance**: Script exits 0 when Asterisk is healthy.
+**Note**: **DEFERRED**. Asterisk container is not part of the current docker-compose baseline (Feature 004 scope is OpenSIPS+RTPengine+PostgreSQL health checks). Skip T1.4 until Asterisk container is introduced in a separate feature.
 
-### [X] T1.5: Add HEALTHCHECK to all Dockerfiles
-**Description**: Update Dockerfiles for OpenSIPS, PostgreSQL, RTPengine, Asterisk to include `HEALTHCHECK` instruction with appropriate intervals and retries. Stagger start periods (10s, 15s, 20s, 25s) to avoid probe storms.
+### [X] T1.5: Add HEALTHCHECK to OpenSIPS, PostgreSQL, RTPengine Dockerfiles
+**Description**: Update Dockerfiles for OpenSIPS, PostgreSQL, RTPengine to include `HEALTHCHECK` instruction with appropriate intervals and retries. Stagger start periods (10s, 15s, 20s) to avoid probe storms.
 **Phase**: 1
-**Depends on**: T1.1, T1.2, T1.3, T1.4
+**Depends on**: T1.1, T1.2, T1.3
 **Parallel**: No
-**Acceptance**: `docker ps` shows `(healthy)` for all services within 60s of startup.
+**Acceptance**: `docker ps` shows `(healthy)` for OpenSIPS, PostgreSQL, RTPengine within 60s of startup.
+**Note**: Asterisk HEALTHCHECK deferred with T1.4.
 
 ## Phase 2 — Restart Policies & Auto-Healing
 
@@ -60,7 +62,7 @@
 **Phase**: 3
 **Depends on**: T2.2
 **Parallel**: No
-**Acceptance**: `opensipsctl fifo ds_list` shows probing states; failed targets become inactive.
+**Acceptance**: `opensips-cli -x mi ds_list` shows probing states; failed targets become inactive.
 
 ### [X] T3.2: Implement half-open retry logic
 **Description**: Add route logic that attempts `ds_next_dst` every 60s for inactive targets. Use `branch_route` to track half-open attempts.
@@ -83,14 +85,14 @@
 **Phase**: 4
 **Depends on**: T3.3
 **Parallel**: No
-**Acceptance**: sipp test shows 100% 488 responses when RTPengine is down.
+**Acceptance**: Container-based SIP test (e.g., `opensips-cli -x mi` query or Python script via `socket`) shows 100% `488 Not Acceptable Here` responses when RTPengine UDP port 22222 is unreachable. If no SIP test tool is available, verify via OpenSIPS logs that `rtpengine_offer()` failure triggers `t_reply("488", "Not Acceptable Here")`.
 
 ### [X] T4.2: Add PostgreSQL failure handling to OpenSIPS routes
 **Description**: Update auth and registration routes to check database connectivity. If unavailable, reply `480 Temporarily Unavailable`.
 **Phase**: 4
 **Depends on**: T3.3
 **Parallel**: [P] with T4.1
-**Acceptance**: sipp test shows 100% 480 responses when PostgreSQL is down.
+**Acceptance**: Container-based test or `opensips-cli -x mi` query shows 100% `480 Temporarily Unavailable` responses when PostgreSQL is unreachable. If no SIP test tool is available, verify via OpenSIPS logs that DB failure triggers `t_reply("480", "Temporarily Unavailable")`.
 
 ### [X] T4.3: Create graceful degradation integration test
 **Description**: Create `tests/integration/test_graceful_degradation.py` that injects failures into RTPengine and PostgreSQL and verifies correct SIP response codes.

@@ -66,7 +66,7 @@ Enable a platform operator to build, configure, and start a containerized OpenSI
 ### Edge Cases & Error Conditions
 
 - Invalid or missing runtime secrets prevent OpenSIPS from starting rather than falling back to unsafe defaults.
-- Malformed SIP messages exceeding safe size bounds are rejected at the edge before processing.
+- Malformed SIP messages exceeding 4096 bytes (RFC 3261 recommended max) are rejected at the edge before processing.
 - SIP loop detection triggers an error response when Max-Forwards is exhausted.
 - Database unavailability at startup triggers immediate fail-fast with descriptive exit status (no retry loop).
 - Container health checks use SIP OPTIONS to `localhost:5060` and expect `200 OK`; three consecutive failures mark the container as unhealthy.
@@ -155,9 +155,9 @@ Enable a platform operator to build, configure, and start a containerized OpenSI
 | SC-003 | Network isolation compliance | Number of backend services with host-published ports | Zero |
 | SC-004 | Authentication enforcement | Percentage of unauthenticated non-OPTIONS requests challenged | 100% |
 | SC-005 | Secret safety | Number of committed files containing plaintext secrets | Zero |
-| SC-006 | Stack startup time | Time from compose up to ready state | Under 60 seconds on standard hardware |
+| SC-006 | Stack startup time | Time from compose up to ready state | Under 60 seconds on 2 vCPU / 4GB RAM baseline |
 | SC-007 | Concurrent SIP sessions | Max active dialog count per instance | 1000 concurrent sessions |
-| SC-008 | Response latency | Median response time for authenticated INVITE | <50ms on standard hardware |
+| SC-008 | Response latency | Median response time for authenticated INVITE | <50ms on 2 vCPU / 4GB RAM baseline |
 | SC-009 | Registration throughput | Successful REGISTER requests per second | 50 registrations/sec |
 
 ---

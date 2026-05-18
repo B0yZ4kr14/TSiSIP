@@ -93,7 +93,7 @@ secrets/
   server.key                 # OpenSIPS server private key
   crl.pem                    # Certificate revocation list
 opensips/
-  tls.cfg.tpl                # TLS profile configuration
+  opensips.cfg.tpl           # Main config with embedded TLS profile configuration
 ```
 
 ---
@@ -104,7 +104,7 @@ opensips/
 |---|---|---|
 | CA | Certificate chain valid | `openssl verify -CAfile` |
 | TLS | Handshake succeeds | `openssl s_client -connect` |
-| mTLS | Client cert required | `sipp` TLS without cert |
-| Rotation | Reload <1s | `opensipsctl fifo tls_reload` |
+| mTLS | Client cert required | TLS handshake test without client cert (openssl s_client or container-based tool) |
+| Rotation | Reload <1s | `opensips-cli -x mi tls_reload` |
 | SRTP | Encryption active | RTPengine logs |
 | Cipher | Weak ciphers rejected | `openssl s_client -tls1_1` |

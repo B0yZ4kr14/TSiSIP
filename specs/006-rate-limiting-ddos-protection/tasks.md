@@ -7,7 +7,7 @@
 **Phase**: 1
 **Depends on**: —
 **Parallel**: No
-**Acceptance**: `opensips -c` passes; `sipp` at 200 rps shows >95% dropped.
+**Acceptance**: `opensips -c` passes; container-based load test (e.g., Python `socket` script or `opensips-cli -x mi`) simulating 200 rps from one IP shows >95% dropped after threshold.
 
 ### [x] T1.2: Handle NATed enterprise traffic
 **Description**: Add logic to use `(source_ip, from_user)` tuple for authenticated traffic instead of blanket IP blocking. Whitelist known enterprise IPs via `permissions` module or `htable`.
@@ -26,11 +26,11 @@
 ## Phase 2 — Auth Rate Limits
 
 ### [x] T2.1: Configure htable for auth failures
-**Description**: Update `opensips/opensips.cfg.tpl` with `loadmodule "htable.so"`, `modparam("htable", "htable", "auth_failures=>size=1024;autoexpire=3600")`. Add counter increment on `auth_challenge` failure.
+**Description**: Update `opensips/opensips.cfg.tpl` with `loadmodule "htable.so"`, `modparam("htable", "htable", "auth_failures=>size=1024;autoexpire=3600")`. Add counter increment on authentication challenge failure (e.g., `www_challenge` or `proxy_challenge` rejection).
 **Phase**: 2
 **Depends on**: T1.3
 **Parallel**: No
-**Acceptance**: `opensipsctl fifo htable_dump auth_failures` shows counters.
+**Acceptance**: `opensips-cli -x mi htable_dump auth_failures` shows counters.
 
 ### [x] T2.2: Implement subscriber auth throttling
 **Description**: Add route logic: if `auth_failures[$au]` > 10 in 60s, reply `403 Forbidden` and add source IP to ban list. Reset counter on successful auth.
@@ -69,7 +69,7 @@
 **Phase**: 4
 **Depends on**: T4.1
 **Parallel**: No
-**Acceptance**: `opensipsctl fifo ban_list` returns JSON of banned entries.
+**Acceptance**: `opensips-cli -x mi ban_list` returns JSON of banned entries.
 
 ### [x] T4.3: Implement ban TTL accuracy
 **Description**: Ensure `autoexpire` in `htable` removes entries exactly at TTL. Add validation test.

@@ -67,9 +67,7 @@ This plan translates the feature specification into an executable implementation
 
 ```
 opensips/
-  rate-limiting.cfg.tpl    # pike, htable, dispatcher config
-  ban-list.cfg.tpl         # Ban list management routes
-  anomaly-events.cfg       # Event route definitions
+  opensips.cfg.tpl         # Main config with route includes for rate limiting, ban list, and anomaly events
 docker/
   anomaly-detector/
     Dockerfile
@@ -84,8 +82,8 @@ docker/
 | Gate | Check | Command |
 |---|---|---|
 | Config | OpenSIPS config valid | `opensips -c` |
-| Throttle | Single IP blocked | `sipp` flood test |
+| Throttle | Single IP blocked | Container-based UDP flood test (Python script) |
 | Auth | Subscriber throttled | Wrong password test |
 | Load | Dispatcher redistributes | Capacity test |
-| Ban | TTL expiration works | `opensipsctl fifo htable_dump` |
+| Ban | TTL expiration works | `opensips-cli -x mi htable_dump` |
 | Anomaly | Distributed attack detected | Synthetic botnet test |

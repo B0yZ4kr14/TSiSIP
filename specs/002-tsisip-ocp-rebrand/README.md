@@ -2,7 +2,7 @@
 
 ## Overview
 
-This feature delivers a premium TSiSIP-branded visual layer for OpenSIPS Control Panel (OCP) v9, replacing generic OCP branding with TSiSIP corporate identity while preserving full backward compatibility and rollback safety.
+This feature delivers a TSiSIP-branded visual layer for OpenSIPS Control Panel (OCP) v9, replacing generic OCP branding with TSiSIP corporate identity while preserving full backward compatibility and rollback safety.
 
 ## Quick Start
 

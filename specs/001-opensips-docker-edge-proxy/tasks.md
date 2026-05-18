@@ -3,7 +3,7 @@
 ## Phase 1 — OpenSIPS Docker Image and Configuration Template
 
 ### [X] T1.1: Create OpenSIPS Dockerfile
-**Description**: Create a project-owned `Dockerfile` that builds an OpenSIPS 3.6 LTS image from `debian:bookworm-slim`. Install `opensips`, `opensips-postgres-module`, and `opensips-auth-modules` from the official apt.opensips.org repository. Include `gettext-base` for `envsubst`. Copy the configuration template and entrypoint into the image. Expose `5060/udp` and `5060/tcp`. Set the entrypoint and default command.
+**Description**: Create a project-owned `Dockerfile` that builds an OpenSIPS 3.6 LTS image from `debian:bookworm-slim`. Compile OpenSIPS 3.6 from official GitHub source (`3.6` branch) with required modules: `db_postgres`, `auth`, `auth_db`, `dialog`, `dispatcher`, `rtpengine`, `topology_hiding`, `permissions`, `sqlops`, `rr`, `tm`, `maxfwd`, `sipmsgops`, `signaling`, `sl`, `proto_udp`, `proto_tcp`, `proto_tls`, `tls_mgm`, `tls_openssl`. Include `gettext-base` for `envsubst`. Copy the configuration template and entrypoint into the image. Expose `5060/udp`, `5060/tcp`, and `5061/tcp`. Set the entrypoint and default command.
 **Phase**: 1
 **Depends on**: —
 **Parallel**: No
@@ -67,28 +67,28 @@
 ## Phase 3 — Docker Compose Topology and Networking
 
 ### [X] T3.1: Define Docker Compose services and networks
-**Description**: Create `docker-compose.yml` with services: `postgres` (db_internal only, no ports), `opensips` (sip_edge, sip_internal, db_internal; ports 5060/udp,tcp; secrets; cap_drop/cap_add; security_opt), `rtpengine` (sip_edge, sip_internal; ports 10000-20000/udp; ng-control on internal IP), `asterisk-pbx-1` and `asterisk-pbx-2` (sip_internal only; expose informational only). Define networks `sip_edge`, `sip_internal` (internal: true), `db_internal` (internal: true). Define volume `postgres_data` and secrets `db_password`, `auth_secret`, `topology_secret`.
+**Description**: Create `docker-compose.yml` with services: `postgres` (db_internal only, no ports), `opensips` (sip_edge, sip_internal, db_internal; ports 5060/udp,tcp; secrets; cap_drop/cap_add; security_opt), `rtpengine` (sip_internal only; no published ports; ng-control on 0.0.0.0:22222), `asterisk-pbx-1` and `asterisk-pbx-2` (sip_internal only; expose informational only). Define networks `sip_edge`, `sip_internal` (internal: true), `db_internal` (internal: true). Define volume `postgres_data` and secrets `db_password`, `auth_secret`, `topology_secret`.
 **Phase**: 3
 **Depends on**: T2.4
 **Parallel**: No
 **Acceptance**: `docker compose config` renders without errors.
 
 ### [X] T3.2: Configure OpenSIPS service environment and secrets
-**Description**: Ensure `opensips` service in Compose references all required environment variables (`OPENSIPS_LISTEN_IP`, `HOST_PUBLIC_IP`, `DB_HOST`, `DB_NAME`, `DB_USER`, `RTPENGINE_HOST`, `RTPENGINE_INTERNAL_IP`) and mounts all three secrets. Ensure `depends_on` includes `postgres` and `rtpengine`.
+**Description**: Ensure `opensips` service in Compose references all required environment variables (`OPENSIPS_LISTEN_IP`, `HOST_PUBLIC_IP`, `DB_HOST`, `DB_NAME`, `DB_USER`, `RTPENGINE_HOST`) and mounts all three secrets. Ensure `depends_on` includes `postgres` and `rtpengine`.
 **Phase**: 3
 **Depends on**: T3.1
 **Parallel**: No
 **Acceptance**: Compose config inspection shows correct env vars and secret mounts.
 
 ### [X] T3.3: Configure RTPengine service command and networking
-**Description**: Ensure `rtpengine` service command includes: `--interface`, `--listen-ng=udp:${RTPENGINE_INTERNAL_IP}:22222`, `--port-min=10000`, `--port-max=20000`, `--log-stderr`. Verify it attaches to `sip_edge` and `sip_internal` only.
+**Description**: Ensure `rtpengine` service command includes: `--interface`, `--listen-ng=0.0.0.0:22222`, `--port-min=10000`, `--port-max=20000`, `--log-stderr`. Verify it attaches to `sip_internal` (OpenSIPS connects via Docker DNS `rtpengine:22222`).
 **Phase**: 3
 **Depends on**: T3.1
 **Parallel**: No
 **Acceptance**: Compose config inspection shows correct command and network attachments.
 
 ### [X] T3.4: Verify network and port isolation
-**Description**: Inspect rendered Compose output to confirm: only `opensips` publishes 5060/udp,tcp; only `rtpengine` publishes 10000-20000/udp; no `asterisk-*` service has `ports:` or attaches to `sip_edge`; `postgres` has no `ports:` and attaches only to `db_internal`; `rtpengine` ng-control is not bound to `0.0.0.0`.
+**Description**: Inspect rendered Compose output to confirm: only `opensips` publishes 5060/udp,tcp and 5061/tcp; no `rtpengine` ports published (RTP range handled by host or external orchestration); no `asterisk-*` service has `ports:` or attaches to `sip_edge`; `postgres` has no `ports:` and attaches only to `db_internal`; `rtpengine` ng-control binds to `0.0.0.0:22222` on `sip_internal`.
 **Phase**: 3
 **Depends on**: T3.2, T3.3
 **Parallel**: No
@@ -120,12 +120,12 @@
 **Acceptance**: Syntax check returns 0.
 
 ### [B] T4.4: Validate unauthenticated OPTIONS handling
-**Description**: With the OpenSIPS container running, send an OPTIONS request from an external SIP client or tool (e.g., `sipsak`, `nc`, or a simple SIP tool). Verify the response is `200 OK` and that no backend routing occurs.
+**Description**: With the OpenSIPS container running, send an OPTIONS request from an external SIP client or tool (e.g., `nc`, Python `socket` script, or container-based SIP tool). Verify the response is `200 OK` and that no backend routing occurs.
 **Phase**: 4
 **Depends on**: T4.3
 **Parallel**: No
 **Acceptance**: OPTIONS receives 200 OK; no backend traffic observed.
-**Blocked by**: Debian `rtpengine-daemon` package pulls 146+ dependencies (~229 MB), causing Docker build timeouts and daemon unresponsiveness. Runtime validation requires a lightweight RTPengine container or stub. See `spec.md` Active Issues.
+**Unblock criteria**: RTPengine container must be healthy and reachable from OpenSIPS on `sip_internal` network (verified by `opensips-cli -x mi ds_ping` or MI status showing active RTPengine proxy).
 
 ### [B] T4.5: Validate unauthenticated INVITE challenge
 **Description**: Send an INVITE without credentials. Verify the response is `407 Proxy Authentication Required`.
@@ -133,7 +133,7 @@
 **Depends on**: T4.3
 **Parallel**: [P] with T4.4
 **Acceptance**: INVITE receives 407; no backend forwarding occurs.
-**Blocked by**: Same as T4.4 — runtime stack cannot start due to RTPengine container build failure.
+**Unblock criteria**: Same as T4.4 — RTPengine healthy and reachable from OpenSIPS on `sip_internal` network.
 
 ### [X] T4.6: Final documentation update and sign-off
 **Description**: Update `AGENTS.md` with any new build/test commands discovered during implementation. Ensure the feature directory contains a completed `README.md` or equivalent operator guide for this foundation feature. Validate that FR-008 (permissions/address), FR-009 (audit log), and FR-010 (health probe) are documented in spec and plan.

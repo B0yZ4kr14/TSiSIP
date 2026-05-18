@@ -90,8 +90,8 @@ This plan translates the feature specification into an executable implementation
 
 **Technical Constraints**:
 - Base image digest must be commented for CI pinning.
-- Compile OpenSIPS from source with required modules: `db_postgres`, `auth`, `auth_db`, `dialog`, `dispatcher`, `rtpengine`, `topology_hiding`, `permissions`, `sqlops`, `rr`, `tm`, `maxfwd`, `sipmsgops`, `signaling`, `sl`, `proto_udp`, `proto_tcp`.
-- `EXPOSE 5060/udp 5060/tcp` in Dockerfile.
+- Compile OpenSIPS from source with required modules: `db_postgres`, `auth`, `auth_db`, `dialog`, `dispatcher`, `rtpengine`, `topology_hiding`, `permissions`, `sqlops`, `rr`, `tm`, `maxfwd`, `sipmsgops`, `signaling`, `sl`, `proto_udp`, `proto_tcp`, `proto_tls`, `tls_mgm`, `tls_openssl`.
+- `EXPOSE 5060/udp 5060/tcp 5061/tcp` in Dockerfile.
 - Entrypoint must fail fast if secrets are missing.
 - OpenSIPS startup is fail-fast for DB unavailability (no retry loop); operator/orchestrator handles restart.
 
@@ -119,8 +119,8 @@ This plan translates the feature specification into an executable implementation
 **Deliverables**:
 1. `docker-compose.yml` with services:
    - `postgres` — internal `db_internal` network only, no published ports, secret-mounted password, initialization volume.
-   - `opensips` — attaches to `sip_edge`, `sip_internal`, `db_internal`; publishes `5060/udp` and `5060/tcp`; secret mounts; capability dropping.
-   - `rtpengine` — attaches to `sip_edge`, `sip_internal`; publishes `10000-20000/udp`; ng-control bound to internal IP.
+   - `opensips` — attaches to `sip_edge`, `sip_internal`, `db_internal`; publishes `5060/udp`, `5060/tcp`, and `5061/tcp`; secret mounts; capability dropping.
+   - `rtpengine` — attaches to `sip_internal` only; no published ports; ng-control bound to `0.0.0.0:22222` on `sip_internal` (OpenSIPS connects via Docker DNS `rtpengine:22222`).
    - `asterisk-pbx-1` and `asterisk-pbx-2` — attach to `sip_internal` only; no published ports.
 2. Network definitions:
    - `sip_edge`: bridge, external access allowed.
@@ -130,11 +130,11 @@ This plan translates the feature specification into an executable implementation
 4. Secrets: `db_password`, `auth_secret`, `topology_secret`.
 
 **Technical Constraints**:
-- Only `opensips` may publish `5060/udp,tcp`.
-- Only `rtpengine` may publish `10000-20000/udp`.
+- Only `opensips` may publish `5060/udp`, `5060/tcp`, and `5061/tcp`.
+- `rtpengine` does not publish RTP ports in Docker Compose (port ranges cause Docker 29.5.0 memory bloat); RTP is handled via host networking or external orchestration.
 - No `asterisk-*` service may define `ports:` or attach to a public network.
 - `postgres` must not define `ports:` and must attach only to `db_internal`.
-- RTPengine `--listen-ng` must bind to `${RTPENGINE_INTERNAL_IP}:22222`, not `0.0.0.0`.
+- RTPengine `--listen-ng` binds to `0.0.0.0:22222` (Docker bridge network; OpenSIPS connects via Docker service DNS `rtpengine:22222`).
 - OpenSIPS container drops all capabilities except `NET_BIND_SERVICE`, `SETUID`, `SETGID`.
 - OpenSIPS container uses `security_opt: ["no-new-privileges:true"]`.
 

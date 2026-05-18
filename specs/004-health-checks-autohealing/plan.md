@@ -85,5 +85,5 @@ prometheus/
 | Build | All images build with HEALTHCHECK | `docker compose build` |
 | Health | All containers report healthy | `docker ps` |
 | Restart | Simulated failure triggers restart | `kill -9` test |
-| Circuit | Failed target isolated | `opensipsctl fifo ds_list` |
-| Degradation | Valid SIP responses under failure | sipp load test |
+| Circuit | Failed target isolated | `opensips-cli -x mi ds_list` |
+| Degradation | Valid SIP responses under failure | container-based SIP load test (document external tooling requirement if not containerized) |

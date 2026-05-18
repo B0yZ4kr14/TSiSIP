@@ -37,7 +37,7 @@ This plan translates the feature specification into an executable implementation
 
 ### Phase 2 — OpenSIPS Metric Exporter
 - Lightweight exporter sidecar that queries OpenSIPS MI interface
-- Converts `mi_json` output to Prometheus exposition format
+- Converts `jsonrpc` or `mi_http` output to Prometheus exposition format
 - Metrics: active dialogs, registered subscribers, dispatcher state, auth failures, SIP counters
 
 ### Phase 3 — Grafana Dashboards

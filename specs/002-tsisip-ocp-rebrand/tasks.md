@@ -101,7 +101,7 @@ This task list translates the implementation plan into actionable, dependency-or
 **Acceptance**: Sidebar collapses below 1024px; hamburger menu is keyboard-navigable; expands/collapses without page reload.
 
 ### [X] T013 [US1] Apply TSiSIP branding to login page
-**Description**: Style the OCP login view (`web/login.php` or equivalent) with TSiSIP logo, cold-tone background, and premium form styling. Do not modify PHP auth logic. All styling must be achievable via CSS selectors targeting the login page body class.
+**Description**: Style the OCP login view (`web/login.php` or equivalent) with TSiSIP logo, cold-tone background, and polished form styling. Do not modify PHP auth logic. All styling must be achievable via CSS selectors targeting the login page body class.
 **Phase**: 3
 **Depends on**: T011, T012
 **Parallel**: No
@@ -151,7 +151,7 @@ This task list translates the implementation plan into actionable, dependency-or
 **Acceptance**: Read-only user sees no edit/delete buttons; admin user sees all buttons on identical viewport.
 
 ### [X] T019 [US3] Style Tenant Management and Header Routing forms
-**Description**: Add CSS rules for form layouts in the Tenant Management and Header Routing Rules modules: premium focus states, consistent spacing, branded buttons, and modal dialogs. Ensure forms reflow from multi-column to single-column below 768px.
+**Description**: Add CSS rules for form layouts in the Tenant Management and Header Routing Rules modules: polished focus states, consistent spacing, branded buttons, and modal dialogs. Ensure forms reflow from multi-column to single-column below 768px.
 **Phase**: 5
 **Depends on**: T008
 **Parallel**: [P] with T018

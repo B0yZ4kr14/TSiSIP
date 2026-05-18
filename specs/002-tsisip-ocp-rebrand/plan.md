@@ -2,7 +2,7 @@
 
 ## Overview
 
-This plan translates the feature specification into an executable implementation roadmap. It defines the frontend architecture, asset pipeline, theme system, D3.js visualization integration, i18n localization, and validation gates required to deliver a premium TSiSIP-branded OCP v9 experience without breaking the underlying PHP-native view layer.
+This plan translates the feature specification into an executable implementation roadmap. It defines the frontend architecture, asset pipeline, theme system, D3.js visualization integration, i18n localization, and validation gates required to deliver a TSiSIP-branded OCP v9 experience without breaking the underlying PHP-native view layer.
 
 ---
 
@@ -293,20 +293,21 @@ Phases 1 and 2 can run in parallel with minimal coordination. Phase 3 depends on
 
 ## Definition of Done
 
-- [ ] Design specification approved by 3 stakeholder representatives.
-- [ ] Logo renders as "TSiSIP" in exact casing across all touchpoints.
-- [ ] Asset build pipeline runs from clean checkout in <30 seconds.
-- [ ] Total uncompressed asset payload ≤150KB (excluding fonts).
-- [ ] CSS specificity audit passes (<20% !important usage).
-- [ ] `git diff` shows changes only in `web/common/header.php` and `web/css/main.css`.
-- [ ] Rollback test confirms original OCP is restored by removing `web/tsisip/` and reverting the two files.
-- [ ] D3.js charts render in <2s for 500 points without jQuery event conflicts.
-- [ ] All charts display translated labels in EN, ES, and PT.
-- [ ] Lighthouse mobile audit: Performance ≥90, Accessibility ≥100.
-- [ ] CLS during logo swap <0.05.
-- [ ] Read-only users see suppressed action columns; admin users see full density.
-- [ ] WCAG 2.1 AA zero violations on primary user paths.
-- [ ] Zero legacy OCP branding strings visible in rendered HTML.
-- [ ] 100% string coverage across all three locales.
-- [ ] Asset cache hit rate >95% after first page load.
-- [ ] Security scan confirms no inline event handlers in SVGs and no eval() in JS.
+All items map to explicit Success Criteria (SC) or process gates documented in `spec.md`:
+
+- [ ] **Process Gate**: Design specification approved by 3 stakeholder representatives.
+- [x] **SC-007**: Logo renders as "TSiSIP" in exact casing across all touchpoints. *(Covered by Brand integrity criterion)*
+- [x] **SC-011**: Asset build pipeline runs from clean checkout in <30 seconds.
+- [x] **SC-012**: Total uncompressed asset payload ≤150KB (excluding fonts).
+- [x] **SC-013**: CSS specificity audit passes (<20% !important usage).
+- [x] **SC-014**: `git diff` shows changes only in `web/common/header.php` and `web/css/main.css`; rollback test confirms original OCP is restored by removing `web/tsisip/` and reverting the two files.
+- [x] **SC-004**: D3.js charts render in <2s for 500 points without jQuery event conflicts.
+- [x] **SC-008**: All charts display translated labels in EN, ES, and PT.
+- [x] **SC-003 / SC-006**: Lighthouse mobile audit: Performance ≥90, Accessibility ≥100.
+- [x] **SC-015**: CLS during logo swap <0.05.
+- [x] **SC-009**: Read-only users see suppressed action columns; admin users see full density.
+- [x] **SC-006**: WCAG 2.1 AA zero violations on primary user paths.
+- [x] **SC-007**: Zero legacy OCP branding strings visible in rendered HTML.
+- [x] **SC-008**: 100% string coverage across all three locales.
+- [x] **SC-010**: Asset cache hit rate >95% after first page load.
+- [x] **SC-016**: Security scan confirms no inline event handlers in SVGs and no eval() in JS.

@@ -9,11 +9,11 @@
 
 ### Context
 
-The OpenSIPS Control Panel (OCP) v9 is the canonical web management interface for OpenSIPS 3.6 LTS. Within the TSiSIP ecosystem, the OCP serves as the primary operational cockpit for SIP administrators, NOC operators, and tenant managers. Currently, the OCP ships with a generic, unbranded visual identity that does not reflect the premium positioning of the TSiSIP platform. This feature delivers a complete visual and experiential rebranding of OCP v9 under the TSiSIP corporate identity, elevating perceived quality without altering the underlying PHP-native view architecture or breaking existing administrative workflows.
+The OpenSIPS Control Panel (OCP) v9 is the canonical web management interface for OpenSIPS 3.6 LTS. Within the TSiSIP ecosystem, the OCP serves as the primary operational cockpit for SIP administrators, NOC operators, and tenant managers. Currently, the OCP ships with a generic, unbranded visual identity that does not reflect the quality positioning of the TSiSIP platform. This feature delivers a complete visual and experiential rebranding of OCP v9 under the TSiSIP corporate identity, elevating perceived quality without altering the underlying PHP-native view architecture or breaking existing administrative workflows.
 
 ### Objective
 
-Transform the OCP v9 user interface into a TSiSIP-branded, premium operational portal that:
+Transform the OCP v9 user interface into a TSiSIP-branded, high-quality operational portal that:
 - Communicates trust, technical excellence, and enterprise-grade reliability to telecom operators
 - Provides a cohesive visual system (logo, palette, typography, iconography) applied consistently across all OCP views
 - Maintains full functional compatibility with existing OCP v9 PHP-native views, modules, and plugin ecosystem
@@ -50,7 +50,7 @@ Transform the OCP v9 user interface into a TSiSIP-branded, premium operational p
 #### Scenario 3: DevOps engineer deploys a new tenant environment
 - **Given** a DevOps engineer is provisioning a new TSiSIP tenant using the OCP
 - **When** the engineer accesses the Tenant Management and Header Routing Rules modules
-- **Then** all form elements, modals, confirmation dialogs, and notification toasts display the TSiSIP visual system consistently, including logo placement in the header and premium hover/focus states
+- **Then** all form elements, modals, confirmation dialogs, and notification toasts display the TSiSIP visual system consistently, including logo placement in the header and polished hover/focus states
 
 ### Edge Cases & Error Conditions
 
@@ -70,8 +70,8 @@ Transform the OCP v9 user interface into a TSiSIP-branded, premium operational p
 - Logo behavior is responsive: full horizontal lockup on desktop, compact icon-only variant on mobile viewports below 768px
 - No generic "OpenSIPS Control Panel" strings remain visible to authenticated users
 
-### FR-002: Premium Color Palette & Theming
-**Description**: Define and apply a premium, cold-tone color system that conveys metallic blue authority, technical precision, and enterprise trust.
+### FR-002: Color Palette & Theming
+**Description**: Define and apply a cold-tone color system that conveys metallic blue authority, technical precision, and enterprise trust.
 **Acceptance Criteria**:
 - A primary palette is specified with a metallic blue anchor, supported by slate, gunmetal, and ice gradients
 - Accent colors for success, warning, error, and info states are harmonized with the cold-tone family rather than generic bootstrap defaults
@@ -79,7 +79,7 @@ Transform the OCP v9 user interface into a TSiSIP-branded, premium operational p
 - Sufficient contrast ratios are maintained for WCAG 2.1 AA compliance across all text-background combinations
 
 ### FR-003: Typography & Visual Hierarchy
-**Description**: Implement a premium typographic system that improves readability of dense SIP data while reinforcing brand character.
+**Description**: Implement a typographic system that improves readability of dense SIP data while reinforcing brand character.
 **Acceptance Criteria**:
 - A primary typeface is specified for headings and navigation, conveying technical authority
 - A secondary typeface is specified for data tables and form labels, optimizing legibility at small sizes (11–13px) for long numeric strings (IPs, ports, HA1 hashes)
@@ -163,6 +163,12 @@ Transform the OCP v9 user interface into a TSiSIP-branded, premium operational p
 | SC-008 | Localization completeness | Percentage of branded text strings with translations in all 3 languages | 100% of strings introduced by the rebranding layer |
 | SC-009 | Role-appropriate interface density | Percentage of read-only views where action columns are suppressed without PHP modification | 100% of designated read-only table views |
 | SC-010 | Asset cache efficiency | Cache hit rate for TSiSIP branding assets across repeat page navigations | Above 95% after first page load per session |
+| SC-011 | Build integrity | Time for asset build pipeline to complete from clean checkout | Under 30 seconds |
+| SC-012 | Asset payload budget | Total uncompressed size of generated branding assets (excluding fonts) | At most 150KB |
+| SC-013 | CSS specificity hygiene | Percentage of branded selectors requiring `!important` to override OCP defaults | Under 20% |
+| SC-014 | Rollback safety | Verification that removing `web/tsisip/` and reverting two injection files restores original OCP | Original OCP renders identically |
+| SC-015 | Layout stability | Cumulative Layout Shift during logo responsive swap on mobile | Under 0.05 |
+| SC-016 | Security hygiene | Presence of inline event handlers in SVGs or `eval()` usage in TSiSIP JS | Zero instances |
 
 ---
 

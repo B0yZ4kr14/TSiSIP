@@ -146,7 +146,7 @@ Deliver a real-time observability platform that exposes TSiSIP infrastructure me
 
 - Feature 001 (OpenSIPS Docker Edge Proxy) must expose MI interface for metric scraping
 - Feature 002 (OCP Rebranding) provides the role-aware UI framework for Grafana dashboards
-- OpenSIPS 3.6 LTS must support `mi_json` or `mi_http` module for metric extraction
+- OpenSIPS 3.6 LTS must support `jsonrpc` or `mi_http` module for metric extraction
 - Docker Compose V2 for service orchestration
 
 ---
@@ -176,5 +176,6 @@ Deliver a real-time observability platform that exposes TSiSIP infrastructure me
 
 - The `mi_http` module in OpenSIPS 3.6 provides JSON output that can be transformed to Prometheus exposition format via a lightweight exporter sidecar.
 - Grafana dashboards should reuse the TSiSIP color palette from `theme.json` (Feature 002) for visual consistency.
+> **Cross-feature dependency**: Dashboard color palette consistency depends on Feature 002 (TSiSIP OCP Rebrand) `theme.json`. Ensure Feature 002 SC-002 (100% branding coverage) is completed before implementing dashboard theming.
 - Consider `prometheus-node-exporter` for host-level metrics (CPU, memory, disk) on the OpenSIPS and RTPengine containers.
 - Falsification hypothesis: If Prometheus scrape adds >5ms latency per SIP message, pivot to asynchronous metric buffering.

@@ -83,7 +83,7 @@ docker/
     encrypt.sh               # Encryption/decryption wrapper
     purge.sh                 # Retention purge
     rclone.conf.tpl          # rclone config template
-opensips/
+docker/postgres/
   postgresql.conf.tpl        # PostgreSQL config with archive settings
 ```
 
