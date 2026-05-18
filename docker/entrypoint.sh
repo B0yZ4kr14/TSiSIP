@@ -2,15 +2,15 @@
 set -eu
 
 if [ -f /run/secrets/db_password ]; then
-    DB_PASSWORD="$(cat /run/secrets/db_password)"
+    DB_PASSWORD="$(tr -d '\n' < /run/secrets/db_password)"
     export DB_PASSWORD
 fi
 if [ -f /run/secrets/auth_secret ]; then
-    AUTH_SECRET_32_CHARS="$(cat /run/secrets/auth_secret)"
+    AUTH_SECRET_32_CHARS="$(tr -d '\n' < /run/secrets/auth_secret)"
     export AUTH_SECRET_32_CHARS
 fi
 if [ -f /run/secrets/topology_secret ]; then
-    TOPOLOGY_SECRET="$(cat /run/secrets/topology_secret)"
+    TOPOLOGY_SECRET="$(tr -d '\n' < /run/secrets/topology_secret)"
     export TOPOLOGY_SECRET
 fi
 
@@ -18,7 +18,7 @@ fi
 mkdir -p /etc/opensips/tls
 for cert in ca.crt server.crt server.key crl.pem; do
     if [ -f "/run/secrets/${cert}" ]; then
-        cp "/run/secrets/${cert}" "/etc/opensips/tls/${cert}"
+        tr -d '\n' < "/run/secrets/${cert}" > "/etc/opensips/tls/${cert}"
         chmod 644 "/etc/opensips/tls/${cert}"
     fi
 done
