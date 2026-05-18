@@ -38,20 +38,17 @@ services:
   rtpengine:
     image: ghcr.io/b0yz4kr14/tsisip/rtpengine:latest
     pull_policy: never
-    # Workaround: Docker 29.5.0 memory leak with large port ranges.
-    # RTPengine binds directly to host network; no Docker port mapping.
-    network_mode: host
+    networks: [sip_internal]
     restart: on-failure
     mem_limit: 256m
     memswap_limit: 256m
     environment:
-      RTPENGINE_HOST: 172.19.0.1
+      RTPENGINE_HOST: rtpengine
       RTPENGINE_NG_PORT: 22222
     command:
       - rtpengine
       - --interface=${RTPENGINE_PRIVATE_IP:-127.0.0.1}/${HOST_PUBLIC_IP:-127.0.0.1}
-      - --listen-ng=172.19.0.1:22222
-      - --listen-tcp-ng=172.19.0.1:22223
+      - --listen-ng=0.0.0.0:22222
       - --port-min=10000
       - --port-max=20000
       - --log-stderr
@@ -81,7 +78,7 @@ services:
     environment:
       OPENSIPS_LISTEN_IP: ${OPENSIPS_LISTEN_IP:-0.0.0.0}
       HOST_PUBLIC_IP: ${HOST_PUBLIC_IP:-127.0.0.1}
-      RTPENGINE_HOST: 172.19.0.1
+      RTPENGINE_HOST: rtpengine
       DB_HOST: postgres
       DB_NAME: opensips
       DB_USER: opensips

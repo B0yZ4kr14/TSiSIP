@@ -70,7 +70,7 @@ modparam("dispatcher", "ds_ping_from", "sip:healthcheck@localhost")
 # Target capacity threshold: 80% (checked in route)
 
 # rtpengine
-modparam("rtpengine", "rtpengine_sock", "tcp:${RTPENGINE_HOST}:22223")
+modparam("rtpengine", "rtpengine_sock", "udp:${RTPENGINE_HOST}:22222")
 modparam("rtpengine", "rtpengine_tout", 2)
 modparam("rtpengine", "rtpengine_retr", 3)
 modparam("rtpengine", "rtpengine_disable_tout", 30)
