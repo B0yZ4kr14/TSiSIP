@@ -126,6 +126,131 @@ docker compose up -d postgres
 - PostgreSQL and Asterisk must never have published ports.
 - All SIP credentials are HA1 hashes only -- no plaintext passwords.
 
+## Backup & Restore Operations
+
+### Architecture
+
+The `backup` service runs on `db_internal` and performs:
+- **Daily logical backup** at 02:00 UTC (`pg_dump -Fc` → gzip → AES-256-CBC + HMAC)
+- **WAL archiving** via `archive_command` (gzip + encrypt)
+- **Retention purge** at 03:00 UTC (30 days backups, 37 days WAL)
+- **Validation** at 04:00 UTC (restore test + row count checks)
+- **Offsite replication** hourly via `rclone sync --bwlimit 50M`
+- **RPO monitoring** every 5 minutes (`pg_stat_archiver` lag)
+- **Quota monitoring** every 10 minutes (auto-purge at 80%, critical alert at 95%)
+- **Metrics export** on `:9101/metrics` for Prometheus
+
+### Performing a Manual Backup
+
+```bash
+# Trigger immediate backup
+docker compose exec backup /usr/local/bin/backup.sh
+
+# View latest backup
+docker compose exec backup ls -la /backup/daily/
+docker compose exec backup readlink /backup/daily/latest
+```
+
+### Restoring from Latest Backup
+
+```bash
+# 1. Stop OpenSIPS to prevent writes during restore
+docker compose stop opensips
+
+# 2. Identify target backup
+docker compose exec backup readlink /backup/daily/latest
+
+# 3. Decrypt and restore to PostgreSQL (replace opensips DB)
+docker compose exec backup bash -c '
+  BACKUP=$(readlink /backup/daily/latest)
+  /usr/local/bin/encrypt.sh decrypt "/backup/daily/$BACKUP" /tmp/restore.dump.gz
+  gunzip -c /tmp/restore.dump.gz > /tmp/restore.dump
+  PGPASSWORD=$(cat /run/secrets/db_password) pg_restore \
+    -h postgres -U opensips -d opensips --clean --no-owner --no-privileges /tmp/restore.dump
+  rm -f /tmp/restore.dump /tmp/restore.dump.gz
+'
+
+# 4. Restart OpenSIPS
+docker compose up -d opensips
+```
+
+### Point-in-Time Recovery (PITR)
+
+```bash
+# Dry-run: preview WAL segments to be replayed
+docker compose exec backup /usr/local/bin/pitr-restore.sh \
+  --target "2026-05-16T13:45:00Z" --verify-only
+
+# Execute PITR to a temporary database
+docker compose exec backup /usr/local/bin/pitr-restore.sh \
+  --target "2026-05-16T13:45:00Z" --temp-db pitr_recovery_20260516
+
+# Verify the temp database
+docker compose exec backup pg_isready -h postgres -U opensips -d pitr_recovery_20260516
+```
+
+### Validation
+
+```bash
+# Run validation manually (structure check only)
+docker compose exec backup /usr/local/bin/validate.sh
+
+# Full validation with row-count checks against temp DB
+docker compose exec backup bash -c 'FULL_VALIDATE=true /usr/local/bin/validate.sh'
+
+# Check validation metric
+docker compose exec backup cat /backup/metrics/validation_status.prom
+```
+
+### Offsite Replication Verification
+
+```bash
+# List remote backups (requires rclone config)
+docker compose exec backup rclone ls remote:tsisip-backups/daily
+
+# Verify checksums on a specific file
+docker compose exec backup rclone check /backup/daily remote:tsisip-backups/daily
+
+# Trigger immediate replication
+docker compose exec backup /usr/local/bin/replicate.sh
+```
+
+### Encryption Key Rotation
+
+```bash
+# 1. Place new key in secrets/
+echo "$(openssl rand -base64 32)" > secrets/backup_encryption_key_new
+
+# 2. Mount the new secret in docker-compose.yml (temporary) and recreate container
+#    Add under backup.secrets: - backup_encryption_key_new
+
+# 3. Dry-run to see affected backups
+docker compose exec backup /usr/local/bin/rotate-key.sh --dry-run
+
+# 4. Execute rotation (re-encrypts last 7 days of backups + WAL)
+docker compose exec backup /usr/local/bin/rotate-key.sh
+
+# 5. Replace the old key with the new key and remove the temporary secret mount
+#    mv secrets/backup_encryption_key_new secrets/backup_encryption_key
+#    docker compose up -d backup
+```
+
+### Monitoring Backup SLA
+
+```bash
+# RPO lag (WAL archiving)
+docker compose exec backup cat /backup/metrics/rpo_lag_seconds.prom
+
+# RTO (last restore duration)
+docker compose exec backup cat /backup/metrics/rto_last_seconds
+
+# Storage quota
+docker compose exec backup cat /backup/metrics/quota_usage.prom
+
+# All metrics via exporter
+curl http://backup:9101/metrics
+```
+
 ## Rollback Procedures
 
 ### OCP Theme Rollback
