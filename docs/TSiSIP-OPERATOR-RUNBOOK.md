@@ -679,3 +679,57 @@ docker compose exec postgres psql -U opensips -d opensips -c "
 | CDR table empty | `acc` module not loaded | Check `loadmodule "acc.so"` |
 | Missing `call_end` | Dialog not tracked | Verify `create_dialog("B")` |
 | Tenant_id NULL | Subscriber missing tenant FK | Check `subscriber.tenant_id` population |
+
+## CI/CD Pipeline (Feature 005)
+
+### Workflow
+
+The GitHub Actions workflow `.github/workflows/ci.yml` runs on every push to `main`/`master`:
+
+| Job | Purpose | Duration |
+|-----|---------|----------|
+| `validate` | Docker Compose, OpenSIPS config, Nginx, Ansible, secrets | ~2 min |
+| `build-opensips` | Build OpenSIPS Docker image | ~15 min |
+| `build-ocp` | Build OCP theme image | ~5 min |
+| `build-supporting` | Build Prometheus, Grafana, exporter, backup, ca-tool, anomaly-detector | ~10 min |
+| `test-integration` | Start stack, health checks, pytest | ~5 min |
+| `speckit-scan` | Brownfield, version-guard, memorylint checks | ~1 min |
+| `security-scan` | Trivy vulnerability scan | ~3 min |
+| `deploy` | Ansible deploy to staging/production (manual trigger) | ~5 min |
+
+### Running CI Scans Locally
+
+```bash
+# Run the same checks as the CI speckit-scan job
+bash scripts/ci-scan.sh
+
+# Expected output:
+# [brownfield] Checking for hardcoded :latest tags...
+# PASS: No hardcoded :latest tags
+# [version-guard] Checking for unpinned base images...
+# PASS: Base image check complete
+# [memorylint] Checking for container memory limits...
+# PASS: Memory limits present on 24 services
+# [security] Checking for committed secrets...
+# PASS: No committed secrets
+# === CI SCAN PASSED ===
+```
+
+### Manual Deploy
+
+```bash
+# Trigger deploy via GitHub CLI
+gh workflow run ci.yml -f deploy_target=staging
+
+# Or via GitHub web UI: Actions → TSiSIP CI/CD → Run workflow
+```
+
+### Troubleshooting CI Failures
+
+| Failure | Cause | Fix |
+|---------|-------|-----|
+| `validate` fails | Invalid YAML or missing module | Check `docker compose config` output |
+| `build-opensips` fails | Compilation error | Check Dockerfile for missing deps |
+| `speckit-scan` fails | Hardcoded `:latest` or forbidden module | Run `bash scripts/ci-scan.sh` locally |
+| `test-integration` fails | Container health check timeout | Increase sleep or check logs |
+| `security-scan` fails | CVE in base image | Update base image digest or patch packages |

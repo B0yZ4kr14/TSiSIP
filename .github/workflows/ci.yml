@@ -39,6 +39,11 @@ jobs:
           grep -q 'loadmodule "tls_mgm.so"' /tmp/test.cfg || (echo "TLS module missing"; exit 1)
           grep -q 'loadmodule "pike.so"' /tmp/test.cfg || (echo "Pike module missing"; exit 1)
           grep -q 'loadmodule "cachedb_local.so"' /tmp/test.cfg || (echo "Cachedb module missing"; exit 1)
+          grep -q 'loadmodule "proto_ws.so"' /tmp/test.cfg || (echo "proto_ws module missing"; exit 1)
+          grep -q 'loadmodule "proto_wss.so"' /tmp/test.cfg || (echo "proto_wss module missing"; exit 1)
+          grep -q 'loadmodule "acc.so"' /tmp/test.cfg || (echo "acc module missing"; exit 1)
+          grep -q 'header_routing_rules' /tmp/test.cfg || (echo "Feature 002 routing missing"; exit 1)
+          grep -q 'setflag(1)' /tmp/test.cfg || (echo "CDR flag missing"; exit 1)
           echo "OpenSIPS config structure valid"
 
       - name: Validate Nginx config
@@ -105,7 +110,7 @@ jobs:
     needs: validate
     strategy:
       matrix:
-        service: [prometheus, grafana, opensips-exporter, backup, ca-tool]
+        service: [prometheus, grafana, opensips-exporter, backup, ca-tool, anomaly-detector]
     steps:
       - uses: actions/checkout@v4
       - name: Build ${{ matrix.service }}
@@ -135,11 +140,27 @@ jobs:
         run: docker compose exec -T opensips opensips -c
       - name: Run pytest integration tests
         run: |
-          pip install pytest
+          pip install pytest psycopg2-binary
           pytest tests/integration/ -v --tb=short || true
+      - name: Run feature-specific tests
+        run: |
+          pytest tests/integration/test_multi_tenant_routing.py -v
+          pytest tests/integration/test_webrtc_support.py -v
+          pytest tests/integration/test_cdr_billing.py -v
+          pytest tests/integration/test_ddos_protection.py -v
+          pytest tests/integration/test_anomaly_detection.py -v
       - name: Stop stack
         if: always()
         run: docker compose down -v
+
+  speckit-scan:
+    name: Speckit Scans
+    runs-on: ubuntu-latest
+    needs: validate
+    steps:
+      - uses: actions/checkout@v4
+      - name: Run CI Scan (brownfield + version-guard + memorylint)
+        run: bash scripts/ci-scan.sh
 
   security-scan:
     name: Security Scan
