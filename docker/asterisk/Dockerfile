@@ -50,6 +50,10 @@ COPY --from=builder /usr/local /usr/local
 RUN mkdir -p /etc/asterisk
 COPY --from=builder /etc/asterisk /etc/asterisk
 
+# Copy TSiSIP-specific Asterisk configuration
+COPY docker/asterisk/pjsip.conf /etc/asterisk/pjsip.conf
+COPY docker/asterisk/extensions.conf /etc/asterisk/extensions.conf
+
 # Copy health check script
 COPY healthcheck.sh /usr/local/bin/healthcheck.sh
 RUN chmod +x /usr/local/bin/healthcheck.sh

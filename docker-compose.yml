@@ -160,6 +160,9 @@ services:
           memory: 1G
         reservations:
           memory: 512M
+    volumes:
+      - ./docker/asterisk/pjsip.conf:/etc/asterisk/pjsip.conf:ro
+      - ./docker/asterisk/extensions.conf:/etc/asterisk/extensions.conf:ro
     expose:
       - "5060/udp"
       - "5060/tcp"
@@ -181,6 +184,9 @@ services:
           memory: 1G
         reservations:
           memory: 512M
+    volumes:
+      - ./docker/asterisk/pjsip.conf:/etc/asterisk/pjsip.conf:ro
+      - ./docker/asterisk/extensions.conf:/etc/asterisk/extensions.conf:ro
     expose:
       - "5060/udp"
       - "5060/tcp"

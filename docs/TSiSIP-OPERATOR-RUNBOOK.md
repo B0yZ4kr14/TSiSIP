@@ -347,3 +347,74 @@ git checkout <known-good-commit>
 docker compose build
 docker compose up -d
 ```
+
+## Asterisk PBX Backend Operations (Feature 007)
+
+### Architecture
+
+OpenSIPS routes authenticated calls to Asterisk backends via the dispatcher module:
+
+| Backend | Dispatcher Set | Weight | Network |
+|---------|---------------|--------|---------|
+| `asterisk-pbx-1` | 1 | 50 | sip_internal |
+| `asterisk-pbx-2` | 1 | 50 | sip_internal |
+
+### Verify Dispatcher State
+
+```bash
+# Check dispatcher entries in PostgreSQL
+docker compose exec postgres psql -U opensips -d opensips -c "SELECT setid, destination, state, weight, description FROM dispatcher;"
+
+# Check dispatcher status via OpenSIPS MI
+docker compose exec opensips opensipsctl dispatcher dump
+```
+
+### Asterisk Configuration
+
+Asterisk configs are mounted from `docker/asterisk/`:
+- `pjsip.conf` — PJSIP trunk configuration for OpenSIPS
+- `extensions.conf` — Dialplan for inbound calls
+
+```bash
+# Reload Asterisk config without restart
+docker compose exec asterisk-pbx-1 asterisk -rx "core reload"
+docker compose exec asterisk-pbx-1 asterisk -rx "pjsip show endpoints"
+```
+
+### End-to-End Call Flow Verification
+
+```bash
+# 1. Verify OpenSIPS is listening
+docker compose exec opensips opensips -c
+
+# 2. Verify Asterisk health
+docker compose ps asterisk-pbx-1 asterisk-pbx-2
+
+# 3. Run integration tests
+python3 -m pytest tests/integration/test_end_to_end_call.py -v
+
+# 4. Manual SIP test (requires sipsak or similar)
+docker run --rm --network tsisip_sip_edge alpine \
+  sh -c "apk add --no-cache sipsak >/dev/null 2>&1 && \
+         sipsak -U -s sip:devuser@dev.tsisip.local:5060 -a devpass -vv"
+```
+
+### Failover Testing
+
+```bash
+# Stop pbx-1 and verify calls route to pbx-2
+docker compose stop asterisk-pbx-1
+docker compose logs -f opensips | grep "FAILOVER\|Selected dispatcher"
+
+# Restore pbx-1
+docker compose start asterisk-pbx-1
+```
+
+### Troubleshooting
+
+| Symptom | Cause | Fix |
+|---------|-------|-----|
+| `no dispatching data in the db` | Dispatcher table empty | Verify seed data loaded: `SELECT * FROM dispatcher;` |
+| `403 Forbidden` from Asterisk | IP not in identify range | Check `opensips-identify` match ranges in `pjsip.conf` |
+| `484 Temporarily Unavailable` | All backends down | Start Asterisk containers, check dispatcher state |
+| No audio | RTPengine not running | `docker compose ps rtpengine`, verify UDP 10000-20000 |
