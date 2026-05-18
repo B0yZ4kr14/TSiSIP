@@ -51,9 +51,10 @@ This plan translates the feature specification into an executable implementation
 - Automated purge job
 - Storage quota monitoring
 
-### Phase 5 — Restore Validation & RTO Benchmark
+### Phase 5 — Restore Validation, PITR & RTO Benchmark
 - Ephemeral restore container
 - Validation queries for critical tables
+- PITR restore script: replay WAL segments to target timestamp
 - RTO timer: restore-to-ready must complete within 15 minutes
 - Alerting via Prometheus Alertmanager (webhook) em caso de falha de validação ou RTO breach
 - Edge case: no primeiro dia sem backup anterior, validação retorna `skipped` com log informativo; nenhum alerta é disparado
@@ -81,7 +82,10 @@ docker/
     restore.sh               # Restore script
     validate.sh              # Validation script
     encrypt.sh               # Encryption/decryption wrapper
+    rotate-key.sh            # Encryption key rotation
     purge.sh                 # Retention purge
+    quota-check.sh           # Storage quota monitoring
+    pitr-restore.sh          # Point-in-Time Recovery restore
     rclone.conf.tpl          # rclone config template
 docker/postgres/
   postgresql.conf.tpl        # PostgreSQL config with archive settings
@@ -98,4 +102,5 @@ docker/postgres/
 | WAL | Archive segment created | `ls /backup/wal/` |
 | Encrypt | Backup is encrypted | `openssl enc -aes-256-cbc -d -pbkdf2 ...` |
 | Restore | Validation passes | `docker compose exec backup validate.sh` |
+| PITR | PITR restore to target timestamp | `docker compose exec backup pitr-restore.sh --target 2026-05-16T13:45:00Z` |
 | Offsite | rclone sync completes | `rclone ls remote:tsisip-backups` |

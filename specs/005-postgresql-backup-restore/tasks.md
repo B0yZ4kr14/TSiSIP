@@ -62,6 +62,13 @@
 **Parallel**: No
 **Acceptance**: All backup files are encrypted; key rotation script works.
 
+### [x] T3.3: Create encryption key rotation script
+**Description**: Create `docker/backup/rotate-key.sh` that: reads new key from Docker secret `backup_encryption_key_new`, re-encrypts the last N backups (default: 7 days) with the new key, verifies decryption with new key, atomically swaps key references. Logs all actions for audit.
+**Phase**: 3
+**Depends on**: T3.2
+**Parallel**: No
+**Acceptance**: All backups from the last 7 days are re-encrypted with the new key; old key can no longer decrypt them; new key successfully decrypts all rotated backups.
+
 ## Phase 4 — Retention & Purge
 
 ### [x] T4.1: Create retention policy engine
@@ -77,6 +84,13 @@
 **Depends on**: T4.1
 **Parallel**: No
 **Acceptance**: Cron jobs run at scheduled times; logs confirm execution.
+
+### [x] T4.3: Add storage quota monitoring
+**Description**: Create `docker/backup/quota-check.sh` that: computes total usage of `/backup/daily/` and `/backup/wal/`, compares against `BACKUP_QUOTA_GB` (default 100GB), exposes metric `backup_quota_used_percent`. If usage exceeds 80%, triggers immediate purge of oldest segments beyond retention window; if exceeds 95%, triggers critical alert.
+**Phase**: 4
+**Depends on**: T4.1
+**Parallel**: Yes
+**Acceptance**: Metric updates every 60s; 80% threshold triggers accelerated purge; 95% threshold triggers critical alert; no false positives during normal operation.
 
 ## Phase 5 — Restore Validation
 
@@ -100,6 +114,13 @@
 **Depends on**: T5.1
 **Parallel**: No
 **Acceptance**: Manual restore completes within 15 minutes for a 10GB database; metric file is updated after each validation run.
+
+### [x] T5.4: Create PITR restore script
+**Description**: Create `docker/backup/pitr-restore.sh` that: accepts target timestamp, finds the latest logical backup before that timestamp, restores it to an ephemeral PostgreSQL container, replays WAL segments up to the target timestamp using `pg_waldump` or `pg_restore` with `--target-time`, verifies database readiness via `pg_isready`. Supports dry-run mode (`--verify-only`) that lists WAL segments to be replayed without executing.
+**Phase**: 5
+**Depends on**: T5.1
+**Parallel**: No
+**Acceptance**: PITR to any timestamp within the WAL retention window succeeds; dry-run mode lists expected WAL segments; restore target is within 1 minute of requested timestamp.
 
 ## Phase 6 — Offsite Replication
 
@@ -129,6 +150,6 @@
 ### [x] T7.1: Prometheus metrics exporter for backup SLA
 **Description**: Create `docker/backup/metrics-exporter.sh` that: serves RPO lag (`rpo_lag_seconds`), RTO duration (`rto_last_seconds`), backup success/failure counter, storage quota usage (`backup_quota_used_percent`) in Prometheus text format on `0.0.0.0:9101/metrics`.
 **Phase**: 7
-**Depends on**: T2.3, T5.3
+**Depends on**: T2.3, T4.3, T5.3
 **Parallel**: No
 **Acceptance**: `curl localhost:9101/metrics` returns valid Prometheus metrics; Grafana dashboard displays all 4 series.
