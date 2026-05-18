@@ -12,6 +12,9 @@ socket=udp:${OPENSIPS_LISTEN_IP}:5060 as ${HOST_PUBLIC_IP}:5060
 socket=tcp:${OPENSIPS_LISTEN_IP}:5060 as ${HOST_PUBLIC_IP}:5060
 # TLS socket - habilitado (certificados gerados via ca-tool)
 socket=tls:${OPENSIPS_LISTEN_IP}:5061 as ${HOST_PUBLIC_IP}:5061
+# WebSocket listeners for WebRTC clients
+socket=ws:${OPENSIPS_LISTEN_IP}:8080
+socket=wss:${OPENSIPS_LISTEN_IP}:4443
 
 # --- Database ---
 db_default_url="postgres://${DB_USER}:${DB_PASSWORD}@${DB_HOST}:5432/${DB_NAME}"
@@ -43,6 +46,8 @@ loadmodule "tls_openssl.so"
 loadmodule "proto_udp.so"
 loadmodule "proto_tcp.so"
 loadmodule "proto_tls.so"
+loadmodule "proto_ws.so"
+loadmodule "proto_wss.so"
 
 # --- Module parameters ---
 

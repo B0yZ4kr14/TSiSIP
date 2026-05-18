@@ -550,3 +550,68 @@ sipsak -U -s sip:devuser@dev.tsisip.local:5060 -a devpass -vv
 | `404 Not Here` | In-dialog route failure | Check Record-Route and loose_route |
 | Calls land on wrong PBX | Header rule misconfigured | Check `header_routing_rules` priority and match_value |
 | Tenant data leaking | Missing WHERE tenant_id | Audit queries for tenant scoping |
+
+## WebRTC / WebSocket Support (Feature 003)
+
+### Architecture
+
+OpenSIPS exposes WebSocket (ws) and secure WebSocket (wss) transports for browser-based SIP clients:
+
+| Transport | Port | Use Case |
+|-----------|------|----------|
+| `ws` | 8080/tcp | WebRTC clients on trusted/internal networks |
+| `wss` | 4443/tcp | WebRTC clients on public internet (TLS) |
+
+### Browser Client Configuration
+
+```javascript
+// SIP.js or JsSIP example configuration
+const ua = new SIP.UA({
+    uri: 'sip:devuser@dev.tsisip.local',
+    wsServers: 'wss://dev.tsisip.local:4443',
+    register: true,
+    traceSip: true
+});
+```
+
+### Verifying WebSocket Listeners
+
+```bash
+# Check OpenSIPS listeners
+docker compose exec opensips opensips -c | grep -E 'ws|wss'
+
+# Test ws connection (from internal network)
+curl -i -N -H "Connection: Upgrade" -H "Upgrade: websocket" \
+    -H "Sec-WebSocket-Key: $(openssl rand -base64 16)" \
+    -H "Sec-WebSocket-Version: 13" \
+    http://opensips:8080
+
+# Test wss connection (requires TLS)
+# Use a WebRTC client or wscat
+```
+
+### RTPengine ICE for WebRTC
+
+WebRTC requires ICE candidates. OpenSIPS passes ICE flags to RTPengine:
+
+```opensips
+# In route[HANDLE_INVITE] for WebRTC calls:
+rtpengine_offer("replace-origin replace-session-connection ICE=force");
+```
+
+RTPengine generates ICE candidates and handles STUN/DTLS-SRTP negotiation.
+
+### Firewall / Security
+
+- Port 8080 (ws): Restrict to internal/VPN networks if possible
+- Port 4443 (wss): Public, ensure valid TLS certificates
+- WebRTC clients must use `wss` (TLS) for production
+
+### Troubleshooting
+
+| Symptom | Cause | Fix |
+|---------|-------|-----|
+| `404 Not Found` on ws | proto_ws not loaded | Verify `loadmodule "proto_ws.so"` in config |
+| TLS handshake fails on wss | Invalid/missing certs | Check `tls_mgm` certificates and CA list |
+| No audio in WebRTC | ICE failure | Verify RTPengine ICE flags; check UDP 10000-20000 |
+| Browser blocks ws | Mixed content policy | Use `wss://` (TLS) when page is HTTPS |
