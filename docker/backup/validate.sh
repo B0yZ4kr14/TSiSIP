@@ -7,10 +7,12 @@ set -euo pipefail
 BACKUP_DIR="${BACKUP_DIR:-/backup/daily}"
 VALIDATE_DIR="${VALIDATE_DIR:-/backup/validate}"
 ENCRYPTION_KEY_FILE="${ENCRYPTION_KEY_FILE:-/run/secrets/backup_encryption_key}"
+PGPASSWORD_FILE="${PGPASSWORD_FILE:-/run/secrets/db_password}"
 PGHOST="${PGHOST:-postgres}"
 PGPORT="${PGPORT:-5432}"
 PGUSER="${PGUSER:-opensips}"
 PGDATABASE="${PGDATABASE:-opensips}"
+METRICS_DIR="${METRICS_DIR:-/backup/metrics}"
 
 log() {
     echo "[$(date '+%Y-%m-%d %H:%M:%S')] $*"
@@ -33,6 +35,9 @@ if [ -z "$LATEST_BACKUP" ] || [ ! -f "$LATEST_BACKUP" ]; then
 fi
 
 log "Validating backup: $LATEST_BACKUP"
+
+# Start RTO timer
+RTO_START="$(date +%s)"
 
 # Prepare validation directory
 rm -rf "$VALIDATE_DIR"
@@ -89,6 +94,15 @@ fi
 
 # Cleanup
 rm -rf "$VALIDATE_DIR"
+
+# Calculate RTO
+RTO_END="$(date +%s)"
+RTO_SECONDS=$((RTO_END - RTO_START))
+log "RTO (restore duration): ${RTO_SECONDS}s"
+
+# Write RTO metric
+mkdir -p "$METRICS_DIR"
+echo "$RTO_SECONDS" > "${METRICS_DIR}/rto_last_seconds"
 
 # Write success metric for Prometheus
 mkdir -p /backup/metrics

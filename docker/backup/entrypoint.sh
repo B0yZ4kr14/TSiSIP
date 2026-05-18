@@ -21,6 +21,7 @@ CRON_FILE="/tmp/crontab"
     echo "PGDATABASE=${PGDATABASE}"
     echo "ENCRYPTION_KEY_FILE=${ENCRYPTION_KEY_FILE}"
     echo "PGPASSWORD_FILE=${PGPASSWORD_FILE:-/run/secrets/db_password}"
+    echo "METRICS_DIR=${METRICS_DIR}"
     echo ""
     echo "# Daily backup at 02:00 UTC"
     echo "${BACKUP_SCHEDULE} /usr/local/bin/backup.sh >> /var/log/backup.log 2>&1"
@@ -33,6 +34,12 @@ CRON_FILE="/tmp/crontab"
     echo ""
     echo "# Hourly replication"
     echo "${REPLICATE_SCHEDULE} /usr/local/bin/replicate.sh >> /var/log/replicate.log 2>&1"
+    echo ""
+    echo "# RPO monitor every 5 minutes"
+    echo "${RPO_SCHEDULE:-*/5 * * * *} /usr/local/bin/rpo-monitor.sh >> /var/log/rpo-monitor.log 2>&1"
+    echo ""
+    echo "# Quota check every 10 minutes"
+    echo "${QUOTA_SCHEDULE:-*/10 * * * *} /usr/local/bin/quota-check.sh >> /var/log/quota-check.log 2>&1"
 } > "$CRON_FILE"
 
 # Install crontab
@@ -47,6 +54,14 @@ echo "Backup schedule: $BACKUP_SCHEDULE"
 echo "Purge schedule: $PURGE_SCHEDULE"
 echo "Validate schedule: $VALIDATE_SCHEDULE"
 echo "Replicate schedule: $REPLICATE_SCHEDULE"
+echo "RPO monitor schedule: ${RPO_SCHEDULE:-*/5 * * * *}"
+echo "Quota check schedule: ${QUOTA_SCHEDULE:-*/10 * * * *}"
+
+# Start metrics exporter in background
+if [ -x /usr/local/bin/metrics-exporter.sh ]; then
+    echo "Starting metrics exporter on ${METRICS_ADDR:-0.0.0.0}:${METRICS_PORT:-9101}"
+    /usr/local/bin/metrics-exporter.sh &
+fi
 
 # Execute command
 exec "$@"

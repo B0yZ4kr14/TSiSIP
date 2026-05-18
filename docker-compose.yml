@@ -265,14 +265,19 @@ services:
       PURGE_SCHEDULE: "0 3 * * *"
       VALIDATE_SCHEDULE: "0 4 * * *"
       REPLICATE_SCHEDULE: "0 * * * *"
+      RPO_SCHEDULE: "*/5 * * * *"
+      QUOTA_SCHEDULE: "*/10 * * * *"
       BACKUP_RETENTION_DAYS: 30
       WAL_RETENTION_DAYS: 37
+      BACKUP_QUOTA_GB: 100
       PGHOST: postgres
       PGPORT: 5432
       PGDATABASE: opensips
       PGUSER: opensips
       PGPASSWORD_FILE: /run/secrets/db_password
       ENCRYPTION_KEY_FILE: /run/secrets/backup_encryption_key
+      METRICS_PORT: 9101
+      METRICS_ADDR: 0.0.0.0
       RCLONE_S3_PROVIDER: ${RCLONE_S3_PROVIDER:-}
       RCLONE_S3_ACCESS_KEY: ${RCLONE_S3_ACCESS_KEY:-}
       RCLONE_S3_SECRET_KEY: ${RCLONE_S3_SECRET_KEY:-}
@@ -289,6 +294,8 @@ services:
     depends_on:
       postgres:
         condition: service_healthy
+    expose:
+      - "9101"
 
 networks:
   sip_edge:

@@ -3,6 +3,7 @@ set -euo pipefail
 
 # TSiSIP Backup Encryption/Decryption Wrapper
 # Uses AES-256-CBC with PBKDF2 via OpenSSL
+# Generates HMAC-SHA256 checksum post-encryption for tamper detection
 
 ACTION="${1:-}"
 INPUT="${2:-}"
@@ -28,13 +29,31 @@ case "$ACTION" in
     encrypt)
         # Encrypt with AES-256-CBC, PBKDF2, random salt
         openssl enc -aes-256-cbc -salt -pbkdf2 -iter 10000 \
-            -in "$INPUT" -out "$OUTPUT" -pass pass:"$KEY"
+            -in "$INPUT" -out "$OUTPUT" -k "$KEY"
+
+        # Generate HMAC-SHA256 for tamper detection
+        openssl dgst -sha256 -hmac "$KEY" -binary "$OUTPUT" | \
+            od -An -tx1 | tr -d ' \n' > "${OUTPUT}.hmac"
+
         echo "Encrypted: $OUTPUT"
+        echo "HMAC: ${OUTPUT}.hmac"
         ;;
     decrypt)
+        # Verify HMAC if present (graceful fallback for legacy files)
+        HMAC_FILE="${INPUT}.hmac"
+        if [ -f "$HMAC_FILE" ]; then
+            EXPECTED_HMAC="$(cat "$HMAC_FILE" | tr -d '\n')"
+            ACTUAL_HMAC="$(openssl dgst -sha256 -hmac "$KEY" -binary "$INPUT" | od -An -tx1 | tr -d ' \n')"
+            if [ "$EXPECTED_HMAC" != "$ACTUAL_HMAC" ]; then
+                echo "ERROR: HMAC verification failed for $INPUT -- file may be corrupted or tampered"
+                exit 1
+            fi
+            echo "HMAC verified OK"
+        fi
+
         # Decrypt
         openssl enc -aes-256-cbc -d -pbkdf2 -iter 10000 \
-            -in "$INPUT" -out "$OUTPUT" -pass pass:"$KEY"
+            -in "$INPUT" -out "$OUTPUT" -k "$KEY"
         echo "Decrypted: $OUTPUT"
         ;;
     *)

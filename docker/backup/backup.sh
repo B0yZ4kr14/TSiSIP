@@ -9,6 +9,7 @@ BACKUP_FILE="opensips_${TIMESTAMP}.dump"
 BACKUP_DIR="${BACKUP_DIR:-/backup/daily}"
 WAL_DIR="${WAL_DIR:-/backup/wal}"
 ENCRYPTION_KEY_FILE="${ENCRYPTION_KEY_FILE:-/run/secrets/backup_encryption_key}"
+PGPASSWORD_FILE="${PGPASSWORD_FILE:-/run/secrets/db_password}"
 RETENTION_DAYS="${BACKUP_RETENTION_DAYS:-30}"
 
 # Ensure directories exist
@@ -23,7 +24,9 @@ log "Starting backup: $BACKUP_FILE"
 # Create logical backup with custom format and compression
 # Use --lock-wait-timeout to avoid long locks
 # Use REPEATABLE READ for consistency
+# Throttle I/O to avoid impacting production
 PGPASSWORD="$(cat "$PGPASSWORD_FILE" 2>/dev/null || echo '')" \
+nice -n 10 ionice -c2 -n7 \
 pg_dump -h "$PGHOST" -p "$PGPORT" -U "$PGUSER" -d "$PGDATABASE" \
     -Fc -Z9 \
     --lock-wait-timeout=5000 \

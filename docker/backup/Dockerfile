@@ -7,20 +7,15 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
     cron \
     gettext \
     ca-certificates \
+    netcat-openbsd \
     && rm -rf /var/lib/apt/lists/*
 
 # Create backup directories
-RUN mkdir -p /backup/daily /backup/wal /backup/validate /tmp/backup
+RUN mkdir -p /backup/daily /backup/wal /backup/validate /backup/metrics /tmp/backup
 
 # Copy scripts
-COPY backup.sh /usr/local/bin/backup.sh
-COPY wal-archive.sh /usr/local/bin/wal-archive.sh
-COPY encrypt.sh /usr/local/bin/encrypt.sh
-COPY purge.sh /usr/local/bin/purge.sh
-COPY validate.sh /usr/local/bin/validate.sh
-COPY replicate.sh /usr/local/bin/replicate.sh
+COPY *.sh /usr/local/bin/
 COPY rclone.conf.tpl /etc/rclone/rclone.conf.tpl
-COPY entrypoint.sh /usr/local/bin/entrypoint.sh
 
 RUN chmod +x /usr/local/bin/*.sh
 
@@ -29,15 +24,21 @@ ENV BACKUP_SCHEDULE="0 2 * * *" \
     PURGE_SCHEDULE="0 3 * * *" \
     VALIDATE_SCHEDULE="0 4 * * *" \
     REPLICATE_SCHEDULE="0 * * * *" \
+    RPO_SCHEDULE="*/5 * * * *" \
+    QUOTA_SCHEDULE="*/10 * * * *" \
     BACKUP_RETENTION_DAYS=30 \
     WAL_RETENTION_DAYS=37 \
+    BACKUP_QUOTA_GB=100 \
     PGHOST=postgres \
     PGPORT=5432 \
     PGDATABASE=opensips \
     PGUSER=opensips \
     ENCRYPTION_KEY_FILE=/run/secrets/backup_encryption_key \
     BACKUP_DIR=/backup/daily \
-    WAL_DIR=/backup/wal
+    WAL_DIR=/backup/wal \
+    METRICS_DIR=/backup/metrics \
+    METRICS_PORT=9101 \
+    METRICS_ADDR=0.0.0.0
 
 # Health check
 HEALTHCHECK --interval=60s --timeout=10s --start-period=30s --retries=3 \
