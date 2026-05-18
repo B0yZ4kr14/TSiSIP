@@ -1,4 +1,4 @@
-FROM debian:bookworm-slim AS builder
+FROM debian:bookworm-slim@sha256:67b30a61dc87758f0caf819646104f29ecbda97d920aaf5edc834128ac8493d3 AS builder
 
 ARG ASTERISK_VERSION=20.9.3
 
@@ -31,7 +31,7 @@ RUN curl -fsSL \
     && rm -rf /tmp/asterisk.tar.gz "/usr/src/asterisk-${ASTERISK_VERSION}"
 
 # Runtime stage
-FROM debian:bookworm-slim
+FROM debian:bookworm-slim@sha256:67b30a61dc87758f0caf819646104f29ecbda97d920aaf5edc834128ac8493d3
 
 RUN apt-get update && apt-get install -y --no-install-recommends \
     libssl3 \

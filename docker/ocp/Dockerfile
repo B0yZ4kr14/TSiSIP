@@ -2,7 +2,7 @@
 # Base: PHP 8.2 + Apache on Debian Bookworm
 # Delivers OCP v9 with TSiSIP rebranding layer
 
-FROM php:8.2-apache-bookworm
+FROM php:8.2-apache-bookworm@sha256:5e0eabeab4ac6d58b3fb9af50bd7c57c89aacb8ed7090e31b28c1e9056dd94fb
 
 LABEL org.opencontainers.image.title="TSiSIP OCP v9"
 LABEL org.opencontainers.image.description="OpenSIPS Control Panel v9 with TSiSIP premium branding"

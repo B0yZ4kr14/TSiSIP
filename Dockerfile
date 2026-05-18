@@ -1,6 +1,4 @@
-FROM debian:bookworm-slim AS builder
-# Production CI must pin this base image to a digest:
-# FROM debian:bookworm-slim@sha256:<current-digest>
+FROM debian:bookworm-slim@sha256:67b30a61dc87758f0caf819646104f29ecbda97d920aaf5edc834128ac8493d3 AS builder
 
 ARG OPENSIPS_VERSION=3.6
 ENV DEBIAN_FRONTEND=noninteractive
@@ -22,7 +20,7 @@ RUN make all include_modules="db_postgres auth auth_db dialog dispatcher rtpengi
  && make prefix=/usr/local install include_modules="db_postgres auth auth_db dialog dispatcher rtpengine topology_hiding permissions sqlops rr tm maxfwd sipmsgops signaling sl proto_udp proto_tcp pike ratelimit userblacklist tls_mgm tls_openssl proto_tls"
 
 # --- Runtime image ---
-FROM debian:bookworm-slim
+FROM debian:bookworm-slim@sha256:67b30a61dc87758f0caf819646104f29ecbda97d920aaf5edc834128ac8493d3
 ENV DEBIAN_FRONTEND=noninteractive
 
 RUN apt-get update \
