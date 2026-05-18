@@ -4,8 +4,8 @@
 # --- Network listeners ---
 socket=udp:${OPENSIPS_LISTEN_IP}:5060 as ${HOST_PUBLIC_IP}:5060
 socket=tcp:${OPENSIPS_LISTEN_IP}:5060 as ${HOST_PUBLIC_IP}:5060
-# TLS socket — descomente quando certificados estiverem prontos
-# socket=tls:${OPENSIPS_LISTEN_IP}:5061 as ${HOST_PUBLIC_IP}:5061
+# TLS socket — habilitado (certificados gerados via ca-tool)
+socket=tls:${OPENSIPS_LISTEN_IP}:5061 as ${HOST_PUBLIC_IP}:5061
 
 # --- Database ---
 db_default_url="postgres://${DB_USER}:${DB_PASSWORD}@${DB_HOST}:5432/${DB_NAME}"
@@ -84,10 +84,8 @@ modparam("topology_hiding", "force_dialog", 1)
 modparam("topology_hiding", "th_callid_passwd", "${TOPOLOGY_SECRET}")
 modparam("topology_hiding", "th_callid_prefix", "TSISIP_")
 
-# tls_mgm — parameters disabled until real certificates are provisioned.
-# When certificates are ready, use the correct tls_mgm server_domain syntax:
-# modparam("tls_mgm", "server_domain", "dom=default cert=/etc/opensips/tls/server.crt pkey=/etc/opensips/tls/server.key ca=/etc/opensips/tls/ca.crt crl=/etc/opensips/tls/crl.pem verify_cert=1 require_cert=0")
-# Note: OpenSIPS 3.6 tls_mgm uses server_domain string syntax, not individual params.
+# tls_mgm — server_domain syntax for OpenSIPS 3.6
+modparam("tls_mgm", "server_domain", "dom=default cert=/etc/opensips/tls/server.crt pkey=/etc/opensips/tls/server.key ca=/etc/opensips/tls/ca.crt verify_cert=1 require_cert=0")
 
 # tm
 modparam("tm", "fr_timeout", 5)
