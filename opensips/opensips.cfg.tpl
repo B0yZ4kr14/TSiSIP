@@ -283,17 +283,37 @@ route[AUTH] {
         exit;
     }
 
-    if (!www_authorize("", "subscriber")) {
-        www_challenge("", "auth");
+    # Auth contract: REGISTER uses www_authorize (401), non-REGISTER uses proxy_authorize (407)
+    if (is_method("REGISTER")) {
+        if (!www_authorize("$td", "subscriber")) {
+            $var(audit_result) = "failure";
+            route(AUTH_AUDIT);
+            www_challenge("$td", "auth");
+            exit;
+        }
+        # Audit log for REGISTER success
+        $var(audit_result) = "success";
+        route(AUTH_AUDIT);
+        consume_credentials();
+        return;
+    }
+
+    # Non-REGISTER requests: proxy_authorize returns 407 Proxy Authentication Required
+    if (!proxy_authorize("$fd", "subscriber")) {
+        $var(audit_result) = "failure";
+        route(AUTH_AUDIT);
+        proxy_challenge("$fd", "auth");
         exit;
     }
 
     # Auth success - reset rate limit counter for this user
     rl_reset_count("auth_$au");
 
-    # Audit log
+    # Audit log for non-REGISTER success
     $var(audit_result) = "success";
     route(AUTH_AUDIT);
+
+    consume_credentials();
 }
 
 route[AUTH_AUDIT] {

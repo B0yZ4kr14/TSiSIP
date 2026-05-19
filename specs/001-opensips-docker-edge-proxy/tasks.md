@@ -156,21 +156,21 @@
 
 ## Phase 5 — Post-Foundation Implementation (Pending)
 
-### [pending] T5.1: Implement trusted gateway bypass (FR-008)
+### [completed] T5.1: Implement trusted gateway bypass (FR-008)
 **Description**: Add `permissions` module configuration to `opensips/opensips.cfg.tpl`: load `permissions.so`, configure `modparam("permissions", "db_url", ...)`, add `check_address()` call in route(SANITIZE) or early in main route for trusted gateway IPs. Populate `address` table with trusted gateway CIDRs. Verify that requests from trusted gateways bypass authentication while still being sanitized and routed.
 **Phase**: 5
 **Depends on**: T4.3
 **Parallel**: No
 **Acceptance**: SIP request from trusted IP reaches Asterisk without 401/407 challenge; request from untrusted IP still requires auth.
 
-### [pending] T5.2: Implement auth audit logging (FR-009)
+### [completed] T5.2: Implement auth audit logging (FR-009)
 **Description**: Add auth audit logging route to `opensips/opensips.cfg.tpl` that inserts into `auth_audit_log` table on every auth attempt (success and failure). Include: event_time, username, domain, source_ip, sip_method, result, call_id. Ensure 90-day retention via PostgreSQL scheduled job or partition management. Add index on event_time for query performance.
 **Phase**: 5
 **Depends on**: T4.3
 **Parallel**: [P] with T5.1
 **Acceptance**: Auth attempts populate `auth_audit_log`; query `SELECT COUNT(*) FROM auth_audit_log` returns >0 after test traffic; records older than 90 days are automatically purged.
 
-### [pending] T5.3: Align auth response code contract (401 vs 407)
+### [completed] T5.3: Align auth response code contract (401 vs 407)
 **Description**: Evaluate and resolve the deviation between current implementation (`www_authorize()`/`www_challenge()` returning 401 for all methods) and CANONICAL-SPEC §9 (`proxy_authorize()`/`proxy_challenge()` returning 407 for non-REGISTER). Decision options: (a) migrate non-REGISTER auth to proxy methods, (b) update CANONICAL-SPEC to accept 401 with documented rationale, or (c) hybrid approach. Update spec, plan, and implementation accordingly.
 **Phase**: 5
 **Depends on**: T5.1, T5.2
