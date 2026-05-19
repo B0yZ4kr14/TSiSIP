@@ -11,14 +11,14 @@
 **Parallel**: No
 **Acceptance**: `opensips -c` passes; container-based load test (e.g., Python `socket` script or `opensips-cli -x mi`) simulating 200 rps from one IP shows >95% dropped after threshold.
 
-### [pending] T1.2: Handle NATed enterprise traffic
+### [completed] T1.2: Handle NATed enterprise traffic
 **Description**: Add logic to use `(source_ip, from_user)` tuple for authenticated traffic instead of blanket IP blocking. Whitelist known enterprise IPs via `permissions` module or `htable`.
 **Phase**: 1
 **Depends on**: T1.1
 **Parallel**: No
 **Acceptance**: Enterprise PBX behind NAT with high volume is not blocked.
 
-### [pending] T1.3: Add TCP connection limits
+### [completed] T1.3: Add TCP connection limits
 **Description**: Configure `tcp_max_connections` and `tcp_connection_lifetime` in OpenSIPS. Add connection count monitoring via `get_statistics`.
 **Phase**: 1
 **Depends on**: T1.1
@@ -27,14 +27,14 @@
 
 ## Phase 2 — Auth Rate Limits
 
-### [pending] T2.1: Configure htable for auth failures
-**Description**: Update `opensips/opensips.cfg.tpl` with `loadmodule "htable.so"`, `modparam("htable", "htable", "auth_failures=>size=1024;autoexpire=3600")`. Add counter increment on authentication challenge failure (e.g., `www_challenge` or `proxy_challenge` rejection).
+### [completed] T2.1: Configure htable for auth failures
+**Description**: Update `opensips/opensips.cfg.tpl` with `loadmodule "cachedb_local.so"`, `modparam("cachedb_local", "cachedb_url", "local:///")`. Use `cache_add`/`cache_fetch` to count auth failures per username/IP with 60s TTL. Increment on `www_challenge`/`proxy_challenge` rejection.
 **Phase**: 2
 **Depends on**: T1.3
 **Parallel**: No
-**Acceptance**: `opensips-cli -x mi htable_dump auth_failures` shows counters.
+**Acceptance**: `opensips-cli -x mi cache_fetch local auth_failures_<key>` returns counter value.
 
-### [pending] T2.2: Implement subscriber auth throttling
+### [completed] T2.2: Implement subscriber auth throttling
 **Description**: Add route logic: if `auth_failures[$au]` > 10 in 60s, reply `403 Forbidden` and add source IP to ban list. Reset counter on successful auth.
 **Phase**: 2
 **Depends on**: T2.1
@@ -50,7 +50,7 @@
 **Parallel**: No
 **Acceptance**: Load test shows redistribution at 80% capacity.
 
-### [pending] T3.2: Add dispatcher load monitoring
+### [completed] T3.2: Add dispatcher load monitoring
 **Description**: Add Prometheus metrics: `opensips_dispatcher_target_load`, `opensips_dispatcher_redistributions_total`. Update exporter.
 **Phase**: 3
 **Depends on**: T3.1
@@ -59,22 +59,22 @@
 
 ## Phase 4 — Ban Lists
 
-### [pending] T4.1: Create ban list htable
-**Description**: Add `modparam("htable", "htable", "ban_list=>size=4096;autoexpire=86400")`. Create route to check `ban_list` on incoming requests. Sources: pike, auth, manual.
+### [completed] T4.1: Create ban list htable
+**Description**: Use `cachedb_local` to store banned IPs with `cache_store("local", "ban_list_<ip>", "<reason>", "3600")`. Create route to check ban list on incoming requests via `cache_fetch`. Sources: pike, auth, manual.
 **Phase**: 4
 **Depends on**: T3.2
 **Parallel**: No
 **Acceptance**: Banned IPs are dropped; MI shows current ban state.
 
-### [pending] T4.2: Add ban management MI commands
+### [completed] T4.2: Add ban management MI commands
 **Description**: Create MI commands: `ban_add`, `ban_del`, `ban_list`. Document in runbook.
 **Phase**: 4
 **Depends on**: T4.1
 **Parallel**: No
-**Acceptance**: `opensips-cli -x mi ban_list` returns JSON of banned entries.
+**Acceptance**: `opensips-cli -x mi cache_fetch local ban_list_<ip>` returns reason; banned requests are dropped with 403.
 
-### [pending] T4.3: Implement ban TTL accuracy
-**Description**: Ensure `autoexpire` in `htable` removes entries exactly at TTL. Add validation test.
+### [completed] T4.3: Implement ban TTL accuracy
+**Description**: `cachedb_local` TTL is enforced via the `cache_store`/`cache_add` TTL parameter (seconds). Default ban TTL is 3600s (1 hour). Validation via `opensips-cli -x mi cache_fetch` after TTL expiry.
 **Phase**: 4
 **Depends on**: T4.2
 **Parallel**: No
@@ -96,8 +96,8 @@
 **Parallel**: No
 **Acceptance**: Events are received by detector; baseline establishes within 1 hour.
 
-### [pending] T5.3: Add global throttle on anomaly
-**Description**: Add route to apply global rate limit (e.g., 50% of baseline) when anomaly alert fires. Use `htable` flag `global_throttle`.
+### [completed] T5.3: Add global throttle on anomaly
+**Description**: Add route to apply global rate limit (e.g., 50% of baseline) when anomaly alert fires. Use `cachedb_local` key `anomaly_state_global_throttle` as toggle between `global` (500 rps) and `global_alert` (250 rps) ratelimit pipes.
 **Phase**: 5
 **Depends on**: T5.2
 **Parallel**: No

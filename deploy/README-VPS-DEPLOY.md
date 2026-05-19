@@ -2,7 +2,8 @@
 
 > **Perfil:** vps-lite+PBX (7 serviços, ~2.9GB RAM alocado)  
 > **Destino:** VPS TSiAPP (Ubuntu 24.04, 3.8GB RAM)  
-> **Registry:** GHCR (`ghcr.io/b0yz4kr14/tsisip/*`)
+> **Registry:** GHCR (`ghcr.io/b0yz4kr14/tsisip/*`)  
+> **Pipeline:** Feature 009 — `deploy/scripts/orchestrate-deploy.sh`
 
 ## Pré-requisitos na VPS
 
@@ -11,7 +12,49 @@
 - Acesso root ou sudo
 - Portas disponíveis: 5060/udp+tcp, 5061/tcp, 8084/tcp, 10000-20000/udp
 
-## Deploy Rápido (via bootstrap)
+## Deploy via Pipeline Orquestrado (Recomendado)
+
+O script `orchestrate-deploy.sh` implementa o pipeline completo com gates validados:
+
+```bash
+# Full pipeline: validação → build → push → deploy → verificação
+./deploy/scripts/orchestrate-deploy.sh
+
+# Dry-run: valida todos os gates sem mutar estado
+./deploy/scripts/orchestrate-deploy.sh --dry-run
+
+# Live-test: verificação pós-deploy apenas (após deploy manual)
+./deploy/scripts/orchestrate-deploy.sh --live-test
+
+# Forçar deploy apesar de HIGH risk no impact analysis
+FORCE_DEPLOY=1 ./deploy/scripts/orchestrate-deploy.sh
+```
+
+### Stages do Pipeline (gated)
+
+| Gate | Nome | Descrição | Falha = halt? |
+|------|------|-----------|---------------|
+| 0 | Pre-flight | Disco, registry, sintaxe OpenSIPS, secrets scan, compose | Sim |
+| 1 | Impact Analysis | Git diff + heurística de risco em core configs | Sim (override com `FORCE_DEPLOY=1`) |
+| 2 | Build | Builder agent: build apenas imagens modificadas | Sim |
+| 3 | Push | Pusher agent: tag + push GHCR; fallback build-on-target | Não (warn) |
+| 4 | Deploy | Deployer agent: snapshot rollback, SSH, git pull, compose up | Sim |
+| 5 | Verify | Verifier agent: health, HTTP, SIP OPTIONS, backup metrics | Sim → trigger rollback |
+
+### Rollback Automático
+
+Se o gate 5 (Verify) falhar, o pipeline restaura automaticamente as imagens pré-deploy a partir do snapshot capturado no gate 4. O snapshot é salvo em `.deploy-rollback/<run-id>-digests.txt`.
+
+### Agentes OMK (funções shell)
+
+Cada stage é implementado como uma função shell documentada no próprio script:
+
+- **`builder()`** — OMK Builder Agent: detecta Dockerfiles modificados via `git diff`, builda apenas imagens afetadas.
+- **`pusher()`** — OMK Pusher Agent: login GHCR, tag e push. Se credenciais ausentes, ativa `FALLBACK_BUILD_ON_TARGET`.
+- **`deployer()`** — OMK Deployer Agent: SSH para target, captura snapshot de digests, sync de código, `docker compose pull && up`.
+- **`verifier()`** — OMK Verifier Agent: health de containers, probe HTTP na OCP, probe SIP OPTIONS, métricas de backup.
+
+## Deploy Rápido (via bootstrap — primeira instalação)
 
 ```bash
 # 1. Copiar o script para a VPS

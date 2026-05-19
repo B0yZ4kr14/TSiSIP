@@ -91,6 +91,14 @@ services:
       - --port-max=20000
       - --log-stderr
       - --foreground
+      # T4.1/T5.2: SRTP/DTLS configuration
+      - --dtls-cert-file=/run/secrets/server.crt
+      - --dtls-key-file=/run/secrets/server.key
+      - --dtls-passive
+      - --srtp-ciphers=AES_GCM_256:AES_256_CM_HMAC_SHA1_80
+    secrets:
+      - server.crt
+      - server.key
     cap_drop: [ALL]
     cap_add: [NET_BIND_SERVICE, NET_ADMIN]
     security_opt: ["no-new-privileges:true"]
@@ -355,6 +363,9 @@ services:
       OPENSIPS_MI_PORT: 8888
       EXPORTER_PORT: 9442
       CACHE_TTL_SECONDS: 10
+      TLS_CERT_PATH: /run/secrets/server.crt
+    secrets:
+      - server.crt
     depends_on:
       - opensips
     healthcheck:

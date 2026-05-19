@@ -481,6 +481,59 @@ When editing files in this repo, the hooks may trigger automatically. If you enc
 
 ---
 
+## 13. Deploy Pipeline
+
+TSiSIP uses the **Feature 009 VPS Deploy Automation Pipeline** for all production deploys. The pipeline is implemented in `deploy/scripts/orchestrate-deploy.sh` and is triggerable both locally and via GitHub Actions (`workflow_dispatch`).
+
+### Pipeline Stages (Gated)
+
+| Gate | Stage | Description | Halt on Failure |
+|---|---|---|---|
+| 0 | Pre-flight | Disk space, registry reachability, OpenSIPS config syntax, committed-secrets scan, Docker Compose syntax | Yes |
+| 1 | Impact Analysis | Git diff against `origin/master`; static heuristic for HIGH risk on core configs (`opensips.cfg.tpl`, compose files, `entrypoint.sh`) | Yes (override with `FORCE_DEPLOY=1`) |
+| 2 | Build | Builder agent detects changed Dockerfiles via `git diff`, builds only modified images | Yes |
+| 3 | Push | Pusher agent tags and pushes to GHCR; falls back to build-on-target if credentials missing | No (warn + fallback flag) |
+| 4 | Deploy | Deployer agent captures pre-deploy image digests, SSH syncs code, `docker compose pull && up` | Yes |
+| 5 | Verify | Verifier agent checks container health, OCP HTTP 200, SIP OPTIONS 200 OK, backup metrics | Yes → automatic rollback |
+
+### Rollback Behavior
+
+Before deploy (Gate 4), the pipeline captures current running image digests on the target host into `.deploy-rollback/<run-id>-digests.txt`. If Gate 5 fails, the pipeline automatically re-tags the previous digests and restarts containers.
+
+### CLI Flags
+
+- `./orchestrate-deploy.sh` — full pipeline
+- `./orchestrate-deploy.sh --dry-run` — validates all gates without mutating state
+- `./orchestrate-deploy.sh --live-test` — runs post-deploy verification only
+
+### OMK Agent Roles (Shell Functions)
+
+Each stage is implemented as a documented shell function in `orchestrate-deploy.sh`:
+
+- **`builder()`** — detects modified Dockerfiles, builds only affected images, retags existing `:test` images
+- **`pusher()`** — GHCR login, tag with `ghcr.io/b0yz4kr14/tsisip/*`, push; sets `FALLBACK_BUILD_ON_TARGET=1` on failure
+- **`deployer()`** — SSH to target, snapshot digests, git pull, update compose to GHCR prefix, compose up
+- **`verifier()`** — container health, HTTP probe on OCP login, Nginx `/TSiSIP/health`, SIP OPTIONS probe via Python socket, backup metrics loopback
+
+### GitHub Actions Workflow
+
+`.github/workflows/deploy.yml` provides a `workflow_dispatch` trigger with:
+- `deploy_target`: production / staging
+- `dry_run`: boolean — validates gates without mutations
+- `force_deploy`: boolean — bypasses HIGH risk impact gate
+
+Jobs: `preflight` → `impact` → `build` → `push` → `deploy` → `verify`
+
+### Constraints
+
+- Docker-first: only container images are deployed; no bare-metal package installation on target
+- PostgreSQL-only: no MySQL/MariaDB paths in deploy logic
+- OpenSIPS 3.6 LTS: config syntax gate rejects forbidden modules (e.g., `sanity`)
+- Secrets: no secrets committed; `.env` and `secrets/` are gitignored
+- Git mutations: pipeline does not auto-commit; SHA is recorded for audit only
+
+---
+
 *Last updated: 2026-05-19. This file must be updated whenever new build tooling, manifests, or canonical architecture decisions are committed.*
 
 <!-- SPECKIT START -->

@@ -66,4 +66,17 @@ else
 fi
 
 log "Backup completed successfully"
+
+# ---------------------------------------------------------------------------
+# T6.1 — Offsite replication (Wave 2)
+# After a successful local encrypted backup, immediately sync to the
+# S3-compatible remote so that the offsite copy exists within the
+# replication window.  replicate.sh exits 0 gracefully when no remote
+# is configured, so this is safe to run unconditionally.
+# ---------------------------------------------------------------------------
+if [ -x /usr/local/bin/replicate.sh ]; then
+    log "Triggering offsite replication..."
+    /usr/local/bin/replicate.sh || log "WARNING: Offsite replication failed (see replicate.log)"
+fi
+
 exit 0

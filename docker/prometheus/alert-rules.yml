@@ -70,3 +70,18 @@ groups:
           summary: "Prometheus disk usage above 85%"
           description: "Prometheus TSDB is {{ $value | humanizePercentage }} full"
           runbook_url: "https://docs.tsiapp.io/runbooks/prometheus-disk-full"
+
+  - name: tsisip-tls
+    interval: 60s
+    rules:
+      # T3.2: TLS certificate expiry alert (critical if < 30 days)
+      - alert: OpenSIPSTLSCertificateExpiringSoon
+        expr: opensips_tls_certificate_expiry_timestamp - time() < 30 * 24 * 3600
+        for: 5m
+        labels:
+          severity: critical
+          service: opensips
+        annotations:
+          summary: "OpenSIPS TLS certificate expires in less than 30 days"
+          description: "TLS certificate for OpenSIPS expires in {{ $value | humanizeDuration }}"
+          runbook_url: "https://docs.tsiapp.io/runbooks/opensips-tls-cert-expiry"

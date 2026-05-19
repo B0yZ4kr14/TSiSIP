@@ -9,6 +9,8 @@ import os
 import time
 import json
 import logging
+import subprocess
+from datetime import datetime, timezone
 from urllib.request import urlopen, Request
 from urllib.error import URLError
 from prometheus_client import start_http_server, Gauge, Counter, Info
@@ -160,6 +162,22 @@ def update_metrics():
             'build_date': version.get('Build-Date', 'unknown')
         })
 
+    # T3.2: TLS certificate expiry
+    cert_path = os.environ.get('TLS_CERT_PATH', '/run/secrets/server.crt')
+    if os.path.exists(cert_path):
+        try:
+            result = subprocess.run(
+                ['openssl', 'x509', '-noout', '-enddate', '-in', cert_path],
+                capture_output=True, text=True, timeout=5
+            )
+            if result.returncode == 0:
+                date_str = result.stdout.strip().replace('notAfter=', '')
+                dt = datetime.strptime(date_str, '%b %d %H:%M:%S %Y %Z')
+                expiry_ts = dt.replace(tzinfo=timezone.utc).timestamp()
+                opensips_tls_certificate_expiry_timestamp.set(expiry_ts)
+        except Exception as e:
+            logger.error(f"Error reading certificate expiry: {e}")
+
 
 def main():
     logger.info(f"Starting OpenSIPS exporter on port {EXPORTER_PORT}")
@@ -201,5 +219,12 @@ opensips_dispatcher_circuit_state = Gauge(
     'opensips_dispatcher_circuit_state',
     'Dispatcher circuit breaker state (0=closed, 1=open, 2=half_open)',
     ['target', 'setid'],
+    registry=registry
+)
+
+# T3.2: TLS certificate expiry metric
+opensips_tls_certificate_expiry_timestamp = Gauge(
+    'opensips_tls_certificate_expiry_timestamp',
+    'Unix timestamp when the TLS certificate expires',
     registry=registry
 )

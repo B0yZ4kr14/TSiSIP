@@ -10,6 +10,15 @@ socket=tls:${OPENSIPS_LISTEN_IP}:5061 as ${HOST_PUBLIC_IP}:5061
 socket=ws:${OPENSIPS_LISTEN_IP}:8080
 socket=wss:${OPENSIPS_LISTEN_IP}:4443
 
+# T1.3: TCP connection limits
+# Global ceiling + timeouts prevent Slowloris-style connection exhaustion.
+# Per-source TCP connection limiting (100/IP) is enforced at host firewall
+# (iptables connlimit) when container runs with --cap-add=NET_ADMIN.
+tcp_max_connections = 4096
+tcp_connection_lifetime = 300
+tcp_connect_timeout = 5
+tcp_max_msg_time = 10
+
 # --- Database ---
 db_default_url="postgres://${DB_USER}:${DB_PASSWORD}@${DB_HOST}:5432/${DB_NAME}"
 
@@ -34,6 +43,7 @@ loadmodule "permissions.so"
 loadmodule "pike.so"
 loadmodule "ratelimit.so"
 loadmodule "userblacklist.so"
+loadmodule "cachedb_local.so"
 # TLS modules (carregados mesmo que socket TLS esteja comentado)
 loadmodule "tls_mgm.so"
 loadmodule "tls_openssl.so"
@@ -76,6 +86,12 @@ modparam("dispatcher", "ds_ping_from", "sip:healthcheck@localhost")
 # Load-based weights: "f" flag in ds_select_dst uses priority/weight
 # Target capacity threshold: 80% (checked in route)
 
+# T3.2: Dispatcher load monitoring
+# ds_probing_mode=1 probes all destinations when none are available.
+# Manual target state query via MI:
+#   opensips-cli -x mi ds_list
+#   opensips-cli -x mi ds_set_state
+
 # rtpengine
 modparam("rtpengine", "rtpengine_sock", "udp:${RTPENGINE_HOST}:22222")
 modparam("rtpengine", "rtpengine_tout", 2)
@@ -98,9 +114,9 @@ modparam("tls_mgm", "certificate", "[default]/etc/opensips/tls/server.crt")
 modparam("tls_mgm", "private_key", "[default]/etc/opensips/tls/server.key")
 modparam("tls_mgm", "ca_list", "[default]/etc/opensips/tls/ca.crt")
 modparam("tls_mgm", "verify_cert", "[default]1")
-modparam("tls_mgm", "require_cert", "[default]1")
-modparam("tls_mgm", "ciphers_list", "[default]ECDHE+AESGCM:ECDHE+CHACHA20:!aNULL:!MD5:!DSS")
-modparam("tls_mgm", "tls_method", "[default]TLSv1_2")
+modparam("tls_mgm", "require_cert", "[default]0")
+modparam("tls_mgm", "ciphers_list", "[default]ECDHE-ECDSA-AES128-GCM-SHA256:ECDHE-RSA-AES128-GCM-SHA256:ECDHE-ECDSA-AES256-GCM-SHA384:ECDHE-RSA-AES256-GCM-SHA384:TLS_AES_128_GCM_SHA256:TLS_AES_256_GCM_SHA384:!CBC:!aNULL:!MD5:!DSS")
+modparam("tls_mgm", "tls_method", "[default]TLSv1_2:TLSv1_3")
 
 # tm
 modparam("tm", "fr_timeout", 5)
@@ -127,6 +143,14 @@ modparam("ratelimit", "expire_time", 3600)
 modparam("ratelimit", "hash_size", 4096)
 modparam("ratelimit", "default_algorithm", "TAILDROP")
 
+# cachedb_local (T2.1 auth failures, T4.1 ban list, T5.3 anomaly state)
+# In-memory key-value store with TTL — OpenSIPS 3.6 replacement for htable
+modparam("cachedb_local", "cachedb_url", "local:///")
+# T4.2 MI commands (via cachedb_local script functions):
+#   Add ban:     cache_store("local", "ban_list_<ip>", "<reason>", "3600")
+#   Delete ban:  cache_remove("local", "ban_list_<ip>")
+#   Check ban:   cache_fetch("local", "ban_list_<ip>", "$avp(result)")
+
 # userblacklist (ban list)
 modparam("userblacklist", "db_url", "postgres://${DB_USER}:${DB_PASSWORD}@${DB_HOST}:5432/${DB_NAME}")
 modparam("userblacklist", "db_table", "userblacklist")
@@ -135,11 +159,18 @@ modparam("userblacklist", "use_domain", 0)
 
 # --- Request Route ---
 route {
-    # Per-source IP throttling (pike)
-    if (!pike_check_req()) {
-        xlog("L_WARN", "PIKE blocked $si - rate limit exceeded\n");
-        drop;
-        exit;
+    # T1.2: Enterprise NAT whitelist (grp=2 in address table)
+    # Known enterprise NAT IPs bypass pike to avoid false-positive blocks
+    # on high-volume legitimate trunk traffic.
+    if (check_source_address(2)) {
+        xlog("L_INFO", "Enterprise NAT whitelist $si - bypassing pike\n");
+    } else {
+        # T1.1: Per-source IP throttling (pike)
+        if (!pike_check_req()) {
+            xlog("L_WARN", "PIKE blocked $si - rate limit exceeded\n");
+            drop;
+            exit;
+        }
     }
 
     if (!has_totag()) {
@@ -152,6 +183,14 @@ route {
     } else {
         # In-dialog request
         if (loose_route()) {
+            # T4.3: Handle re-INVITE SDP for SRTP hold/resume
+            if (is_method("INVITE") && has_body("application/sdp")) {
+                route(SRTP_REOFFER);
+            }
+            # T4.3: Clean up RTPengine session on BYE
+            if (is_method("BYE")) {
+                rtpengine_delete();
+            }
             route(RELAY);
         } else {
             sl_send_reply(404, "Not Here");
@@ -159,11 +198,27 @@ route {
         exit;
     }
 
-    # Global anomaly throttle
-    if (!rl_check("global", 500, "TAILDROP")) {
-        xlog("L_WARN", "Global throttle active - $si rate limited\n");
-        drop;
+    # T4.1: Ban list check (initial requests only — in-dialog already handled)
+    if (cache_fetch("local", "ban_list_$si", "$avp(ban_reason)")) {
+        xlog("L_WARN", "BAN_LIST denied $si (reason=$avp(ban_reason))\n");
+        sl_send_reply(403, "Forbidden");
         exit;
+    }
+
+    # T5.3: Global anomaly throttle with dynamic threshold
+    # Normal baseline: 500 rps. When anomaly_state flag is set, reduce to 250 rps.
+    if (cache_fetch("local", "anomaly_state_global_throttle", "$avp(throttle_active)")) {
+        if (!rl_check("global_alert", 250, "TAILDROP")) {
+            xlog("L_WARN", "Global anomaly throttle active - $si rate limited\n");
+            drop;
+            exit;
+        }
+    } else {
+        if (!rl_check("global", 500, "TAILDROP")) {
+            xlog("L_WARN", "Global throttle active - $si rate limited\n");
+            drop;
+            exit;
+        }
     }
 
     # Max-Forwards / loop detection
@@ -188,6 +243,9 @@ route {
 
     # Sanitize untrusted headers
     route(SANITIZE);
+
+    # T2.3: Verify mutual TLS for trunk connections
+    route(TRUNK_VERIFY);
 
     # Check per-user blacklist entries after protocol-level health traffic
     if (!check_user_blacklist("$fU", "$fd", "$rU", "userblacklist")) {
@@ -223,6 +281,13 @@ onreply_route {
     # Handle negative replies for failure routing
     if (t_check_status("408|500|502|503|504")) {
         xlog("L_WARN", "Failure reply $rs from $si - triggering failover\n");
+    }
+
+    # T4.2/T4.3: Handle SDP answer for SRTP on 2xx replies to INVITE/re-INVITE
+    if (t_check_status("2[0-9][0-9]") && has_body("application/sdp")) {
+        if (!rtpengine_answer()) {
+            xlog("L_ERR", "RTPengine answer failed for $ci\n");
+        }
     }
 }
 
@@ -274,8 +339,22 @@ route[AUTH] {
         exit;
     }
 
-    # Auth rate limiting per user (10 attempts per 60s window)
-    if (!rl_check("auth_$au", 10, "TAILDROP")) {
+    # T2.1 / T2.2: htable-based auth failure throttling
+    # Key: username if available, else source IP for unauthenticated probes
+    $var(auth_key) = $au;
+    if ($var(auth_key) == NULL) {
+        $var(auth_key) = $si;
+    }
+
+    # After 3 failed auths within 60s, return 429 Too Many Requests
+    if (cache_fetch("local", "auth_failures_$var(auth_key)", "$avp(auth_fail_count)") && $avp(auth_fail_count) >= 3) {
+        xlog("L_WARN", "Auth throttled for $var(auth_key) from $si - too many failures\n");
+        sl_send_reply(429, "Too Many Requests");
+        exit;
+    }
+
+    # Legacy ratelimit per user (10 attempts per 60s window) — kept for compatibility
+    if ($au != NULL && !rl_check("auth_$au", 10, "TAILDROP")) {
         xlog("L_WARN", "Auth rate limited for $au ($si)\n");
         # Add to userblacklist via SQL (async cleanup by external job)
         sql_query("INSERT INTO userblacklist (username, domain, prefix, whitelist) VALUES ('$au', '$fd', 'auth_ban', 0) ON CONFLICT DO NOTHING");
@@ -288,12 +367,21 @@ route[AUTH] {
         if (!www_authorize("$td", "subscriber")) {
             $var(audit_result) = "failure";
             route(AUTH_AUDIT);
+            # T2.1: Increment auth failure counter (60s TTL)
+            cache_add("local", "auth_failures_$var(auth_key)", "1", "60");
+            # T2.2 / T4.1: Ban source IP after 3 auth failures
+            if (cache_fetch("local", "auth_failures_$var(auth_key)", "$avp(auth_fail_count)") && $avp(auth_fail_count) >= 3) {
+                xlog("L_WARN", "Auth failure threshold reached for $var(auth_key) from $si - adding to ban_list\n");
+                cache_store("local", "ban_list_$si", "auth_exceeded", "3600");
+            }
             www_challenge("$td", "auth");
             exit;
         }
         # Audit log for REGISTER success
         $var(audit_result) = "success";
         route(AUTH_AUDIT);
+        # T2.2: Reset auth failure counter on success
+        cache_remove("local", "auth_failures_$var(auth_key)");
         consume_credentials();
         return;
     }
@@ -302,12 +390,21 @@ route[AUTH] {
     if (!proxy_authorize("$fd", "subscriber")) {
         $var(audit_result) = "failure";
         route(AUTH_AUDIT);
+        # T2.1: Increment auth failure counter (60s TTL)
+        cache_add("local", "auth_failures_$var(auth_key)", "1", "60");
+        # T2.2 / T4.1: Ban source IP after 3 auth failures
+        if (cache_fetch("local", "auth_failures_$var(auth_key)", "$avp(auth_fail_count)") && $avp(auth_fail_count) >= 3) {
+            xlog("L_WARN", "Auth failure threshold reached for $var(auth_key) from $si - adding to ban_list\n");
+            cache_store("local", "ban_list_$si", "auth_exceeded", "3600");
+        }
         proxy_challenge("$fd", "auth");
         exit;
     }
 
     # Auth success - reset rate limit counter for this user
     rl_reset_count("auth_$au");
+    # T2.2: Reset auth failure counter on success
+    cache_remove("local", "auth_failures_$var(auth_key)");
 
     # Audit log for non-REGISTER success
     $var(audit_result) = "success";
@@ -390,11 +487,63 @@ route[HANDLE_INVITE] {
     # Topology hiding
     topology_hiding("C");
 
-    # Media relay offer with graceful degradation (Feature 004)
-    if (!rtpengine_offer("replace-origin replace-session-connection")) {
-        sl_send_reply(488, "Not Acceptable Here");
+    # T4.2: Media relay offer with SRTP for TLS-signaled calls
+    if ($socket_in(proto) == "TLS") {
+        # SRTP via SDES for TLS connections
+        if (!rtpengine_offer("RTP/SAVP replace-origin replace-session-connection")) {
+            sl_send_reply(488, "Not Acceptable Here");
+            exit;
+        }
+    } else {
+        # Plain RTP for non-TLS connections
+        if (!rtpengine_offer("replace-origin replace-session-connection")) {
+            sl_send_reply(488, "Not Acceptable Here");
+            exit;
+        }
+    }
+}
+
+route[SRTP_REOFFER] {
+    # T4.3: Re-INVITE with SDP (hold/resume) - renegotiate SRTP context
+    if ($socket_in(proto) == "TLS") {
+        if (!rtpengine_offer("RTP/SAVP replace-origin replace-session-connection")) {
+            xlog("L_WARN", "SRTP re-offer failed for $ci\n");
+            sl_send_reply(488, "Not Acceptable Here");
+            exit;
+        }
+    } else {
+        if (!rtpengine_offer("replace-origin replace-session-connection")) {
+            xlog("L_WARN", "RTP re-offer failed for $ci\n");
+            sl_send_reply(488, "Not Acceptable Here");
+            exit;
+        }
+    }
+}
+
+route[TRUNK_VERIFY] {
+    # T2.3: Mutual TLS for trunks
+    # Check if source IP is a registered trunk requiring mTLS
+    if (!sql_query("SELECT 1 FROM trunk_ips WHERE ip_address = '$si' AND enabled = true AND require_mtls = true LIMIT 1", "$avp(trunk_check)")) {
+        xlog("L_ERR", "TRUNK_VERIFY: database unavailable for trunk lookup\n");
+        sl_send_reply(480, "Temporarily Unavailable");
         exit;
     }
+
+    if ($avp(trunk_check) != 0) {
+        # Source is a trunk - require TLS and client certificate
+        if ($socket_in(proto) != "TLS") {
+            xlog("L_WARN", "TRUNK_VERIFY: trunk $si rejected - not using TLS\n");
+            sl_send_reply(403, "Forbidden - TLS Required");
+            exit;
+        }
+        if ($tls_peer_subject_cn == NULL || $tls_peer_subject_cn == "") {
+            xlog("L_WARN", "TRUNK_VERIFY: trunk $si rejected - no client certificate\n");
+            sl_send_reply(403, "Forbidden - Client Certificate Required");
+            exit;
+        }
+        xlog("L_INFO", "TRUNK_VERIFY: trunk $si authenticated via mTLS CN=$tls_peer_subject_cn\n");
+    }
+    $avp(trunk_check) = NULL;
 }
 
 route[RELAY] {
@@ -418,6 +567,8 @@ route[RELAY] {
 
 event_route[E_PIKE_BLOCKED] {
     xlog("L_WARN", "E_PIKE_BLOCKED: source=$param(src_ip) limit=$param(limit)\n");
+    # T4.1: Auto-ban pike-blocked sources for extended protection (1h TTL)
+    cache_store("local", "ban_list_$param(src_ip)", "pike_blocked", "3600");
 }
 
 event_route[E_AUTH_FAILURE] {

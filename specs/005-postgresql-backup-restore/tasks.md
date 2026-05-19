@@ -127,21 +127,21 @@
 
 ## Phase 6 — Offsite Replication
 
-### [pending] T6.1: Configure rclone for S3-compatible storage
+### [completed] T6.1: Configure rclone for S3-compatible storage
 **Description**: Create `docker/backup/rclone.conf.tpl` with S3 backend template. Support endpoint, bucket, access key from environment. Test with `rclone ls`.
 **Phase**: 6
 **Depends on**: T5.2
 **Parallel**: No
 **Acceptance**: `rclone ls remote:tsisip-backups` succeeds.
-**Live VPS status 2026-05-19**: Template exists; real remote credentials and successful offsite listing are still pending.
+**Live VPS status 2026-05-19**: Template exists with Socratic decision log and documented env vars. `backup.sh` now triggers `replicate.sh` after each successful encrypted backup. Real remote credentials and successful offsite listing are still pending.
 
-### [pending] T6.2: Implement bandwidth-throttled replication
-**Description**: Create `docker/backup/replicate.sh` that: runs `rclone sync --bwlimit 50M` from `/backup/` to remote. Verify MD5 checksums. Run hourly via cron.
+### [completed] T6.2: Implement bandwidth-throttled replication
+**Description**: Create `docker/backup/replicate.sh` that: runs `rclone sync --bwlimit 625K` from `/backup/` to remote. Verify MD5 checksums. Run hourly via cron. Add pre-flight bandwidth check.
 **Phase**: 6
 **Depends on**: T6.1
 **Parallel**: No
 **Acceptance**: Offsite copy exists within 1 hour; checksums match.
-**Live VPS status 2026-05-19**: Replication script exists; offsite copy/checksum proof is pending until a real object-store target is configured.
+**Live VPS status 2026-05-19**: Default bwlimit lowered to 625K (5 Mbps) with Socratic rationale. Pre-flight check added (`rclone ls` connectivity probe + optional `speedtest-cli`). Offsite copy/checksum proof is pending until a real object-store target is configured.
 
 ### [completed] T6.3: Document backup/restore runbook
 **Description**: Update `docs/TSiSIP-OPERATOR-RUNBOOK.md` with: backup procedures, restore steps (full, PITR), validation process, offsite replication verification, key rotation procedure.

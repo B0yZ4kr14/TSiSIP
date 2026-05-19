@@ -123,3 +123,19 @@ CREATE INDEX IF NOT EXISTS idx_cdr_call_start ON cdr(call_start);
 CREATE INDEX IF NOT EXISTS idx_cdr_from_user ON cdr(from_user);
 CREATE INDEX IF NOT EXISTS idx_cdr_tenant ON cdr(tenant_id);
 CREATE INDEX IF NOT EXISTS idx_cdr_status ON cdr(call_status);
+
+-- trunk_ips: trusted SIP trunk endpoints requiring mutual TLS (T2.3)
+CREATE TABLE IF NOT EXISTS trunk_ips (
+    id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+    ip_address INET NOT NULL,
+    label VARCHAR(128) NOT NULL,
+    tenant_id UUID,
+    require_mtls BOOLEAN NOT NULL DEFAULT TRUE,
+    enabled BOOLEAN NOT NULL DEFAULT TRUE,
+    created_at TIMESTAMPTZ NOT NULL DEFAULT NOW(),
+    UNIQUE (ip_address, label)
+);
+
+CREATE INDEX IF NOT EXISTS idx_trunk_ips_lookup
+    ON trunk_ips(ip_address, enabled)
+    WHERE enabled = true;
