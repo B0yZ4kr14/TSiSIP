@@ -20,7 +20,7 @@ In plain terms:
 ## 2. Repository State
 
 - **Documentation-first greenfield with foundation committed**: Dockerfile, Docker Compose, OpenSIPS config template, PostgreSQL schema, container entrypoint, CI workflow, integration tests, and operator runbooks are committed.
-- Git is initialized but has **no commits**.
+- Git is initialized and has **active commits** on `master` branch.
 - The repository currently contains:
   - Canonical architecture specification (`docs/`)
   - Agent orchestration configuration (`.claude/`, `.claude-flow/`, `.swarm/`, `.sisyphus/`)
@@ -491,7 +491,7 @@ shell commands, and other important information, read the current plan
 <!-- gitnexus:start -->
 # GitNexus — Code Intelligence
 
-This project is indexed by GitNexus as **TSiSIP** (2376 symbols, 2598 relationships, 2 execution flows). Use the GitNexus MCP tools to understand code, assess impact, and navigate safely.
+This project is indexed by GitNexus as **TSiSIP** (2425 symbols, 2647 relationships, 2 execution flows). Use the GitNexus MCP tools to understand code, assess impact, and navigate safely.
 
 > If any GitNexus tool warns the index is stale, run `npx gitnexus analyze` in terminal first.
 

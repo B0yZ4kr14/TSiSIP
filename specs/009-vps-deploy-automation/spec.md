@@ -68,6 +68,8 @@ Establish an automated deploy pipeline that validates every deploy against quali
 - Pusher agent tags and pushes to container registry using available credentials
 - If registry credentials are unavailable, pipeline falls back to build-on-target mode
 
+> **Architecture Note**: The "agents" referenced above are local shell scripts or CI job stages (not long-running containerized services). They execute on the operator's workstation or CI runner and invoke standard Docker CLI commands. This aligns with Constitution §1 (Docker-first delivery of runtime components) by ensuring only the resulting container images are deployed, not the build tools themselves.
+
 ### FR-004: Coordinated Deploy to VPS
 **Description**: The target VPS must receive updated code and containers with zero-downtime where possible.
 **Acceptance Criteria**:

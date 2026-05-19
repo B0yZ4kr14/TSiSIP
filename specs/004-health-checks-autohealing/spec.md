@@ -7,7 +7,7 @@
 | **Feature** | Advanced Container Health Checks and Auto-Healing |
 | **Short name** | health-checks-autohealing |
 | **Created** | 2026-05-16 |
-| **Status** | Partial |
+| **Status** | In Progress (OpenSIPS/RTPengine/PostgreSQL complete; Asterisk deferred to Feature 010) |
 | **Last Updated** | 2026-05-19 |
 | **Context** | TSiSIP is a Docker-first SIP infrastructure using OpenSIPS 3.6 LTS, PostgreSQL, RTPengine, and Asterisk. Container orchestration reliability is critical for production deployments. |
 | **Objective** | Implement multi-layer health probes, intelligent restart policies, circuit breaker patterns for dispatcher targets, graceful degradation, and health status observability to maximize service uptime and minimize manual intervention. |
@@ -41,9 +41,9 @@ If the health status dashboard (e.g., Prometheus/Grafana) is down, health probes
 ## Functional Requirements
 
 ### FR-001: Multi-Layer Health Probes
-- Each container (OpenSIPS, PostgreSQL, RTPengine, Asterisk) must expose Docker-native `HEALTHCHECK` instructions.
+- Each container (OpenSIPS, PostgreSQL, RTPengine) must expose Docker-native `HEALTHCHECK` instructions. Asterisk health checks are deferred to a future Asterisk containerization feature (Feature 010).
 - Layers: (a) TCP socket probe, (b) HTTP/JSON management API probe (OpenSIPS MI), (c) application-level SIP OPTIONS probe via `dispatcher` module.
-- **Acceptance Criteria**: `docker ps` shows `healthy` for all services within 60 seconds of startup; `unhealthy` is reported within 10 seconds of failure.
+- **Acceptance Criteria**: `docker ps` shows `healthy` for OpenSIPS, PostgreSQL, and RTPengine within 60 seconds of startup; `unhealthy` is reported within 10 seconds of failure. Asterisk health checks are out of scope for this feature.
 
 ### FR-002: Auto-Restart Policies with Exponential Backoff
 - Docker Compose `restart_policy` must use `on-failure` with `delay` starting at 5s, max 60s, and `max_attempts: 10`.

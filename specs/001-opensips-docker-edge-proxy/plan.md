@@ -120,7 +120,7 @@ This plan translates the feature specification into an executable implementation
 1. `docker-compose.yml` with services:
    - `postgres` — internal `db_internal` network only, no published ports, secret-mounted password, initialization volume.
    - `opensips` — attaches to `sip_edge`, `sip_internal`, `db_internal`; publishes `5060/udp`, `5060/tcp`, and `5061/tcp`; secret mounts; capability dropping.
-   - `rtpengine` — attaches to `sip_internal` only; no published ports; ng-control bound to `0.0.0.0:22222` on `sip_internal` (OpenSIPS connects via Docker DNS `rtpengine:22222`).
+   - `rtpengine` — attaches to `sip_internal` only; no published ports; ng-control bound to `${RTPENGINE_INTERNAL_IP}:22222` on `sip_internal` (OpenSIPS connects via Docker DNS `rtpengine:22222`).
    - `asterisk-pbx-1` and `asterisk-pbx-2` — attach to `sip_internal` only; no published ports.
 2. Network definitions:
    - `sip_edge`: bridge, external access allowed.
@@ -134,7 +134,7 @@ This plan translates the feature specification into an executable implementation
 - `rtpengine` does not publish RTP ports in Docker Compose (port ranges cause Docker 29.5.0 memory bloat); RTP is handled via host networking or external orchestration.
 - No `asterisk-*` service may define `ports:` or attach to a public network.
 - `postgres` must not define `ports:` and must attach only to `db_internal`.
-- RTPengine `--listen-ng` binds to `0.0.0.0:22222` (Docker bridge network; OpenSIPS connects via Docker service DNS `rtpengine:22222`).
+- RTPengine `--listen-ng` binds to `${RTPENGINE_INTERNAL_IP}:22222` on `sip_internal` only (Docker bridge network; OpenSIPS connects via Docker service DNS `rtpengine:22222`).
 - OpenSIPS container drops all capabilities except `NET_BIND_SERVICE`, `SETUID`, `SETGID`.
 - OpenSIPS container uses `security_opt: ["no-new-privileges:true"]`.
 

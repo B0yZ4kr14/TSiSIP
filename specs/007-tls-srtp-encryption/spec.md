@@ -7,7 +7,7 @@
 | **Feature** | End-to-End Encryption for SIP Signaling (TLS) and Media (SRTP) |
 | **Short name** | tls-srtp-encryption |
 | **Created** | 2026-05-16 |
-| **Status** | Partial |
+| **Status** | In Progress (53% — TLS listener done; mTLS trunk, SRTP, cipher hardening, rotation monitoring pending) |
 | **Last Updated** | 2026-05-19 |
 | **Context** | TSiSIP handles sensitive VoIP traffic. SIP signaling carries authentication credentials and call metadata; RTP carries voice content. Encryption is required to prevent eavesdropping, toll fraud, and identity spoofing. |
 | **Objective** | Deliver mutual TLS authentication for SIP trunks, a self-signed CA infrastructure, zero-downtime certificate rotation, SRTP key exchange via SDP, and hardened cipher suites across the TSiSIP SIP edge and RTPengine stack. |

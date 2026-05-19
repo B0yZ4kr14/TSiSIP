@@ -102,6 +102,7 @@ TSiSIP edge
 | `sip_edge` | OpenSIPS, RTPengine | yes | Public SIP and RTP ingress. |
 | `sip_internal` | OpenSIPS, RTPengine, Asterisk | no | Internal SIP forwarding and RTPengine control. |
 | `db_internal` | OpenSIPS, PostgreSQL | no | Database access only. |
+| `metrics_host` | OCP, backup, PostgreSQL | no | Loopback-only metrics exposure (Prometheus exporter, backup metrics). Optional; used in vps-lite profile for local monitoring access. |
 
 Published ports:
 

@@ -120,7 +120,8 @@ Deliver a repeatable, auditable deployment pipeline that:
 | SC-001 | Secret discovery without exposure | 100% | `grep` for secrets in logs = 0 |
 | SC-002 | Ansible deploy success rate | 100% | playbook exit code 0 |
 | SC-003 | Health check pass time | < 60 s | `curl login.php` contains `"TSiSIP"` |
-| SC-004 | Reverse proxy SSL grade | A+ | SSL Labs test |
+| SC-004 | Reverse proxy security headers | A+ | securityheaders.com scan |
+| SC-004b | Reverse proxy TLS config | A+ | SSL Labs test (requires real certificates; dummy certs do not qualify) |
 | SC-005 | Audit document completeness | 100% | All SPoF have test + fallback |
 | SC-006 | SIP authenticated route | Pass | Digest INVITE reaches Asterisk and returns final response |
 
