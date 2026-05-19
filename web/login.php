@@ -1,7 +1,7 @@
 <?php
 /**
- * TSiAPP Platform — TSiSIP Control Panel Login
- * Premium branded login view for the TSiAPP ecosystem
+ * TSiSIP Control Panel Login
+ * Premium branded login view for the TSiSIP ecosystem
  */
 
 session_start();
@@ -35,7 +35,7 @@ function tsisip_asset(string $logicalName, string $type = 'css'): string {
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta name="theme-color" content="#1A3A5C">
-    <title><?php echo _('TSiAPP — Sign In'); ?></title>
+    <title><?php echo _('TSiSIP — Sign In'); ?></title>
     <link rel="stylesheet" href="css/main.css">
     <link rel="stylesheet" href="<?php echo tsisip_asset('tsisip-variables.css', 'css'); ?>">
     <link rel="stylesheet" href="<?php echo tsisip_asset('tsisip-theme.css', 'css'); ?>">
@@ -43,9 +43,9 @@ function tsisip_asset(string $logicalName, string $type = 'css'): string {
 <body class="tsisip-login">
     <div class="tsisip-login-card">
         <div class="logo">
-            <img src="<?php echo tsisip_asset('tsiapp-logo-full.svg', 'svg'); ?>"
+            <img src="<?php echo tsisip_asset('tsisip-logo-full-v2.svg', 'svg'); ?>"
                  width="220" height="48"
-                 alt="<?php echo _('TSiAPP Platform'); ?>">
+                 alt="<?php echo _('TSiSIP Platform'); ?>">
         </div>
         <h1 class="tsisip-text-center tsisip-mb-2"><?php echo _('Welcome back'); ?></h1>
         <p class="tsisip-login-subtitle"><?php echo _('TSiSIP Control Panel'); ?></p>

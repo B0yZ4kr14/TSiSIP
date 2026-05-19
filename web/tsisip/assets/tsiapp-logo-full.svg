@@ -1,17 +1,17 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 220 48" width="220" height="48" aria-label="TSiAPP">
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 220 48" width="220" height="48" aria-label="TSiSIP">
   <defs>
-    <linearGradient id="tsiapp-grad" x1="0%" y1="0%" x2="100%" y2="100%">
+    <linearGradient id="tsisip-grad" x1="0%" y1="0%" x2="100%" y2="100%">
       <stop offset="0%" stop-color="#0A1628"/>
       <stop offset="100%" stop-color="#1A3A5C"/>
     </linearGradient>
-    <linearGradient id="tsiapp-accent" x1="0%" y1="0%" x2="100%" y2="0%">
+    <linearGradient id="tsisip-accent" x1="0%" y1="0%" x2="100%" y2="0%">
       <stop offset="0%" stop-color="#0D8A6E"/>
       <stop offset="100%" stop-color="#2563A8"/>
     </linearGradient>
   </defs>
-  <rect width="220" height="48" rx="10" fill="url(#tsiapp-grad)"/>
-  <text x="20" y="31" font-family="'Inter', system-ui, sans-serif" font-size="20" font-weight="800" fill="#E8ECF0" letter-spacing="0.08em">TSiAPP</text>
-  <circle cx="195" cy="24" r="12" fill="url(#tsiapp-accent)" opacity="0.95"/>
+  <rect width="220" height="48" rx="10" fill="url(#tsisip-grad)"/>
+  <text x="20" y="31" font-family="'Inter', system-ui, sans-serif" font-size="20" font-weight="800" fill="#E8ECF0" letter-spacing="0.08em">TSiSIP</text>
+  <circle cx="195" cy="24" r="12" fill="url(#tsisip-accent)" opacity="0.95"/>
   <circle cx="198" cy="21" r="5" fill="#E8ECF0" opacity="0.9"/>
   <text x="115" y="31" font-family="'Inter', system-ui, sans-serif" font-size="9" font-weight="500" fill="#0D8A6E" letter-spacing="0.15em" opacity="0.9">PLATFORM</text>
 </svg>

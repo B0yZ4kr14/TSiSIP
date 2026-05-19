@@ -1,0 +1,46 @@
+/* TSiSIP Premium Logo Effects */
+/* Generated: 2026-05-19 */
+
+/* Logo glow animation for header */
+.logo-full svg,
+.logo-compact svg {
+    filter: drop-shadow(0 0 8px rgba(13, 138, 110, 0.3));
+    transition: filter 0.3s ease, transform 0.3s ease;
+}
+
+.logo-full:hover svg,
+.logo-compact:hover svg {
+    filter: drop-shadow(0 0 16px rgba(13, 138, 110, 0.6)) drop-shadow(0 0 32px rgba(26, 58, 92, 0.4));
+    transform: scale(1.02);
+}
+
+/* Login page logo pulse effect */
+.login-logo svg {
+    filter: drop-shadow(0 0 12px rgba(13, 138, 110, 0.4));
+    animation: logo-pulse 3s ease-in-out infinite;
+}
+
+@keyframes logo-pulse {
+    0%, 100% { filter: drop-shadow(0 0 12px rgba(13, 138, 110, 0.4)); }
+    50% { filter: drop-shadow(0 0 24px rgba(13, 138, 110, 0.7)) drop-shadow(0 0 48px rgba(26, 58, 92, 0.3)); }
+}
+
+/* Shield icon subtle float animation */
+.shield-icon {
+    animation: shield-float 4s ease-in-out infinite;
+}
+
+@keyframes shield-float {
+    0%, 100% { transform: translateY(0); }
+    50% { transform: translateY(-2px); }
+}
+
+/* Network node sparkle effect */
+.node-sparkle {
+    animation: node-sparkle 2s ease-in-out infinite;
+}
+
+@keyframes node-sparkle {
+    0%, 100% { opacity: 0.8; }
+    50% { opacity: 1; }
+}

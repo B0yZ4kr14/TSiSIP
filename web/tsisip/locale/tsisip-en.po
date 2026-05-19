@@ -12,8 +12,8 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 
-msgid "TSiSIP -- OpenSIPS Control Panel"
-msgstr "TSiSIP -- OpenSIPS Control Panel"
+msgid "TSiSIP -- TSiSIP Control Panel"
+msgstr "TSiSIP -- TSiSIP Control Panel"
 
 msgid "TSiSIP -- Login"
 msgstr "TSiSIP -- Login"

@@ -1,0 +1,86 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 200 48" width="200" height="48" aria-label="TSiSIP Logo">
+  <defs>
+    <!-- Primary gradient: deep navy to emerald -->
+    <linearGradient id="g-shield" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0%" stop-color="#1A3A5C"/>
+      <stop offset="55%" stop-color="#1A3A5C"/>
+      <stop offset="100%" stop-color="#0D8A6E"/>
+    </linearGradient>
+    <!-- Text gradient: light to emerald accent -->
+    <linearGradient id="g-text" x1="0" y1="0" x2="1" y2="0">
+      <stop offset="0%" stop-color="#E8ECF0"/>
+      <stop offset="75%" stop-color="#E8ECF0"/>
+      <stop offset="100%" stop-color="#0D8A6E"/>
+    </linearGradient>
+    <!-- Ambient glow filter -->
+    <filter id="f-glow" x="-50%" y="-50%" width="200%" height="200%">
+      <feGaussianBlur stdDeviation="3" result="b"/>
+      <feMerge>
+        <feMergeNode in="b"/>
+        <feMergeNode in="b"/>
+        <feMergeNode in="SourceGraphic"/>
+      </feMerge>
+    </filter>
+    <!-- Soft drop shadow -->
+    <filter id="f-shadow" x="-30%" y="-30%" width="160%" height="160%">
+      <feDropShadow dx="0" dy="1.5" stdDeviation="2" flood-color="#0D1F33" flood-opacity="0.4"/>
+    </filter>
+    <!-- Glass morphism blur -->
+    <filter id="f-glass">
+      <feGaussianBlur stdDeviation="0.8"/>
+    </filter>
+    <!-- Text subtle bloom -->
+    <filter id="f-text-glow" x="-20%" y="-20%" width="140%" height="140%">
+      <feGaussianBlur stdDeviation="0.8" result="b"/>
+      <feMerge>
+        <feMergeNode in="b"/>
+        <feMergeNode in="SourceGraphic"/>
+      </feMerge>
+    </filter>
+  </defs>
+
+  <!-- Ambient emerald glow behind icon -->
+  <circle cx="24" cy="24" r="20" fill="#0D8A6E" opacity="0.14" filter="url(#f-glow)"/>
+
+  <!-- Shield outline with subtle stroke -->
+  <path d="M24 4 C34 4, 42 10, 42 22 C42 34, 34 41, 24 44 C14 41, 6 34, 6 22 C6 10, 14 4, 24 4 Z"
+        fill="url(#g-shield)"
+        stroke="#E8ECF0" stroke-width="0.5" stroke-opacity="0.25"
+        filter="url(#f-shadow)"/>
+
+  <!-- Inner network nodes -->
+  <!-- Central edge-proxy node -->
+  <circle cx="24" cy="22" r="4.5" fill="#E8ECF0" opacity="0.95"/>
+  <!-- Satellite nodes -->
+  <circle cx="24" cy="12" r="2.2" fill="#E8ECF0" opacity="0.85"/>
+  <circle cx="16" cy="30" r="2.2" fill="#E8ECF0" opacity="0.85"/>
+  <circle cx="32" cy="30" r="2.2" fill="#E8ECF0" opacity="0.85"/>
+
+  <!-- Connection lines (circuit traces) -->
+  <line x1="24" y1="22" x2="24" y2="14.2" stroke="#E8ECF0" stroke-width="1" opacity="0.55" stroke-linecap="round"/>
+  <line x1="24" y1="22" x2="17.5" y2="28.5" stroke="#E8ECF0" stroke-width="1" opacity="0.55" stroke-linecap="round"/>
+  <line x1="24" y1="22" x2="30.5" y2="28.5" stroke="#E8ECF0" stroke-width="1" opacity="0.55" stroke-linecap="round"/>
+  <!-- Faint mesh lines -->
+  <line x1="24" y1="14.2" x2="17.5" y2="28.5" stroke="#E8ECF0" stroke-width="0.7" opacity="0.28" stroke-linecap="round"/>
+  <line x1="24" y1="14.2" x2="30.5" y2="28.5" stroke="#E8ECF0" stroke-width="0.7" opacity="0.28" stroke-linecap="round"/>
+  <line x1="17.5" y1="28.5" x2="30.5" y2="28.5" stroke="#E8ECF0" stroke-width="0.7" opacity="0.28" stroke-linecap="round"/>
+
+  <!-- Signal wave arcs (SIP traffic metaphor) -->
+  <path d="M44 16 Q49 24, 44 32" stroke="#0D8A6E" stroke-width="1.5" fill="none" opacity="0.55" stroke-linecap="round"/>
+  <path d="M48 12 Q55 24, 48 36" stroke="#0D8A6E" stroke-width="1" fill="none" opacity="0.3" stroke-linecap="round"/>
+
+  <!-- Glass morphism highlight overlay on shield top -->
+  <path d="M24 4 C34 4, 42 10, 42 22 C42 24, 40 25, 38 24 C33 19, 29 17, 24 17 C19 17, 15 19, 10 24 C8 25, 6 24, 6 22 C6 10, 14 4, 24 4 Z"
+        fill="#FFFFFF" opacity="0.1" filter="url(#f-glass)"/>
+
+  <!-- Brand text -->
+  <text x="54" y="30"
+        font-family="Inter, system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', sans-serif"
+        font-size="20" font-weight="800"
+        fill="url(#g-text)"
+        letter-spacing="0.1em"
+        filter="url(#f-text-glow)">TSiSIP</text>
+
+  <!-- Accent underline -->
+  <line x1="54" y1="37" x2="96" y2="37" stroke="#0D8A6E" stroke-width="1.5" opacity="0.5" stroke-linecap="round"/>
+</svg>
