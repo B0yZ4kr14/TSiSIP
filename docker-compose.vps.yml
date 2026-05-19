@@ -43,7 +43,7 @@ services:
     mem_limit: 256m
     memswap_limit: 256m
     ports:
-      - "10000-20000:10000-20000/udp"
+      - "10000-10999:10000-10999/udp"
     environment:
       RTPENGINE_HOST: rtpengine
       RTPENGINE_NG_PORT: 22222
@@ -52,7 +52,7 @@ services:
       - --interface=${RTPENGINE_PRIVATE_IP:-127.0.0.1}/${HOST_PUBLIC_IP:-127.0.0.1}
       - --listen-ng=${RTPENGINE_INTERNAL_IP:-0.0.0.0}:22222
       - --port-min=10000
-      - --port-max=20000
+      - --port-max=10999
       - --log-stderr
       - --foreground
     cap_drop: [ALL]
