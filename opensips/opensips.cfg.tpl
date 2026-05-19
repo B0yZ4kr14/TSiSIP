@@ -99,8 +99,8 @@ modparam("tls_mgm", "private_key", "[default]/etc/opensips/tls/server.key")
 modparam("tls_mgm", "ca_list", "[default]/etc/opensips/tls/ca.crt")
 modparam("tls_mgm", "verify_cert", "[default]1")
 modparam("tls_mgm", "require_cert", "[default]1")
-modparam("tls_mgm", "cipher_list", "[default]ECDHE+AESGCM:ECDHE+CHACHA20:!aNULL:!MD5:!DSS")
-modparam("tls_mgm", "method", "[default]TLSv1.2:TLSv1.3")
+modparam("tls_mgm", "ciphers_list", "[default]ECDHE+AESGCM:ECDHE+CHACHA20:!aNULL:!MD5:!DSS")
+modparam("tls_mgm", "tls_method", "[default]TLSv1.2:TLSv1.3")
 
 # tm
 modparam("tm", "fr_timeout", 5)
