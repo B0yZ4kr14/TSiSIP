@@ -1,4 +1,4 @@
-FROM grafana/grafana:10.4.0
+FROM grafana/grafana:10.4.0@sha256:f9811e4e687ffecf1a43adb9b64096c50bc0d7a782f8608530f478b6542de7d5
 
 # Copy provisioning configurations
 COPY provisioning/datasources /etc/grafana/provisioning/datasources

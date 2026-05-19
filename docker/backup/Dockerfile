@@ -1,4 +1,4 @@
-FROM postgres:16
+FROM postgres:16@sha256:b6ccf02e9b47eac0d67b5eaa0ef56fd59163bffa5506f64e96ceb5053130ec86
 
 # Install dependencies: rclone, openssl, cron, gettext
 RUN apt-get update && apt-get install -y --no-install-recommends \

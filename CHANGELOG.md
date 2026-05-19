@@ -5,9 +5,23 @@ All notable changes to the TSiSIP project are documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
-## [Unreleased]
+## [Unreleased] — 2026-05-19
 
 ### Added
+- feat(wiki): Professional Premium Wiki with role-based navigation and audience maps
+- feat(wiki): Dentist Clinical Operator Guide for endpoint verification and call quality
+- feat(wiki): Front-Desk Assistant Operator Guide for daily health checks and trunk verification
+- feat(ocp): Wiki renderer with markdown parser and table of contents
+- feat(dashboard): Role-aware landing page with role navigation
+- feat(routing): multi-tenant header routing and tenant isolation (Feature 002)
+- feat(webrtc): WebSocket/WebRTC transport support (Feature 003)
+- feat(cdr): CDR/billing foundation with acc module (Feature 001)
+- feat(asterisk): PBX backend integration and end-to-end SIP flow (Feature 007)
+- feat(anomaly): anomaly detection integration with Alertmanager (Feature 008)
+- feat(ci): CI/CD pipeline with speckit scans (Feature 005)
+- feat(deploy): VPS-lite production profile with OpenSIPS TLS bootstrap
+- docs(deploy): VPS Deploy Readiness Checklist
+- docs(reports): consolidated speckit scan remediation summary
 - Feature 002: TSiSIP OpenSIPS Control Panel Rebranding & Modernization
   - TSiSIP design system with metallic blue palette (`#1A3A5C` anchor)
   - CSS Custom Properties-based theme engine (`web/tsisip/css/tsisip-variables.css`)
@@ -25,10 +39,26 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - GitHub Actions CI readiness (Lighthouse budget, visual regression configs)
 
 ### Changed
+- fix(deploy): production readiness with OpenSIPS config hardening and VPS deploy pipeline
+- fix(compose): RTPengine NG control protocol switched to TCP over Docker network
+- fix(vps): TLS 5061/tcp enabled with self-signed certificates
+- fix(compose): reduced VPS RTP port range to 10000-10999 to avoid Docker iptables hang
+- fix(speckit): resolved cross-spec consistency issues (C1-C4, H1, H4-H7)
 - `web/common/header.php`: integrated TSiSIP asset manifest loader, logo, meta tags
 - `web/css/main.css`: OCP base styles compatible with TSiSIP override layer
 - `AGENTS.md`: added Feature 002 build/test commands
 - `.gitignore`: added Node.js, PHP, and generated asset exclusions
+
+### Fixed
+- fix(healthchecks): corrected PostgreSQL, OpenSIPS, and RTPengine health checks
+- fix(secrets): trim trailing newlines from secret files; OCP healthcheck uses curl
+- fix(entrypoint): use awk instead of tr to read Docker secrets
+- fix(backup): resolved speckit-analyze issues for Feature 005
+- fix(opensips): corrected tls_mgm 3.6 syntax for certificates
+- fix(rtpengine): corrected healthcheck COPY path for root build context
+- fix(brownfield): remediated speckit scan findings (image tags, htable removal, memory limits, shm_size)
+- fix(memorylint): PostgreSQL memory tuning (shared_buffers, work_mem, max_connections) and OpenSIPS diagnostics (memdump, memlog)
+- fix(version-guard): pinned all base images to SHA256 digests and compose image tags to `${TSISIP_IMAGE_TAG:-latest}`
 
 ### Security
 - All TSiSIP assets are self-hosted (no CDN dependencies)

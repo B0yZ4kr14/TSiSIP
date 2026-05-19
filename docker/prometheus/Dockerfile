@@ -2,7 +2,7 @@ FROM alpine:3.19@sha256:6baf43584bcb78f2e5847d1de515f23499913ac9f12bdf834811a314
 
 RUN apk add --no-cache gettext
 
-FROM prom/prometheus:v2.51.0
+FROM prom/prometheus:v2.51.0@sha256:5ccad477d0057e62a7cd1981ffcc43785ac10c5a35522dc207466ff7e7ec845f
 
 USER root
 

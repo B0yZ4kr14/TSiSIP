@@ -1,4 +1,4 @@
-# Feature: OpenSIPS Docker Edge Proxy Foundation
+# Feature: TSiSIP SIP Edge Foundation
 
 ## Quick Start
 
@@ -10,7 +10,7 @@
    echo 'your-topology-secret' > secrets/topology_secret
    ```
 
-2. Build the OpenSIPS image:
+2. Build the TSiSIP SIP edge image:
    ```bash
    docker build -t tsisip/opensips:latest .
    ```
@@ -27,7 +27,7 @@
 
 ## Architecture
 
-- `opensips/`: OpenSIPS configuration template and related files
+- `opensips/`: TSiSIP SIP edge configuration template and related OpenSIPS engine files
 - `docker/`: Container definitions for OpenSIPS, RTPengine, and Asterisk
 - `db/init/`: PostgreSQL initialization scripts
 - `secrets/`: Runtime secrets (excluded from git)
@@ -35,3 +35,5 @@
 ## Acceptance Criteria
 
 See `spec.md`, `plan.md`, and `tasks.md` for full details.
+
+**Last Updated**: 2026-05-19

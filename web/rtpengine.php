@@ -1,6 +1,6 @@
 <?php
 /**
- * TSiSIP OpenSIPS Control Panel - RTPengine Module View Stub
+ * TSiSIP Control Panel — RTPengine Module View Stub
  * Demonstrates D3.js chart integration point
  */
 require_once __DIR__ . '/common/header.php';

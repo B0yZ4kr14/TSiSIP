@@ -1,14 +1,14 @@
 # TSiSIP — Docker-First SIP Edge Proxy Platform
 
-TSiSIP is a Docker-image-first SIP edge-proxy platform built on **OpenSIPS 3.6 LTS**.
+TSiSIP is a Docker-image-first SIP edge-proxy platform. Its SIP engine is based on **OpenSIPS 3.6 LTS**.
 It acts as the only public SIP signaling entry point and security boundary for a private, multi-tenant Asterisk PBX backend cluster.
 
 ## Features
 
 | Feature | Status | Description |
 |---|---|---|
-| **001 — OpenSIPS Docker Edge Proxy** | Complete | OpenSIPS 3.6 LTS, RTPengine, PostgreSQL schema, Docker Compose topology |
-| **002 — OCP Rebranding & Modernization** | Complete | TSiSIP-branded OpenSIPS Control Panel v9 with D3.js charts, i18n, role-aware density |
+| **001 — TSiSIP SIP Edge Foundation** | Complete | TSiSIP SIP edge service, RTPengine, PostgreSQL schema, Docker Compose topology |
+| **002 — TSiSIP Control Panel Modernization** | Complete | TSiSIP Control Panel (OCP v9) with D3.js charts, i18n, role-aware density |
 
 ## Quick Start
 
@@ -39,8 +39,8 @@ Internet / SIP clients
         | 5060/udp, 5060/tcp
         v
 +-----------------------------+
-| OpenSIPS Docker image       |
-| TSiSIP edge proxy           |
+| TSiSIP SIP edge service     |
+| OpenSIPS 3.6 engine         |
 | - auth                      |
 | - header routing            |
 | - topology hiding           |
@@ -63,7 +63,7 @@ Internet / RTP clients
 | public RTP, internal control|
 +-----------------------------+
 
-OpenSIPS
+TSiSIP edge
         |
         | internal DB network
         v
@@ -86,7 +86,7 @@ OpenSIPS
 
 | Layer | Technology |
 |---|---|
-| SIP Proxy | OpenSIPS 3.6 LTS |
+| SIP Proxy | TSiSIP SIP edge service (OpenSIPS 3.6 LTS engine) |
 | Database | PostgreSQL 16 |
 | Media Relay | RTPengine |
 | PBX Backend | Asterisk |

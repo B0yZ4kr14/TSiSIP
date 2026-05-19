@@ -1,8 +1,8 @@
-# Feature 002: TSiSIP OpenSIPS Control Panel Rebranding & Modernization
+# Feature 002: TSiSIP Control Panel Rebranding & Modernization
 
 ## Overview
 
-This feature delivers a TSiSIP-branded visual layer for OpenSIPS Control Panel (OCP) v9, replacing generic OCP branding with TSiSIP corporate identity while preserving full backward compatibility and rollback safety.
+This feature delivers the TSiSIP Control Panel visual layer on top of upstream OCP v9, replacing generic upstream branding with TSiSIP corporate identity while preserving full backward compatibility and rollback safety.
 
 ## Quick Start
 
@@ -92,3 +92,5 @@ When rebasing onto a new OCP v9 point release:
 1. Preserve `web/common/header.php` diff: asset manifest loader, TSiSIP logo, meta tags, data-tsisip-role
 2. Preserve `web/css/main.css` diff: any TSiSIP-specific base adjustments
 3. The `web/tsisip/` directory is self-contained and does not conflict with OCP updates
+
+**Last Updated**: 2026-05-19

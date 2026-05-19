@@ -1,0 +1,40 @@
+{
+  "runId": "memory-audit-20260519",
+  "project": "TSiSIP",
+  "purpose": "Initialize and audit agent memory surfaces (A+B+C+D+E)",
+  "startedAt": "2026-05-19T15:12:43-03:00",
+  "completedAt": "2026-05-19T15:15:00-03:00",
+  "status": "completed",
+  "agent": "kimi-code-cli",
+  "tasks": [
+    {"id": "A", "title": "Initialize Project Memory", "status": "completed", "evidence": ".omk/memory/project.md updated with 17 canonical facts, module baseline, auth contract, header sanitization, and Docker hardening rules"},
+    {"id": "B", "title": "Fix commands.md", "status": "completed", "evidence": "Replaced generic npm commands with TSiSIP-specific Docker build, Compose, SIP validation, and GitNexus commands"},
+    {"id": "C", "title": "Start Run Session", "status": "completed", "evidence": "Run directory created at .omk/runs/memory-audit-20260519/"},
+    {"id": "D", "title": "Audit Memory Safety", "status": "completed", "evidence": "No high-entropy strings, credentials, emails, or .env content found. Only loopback IPs present. File permissions 644."},
+    {"id": "E", "title": "Graph Memory Deep Dive", "status": "completed", "evidence": "Queried ontology (21 classes, 29 relations). Mindmap explored. Expanded graph-state.json with TSiSIP-specific nodes and edges."}
+  ],
+  "evidence": [
+    "omk_memory_status: backend=local_graph, healthy=true, nodeCounts={Project:1}",
+    "npx gitnexus status: up-to-date (commit 6feeb58)",
+    "Memory files scanned: 0 secrets detected"
+  ],
+  "artifacts": [
+    ".omk/memory/project.md",
+    ".omk/memory/commands.md",
+    ".omk/memory/decisions.md",
+    ".omk/memory/risks.md",
+    ".omk/memory/graph-state.json",
+    ".omk/runs/memory-audit-20260519/run.json"
+  ],
+  "limitations": [
+    "Graph mindmap showed legacy TSiAPP/my-project sessions mixed in; graph-state.json has been rewritten to focus on TSiSIP canonical state",
+    "T4.4 and T4.5 remain blocked pending RTPengine integration",
+    "Run session is filesystem-based; not yet synced to graph backend"
+  ],
+  "refreshTriggers": [
+    "OpenSIPS version change -> update project.md module baseline",
+    "New architecture decision -> append to decisions.md and graph-state.json",
+    "New build command -> append to commands.md",
+    "Security incident -> full memory re-audit"
+  ]
+}

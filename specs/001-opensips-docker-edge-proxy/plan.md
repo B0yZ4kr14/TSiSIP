@@ -1,4 +1,4 @@
-# Implementation Plan: OpenSIPS Docker Edge Proxy Foundation
+# Implementation Plan: TSiSIP SIP Edge Foundation
 
 ## Overview
 
@@ -153,7 +153,8 @@ This plan translates the feature specification into an executable implementation
 7. Validate container health check mechanism (SIP OPTIONS → 200 OK) per FR-010.
 8. Validate trusted gateway bypass via `permissions` module and `address` table per FR-008.
 9. Validate auth audit logging populates `auth_audit_log` per FR-009.
-10. Validate that unauthenticated OPTIONS receives 200 OK locally (T4.4 — blocked by rtpengine container build).
+10. Validate that unauthenticated OPTIONS receives 200 OK locally (T4.4 — completed after RTPengine container build was fixed).
+11. Validate that authenticated INVITE reaches production Asterisk backends through dispatcher set 1 (T4.7 — completed on VPS TSiAPP with `scripts/sip-auth-probe.py`).
 
 **Technical Constraints**:
 - All validation steps must be reproducible via documented shell commands.
@@ -206,5 +207,6 @@ Phases are strictly sequential. Phase 2 depends on Phase 1 because schema initia
 - [x] Health check mechanism documented (SIP OPTIONS → 200 OK).
 - [x] Fail-fast DB startup semantics implemented.
 - [x] Single-instance deployment explicitly documented.
-- [ ] Unauthenticated OPTIONS receives 200 OK (T4.4 — blocked by rtpengine container build).
-- [ ] Unauthenticated INVITE receives 407 Proxy Authentication Required (T4.5 — blocked by rtpengine container build).
+- [x] Unauthenticated OPTIONS receives 200 OK (T4.4).
+- [x] Unauthenticated INVITE receives 401 Unauthorized digest challenge (T4.5).
+- [x] Authenticated INVITE reaches Asterisk through OpenSIPS dispatcher and receives 200 OK (T4.7).

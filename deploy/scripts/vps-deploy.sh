@@ -129,6 +129,12 @@ if ! docker compose -f "${COMPOSE_FILE}" ps postgres | grep -q "healthy"; then
     log_fatal "PostgreSQL nao ficou healthy. Verifique logs."
 fi
 
+# WAL archiving writes into /backup/wal as the `postgres` user inside the container.
+# The shared volume is often root-owned on first boot; enforce safe ownership/permissions.
+log_info "Garantindo permissoes do WAL archive em /backup/wal..."
+docker compose -f "${COMPOSE_FILE}" exec -T --user root postgres sh -lc \
+  'mkdir -p /backup/wal /backup/daily /backup/metrics /backup/validate && chown -R postgres:postgres /backup/wal && chmod 750 /backup/wal'
+
 if docker compose -f "${COMPOSE_FILE}" exec -T postgres psql -U opensips -d opensips -c "SELECT COUNT(*) FROM subscriber;" >/dev/null 2>&1; then
     log_info "Schema PostgreSQL OK."
 else

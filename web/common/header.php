@@ -26,7 +26,7 @@ function tsisip_asset(string $logicalName, string $type = 'css'): string {
 }
 
 // User role for density rules (whitelisted)
-$validRoles = ['admin', 'readonly', 'user'];
+$validRoles = ['admin', 'devops', 'dentist', 'assistant', 'user', 'readonly'];
 $userRole = 'readonly';
 if (isset($_SESSION['user_role']) && in_array($_SESSION['user_role'], $validRoles, true)) {
     $userRole = $_SESSION['user_role'];
@@ -69,15 +69,30 @@ $ocpLocale = isset($_SESSION['lang']) ? $_SESSION['lang'] : 'en_US';
                      alt="<?php echo _('TSiAPP Platform'); ?>">
             </a>
         </div>
-        <button type="button"
-                class="tsisip-sidebar-toggle"
-                aria-expanded="false"
-                aria-controls="sidebar"
-                aria-label="<?php echo _('Toggle navigation'); ?>">
-            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
-                <line x1="3" y1="6" x2="21" y2="6"></line>
-                <line x1="3" y1="12" x2="21" y2="12"></line>
-                <line x1="3" y1="18" x2="21" y2="18"></line>
-            </svg>
-        </button>
-    </header>
+    <nav class="tsisip-header-nav" aria-label="<?php echo _('Top navigation'); ?>">
+        <a href="dashboard.php" class="tsisip-header-link<?php echo basename($_SERVER['PHP_SELF']) === 'dashboard.php' ? ' is-active' : ''; ?>">
+            <?php echo _('Dashboard'); ?>
+        </a>
+        <a href="wiki.php" class="tsisip-header-link<?php echo basename($_SERVER['PHP_SELF']) === 'wiki.php' ? ' is-active' : ''; ?>">
+            <?php echo _('Wiki'); ?>
+        </a>
+    </nav>
+
+    <span class="tsisip-badge tsisip-role-badge--<?php echo htmlspecialchars($userRole, ENT_QUOTES, 'UTF-8'); ?>">
+        <?php echo htmlspecialchars(ucfirst($userRole), ENT_QUOTES, 'UTF-8'); ?>
+    </span>
+
+    <button type="button"
+            class="tsisip-sidebar-toggle"
+            aria-expanded="false"
+            aria-controls="sidebar"
+            aria-label="<?php echo _('Toggle navigation'); ?>">
+        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
+            <line x1="3" y1="6" x2="21" y2="6"></line>
+            <line x1="3" y1="12" x2="21" y2="12"></line>
+            <line x1="3" y1="18" x2="21" y2="18"></line>
+        </svg>
+    </button>
+</header>
+
+<?php require_once __DIR__ . '/role-nav.php'; ?>

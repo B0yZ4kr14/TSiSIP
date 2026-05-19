@@ -1,4 +1,4 @@
-# Data Model: OpenSIPS Docker Edge Proxy Foundation
+# Data Model: TSiSIP SIP Edge Foundation
 
 ## Stock OpenSIPS Tables
 

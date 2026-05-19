@@ -1,6 +1,6 @@
 # TSiSIP VPS Deploy — Guia Rápido
 
-> **Perfil:** vps-lite (5 serviços, <2GB RAM)  
+> **Perfil:** vps-lite+PBX (7 serviços, ~2.9GB RAM alocado)  
 > **Destino:** VPS TSiAPP (Ubuntu 24.04, 3.8GB RAM)  
 > **Registry:** GHCR (`ghcr.io/b0yz4kr14/tsisip/*`)
 
@@ -64,9 +64,11 @@ sudo ./deploy/scripts/vps-nginx-setup.sh
 | rtpengine | 10000-20000/udp | 256m | Essencial |
 | opensips | 5060/udp+tcp, 5061/tcp | 256m | Essencial |
 | ocp | 8084/tcp | 256m | Essencial |
-| backup | — | 128m | Essencial |
+| asterisk-pbx-1 | interno | 768m | Essencial para validacao SIP fim-a-fim |
+| asterisk-pbx-2 | interno | 768m | Essencial para failover/dispatcher |
+| backup | 127.0.0.1:9101/tcp | 128m | Essencial |
 
-**Serviços desabilitados:** prometheus, grafana, alertmanager, asterisk, opensips-exporter, anomaly-detector.
+**Serviços desabilitados no VPS-lite:** prometheus, grafana, alertmanager, opensips-exporter, anomaly-detector. O exporter de backup fica ativo em loopback (`127.0.0.1:9101`) para métricas locais.
 
 ## Operações
 
@@ -81,7 +83,13 @@ docker compose -f docker-compose.vps.yml logs -f opensips
 sudo systemctl restart tsisip-lite
 
 # Backup manual
-docker compose -f docker-compose.vps.yml exec backup /backup/backup.sh
+docker compose -f docker-compose.vps.yml exec backup /usr/local/bin/backup.sh
+
+# Validar ultimo backup
+docker compose -f docker-compose.vps.yml exec backup /usr/local/bin/validate.sh
+
+# Ver metricas locais de backup/RPO
+curl http://127.0.0.1:9101/metrics
 
 # Acessar OCP
 # Local: http://localhost:8084
@@ -97,9 +105,11 @@ docker compose -f docker-compose.vps.yml exec backup /backup/backup.sh
 | RTPengine bad fd | IP hardcoded antigo | Verificar `.env`: `RTPENGINE_INTERNAL_IP=172.21.0.1` |
 | TLS não funciona | Certificados dummy | Substituir secrets/ca.crt, server.crt, server.key |
 | 502 no Nginx | OCP não responde | Verificar `docker compose ps` e logs do OCP |
+| SIP externo 5060/5061 filtrado | Bloqueio upstream antes do host | Confirmar com `tcpdump` no VPS e abrir ACL/NAT no provedor/edge |
+| RPO alerta em banco ocioso | Monitor antigo baseado apenas em timestamp | Usar imagem atual: compara `current_wal` com `last_archived_wal` |
 
 ## Decisão Arquitetural
 
 Ver `docs/architecture/ADR-001-vps-lite-profile.md`.
 
-Resumo: A VPS com 3.8GB RAM não suporta o stack completo (13 serviços). O perfil vps-lite aloca ~1.4GB para TSiSIP, deixando margem para containers legados existentes.
+Resumo: A VPS com ~4GB RAM não suporta o stack completo (13 serviços). O perfil vps-lite+PBX mantém SIP edge, media relay, DB, OCP, backup e dois PBXs internos, deixando observabilidade completa para fase posterior.

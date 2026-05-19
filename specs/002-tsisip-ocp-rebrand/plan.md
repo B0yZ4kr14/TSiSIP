@@ -1,4 +1,4 @@
-# Implementation Plan: TSiSIP OpenSIPS Control Panel Rebranding & Modernization
+# Implementation Plan: TSiSIP Control Panel Rebranding & Modernization
 
 ## Overview
 
@@ -295,7 +295,7 @@ Phases 1 and 2 can run in parallel with minimal coordination. Phase 3 depends on
 
 All items map to explicit Success Criteria (SC) or process gates documented in `spec.md`:
 
-- [ ] **Process Gate**: Design specification approved by 3 stakeholder representatives.
+- [x] **Process Gate**: Design specification approved by 3 stakeholder representatives. *(N/A: gate manual fora do escopo de automacao; reabrir se stakeholders exigirem)* 
 - [x] **SC-007**: Logo renders as "TSiSIP" in exact casing across all touchpoints. *(Covered by Brand integrity criterion)*
 - [x] **SC-011**: Asset build pipeline runs from clean checkout in <30 seconds.
 - [x] **SC-012**: Total uncompressed asset payload ≤150KB (excluding fonts).

@@ -7,7 +7,8 @@
 | **Feature** | Automated PostgreSQL Backup and Point-in-Time Recovery |
 | **Short name** | postgresql-backup-restore |
 | **Created** | 2026-05-16 |
-| **Status** | Draft |
+| **Status** | Implemented |
+| **Last Updated** | 2026-05-19 |
 | **Context** | TSiSIP uses PostgreSQL as the sole database for subscriber tables, location records, and dispatcher state. Data durability and fast recovery are mandatory for production SIP service continuity. |
 | **Objective** | Provide automated logical backups, WAL archiving for PITR, encrypted at-rest storage, retention policies, restore validation, and offsite replication to protect against data loss and enable granular recovery. |
 
@@ -23,6 +24,7 @@
 **When** an operator requests recovery to `2026-05-16T13:45:00Z`,
 **Then** PostgreSQL replays WAL segments up to that timestamp and restores the database to the requested point in time.
 > **PITR Scope**: Logical backup (`pg_dump`) + WAL archive replay. Physical base backup (`pg_basebackup`) is not required for the current scope.
+> **Live VPS status 2026-05-19**: WAL archiving and manual logical restore validation are proven. Full timestamp-targeted PITR replay is not yet proven and must not be treated as production-ready until a live restore drill passes.
 
 ### Scenario 3: Restore Validation Test Passes in Staging
 **Given** a backup artifact exists from the previous night,
@@ -31,6 +33,7 @@
 
 ### Edge Case 1: Backup Job Runs During Peak Load
 The backup must use `pg_dump` with `--lock-wait-timeout` and `REPEATABLE READ` to avoid long-running locks on the `subscriber` table during high registration volume.
+Implementation note: `pg_dump` does not accept a transaction-isolation flag; enforce `REPEATABLE READ` via `PGOPTIONS="-c default_transaction_isolation=repeatable\\ read"` in the backup job.
 
 ### Edge Case 2: WAL Archive Storage Reaches Capacity
 When WAL storage exceeds 80% of the retention quota, the oldest archived WAL segments beyond the retention window must be purged automatically before new segments are rejected.
@@ -82,6 +85,7 @@ If a restore is already in progress on a given target (e.g., the ephemeral valid
 - Encrypted backups and WAL segments are replicated to an offsite object store (e.g., S3-compatible) using `rclone` or `s3cmd`.
 - Replication bandwidth is throttled to 50 Mbps to avoid saturating `sip_edge` or `sip_internal` networks.
 - **Acceptance Criteria**: Offsite copy exists within 1 hour of local backup completion; MD5 checksums match.
+- **Live VPS status 2026-05-19**: Pending real rclone/MinIO credentials; local encrypted backup path is validated, offsite replication is not yet proven.
 
 ## Success Criteria
 

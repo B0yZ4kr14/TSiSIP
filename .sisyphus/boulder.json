@@ -1,0 +1,12 @@
+{
+  "active_plan": "/home/b0yz4kr14/Projects/TSiSIP/.sisyphus/plans/vps-24h-tdd-stabilization.md",
+  "started_at": "2026-05-19T01:01:54.412Z",
+  "session_ids": [
+    "ses_1c35a3bc5ffeOPEtyNjRg3fXZU"
+  ],
+  "session_origins": {
+    "ses_1c35a3bc5ffeOPEtyNjRg3fXZU": "direct"
+  },
+  "plan_name": "vps-24h-tdd-stabilization",
+  "agent": "atlas"
+}

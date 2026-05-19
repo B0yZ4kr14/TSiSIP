@@ -1,19 +1,26 @@
 services:
   postgres:
-    image: ghcr.io/b0yz4kr14/tsisip/postgres:latest
+    image: ghcr.io/b0yz4kr14/tsisip/postgres:${TSISIP_IMAGE_TAG:-latest}
     networks:
     - db_internal
     restart: unless-stopped
+    command:
+    - postgres
+    - -c
+    - archive_mode=on
+    - -c
+    - archive_command=test ! -f /backup/wal/%f.gz && gzip < %p > /backup/wal/%f.gz
+    - -c
+    - archive_timeout=300
+    - -c
+    - wal_level=replica
+    - -c
+    - max_wal_senders=2
     environment:
       POSTGRES_DB: opensips
       POSTGRES_USER: opensips
       POSTGRES_PASSWORD_FILE: /run/secrets/db_password
       PGDATA: /var/lib/postgresql/data
-      ARCHIVE_MODE: 'on'
-      ARCHIVE_COMMAND: test ! -f /backup/wal/%f && gzip < %p > /backup/wal/%f.gz
-      ARCHIVE_TIMEOUT: 300
-      WAL_LEVEL: replica
-      MAX_WAL_SENDERS: 2
     secrets:
     - db_password
     volumes:
@@ -32,8 +39,14 @@ services:
     labels:
       tsisip.environment: production
       tsisip.deployed-by: ansible
+    deploy:
+      resources:
+        limits:
+          memory: 8G
+        reservations:
+          memory: 4G
   rtpengine:
-    image: ghcr.io/b0yz4kr14/tsisip/rtpengine:latest
+    image: ghcr.io/b0yz4kr14/tsisip/rtpengine:${TSISIP_IMAGE_TAG:-latest}
     networks:
     - sip_edge
     - sip_internal
@@ -66,8 +79,14 @@ services:
     labels:
       tsisip.environment: production
       tsisip.deployed-by: ansible
+    deploy:
+      resources:
+        limits:
+          memory: 2G
+        reservations:
+          memory: 1G
   opensips:
-    image: ghcr.io/b0yz4kr14/tsisip/opensips:latest
+    image: ghcr.io/b0yz4kr14/tsisip/opensips:${TSISIP_IMAGE_TAG:-latest}
     networks:
     - sip_edge
     - sip_internal
@@ -117,8 +136,14 @@ services:
     labels:
       tsisip.environment: production
       tsisip.deployed-by: ansible
+    deploy:
+      resources:
+        limits:
+          memory: 2G
+        reservations:
+          memory: 1G
   ocp:
-    image: ghcr.io/b0yz4kr14/tsisip/ocp:latest
+    image: ghcr.io/b0yz4kr14/tsisip/ocp:${TSISIP_IMAGE_TAG:-latest}
     networks:
     - sip_internal
     - db_internal
@@ -150,8 +175,14 @@ services:
     labels:
       tsisip.environment: production
       tsisip.deployed-by: ansible
+    deploy:
+      resources:
+        limits:
+          memory: 1G
+        reservations:
+          memory: 512M
   prometheus:
-    image: ghcr.io/b0yz4kr14/tsisip/prometheus:latest
+    image: ghcr.io/b0yz4kr14/tsisip/prometheus:${TSISIP_IMAGE_TAG:-latest}
     networks:
     - db_internal
     restart: on-failure
@@ -172,8 +203,14 @@ services:
     labels:
       tsisip.environment: production
       tsisip.deployed-by: ansible
+    deploy:
+      resources:
+        limits:
+          memory: 2G
+        reservations:
+          memory: 1G
   alertmanager:
-    image: prom/alertmanager:v0.27.0
+    image: prom/alertmanager:v0.27.0@sha256:e13b6ed5cb929eeaee733479dce55e10eb3bc2e9c4586c705a4e8da41e5eacf5
     networks:
     - db_internal
     restart: on-failure
@@ -197,8 +234,14 @@ services:
     labels:
       tsisip.environment: production
       tsisip.deployed-by: ansible
+    deploy:
+      resources:
+        limits:
+          memory: 512M
+        reservations:
+          memory: 256M
   anomaly-detector:
-    image: ghcr.io/b0yz4kr14/tsisip/anomaly-detector:latest
+    image: ghcr.io/b0yz4kr14/tsisip/anomaly-detector:${TSISIP_IMAGE_TAG:-latest}
     networks:
     - sip_internal
     restart: on-failure
@@ -215,8 +258,14 @@ services:
     labels:
       tsisip.environment: production
       tsisip.deployed-by: ansible
+    deploy:
+      resources:
+        limits:
+          memory: 1G
+        reservations:
+          memory: 512M
   grafana:
-    image: ghcr.io/b0yz4kr14/tsisip/grafana:latest
+    image: ghcr.io/b0yz4kr14/tsisip/grafana:${TSISIP_IMAGE_TAG:-latest}
     networks:
     - db_internal
     restart: on-failure
@@ -242,8 +291,14 @@ services:
     labels:
       tsisip.environment: production
       tsisip.deployed-by: ansible
+    deploy:
+      resources:
+        limits:
+          memory: 1G
+        reservations:
+          memory: 512M
   opensips-exporter:
-    image: ghcr.io/b0yz4kr14/tsisip/opensips-exporter:latest
+    image: ghcr.io/b0yz4kr14/tsisip/opensips-exporter:${TSISIP_IMAGE_TAG:-latest}
     networks:
     - sip_internal
     - db_internal
@@ -266,8 +321,14 @@ services:
     labels:
       tsisip.environment: production
       tsisip.deployed-by: ansible
+    deploy:
+      resources:
+        limits:
+          memory: 512M
+        reservations:
+          memory: 256M
   backup:
-    image: ghcr.io/b0yz4kr14/tsisip/backup:latest
+    image: ghcr.io/b0yz4kr14/tsisip/backup:${TSISIP_IMAGE_TAG:-latest}
     networks:
     - db_internal
     restart: on-failure
@@ -303,8 +364,14 @@ services:
     labels:
       tsisip.environment: production
       tsisip.deployed-by: ansible
+    deploy:
+      resources:
+        limits:
+          memory: 1G
+        reservations:
+          memory: 512M
   asterisk-pbx-1:
-    image: ghcr.io/b0yz4kr14/tsisip/asterisk:latest
+    image: ghcr.io/b0yz4kr14/tsisip/asterisk:${TSISIP_IMAGE_TAG:-latest}
     networks:
     - sip_internal
     restart: on-failure
@@ -326,8 +393,14 @@ services:
     labels:
       tsisip.environment: production
       tsisip.deployed-by: ansible
+    deploy:
+      resources:
+        limits:
+          memory: 2G
+        reservations:
+          memory: 1G
   asterisk-pbx-2:
-    image: ghcr.io/b0yz4kr14/tsisip/asterisk:latest
+    image: ghcr.io/b0yz4kr14/tsisip/asterisk:${TSISIP_IMAGE_TAG:-latest}
     networks:
     - sip_internal
     restart: on-failure
@@ -349,6 +422,12 @@ services:
     labels:
       tsisip.environment: production
       tsisip.deployed-by: ansible
+    deploy:
+      resources:
+        limits:
+          memory: 2G
+        reservations:
+          memory: 1G
 networks:
   sip_edge:
     driver: bridge

@@ -1,4 +1,4 @@
-# Specification Quality Checklist: TSiSIP OpenSIPS Control Panel Rebranding & Modernization
+# Specification Quality Checklist: TSiSIP Control Panel Rebranding & Modernization
 
 **Purpose**: Validate specification completeness and quality before proceeding to planning
 **Created**: 2026-05-17

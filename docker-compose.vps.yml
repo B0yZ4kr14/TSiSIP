@@ -1,27 +1,36 @@
-# TSiSIP VPS-Lite Profile
-# Para VPS com 4GB RAM ou menos. 
-# Serviços essenciais apenas: SIP edge, media relay, DB, OCP, backup.
-# Monitoring (prometheus/grafana) e asterisk são desabilitados por padrão.
+# TSiSIP VPS-Lite+PBX Profile
+# Para VPS com ~4GB RAM.
+# Serviços ativos: TSiSIP SIP edge, media relay, DB, OCP, backup e 2 PBXs internos.
+# Monitoring completo (prometheus/grafana/alertmanager/exporter/anomaly-detector) fica desabilitado.
 # Cada container tem mem_limit para evitar OOM do kernel.
 
 services:
   postgres:
-    image: ghcr.io/b0yz4kr14/tsisip/postgres:latest
+    image: ghcr.io/b0yz4kr14/tsisip/postgres:${TSISIP_IMAGE_TAG:-latest}
     pull_policy: always
-    networks: [db_internal]
+    networks: [db_internal, metrics_host]
     restart: unless-stopped
     mem_limit: 512m
     memswap_limit: 512m
+    # NOTE: ARCHIVE_* / WAL_* are not native env-based Postgres settings.
+    # We enforce them via `postgres -c ...` so WAL archiving actually works.
+    command:
+      - postgres
+      - -c
+      - archive_mode=on
+      - -c
+      - archive_command=test ! -f /backup/wal/%f.gz && gzip < %p > /backup/wal/%f.gz
+      - -c
+      - archive_timeout=300
+      - -c
+      - wal_level=replica
+      - -c
+      - max_wal_senders=2
     environment:
       POSTGRES_DB: opensips
       POSTGRES_USER: opensips
       POSTGRES_PASSWORD_FILE: /run/secrets/db_password
       PGDATA: /var/lib/postgresql/data
-      ARCHIVE_MODE: "on"
-      ARCHIVE_COMMAND: "test ! -f /backup/wal/%f && gzip < %p > /backup/wal/%f.gz"
-      ARCHIVE_TIMEOUT: 300
-      WAL_LEVEL: replica
-      MAX_WAL_SENDERS: 2
     secrets: [db_password]
     volumes:
       - postgres_data:/var/lib/postgresql/data
@@ -36,7 +45,7 @@ services:
       start_interval: 5s
 
   rtpengine:
-    image: ghcr.io/b0yz4kr14/tsisip/rtpengine:latest
+    image: ghcr.io/b0yz4kr14/tsisip/rtpengine:${TSISIP_IMAGE_TAG:-latest}
     pull_policy: always
     networks: [sip_edge, sip_internal]
     restart: on-failure
@@ -67,7 +76,7 @@ services:
       start_interval: 5s
 
   opensips:
-    image: ghcr.io/b0yz4kr14/tsisip/opensips:latest
+    image: ghcr.io/b0yz4kr14/tsisip/opensips:${TSISIP_IMAGE_TAG:-latest}
     pull_policy: always
     networks: [sip_edge, sip_internal, db_internal]
     restart: unless-stopped
@@ -93,6 +102,8 @@ services:
       - server.crt
       - server.key
       - crl.pem
+    volumes:
+      - ./opensips/opensips.cfg.tpl:/etc/opensips/opensips.cfg.tpl:ro
     depends_on:
       postgres:
         condition: service_healthy
@@ -109,15 +120,63 @@ services:
       start_period: 25s
       start_interval: 5s
 
-  ocp:
-    image: ghcr.io/b0yz4kr14/tsisip/ocp:latest
+  asterisk-pbx-1:
+    image: ghcr.io/b0yz4kr14/tsisip/asterisk:${TSISIP_IMAGE_TAG:-latest}
     pull_policy: always
-    networks: [sip_internal, db_internal]
+    networks: [sip_internal]
+    restart: unless-stopped
+    mem_limit: 768m
+    memswap_limit: 768m
+    volumes:
+      - ./docker/asterisk/pjsip.conf:/etc/asterisk/pjsip.conf:ro
+      - ./docker/asterisk/extensions.conf:/etc/asterisk/extensions.conf:ro
+      - ./docker/asterisk/pjsip.conf:/usr/local/etc/asterisk/pjsip.conf:ro
+      - ./docker/asterisk/extensions.conf:/usr/local/etc/asterisk/extensions.conf:ro
+    expose:
+      - "5060/udp"
+      - "5060/tcp"
+      - "5038/tcp"
+    healthcheck:
+      test: ["CMD-SHELL", "/usr/local/bin/healthcheck.sh"]
+      interval: 15s
+      timeout: 5s
+      retries: 3
+      start_period: 25s
+      start_interval: 5s
+
+  asterisk-pbx-2:
+    image: ghcr.io/b0yz4kr14/tsisip/asterisk:${TSISIP_IMAGE_TAG:-latest}
+    pull_policy: always
+    networks: [sip_internal]
+    restart: unless-stopped
+    mem_limit: 768m
+    memswap_limit: 768m
+    volumes:
+      - ./docker/asterisk/pjsip.conf:/etc/asterisk/pjsip.conf:ro
+      - ./docker/asterisk/extensions.conf:/etc/asterisk/extensions.conf:ro
+      - ./docker/asterisk/pjsip.conf:/usr/local/etc/asterisk/pjsip.conf:ro
+      - ./docker/asterisk/extensions.conf:/usr/local/etc/asterisk/extensions.conf:ro
+    expose:
+      - "5060/udp"
+      - "5060/tcp"
+      - "5038/tcp"
+    healthcheck:
+      test: ["CMD-SHELL", "/usr/local/bin/healthcheck.sh"]
+      interval: 15s
+      timeout: 5s
+      retries: 3
+      start_period: 25s
+      start_interval: 5s
+
+  ocp:
+    image: ghcr.io/b0yz4kr14/tsisip/ocp:${TSISIP_IMAGE_TAG:-latest}
+    pull_policy: always
+    networks: [sip_internal, db_internal, metrics_host]
     restart: unless-stopped
     mem_limit: 256m
     memswap_limit: 256m
     ports:
-      - "8084:80"
+      - "127.0.0.1:8084:80"
     environment:
       - DB_HOST=postgres
       - DB_NAME=opensips
@@ -136,12 +195,16 @@ services:
       start_period: 10s
 
   backup:
-    image: ghcr.io/b0yz4kr14/tsisip/backup:latest
-    pull_policy: always
-    networks: [db_internal]
+    image: ghcr.io/b0yz4kr14/tsisip/backup:${TSISIP_IMAGE_TAG:-latest}
+    # For hotfix builds on the VPS, allow using a locally built image.
+    # CI can still publish `:latest` to GHCR later.
+    pull_policy: if_not_present
+    networks: [db_internal, metrics_host]
     restart: on-failure
     mem_limit: 128m
     memswap_limit: 128m
+    ports:
+      - "127.0.0.1:9101:9101/tcp"
     environment:
       PGHOST: postgres
       PGPORT: 5432
@@ -153,6 +216,7 @@ services:
       BACKUP_RETENTION_DAYS: "30"
       BACKUP_SCHEDULE: "0 2 * * *"
       ENCRYPTION_KEY_FILE: /run/secrets/backup_encryption_key
+      METRICS_ADDR: 0.0.0.0
     secrets:
       - db_password
       - backup_encryption_key
@@ -169,6 +233,8 @@ networks:
     internal: true
   db_internal:
     internal: true
+  metrics_host:
+    internal: false
 
 volumes:
   postgres_data:

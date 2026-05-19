@@ -1,4 +1,4 @@
-# Research: OpenSIPS Docker Edge Proxy Foundation
+# Research: TSiSIP SIP Edge Foundation
 
 ## Decisions & Rationale
 

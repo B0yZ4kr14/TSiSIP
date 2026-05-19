@@ -52,12 +52,12 @@ fi
 # --- Security: Check for committed secrets ---
 echo "[security] Checking for committed secrets..."
 for secret in secrets/db_password secrets/auth_secret secrets/topology_secret secrets/ca.key secrets/server.key; do
-    if [ -f "$secret" ]; then
+    if git ls-files --error-unmatch "$secret" >/dev/null 2>&1; then
         echo "FAIL: Secret file committed: $secret"
         FAIL=1
     fi
 done
-echo "PASS: No committed secrets"
+echo "PASS: No tracked secret files"
 
 echo ""
 if [ $FAIL -eq 1 ]; then

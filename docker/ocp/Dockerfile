@@ -26,6 +26,9 @@ RUN a2enmod rewrite
 # Copy OCP application source (stubs; replace with actual OCP v9 source in production)
 COPY web/ /var/www/html/
 
+# Copy wiki documentation for the embedded wiki renderer
+COPY docs/wiki/ /var/www/docs/wiki/
+
 # Set correct ownership for Apache
 RUN chown -R www-data:www-data /var/www/html \
     && chmod -R 755 /var/www/html

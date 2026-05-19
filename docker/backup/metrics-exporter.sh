@@ -29,6 +29,11 @@ generate_metrics() {
             echo "backup_rpo_lag_seconds -1"
         fi
 
+        if [ -f "${METRICS_DIR}/rpo_lag_seconds.prom" ]; then
+            grep "^backup_current_wal_info" "${METRICS_DIR}/rpo_lag_seconds.prom" 2>/dev/null || true
+            grep "^backup_rpo_threshold_seconds " "${METRICS_DIR}/rpo_lag_seconds.prom" 2>/dev/null || true
+        fi
+
         echo "# HELP backup_rto_last_seconds Last restore duration in seconds"
         echo "# TYPE backup_rto_last_seconds gauge"
         if [ -f "${METRICS_DIR}/rto_last_seconds" ]; then
@@ -55,7 +60,7 @@ generate_metrics() {
 
         echo "# HELP backup_success_total Total number of successful backups"
         echo "# TYPE backup_success_total counter"
-        SUCCESS_COUNT="$(find /backup/daily -name '*.gz*' -type f 2>/dev/null | wc -l)"
+        SUCCESS_COUNT="$(find /backup/daily \( -name '*.dump.gz.enc' -o -name '*.dump.gz' \) -type f 2>/dev/null | wc -l)"
         echo "backup_success_total ${SUCCESS_COUNT}"
 
         echo "# HELP backup_exporter_info Metrics exporter info"
@@ -75,7 +80,7 @@ serve_metrics() {
 
         # Use nc to serve a single request
         { echo -e "HTTP/1.1 200 OK\r\nContent-Type: text/plain; charset=utf-8\r\nConnection: close\r\n\r\n"; cat "${METRICS_DIR}/backup_metrics.prom"; } | \
-            timeout 3 nc -l -p "$LISTEN_PORT" -w 1 "$LISTEN_ADDR" 2>/dev/null || true
+            timeout 3 nc -l -p "$LISTEN_PORT" -s "$LISTEN_ADDR" -w 1 2>/dev/null || true
     done
 }
 

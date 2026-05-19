@@ -38,19 +38,20 @@ The orchestrator must execute the following agent roles whenever the request pro
 
 For every documentation/specification request, the orchestrator must:
 
-1. Read the current canonical documents.
-2. Dispatch all required agents simultaneously when tooling allows it; otherwise dispatch in waves and preserve independent outputs.
-3. Give every agent the same canonical constraints:
+1. Review the wiki system at `docs/wiki/README.md` for audience map and documentation scope context.
+2. Read the current canonical documents.
+3. Dispatch all required agents simultaneously when tooling allows it; otherwise dispatch in waves and preserve independent outputs.
+4. Give every agent the same canonical constraints:
    - Docker image delivery is mandatory.
    - PostgreSQL is mandatory.
    - OpenSIPS facts must use official OpenSIPS 3.6 LTS documentation with source URLs for modules, parameters, and functions.
    - RFC facts must use IETF/RFC sources.
    - `sanity` is not available in OpenSIPS 3.6 LTS and must not be used.
    - Asterisk and PostgreSQL must not be externally exposed.
-4. Collect outputs.
-5. Reconcile conflicts.
-6. Apply only validated documentation fixes.
-7. Produce a final change summary with unresolved falsification failures, if any.
+5. Collect outputs.
+6. Reconcile conflicts.
+7. Apply only validated documentation fixes.
+8. Produce a final change summary with unresolved falsification failures, if any.
 
 ### 4.2 Completion gate
 
@@ -265,10 +266,27 @@ FALSIFICATION_STATUS:
   unresolved_blocking_claims: 0
 ```
 
-## 9. Canonical enforcement rule
+## 9. Documentation Sources
+
+The following files are the canonical sources of truth for TSiSIP documentation:
+
+| Source | Purpose |
+|---|---|
+| `docs/TSiSIP-CANONICAL-SPEC.md` | Architecture baseline, technology stack, and non-negotiable rules |
+| `docs/TSiSIP-OPERATOR-RUNBOOK.md` | Operational procedures, troubleshooting, and daily operations |
+| `docs/wiki/README.md` | Operational wiki audience map and page index |
+| `AGENTS.md` | Agent policy, build commands, and coding conventions |
+
+All documentation-producing agents must treat these sources as authoritative. Claims that contradict these sources must be flagged as defects.
+
+## 10. Canonical enforcement rule
 
 For every future user request that asks for documentation, specifications, architecture, DevOps documentation, implementation guidance, OpenSIPS configuration guidance, database schema guidance, or canonical project decisions, the orchestrator must execute this playbook before finalizing the answer.
 
 If full agent execution is unavailable, the orchestrator must explicitly run the same role checks in-process and report `not-run` only for agents that could not be dispatched.
 
 The final answer must not claim completion unless the completion gate in this playbook passes.
+
+---
+
+*Last Updated: 2026-05-19*

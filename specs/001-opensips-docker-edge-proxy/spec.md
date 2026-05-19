@@ -1,21 +1,22 @@
-# Feature Specification: OpenSIPS Docker Edge Proxy Foundation
+# Feature Specification: TSiSIP SIP Edge Foundation
 
 ## Overview
 
-**Feature**: OpenSIPS Docker Edge Proxy Foundation
+**Feature**: TSiSIP SIP Edge Foundation
 **Short name**: opensips-docker-edge-proxy
 **Created**: 2026-05-16
-**Status**: Implemented (All tasks complete)
+**Status**: Completed
+**Last Updated**: 2026-05-19
 
 ### Context
 
-TSiSIP is a Docker-image-first SIP edge-proxy platform. Before any SIP traffic can be processed, authenticated, or routed, a foundational containerized runtime must exist. This feature establishes the first deployable unit: the OpenSIPS edge proxy delivered as a project-owned container image, backed by a relational database for subscriber credentials and routing metadata, orchestrated through container-native networking and composition.
+TSiSIP is a Docker-image-first SIP edge-proxy platform. Before any SIP traffic can be processed, authenticated, or routed, a foundational containerized runtime must exist. This feature establishes the first deployable unit: the TSiSIP SIP edge service, implemented with OpenSIPS 3.6 LTS and delivered as a project-owned container image, backed by a relational database for subscriber credentials and routing metadata, orchestrated through container-native networking and composition.
 
 This is the foundational layer upon which all subsequent TSiSIP capabilities—multi-tenant routing, media relay integration, backend PBX isolation, and security hardening—are built.
 
 ### Objective
 
-Enable a platform operator to build, configure, and start a containerized OpenSIPS edge proxy with:
+Enable a platform operator to build, configure, and start the containerized TSiSIP SIP edge service with:
 - A validated, reproducible container image owned by the project.
 - A private PostgreSQL database for subscriber authentication and routing metadata.
 - Isolated Docker networks separating public signaling, internal forwarding, and database access.
@@ -28,12 +29,12 @@ Enable a platform operator to build, configure, and start a containerized OpenSI
 
 ### Session 2026-05-16
 
-- Q: What runtime performance/throughput targets should the OpenSIPS edge proxy foundation meet? → A: 100 concurrent SIP sessions, <50ms median response latency, 50 registrations/sec (foundation baseline; detailed benchmarking deferred to future performance feature).
+- Q: What runtime performance/throughput targets should the TSiSIP SIP edge foundation meet? → A: 100 concurrent SIP sessions, <50ms median response latency, 50 registrations/sec (foundation baseline; detailed benchmarking deferred to future performance feature).
 - Q: How should health/ready checks be performed for the OpenSIPS container? → A: SIP OPTIONS to localhost:5060 expecting 200 OK; failure after 3 consecutive missed responses.
 - Q: What retry semantics should apply when PostgreSQL is unavailable at OpenSIPS startup? → A: Fail-fast immediately with descriptive exit status (no retry loop); orchestrator/operator is responsible for restart policy.
 - Q: Should secret rotation strategy be defined in this foundation spec? → A: Defer to future operational documentation; no secret rotation requirements in foundation spec.
 - Q: Is multi-instance horizontal scaling supported in the foundation? → A: Single instance per deployment; multi-instance/HA deferred to future feature requiring shared dialog state or session affinity.
-- Q: What fallback behavior should apply when RTPengine is unavailable during INVITE processing? → A: T4.4/T4.5 SIP validation is gated on implementing a lightweight RTPengine container first; fallback behavior undefined until media relay is functional.
+- Q: What fallback behavior should apply when RTPengine is unavailable during INVITE processing? → A: Foundation validation requires RTPengine reachability for SIP runtime tests; graceful runtime fallback is specified in Feature 004 as `488 Not Acceptable Here` for calls requiring relay.
 - Q: What functional requirement justifies the presence of the permissions module in the OpenSIPS configuration? → A: FR-008 defines IP-based trusted gateway bypass using the permissions module and OpenSIPS address table.
 - Q: What behavior should apply when concurrent SIP sessions exceed the foundation limit? → A: Limit raised to 1000 concurrent sessions; overload degradation behavior deferred to future performance feature.
 - Q: What logging requirements should apply to the auth_audit_log table? → A: FR-009 requires all authentication events (success, failure, challenge) to be persisted in auth_audit_log with minimum 90-day retention.
@@ -54,7 +55,7 @@ Enable a platform operator to build, configure, and start a containerized OpenSI
 #### Scenario 2: Platform operator starts the core infrastructure stack
 - **Given** the container image is built and runtime secrets are supplied
 - **When** the operator starts the composed stack
-- **Then** OpenSIPS listens on the public SIP signaling ports
+- **Then** the TSiSIP SIP edge service listens on the public SIP signaling ports
 - **And** PostgreSQL is reachable only on an internal database network
 - **And** no backend service is exposed to the host network
 
@@ -67,16 +68,18 @@ Enable a platform operator to build, configure, and start a containerized OpenSI
 
 - Invalid or missing runtime secrets prevent OpenSIPS from starting rather than falling back to unsafe defaults.
 - Malformed SIP messages exceeding 4096 bytes (RFC 3261 recommended max) are rejected at the edge before processing.
-- SIP loop detection triggers an error response when Max-Forwards is exhausted.
+- SIP loop detection returns `483 Too Many Hops` when Max-Forwards is exhausted.
 - Database unavailability at startup triggers immediate fail-fast with descriptive exit status (no retry loop).
-- Container health checks use SIP OPTIONS to `localhost:5060` and expect `200 OK`; three consecutive failures mark the container as unhealthy.
+- Runtime database unavailability is covered by Feature 004 graceful degradation with `480 Temporarily Unavailable` for registration-dependent requests.
+- RTPengine unavailability is covered by Feature 004 graceful degradation with `488 Not Acceptable Here` for calls requiring media relay.
+- Container health checks use SIP OPTIONS to `localhost:5060` and expect `200 OK`; canonical timing is interval 15s, timeout 5s, retries 3, start period 30s.
 
 ---
 
 ## Functional Requirements
 
 ### FR-001: Project-owned container image for OpenSIPS
-**Description**: The OpenSIPS edge proxy must be built from a committed project Dockerfile, producing a reproducible container image.
+**Description**: The TSiSIP SIP edge service must be built from a committed project Dockerfile, producing a reproducible container image.
 **Acceptance Criteria**:
 - Image build completes without external image substitution for the core proxy.
 - Image contains OpenSIPS 3.6 LTS and required database connectivity modules.
@@ -88,6 +91,14 @@ Enable a platform operator to build, configure, and start a containerized OpenSI
 - Configuration template references secrets through environment variables or container secret mounts.
 - Secrets are never present in committed source files.
 - Missing secrets cause a clear startup failure rather than silent unsafe defaults.
+
+### FR-002A: Digest credential hash policy
+**Description**: SIP Digest credentials must use precomputed HA1-compatible hashes. Plaintext subscriber passwords are not operational credentials.
+**Acceptance Criteria**:
+- `ha1` is the mandatory compatibility baseline for legacy MD5 SIP Digest clients.
+- `ha1_sha256` and `ha1_sha512t256` are populated by provisioning workflows when stronger digest algorithms are supported by the endpoint population.
+- `calculate_ha1` remains disabled; OpenSIPS reads precomputed hashes only.
+- The stock `subscriber.password` column remains empty or non-authoritative and is never used as a plaintext credential source.
 
 ### FR-003: Private PostgreSQL persistence
 **Description**: A PostgreSQL database service must be available exclusively on an internal Docker network for subscriber credentials, tenant metadata, and routing rules.
@@ -106,8 +117,7 @@ Enable a platform operator to build, configure, and start a containerized OpenSI
 ### FR-005: Edge authentication enforcement
 **Description**: Every SIP request from untrusted sources—except health-check OPTIONS—must be challenged for Digest authentication before any backend routing decision.
 **Acceptance Criteria**:
-- Unauthenticated REGISTER requests receive a 401 challenge.
-- Unauthenticated INVITE and other requests receive a 407 challenge.
+- Unauthenticated REGISTER, INVITE, and other authenticated requests receive a `401 Unauthorized` digest challenge from `www_challenge`.
 - OPTIONS requests are answered locally without backend routing and without exposing topology.
 
 ### FR-006: Configuration syntax validation
@@ -122,6 +132,7 @@ Enable a platform operator to build, configure, and start a containerized OpenSI
 - Route blocks are named and sequenced according to the canonical contract.
 - Authentication occurs before backend route resolution.
 - Credentials are consumed before forwarding.
+- Topology hiding uses mode `"C"` to conceal backend Contact/Record-Route/Via-derived routing details and prevent public clients from learning private PBX addresses.
 
 ### FR-008: Trusted gateway IP bypass
 **Description**: The `permissions` module must allow authentication bypass for SIP requests originating from pre-configured trusted gateway IP addresses, using the OpenSIPS `address` table for IP-based whitelist lookups.
@@ -138,7 +149,7 @@ Enable a platform operator to build, configure, and start a containerized OpenSI
 - The table design supports 90-day retention without performance degradation.
 
 ### FR-010: Container health probe via SIP OPTIONS
-**Description**: The OpenSIPS container must expose a health probe mechanism using SIP OPTIONS requests to `localhost:5060`. A successful probe returns `200 OK`; three consecutive failures mark the container as unhealthy.
+**Description**: The OpenSIPS container must expose a health probe mechanism using SIP OPTIONS requests to `localhost:5060`. A successful probe returns `200 OK`; three consecutive failures mark the container as unhealthy. Canonical container timing is interval 15s, timeout 5s, retries 3, start period 30s.
 **Acceptance Criteria**:
 - SIP OPTIONS to `localhost:5060` returns `200 OK` when the proxy is operational.
 - Three consecutive failed probes (no response or non-200) mark the container unhealthy.
@@ -157,7 +168,7 @@ Enable a platform operator to build, configure, and start a containerized OpenSI
 | SC-005 | Secret safety | Number of committed files containing plaintext secrets | Zero |
 | SC-006 | Stack startup time | Time from compose up to ready state | Under 60 seconds on 2 vCPU / 4GB RAM baseline |
 | SC-007 | Concurrent SIP sessions | Max active dialog count per instance | 1000 concurrent sessions |
-| SC-008 | Response latency | Median response time for authenticated INVITE | <50ms on 2 vCPU / 4GB RAM baseline |
+| SC-008 | Response latency | Median response time for authenticated INVITE on the same 2 vCPU / 4GB RAM baseline | <50ms |
 | SC-009 | Registration throughput | Successful REGISTER requests per second | 50 registrations/sec |
 
 ---
@@ -208,6 +219,7 @@ Enable a platform operator to build, configure, and start a containerized OpenSI
 - Container runtime (Docker Engine or compatible) and compose tooling available on the host.
 - OpenSIPS 3.6 LTS source build from official GitHub repository (branch `3.6`).
 - PostgreSQL 16 image available from the canonical registry.
+- SIP validation can be performed with a container-based SIP tool or a Python socket script; full load testing belongs to the performance validation track.
 
 ---
 
@@ -228,12 +240,14 @@ Enable a platform operator to build, configure, and start a containerized OpenSI
 | OpenSIPS 3.6 package availability changes | High | Low | Pin base image digest; validate package names in CI |
 | Host port 5060 already bound | Medium | Medium | Document port conflict resolution; support override via environment |
 | Docker network conflicts on common subnets | Low | Medium | Use explicit subnet definitions in Compose if collisions occur |
+| Foundation performance targets exceed single-instance capacity | Medium | Medium | Treat SC-007-SC-009 as single-instance baseline targets and validate under the performance test track before production scale-up |
+| Asterisk container config path drift | Low | Medium | Bind and image-copy configs to both `/etc/asterisk` and `/usr/local/etc/asterisk` because the source-built runtime reads `/usr/local/etc/asterisk` |
 
 ---
 
 ## Notes
 
-- This specification is derived from docs/TSiSIP-CANONICAL-SPEC.md Section 20 (Canonical implementation sequence, items 1–5 and 8).
+- This specification is derived from docs/TSiSIP-CANONICAL-SPEC.md Section 22 (Canonical implementation sequence, items 1–5 and 8).
 - The Dockerfile builds OpenSIPS from source (GitHub `3.6` branch) rather than using APT packages. This decision was made after discovering that APT packages caused config validation failures due to empty transport protocol module activation.
 - `proto_udp` and `proto_tcp` modules are compiled into the core but require explicit `loadmodule` directives in the configuration to register transport protocols.
 - The `version` table is required by `db_postgres` for schema compatibility checks and was added to the stock schema during implementation.
@@ -246,4 +260,4 @@ Enable a platform operator to build, configure, and start a containerized OpenSI
 | Issue | Status | Description | Resolution Path |
 |---|---|---|---|
 | T4.4/T4.5 Runtime Validation | ✅ Resolved | RTPengine container now builds successfully using custom Dockerfile. SIP validation (OPTIONS, INVITE challenge) passes. Media relay integration validated in subsequent features (003-007). | — |
-| Asterisk Container Build | 🟡 Untested | `docker/asterisk/Dockerfile` exists but was not validated. It may require source-build treatment similar to OpenSIPS. | Validate and switch to source build if APT packages are insufficient. |
+| Asterisk Container Build | ✅ Resolved | VPS production validation on 2026-05-19 started `asterisk-pbx-1` and `asterisk-pbx-2`, loaded PJSIP UDP/TCP transports, and routed an authenticated INVITE to extension `1000`. | Keep configs mounted at both Asterisk config paths. |

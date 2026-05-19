@@ -1,4 +1,4 @@
-# Specification Quality Checklist: OpenSIPS Docker Edge Proxy Foundation
+# Specification Quality Checklist: TSiSIP SIP Edge Foundation
 
 **Purpose**: Validate specification completeness and quality before proceeding to planning
 **Created**: 2026-05-16

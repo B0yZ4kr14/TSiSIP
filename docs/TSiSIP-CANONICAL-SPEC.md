@@ -2,13 +2,13 @@
 
 ## 1. Canonical definition
 
-TSiSIP is a Docker-image-first SIP edge-proxy platform built on OpenSIPS 3.6 LTS. Its purpose is to operate as the only public SIP signaling entry point and security boundary for a private multi-tenant Asterisk PBX backend cluster.
+TSiSIP is a Docker-image-first SIP edge-proxy platform. Its SIP engine is based on OpenSIPS 3.6 LTS. Its purpose is to operate as the only public SIP signaling entry point and security boundary for a private multi-tenant Asterisk PBX backend cluster.
 
 All OpenSIPS version references in this document refer exclusively to OpenSIPS 3.6 LTS. Changing the LTS baseline requires a documented architecture decision before any version reference, module list, Docker package, or DB schema is changed.
 
 The canonical runtime stack is:
 
-- OpenSIPS running from a project-owned Docker image.
+- TSiSIP SIP edge service running from a project-owned Docker image.
 - PostgreSQL as the canonical relational database.
 - RTPengine as the canonical media relay.
 - Asterisk PBX nodes as private backend targets.
@@ -20,12 +20,12 @@ No TSiSIP design, documentation, or implementation should introduce direct publi
 
 | Rule | Canonical requirement |
 |---|---|
-| Edge topology | OpenSIPS is the only public SIP signaling endpoint. |
-| Container delivery | OpenSIPS is built and delivered as a TSiSIP Docker image. |
+| Edge topology | The TSiSIP SIP edge service is the only public SIP signaling endpoint. |
+| Container delivery | The TSiSIP SIP edge service is built and delivered as a project-owned Docker image. |
 | Database | PostgreSQL is mandatory. Use `db_postgres`, PostgreSQL DSNs, and PostgreSQL DDL. |
 | Backend isolation | Asterisk nodes are private Docker-network services with no host port publishing. |
 | Media masking | RTP is relayed through RTPengine; backend RTP addresses must not be exposed externally. |
-| Authentication | SIP requests from untrusted sources must be authenticated at OpenSIPS before routing. |
+| Authentication | SIP requests from untrusted sources must be authenticated at the TSiSIP SIP edge before routing. |
 | Routing | Backend selection is dynamic and data-driven, using authenticated tenant context and routing headers. |
 | Secrets | Runtime secrets must be injected through Docker secrets or environment-templated config, never committed. |
 | Module validity | Only OpenSIPS modules documented for the selected OpenSIPS LTS may be referenced. |
@@ -34,12 +34,13 @@ No TSiSIP design, documentation, or implementation should introduce direct publi
 
 | Component | Canonical choice |
 |---|---|
-| SIP proxy | OpenSIPS 3.6 LTS |
+| SIP proxy | TSiSIP SIP edge service (OpenSIPS 3.6 LTS engine) |
 | Database | PostgreSQL |
 | Media relay | RTPengine |
 | PBX backend | Asterisk nodes, isolated per tenant or routing group |
 | Packaging | Docker image + Docker Compose or equivalent container orchestrator |
 | SIP signaling | `5060/udp`, `5060/tcp` |
+| SIP signaling (TLS) | `5061/tcp` |
 | RTP media | `10000-20000/udp` |
 
 OpenSIPS facts must be validated against:
@@ -60,8 +61,8 @@ Internet / SIP clients
         | 5060/udp, 5060/tcp
         v
 +-----------------------------+
-| OpenSIPS Docker image       |
-| TSiSIP edge proxy           |
+| TSiSIP SIP edge service     |
+| OpenSIPS 3.6 engine         |
 | - auth                      |
 | - header routing            |
 | - topology hiding           |
@@ -84,7 +85,7 @@ Internet / RTP clients
 | public RTP, internal control|
 +-----------------------------+
 
-OpenSIPS
+TSiSIP edge
         |
         | internal DB network
         v
@@ -107,6 +108,7 @@ Published ports:
 ```text
 OpenSIPS:  5060/udp
 OpenSIPS:  5060/tcp
+OpenSIPS:  5061/tcp
 RTPengine: 10000-20000/udp
 ```
 
@@ -144,12 +146,25 @@ Required modules:
 | `topology_hiding` | Internal topology concealment. |
 | `permissions` | IP ACL for trusted internal gateways/trunks. |
 
+Feature-specific modules (loaded when the corresponding feature is enabled):
+
+| Module | Feature | Purpose |
+|---|---|---|
+| `pike` | Feature 006 | Per-source IP rate limiting and flood detection. |
+| `ratelimit` | Feature 006 | Auth and global anomaly throttling. |
+| `userblacklist` | Feature 006 | Per-user ban list for repeated auth failures. |
+| `tls_mgm` | Feature 007 | TLS profile and certificate management. |
+| `tls_openssl` | Feature 007 | OpenSSL-backed TLS transport. |
+| `proto_tls` | Feature 007 | TLS transport protocol registration. |
+| `acc` | Feature 001+ | CDR accounting for billed calls. |
+
 Transport support:
 
 | Transport | OpenSIPS 3.6 rule |
 |---|---|
-| `proto_udp` | Built into the OpenSIPS binary by default; do not add `loadmodule "proto_udp.so"`. |
-| `proto_tcp` | Built into the OpenSIPS binary by default; do not add `loadmodule "proto_tcp.so"`. |
+| `proto_udp` | Compiled into the binary in source builds; APT packages may load it automatically. Source builds require explicit `loadmodule "proto_udp.so"`. |
+| `proto_tcp` | Compiled into the binary in source builds; APT packages may load it automatically. Source builds require explicit `loadmodule "proto_tcp.so"`. |
+| `proto_tls` | Required for TLS listeners (Feature 007). Source builds require explicit `loadmodule "proto_tls.so"`. |
 
 Optional modules:
 
@@ -241,9 +256,10 @@ route {
         exit;
     }
 
-    # Defensive application-level bound. Transport-specific size policy must be
-    # verified during implementation for UDP and TCP separately.
-    if ($ml > 65535) {
+    # Defensive application-level bound. RFC 3261 recommends 4096 bytes as a
+    # sensible maximum for UDP; TCP may accept larger messages. Implementations
+    # may tune this threshold based on transport and deployment constraints.
+    if ($ml > 4096) {
         sl_send_reply(513, "Message Too Large");
         exit;
     }
@@ -388,6 +404,8 @@ route[AUTH] {
     # Removes Authorization/Proxy-Authorization before HEADER_ROUTING and RELAY.
 }
 ```
+
+> **Implementation note**: The current `opensips.cfg.tpl` uses `www_authorize()` for all authenticated methods, producing a `401 Unauthorized` response. The canonical contract above specifies `proxy_authorize()`/`proxy_challenge()` for non-REGISTER requests, which would produce `407 Proxy Authentication Required`. Production validation (2026-05-19) observes `401 Unauthorized` for unauthenticated INVITE. This deviation is documented pending alignment with the canonical proxy-authentication contract.
 
 ## 10. Header routing contract
 
@@ -573,7 +591,7 @@ COPY opensips/opensips.cfg.tpl /etc/opensips/opensips.cfg.tpl
 COPY docker/entrypoint.sh /entrypoint.sh
 RUN chmod +x /entrypoint.sh
 
-EXPOSE 5060/udp 5060/tcp
+EXPOSE 5060/udp 5060/tcp 5061/tcp
 ENTRYPOINT ["/entrypoint.sh"]
 CMD ["/usr/sbin/opensips", "-F", "-f", "/etc/opensips/opensips.cfg"]
 ```
@@ -638,6 +656,7 @@ services:
     ports:
       - "5060:5060/udp"
       - "5060:5060/tcp"
+      - "5061:5061/tcp"
     environment:
       OPENSIPS_LISTEN_IP: ${OPENSIPS_LISTEN_IP}
       HOST_PUBLIC_IP: ${HOST_PUBLIC_IP}
@@ -700,9 +719,15 @@ secrets/auth_secret       # exactly 32 characters for auth secret
 secrets/topology_secret
 ```
 
+Extended services (defined in feature specs and added to production Compose files):
+
+- **OCP** (Feature 002): TSiSIP Control Panel web service; proxied via Nginx reverse proxy (Feature 008).
+- **backup** (Feature 005): Backup sidecar for PostgreSQL logical backups, WAL archiving, and restore validation.
+- **prometheus / grafana** (Feature 003): Observability stack; deferred to Phase 2 in vps-lite profiles.
+
 Canonical Compose isolation rules:
 
-- Only `opensips` may publish `5060/udp` and `5060/tcp`.
+- Only `opensips` may publish `5060/udp`, `5060/tcp`, and `5061/tcp`.
 - Only `rtpengine` may publish `10000-20000/udp`.
 - No `asterisk-*` service may define a `ports:` stanza or attach to a non-internal public network.
 - `postgres` must not define a `ports:` stanza and must attach only to `db_internal`.
@@ -716,6 +741,8 @@ Canonical Compose isolation rules:
 | `rtpengine` | Internal ng-control socket `${RTPENGINE_INTERNAL_IP}:22222` is reachable from OpenSIPS network scope; RTP port range is bound. |
 | `opensips` | `opensips -c -f /etc/opensips/opensips.cfg` succeeds inside the built image before runtime start. |
 | `asterisk-*` | SIP listener is reachable from `sip_internal` only; no host port is published. |
+
+See Feature 004 for container health probe definitions (SIP OPTIONS interval, timeout, retries, and start-period timing) and autohealing behavior.
 
 ## 16. Operator runbook
 
@@ -741,6 +768,8 @@ Required preflight sequence:
 | Database | PostgreSQL network is internal only. |
 | Docker runtime | Drop capabilities except those required for binding and privilege drop. |
 | Secrets | Inject at runtime; do not commit. |
+| TLS signaling | Encrypt SIP signaling on `5061/tcp` using mutual TLS for trusted trunks. See Feature 007 for TLS profile, cipher hardening, and certificate rotation. |
+| Media encryption | Negotiate SRTP keys via RTPengine for TLS-signaled calls. See Feature 007 for SRTP cipher policies and DTLS-SRTP support. |
 
 ## 18. Documentation rules
 
@@ -753,7 +782,19 @@ All TSiSIP documentation must:
 - Avoid direct-Asterisk exposure examples.
 - Include port and network isolation assumptions when describing deployment.
 
-### 18.1 Rejected non-canonical patterns
+## 19. Wiki System
+
+TSiSIP includes a Professional Premium Wiki embedded in the OCP control panel:
+- **Location**: `/TSiSIP/Wiki` (via `wiki.php`)
+- **Source**: `docs/wiki/` markdown files
+- **Renderer**: Regex-based markdown parser with TOC generation
+- **Role-based navigation**: admin, devops, dentist, assistant, user, readonly
+- **Pages**: System Overview, DevOps SIP, Administrators, Operators & Users, Dentists, Assistants, Security, Developers, Runbooks
+- **Dashboard**: Role-aware landing page at `dashboard.php`
+
+The wiki is deployed as part of the OCP Docker image.
+
+## 20. Rejected non-canonical patterns
 
 The following patterns are explicitly rejected for TSiSIP documentation, examples, specs, and implementation snippets:
 
@@ -780,7 +821,7 @@ The following patterns are explicitly rejected for TSiSIP documentation, example
 | RTPengine kernel DKMS as baseline requirement | Containerized RTPengine baseline; kernel acceleration requires separate host-capability design. |
 | Forwarding `Authorization`, `Proxy-Authorization`, `X-Tenant-ID`, `X-Backend-ID`, `X-Route-Override`, or client-supplied `X-Routing-Key` | Strip credentials and untrusted routing/topology headers before relay. |
 
-## 19. RFC reference matrix
+## 21. RFC reference matrix
 
 | RFC | Role |
 |---|---|
@@ -792,31 +833,38 @@ The following patterns are explicitly rejected for TSiSIP documentation, example
 | RFC 3550 | RTP/RTCP. |
 | RFC 3711 | SRTP. |
 
-## 20. Canonical implementation sequence
+## 22. Canonical implementation sequence
 
-1. Create Docker image for OpenSIPS 3.6 LTS.
-2. Add PostgreSQL schema generated from OpenSIPS 3.6 tooling.
-3. Add TSiSIP PostgreSQL extensions for tenants, routing, PBX metadata, and audit.
-4. Add `opensips.cfg.tpl` with canonical modules and route blocks.
-5. Add Docker Compose topology with `sip_edge`, `sip_internal`, and `db_internal`.
-6. Add RTPengine runtime container.
-7. Add isolated Asterisk backend services.
-8. Validate OpenSIPS config syntax inside the built image.
-9. Validate SIP auth rejection and authenticated routing.
-10. Validate RTP SDP rewrite through RTPengine.
+1. Create Docker image for OpenSIPS 3.6 LTS. *(Feature 001)*
+2. Add PostgreSQL schema generated from OpenSIPS 3.6 tooling. *(Feature 001)*
+3. Add TSiSIP PostgreSQL extensions for tenants, routing, PBX metadata, and audit. *(Feature 001)*
+4. Add `opensips.cfg.tpl` with canonical modules and route blocks. *(Feature 001)*
+5. Add Docker Compose topology with `sip_edge`, `sip_internal`, and `db_internal`. *(Feature 001)*
+6. Add RTPengine runtime container. *(Feature 001)*
+7. Add isolated Asterisk backend services. *(Feature 001)*
+8. Validate OpenSIPS config syntax inside the built image. *(Feature 001)*
+9. Validate SIP auth rejection and authenticated routing. *(Feature 001)*
+10. Validate RTP SDP rewrite through RTPengine. *(Feature 001)*
+11. Rebrand OCP v9 as TSiSIP Control Panel with themed assets, i18n, and D3.js visualizations. *(Feature 002)*
+12. Deploy Prometheus and Grafana for metrics and alerting. *(Feature 003 — Phase 2)*
+13. Add container health probes, autohealing, and graceful degradation paths. *(Feature 004)*
+14. Implement automated PostgreSQL backup, WAL archiving, encryption, and restore validation. *(Feature 005)*
+15. Add per-source rate limiting (`pike`), auth throttling (`ratelimit`), and user blacklisting. *(Feature 006)*
+16. Enable TLS signaling (`5061/tcp`), mutual TLS for trunks, and SRTP media encryption. *(Feature 007)*
+17. Automate VPS provisioning, hardening, Nginx reverse proxy, and DevSecOps audit. *(Feature 008)*
 
-## 21. Acceptance criteria
+## 23. Acceptance criteria
 
 | ID | Test | Pass condition |
 |---|---|---|
 | AC-01 | `docker compose config` | Compose renders without errors. |
 | AC-02 | `docker compose build opensips` | OpenSIPS image builds from the committed project Dockerfile without external image substitution. |
-| AC-03 | Inspect Compose services | Only OpenSIPS publishes `5060/udp,tcp`; only RTPengine publishes `10000-20000/udp`; no other service is externally reachable. |
+| AC-03 | Inspect Compose services | Only OpenSIPS publishes `5060/udp,tcp` and `5061/tcp`; only RTPengine publishes `10000-20000/udp`; no other service is externally reachable. |
 | AC-04 | Inspect Compose services | No `asterisk-*` service contains a `ports:` stanza or attaches to a public network. |
 | AC-05 | Inspect Compose services | PostgreSQL has no `ports:` stanza and is attached only to `db_internal`. |
 | AC-06 | Inspect RTPengine command | `--listen-ng` is bound to `${RTPENGINE_INTERNAL_IP}:22222`, not `0.0.0.0`. |
 | AC-07 | OpenSIPS config check | `opensips -c -f /etc/opensips/opensips.cfg` exits with status 0 inside the image. |
-| AC-08 | Unauthenticated INVITE | External INVITE without credentials receives `407 Proxy Authentication Required`. |
+| AC-08 | Unauthenticated INVITE | External INVITE without credentials receives `401 Unauthorized` (current implementation) or `407 Proxy Authentication Required` (canonical proxy-auth contract). |
 | AC-09 | Credential stripping | Forwarded SIP request to Asterisk contains no `Authorization` or `Proxy-Authorization` header. |
 | AC-10 | Cross-tenant header injection | Tenant A cannot route to Tenant B by supplying `X-Routing-Key`. |
 | AC-11 | Header sanitization | Forwarded request contains no client-supplied `X-Tenant-ID`, `X-Backend-ID`, or `X-Route-Override`. |
@@ -824,5 +872,10 @@ The following patterns are explicitly rejected for TSiSIP documentation, example
 | AC-13 | RTP teardown | BYE/CANCEL or exhausted INVITE failover triggers RTPengine session deletion. |
 | AC-14 | Dispatcher failover | If selected PBX fails, `ds_next_dst()` attempts the next active destination. |
 | AC-15 | PostgreSQL schema | `subscriber.tenant_id` is non-null and subscriber/routing lookups include tenant-scoped predicates and indexes. |
-| AC-16 | Health/readiness | PostgreSQL, RTPengine, OpenSIPS config, and internal Asterisk SIP readiness checks pass. |
+| AC-16 | Health/readiness | PostgreSQL, RTPengine, OpenSIPS config, and internal Asterisk SIP readiness checks pass. See Feature 004 for container health probe specifications. |
 | AC-17 | Legacy snippet rejection | Documentation contains no OpenSIPS 3.4 baseline, `db_mysql`, plaintext auth, host-install runtime path, or hard-coded dispatcher routing as canonical guidance. |
+
+---
+
+*Last Updated: 2026-05-19*
+*Canonical spec version: 1.1*

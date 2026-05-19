@@ -1,4 +1,4 @@
-# Infrastructure Quality Checklist: OpenSIPS Docker Edge Proxy Foundation
+# Infrastructure Quality Checklist: TSiSIP SIP Edge Foundation
 
 **Purpose**: Validate requirement quality across security, operability, performance, and resilience dimensions
 **Created**: 2026-05-16
@@ -10,42 +10,48 @@
 
 ## Security & Hardening
 
-- [ ] CHK001 — Are authentication challenge requirements quantified with specific response codes (401 vs 407) per SIP method? [Clarity, Spec §FR-005]
-- [ ] CHK002 — Is the HA1 hash algorithm selection criteria documented (when to use MD5 vs SHA-256 vs SHA-512/256)? [Gap, Spec §FR-002]
-- [ ] CHK003 — Are IP ACL and trusted-gateway requirements specified for the `permissions` module? [Gap, Plan §Module Set]
-- [ ] CHK004 — Is the topology hiding mode (`"C"`) justified with specific threat scenarios it mitigates? [Clarity, Spec §FR-007]
-- [ ] CHK005 — Are secret injection requirements consistent across FR-002, plan Secrets Strategy, and entrypoint constraints? [Consistency, Spec §FR-002 ↔ Plan §Secrets Strategy]
+- [x] CHK001 — PASS. FR-005 quantifies authenticated methods as `401 Unauthorized` digest challenge and OPTIONS as local `200 OK` without backend routing.
+- [x] CHK002 — PASS. FR-002A documents MD5 HA1 as compatibility baseline, SHA-256/SHA-512/256 as stronger provisioning paths, and plaintext `subscriber.password` as non-authoritative.
+- [x] CHK003 — PASS. FR-008 and plan Data Model specify `permissions` with the OpenSIPS `address` table for trusted gateway IP bypass.
+- [x] CHK004 — PASS. FR-007 now ties topology hiding mode `"C"` to concealing backend routing details and private PBX addresses.
+- [x] CHK005 — PASS. FR-002, plan Secrets Strategy, `.gitignore`, and entrypoint constraints agree on runtime secret injection and fail-fast behavior.
 
 ## Operability & Observability
 
-- [ ] CHK006 — Are health check failure semantics quantified (timeout per attempt, interval between attempts)? [Clarity, Spec §Clarifications Q2]
-- [ ] CHK007 — Is the orchestrator restart policy dependency documented as an explicit assumption or requirement? [Gap, Spec §Clarifications Q3]
-- [ ] CHK008 — Are logging requirements specified for authentication events (`auth_audit_log` table exists but no logging requirements in spec)? [Gap, Plan §Data Model]
-- [ ] CHK009 — Is the operator onboarding workflow documented beyond `.env.example` and `secrets/` directory? [Gap, Spec §Scenario 2]
+- [x] CHK006 — PASS. FR-010 quantifies interval 15s, timeout 5s, retries 3, start period 30s.
+- [x] CHK007 — PASS. Clarifications and plan Health Checks assign restart policy responsibility to Docker Compose/operator.
+- [x] CHK008 — PASS. FR-009 specifies authentication audit events, minimum fields, and 90-day retention.
+- [x] CHK009 — PASS. Operator workflow is documented by AGENTS.md, README.md, deploy runbooks, `.env.example`, and the secrets directory contract.
 
 ## Performance & Scalability
 
-- [ ] CHK010 — Are performance targets (SC-007–009) consistent with the single-instance assumption? [Consistency, Spec §Assumptions ↔ SC-007/008/009]
-- [ ] CHK011 — Is the "standard hardware" baseline for SC-006/SC-008 defined with specific CPU/memory specs? [Clarity, Spec §Success Criteria]
-- [ ] CHK012 — Are degradation requirements defined when concurrent sessions exceed 100? [Edge Case, Gap]
-- [ ] CHK013 — Is the 50ms latency target defined for a specific percentile or only median? [Clarity, Spec §SC-008]
+- [x] CHK010 — PASS. Assumptions state single-instance deployment; risks now call SC-007-SC-009 single-instance baseline targets requiring performance-track validation before scale-up.
+- [x] CHK011 — PASS. SC-006 and SC-008 use a 2 vCPU / 4GB RAM baseline.
+- [x] CHK012 — DEFERRED. Over-capacity degradation is intentionally covered by later rate limiting/performance work, not the foundation feature.
+- [x] CHK013 — PASS. SC-008 remains explicitly median response time.
 
 ## Failure Handling & Resilience
 
-- [ ] CHK014 — Are malformed SIP message size bounds quantified with a specific byte threshold? [Clarity, Spec §Edge Cases]
-- [ ] CHK015 — Is the Max-Forwards exhaustion response code specified (e.g., 483 Too Many Hops)? [Clarity, Spec §Edge Cases]
-- [ ] CHK016 — Are database unavailability scenarios beyond startup covered (runtime disconnect, slow queries)? [Coverage, Gap]
-- [ ] CHK017 — Is the RTPengine failure fallback behavior specified when media relay is unavailable? [Gap, Spec §Out of Scope]
+- [x] CHK014 — PASS. Edge cases quantify malformed SIP messages over 4096 bytes.
+- [x] CHK015 — PASS. Edge cases specify `483 Too Many Hops`.
+- [x] CHK016 — PASS. Startup DB failure is foundation fail-fast; runtime DB failure is delegated to Feature 004 with `480 Temporarily Unavailable`.
+- [x] CHK017 — PASS. RTPengine runtime failure is delegated to Feature 004 with `488 Not Acceptable Here`.
 
 ## Clarification Audit
 
-- [ ] CHK018 — Are the 5 clarifications traceable to specific spec sections without requiring the Clarifications section? [Traceability]
-- [ ] CHK019 — Is the performance target deferral ("detailed benchmarking deferred") documented as a risk or dependency? [Consistency, Spec §Clarifications ↔ Risks]
-- [ ] CHK020 — Is the health check mechanism defined as a formal requirement (FR) or only as an edge case? [Consistency, Spec §Clarifications Q2 ↔ FR-006]
-- [ ] CHK021 — Is the single-instance limitation reflected in the network isolation requirements (FR-004)? [Consistency, Spec §Assumptions ↔ FR-004]
-- [ ] CHK022 — Are the 2 active issues (RTPengine, Asterisk) represented in the Risk table with appropriate impact/likelihood? [Consistency, Spec §Active Issues ↔ Risks]
+- [x] CHK018 — PASS. Clarifications map into FR-005, FR-008, FR-009, FR-010, Success Criteria, Assumptions, Risks, and Active Issues.
+- [x] CHK019 — PASS. Performance-track validation is now captured in Dependencies and Risks.
+- [x] CHK020 — PASS. Health checking is formalized as FR-010.
+- [x] CHK021 — PASS. FR-004 covers network isolation; Assumptions explicitly limit the foundation to a single OpenSIPS instance.
+- [x] CHK022 — PASS. RTPengine validation is resolved and graceful fallback moved to Feature 004; Asterisk production routing was validated on VPS TSiAPP in 2026-05-19.
 
 ## Cross-Cutting Quality
 
-- [ ] CHK023 — Are all 9 success criteria independently verifiable without external tooling not defined in Dependencies? [Measurability, Spec §Success Criteria ↔ Dependencies]
-- [ ] CHK024 — Is the source-build decision (vs APT) documented with explicit acceptance criteria for build reproducibility? [Traceability, Spec §Notes ↔ SC-001]
+- [x] CHK023 — PASS WITH SCOPE NOTE. SC-001-SC-006 are foundation-verifiable; SC-007-SC-009 require the performance validation track and are documented as such in Dependencies/Risks.
+- [x] CHK024 — PASS. Notes and plan document the source-build decision, while SC-001 covers clean-checkout build reproducibility.
+
+## Review Result
+
+**Status:** PASS with scoped deferrals.
+**Reviewed:** 2026-05-19.
+**Remaining outside this feature:** production-scale performance validation, over-capacity degradation policy, and upstream/public-network release of SIP ports 5060/5061.

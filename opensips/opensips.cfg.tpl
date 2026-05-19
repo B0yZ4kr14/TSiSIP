@@ -98,7 +98,9 @@ modparam("tls_mgm", "certificate", "[default]/etc/opensips/tls/server.crt")
 modparam("tls_mgm", "private_key", "[default]/etc/opensips/tls/server.key")
 modparam("tls_mgm", "ca_list", "[default]/etc/opensips/tls/ca.crt")
 modparam("tls_mgm", "verify_cert", "[default]1")
-modparam("tls_mgm", "require_cert", "[default]0")
+modparam("tls_mgm", "require_cert", "[default]1")
+modparam("tls_mgm", "cipher_list", "[default]ECDHE+AESGCM:ECDHE+CHACHA20:!aNULL:!MD5:!DSS")
+modparam("tls_mgm", "method", "[default]TLSv1.2:TLSv1.3")
 
 # tm
 modparam("tm", "fr_timeout", 5)
@@ -140,10 +142,20 @@ route {
         exit;
     }
 
-    # Check userblacklist (manual bans)
-    if (check_blacklist("userblacklist")) {
-        xlog("L_WARN", "BLACKLISTED source $si - request dropped\n");
-        sl_send_reply("403", "Forbidden");
+    if (!has_totag()) {
+        # Initial request
+        if (is_method("OPTIONS")) {
+            # Health-check OPTIONS - no auth, no backend routing
+            sl_send_reply(200, "OK");
+            exit;
+        }
+    } else {
+        # In-dialog request
+        if (loose_route()) {
+            route(RELAY);
+        } else {
+            sl_send_reply(404, "Not Here");
+        }
         exit;
     }
 
@@ -155,18 +167,18 @@ route {
     }
 
     # Max-Forwards / loop detection
-    if (!mf_process_maxfwd_header("70")) {
-        sl_send_reply("483", "Too Many Hops");
+    if (!mf_process_maxfwd_header(70)) {
+        sl_send_reply(483, "Too Many Hops");
         exit;
     }
 
     # Message size limit (4096 bytes per RFC 3261 recommendation)
     if ($ml > 4096) {
-        sl_send_reply("513", "Message Too Large");
+        sl_send_reply(513, "Message Too Large");
         exit;
     }
 
-    # CANCEL and in-dialog requests
+    # CANCEL requests
     if (is_method("CANCEL")) {
         if (t_check_trans()) {
             t_relay();
@@ -174,28 +186,18 @@ route {
         exit;
     }
 
-    if (!has_totag()) {
-        # Initial request
-        if (is_method("OPTIONS")) {
-            # Health-check OPTIONS - no auth, no backend routing
-            sl_send_reply("200", "OK");
-            exit;
-        }
-    } else {
-        # In-dialog request
-        if (loose_route()) {
-            route(RELAY);
-        } else {
-            sl_send_reply("404", "Not Here");
-        }
-        exit;
-    }
-
     # Sanitize untrusted headers
     route(SANITIZE);
 
+    # Check per-user blacklist entries after protocol-level health traffic
+    if (!check_user_blacklist("$fU", "$fd", "$rU", "userblacklist")) {
+        xlog("L_WARN", "USERBLACKLIST denied $fU@$fd -> $rU from $si\n");
+        sl_send_reply(403, "Forbidden");
+        exit;
+    }
+
     # Trusted gateway bypass (permissions module)
-    if (check_source_address("1")) {
+    if (check_source_address(1)) {
         xlog("L_INFO", "Trusted gateway $si - bypassing auth\n");
         route(HEADER_ROUTING);
         route(RELAY);
@@ -268,7 +270,7 @@ route[AUTH] {
     # SQL injection guard: validate auth username (RFC 3261: user-unreserved chars, max 128)
     if ($au != NULL && !($au =~ "^[a-zA-Z0-9_.!~*'()&=+$,;?/-]{1,128}$")) {
         xlog("L_WARN", "AUTH: rejected malformed username from $si\n");
-        sl_send_reply("400", "Bad Request");
+        sl_send_reply(400, "Bad Request");
         exit;
     }
 
@@ -276,13 +278,13 @@ route[AUTH] {
     if (!rl_check("auth_$au", 10, "TAILDROP")) {
         xlog("L_WARN", "Auth rate limited for $au ($si)\n");
         # Add to userblacklist via SQL (async cleanup by external job)
-        sql_query("db_default", "INSERT INTO userblacklist (username, domain, prefix, allowlist) VALUES ('$au', '$fd', 'auth_ban', 0) ON CONFLICT DO NOTHING");
-        sl_send_reply("403", "Forbidden");
+        sql_query("INSERT INTO userblacklist (username, domain, prefix, whitelist) VALUES ('$au', '$fd', 'auth_ban', 0) ON CONFLICT DO NOTHING");
+        sl_send_reply(403, "Forbidden");
         exit;
     }
 
     if (!www_authorize("", "subscriber")) {
-        www_challenge("", "0");
+        www_challenge("", "auth");
         exit;
     }
 
@@ -302,7 +304,7 @@ route[AUTH_AUDIT] {
         $var(safe_callid) = "INVALID";
     }
     # Insert auth audit record
-    sql_query("db_default", "INSERT INTO auth_audit_log (event_time, username, domain, source_ip, sip_method, result, call_id) VALUES (NOW(), '$fU', '$fd', '$si', '$rm', '$var(audit_result)', '$var(safe_callid)')");
+    sql_query("INSERT INTO auth_audit_log (event_time, username, domain, source_ip, sip_method, result, call_id) VALUES (NOW(), '$fU', '$fd', '$si', '$rm', '$var(audit_result)', '$var(safe_callid)')");
 }
 
 route[HEADER_ROUTING] {
@@ -313,15 +315,19 @@ route[HEADER_ROUTING] {
     $var(tenant_id) = $avp(tenant_id);
 
     # 1. Try header_routing_rules match on X-Route-Key
-    if ($hdr(X-Route-Key) != "") {
+    if ($hdr(X-Route-Key) != NULL && $hdr(X-Route-Key) != "") {
         # SQL injection guard: validate X-Route-Key (alphanumeric + ._- only, max 64 chars)
         $var(route_key) = $hdr(X-Route-Key);
         if (!($var(route_key) =~ "^[a-zA-Z0-9._-]{1,64}$")) {
             xlog("L_WARN", "HEADER_ROUTING: rejected invalid X-Route-Key from $si\n");
-            sl_send_reply("400", "Bad Request");
+            sl_send_reply(400, "Bad Request");
             exit;
         }
-        sql_query("db_default", "SELECT dispatcher_setid FROM header_routing_rules WHERE tenant_id = '$var(tenant_id)' AND header_name = 'X-Route-Key' AND match_value = '$var(route_key)' AND enabled = true ORDER BY priority LIMIT 1", "ra");
+        if (!sql_query("SELECT dispatcher_setid FROM header_routing_rules WHERE tenant_id = '$var(tenant_id)' AND header_name = 'X-Route-Key' AND match_value = '$var(route_key)' AND enabled = true ORDER BY priority LIMIT 1", "$avp(ra)")) {
+            xlog("L_ERR", "HEADER_ROUTING: database unavailable for tenant $var(tenant_id)\n");
+            sl_send_reply(480, "Temporarily Unavailable");
+            exit;
+        }
         if ($avp(ra) != 0) {
             $var(ds_set) = $avp(ra);
             xlog("L_INFO", "HEADER_ROUTING: matched X-Route-Key=$hdr(X-Route-Key) -> set $var(ds_set) for tenant $var(tenant_id)\n");
@@ -343,8 +349,8 @@ route[HEADER_ROUTING] {
     remove_hf("X-Routing-Key");
 
     # 4. Load-based selection with capacity check
-    if (!ds_select_dst("$var(ds_set)", "f")) {
-        sl_send_reply("480", "Temporarily Unavailable");
+    if (!ds_select_dst($var(ds_set), 4, "f")) {
+        sl_send_reply(480, "Temporarily Unavailable");
         exit;
     }
 
@@ -354,7 +360,7 @@ route[HEADER_ROUTING] {
 route[HANDLE_INVITE] {
     # Create dialog
     if (!create_dialog("B")) {
-        sl_send_reply("500", "Internal Server Error");
+        sl_send_reply(500, "Internal Server Error");
         exit;
     }
 
@@ -364,8 +370,11 @@ route[HANDLE_INVITE] {
     # Topology hiding
     topology_hiding("C");
 
-    # Media relay offer
-    rtpengine_offer("replace-origin replace-session-connection");
+    # Media relay offer with graceful degradation (Feature 004)
+    if (!rtpengine_offer("replace-origin replace-session-connection")) {
+        sl_send_reply(488, "Not Acceptable Here");
+        exit;
+    }
 }
 
 route[RELAY] {

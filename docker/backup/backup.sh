@@ -11,13 +11,26 @@ WAL_DIR="${WAL_DIR:-/backup/wal}"
 ENCRYPTION_KEY_FILE="${ENCRYPTION_KEY_FILE:-/run/secrets/backup_encryption_key}"
 PGPASSWORD_FILE="${PGPASSWORD_FILE:-/run/secrets/db_password}"
 RETENTION_DAYS="${BACKUP_RETENTION_DAYS:-30}"
+ALLOW_UNENCRYPTED_BACKUPS="${ALLOW_UNENCRYPTED_BACKUPS:-false}"
 
 # Ensure directories exist
 mkdir -p "$BACKUP_DIR" "$WAL_DIR"
+mkdir -p /tmp/backup
+umask 077
 
 log() {
     echo "[$(date '+%Y-%m-%d %H:%M:%S')] $*"
 }
+
+if [ ! -f "$PGPASSWORD_FILE" ] || [ ! -s "$PGPASSWORD_FILE" ]; then
+    log "ERROR: PostgreSQL password file missing or empty: $PGPASSWORD_FILE"
+    exit 1
+fi
+
+if [ "$ALLOW_UNENCRYPTED_BACKUPS" != "true" ] && { [ ! -f "$ENCRYPTION_KEY_FILE" ] || [ ! -s "$ENCRYPTION_KEY_FILE" ]; }; then
+    log "ERROR: Encryption key missing or empty: $ENCRYPTION_KEY_FILE"
+    exit 1
+fi
 
 log "Starting backup: $BACKUP_FILE"
 
@@ -26,11 +39,11 @@ log "Starting backup: $BACKUP_FILE"
 # Use REPEATABLE READ for consistency
 # Throttle I/O to avoid impacting production
 PGPASSWORD="$(cat "$PGPASSWORD_FILE" 2>/dev/null || echo '')" \
+PGOPTIONS="-c default_transaction_isolation=repeatable\\ read" \
 nice -n 10 ionice -c2 -n7 \
 pg_dump -h "$PGHOST" -p "$PGPORT" -U "$PGUSER" -d "$PGDATABASE" \
     -Fc -Z9 \
     --lock-wait-timeout=5000 \
-    --transaction-isolation=repeatable-read \
     -f "/tmp/backup/${BACKUP_FILE}"
 
 log "Backup created: /tmp/backup/${BACKUP_FILE}"
@@ -41,18 +54,16 @@ rm -f "/tmp/backup/${BACKUP_FILE}"
 
 log "Backup compressed: ${BACKUP_DIR}/${BACKUP_FILE}.gz"
 
-# Encrypt if key is available
+# Encrypt unless explicitly disabled for non-production development.
 if [ -f "$ENCRYPTION_KEY_FILE" ] && [ -s "$ENCRYPTION_KEY_FILE" ]; then
     /usr/local/bin/encrypt.sh encrypt "${BACKUP_DIR}/${BACKUP_FILE}.gz" "${BACKUP_DIR}/${BACKUP_FILE}.gz.enc"
     rm -f "${BACKUP_DIR}/${BACKUP_FILE}.gz"
     log "Backup encrypted: ${BACKUP_DIR}/${BACKUP_FILE}.gz.enc"
+    ln -sfn "${BACKUP_FILE}.gz.enc" "${BACKUP_DIR}/latest"
 else
-    log "WARNING: No encryption key found, backup stored unencrypted"
+    log "WARNING: Unencrypted backups explicitly allowed for this environment"
+    ln -sfn "${BACKUP_FILE}.gz" "${BACKUP_DIR}/latest"
 fi
-
-# Update latest symlink
-ln -sf "${BACKUP_FILE}.gz.enc" "${BACKUP_DIR}/latest" 2>/dev/null || \
-ln -sf "${BACKUP_FILE}.gz" "${BACKUP_DIR}/latest" 2>/dev/null || true
 
 log "Backup completed successfully"
 exit 0

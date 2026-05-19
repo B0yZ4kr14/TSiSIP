@@ -156,6 +156,8 @@ class TestRpoMonitor:
         compose_exec(['/usr/local/bin/rpo-monitor.sh'], check=False)
         r2 = compose_exec(['test', '-f', '/backup/metrics/rpo_lag_seconds.prom'], check=False)
         assert r2.returncode == 0, "RPO metric file not generated"
+        r3 = compose_exec(['grep', '-q', '^backup_current_wal_info', '/backup/metrics/rpo_lag_seconds.prom'], check=False)
+        assert r3.returncode == 0, "Current WAL info metric not generated"
 
 
 class TestPitrRestore:
@@ -191,6 +193,7 @@ class TestMetricsExporter:
         ], check=False)
         assert r.returncode == 0, f"Metrics exporter failed: {r.stderr}"
         assert 'backup_rpo_lag_seconds' in r.stdout
+        assert 'backup_current_wal_info' in r.stdout
         assert 'backup_quota_used_percent' in r.stdout
         assert 'backup_success_total' in r.stdout
 

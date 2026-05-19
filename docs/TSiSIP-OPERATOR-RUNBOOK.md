@@ -27,16 +27,71 @@ docker compose exec ocp bash -c "curl -fsSL http://localhost/login.php | grep -q
 
 ## Architecture Overview
 
-TSiSIP runs as a Docker Compose stack with four services:
+TSiSIP has two operational profiles:
+
+- `docker-compose.yml`: full development/integration topology.
+- `docker-compose.vps.yml`: production VPS-lite+PBX profile used on TSiAPP.
+
+The current TSiAPP VPS production profile runs seven services:
 
 | Service | Image | Networks | Published Ports |
 |---|---|---|---|
-| `opensips` | `tsisip-opensips:latest` | sip_edge, sip_internal, db_internal | 5060/udp, 5060/tcp |
-| `rtpengine` | `tsisip/rtpengine:latest` | sip_edge, sip_internal | 10000-20000/udp |
-| `postgres` | `postgres:16` | db_internal | (none) |
-| `ocp` | `tsisip/ocp:latest` | sip_internal, db_internal | (none) |
+| `opensips` | `ghcr.io/b0yz4kr14/tsisip/opensips:latest` | sip_edge, sip_internal, db_internal | 5060/udp, 5060/tcp, 5061/tcp |
+| `rtpengine` | `ghcr.io/b0yz4kr14/tsisip/rtpengine:latest` | sip_edge, sip_internal | 10000-10999/udp |
+| `postgres` | `ghcr.io/b0yz4kr14/tsisip/postgres:latest` | db_internal | (none) |
+| `asterisk-pbx-1` | `ghcr.io/b0yz4kr14/tsisip/asterisk:latest` | sip_internal | (none) |
+| `asterisk-pbx-2` | `ghcr.io/b0yz4kr14/tsisip/asterisk:latest` | sip_internal | (none) |
+| `ocp` | `ghcr.io/b0yz4kr14/tsisip/ocp:latest` | sip_internal, db_internal, metrics_host | 127.0.0.1:8084/tcp |
+| `backup` | `ghcr.io/b0yz4kr14/tsisip/backup:latest` | db_internal, metrics_host | 127.0.0.1:9101/tcp |
 
-**Access OCP**: Via reverse proxy or VPN tunnel to `sip_internal`. OCP has no published ports.
+**SIP public exposure status**: OpenSIPS listens locally on `5060/udp`, `5060/tcp`, and `5061/tcp`. External scans still show 5060/5061 as filtered; prior packet capture showed packets do not reach the VPS host, so the remaining public SIP exposure work is upstream of the host.
+
+## OCP Access
+
+Public HTTPS is via the existing Nginx location `https://tsiapp.io/TSiSIP/`. The container publishes only `127.0.0.1:8084/tcp` on the host for the local reverse proxy path.
+
+The OCP dashboard and the Professional Premium Wiki share the same authenticated session. Navigate to:
+
+- **Dashboard**: `https://tsiapp.io/TSiSIP/dashboard.php`
+- **Wiki**: `https://tsiapp.io/TSiSIP/Wiki`
+
+## Wiki Navigation
+
+The TSiSIP Professional Premium Wiki is available at `https://tsiapp.io/TSiSIP/Wiki`.
+
+### TOC Sidebar
+
+Use the table-of-contents sidebar on the left to switch between wiki pages. Pages are grouped by audience and functional area.
+
+### Search and Filter
+
+Use the search/filter field at the top of the sidebar to narrow pages by keyword. The filter applies to page titles and section headings.
+
+### Role-Based Page Visibility
+
+Wiki pages are filtered based on the authenticated session role. Each operator sees only the pages relevant to their responsibilities. See the **Role-Based Access** section below for the mapping.
+
+## Role-Based Access
+
+Access to the wiki and OCP features is determined by the authenticated session role.
+
+| Role | Wiki Access | OCP Features | Escalation Path |
+|---|---|---|---|
+| Admin | Full access — all wiki pages, settings, and administrative functions | Full | Direct — admin owns all escalation paths |
+| DevOps | Technical operations pages (SIP, media, routing, backup, observability) | Technical ops, monitoring, logs | Admin for infrastructure changes |
+| Dentist | Clinical guides, endpoint verification, call quality monitoring | Clinical dashboard, quality metrics | Admin for infrastructure; DevOps for SIP issues |
+| Assistant | Front-desk guides, daily health checks, trunk verification, patient call routing | Front-desk ops, basic health | Admin or DevOps for technical faults |
+| User / Readonly | General operational info, system overview, operator guides | Read-only dashboard, public metrics | Admin for access expansion |
+
+### How Role Is Determined
+
+Role is established at session creation based on the authenticated user identity. The OCP session enforces the role for the lifetime of the session. Changing roles requires re-authentication with a different account.
+
+### Escalation Paths
+
+- **Infrastructure or SIP faults**: Assistant → DevOps → Admin
+- **Clinical or quality issues**: Dentist → Admin (with DevOps looped in for media/SIP)
+- **Access or permissions issues**: Any role → Admin
 
 ## Daily Operations
 
@@ -247,9 +302,11 @@ docker compose exec backup cat /backup/metrics/rto_last_seconds
 # Storage quota
 docker compose exec backup cat /backup/metrics/quota_usage.prom
 
-# All metrics via exporter
-curl http://backup:9101/metrics
+# All metrics via loopback exporter on VPS-lite
+curl http://127.0.0.1:9101/metrics
 ```
+
+The RPO monitor emits both `backup_rpo_lag_seconds` and `backup_current_wal_info`. If `current_wal` equals `last_archived_wal`, the database is idle or caught up and RPO lag is reported as `0`.
 
 ## Rate Limiting & DDoS Protection
 
@@ -733,3 +790,7 @@ gh workflow run ci.yml -f deploy_target=staging
 | `speckit-scan` fails | Hardcoded `:latest` or forbidden module | Run `bash scripts/ci-scan.sh` locally |
 | `test-integration` fails | Container health check timeout | Increase sleep or check logs |
 | `security-scan` fails | CVE in base image | Update base image digest or patch packages |
+
+---
+
+*Last Updated: 2026-05-19*

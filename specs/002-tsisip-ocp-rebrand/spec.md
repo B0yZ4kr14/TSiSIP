@@ -1,15 +1,16 @@
-# Feature Specification: TSiSIP OpenSIPS Control Panel Rebranding & Modernization
+# Feature Specification: TSiSIP Control Panel Rebranding & Modernization
 
 ## Overview
 
-**Feature**: TSiSIP OpenSIPS Control Panel Rebranding & Modernization
+**Feature**: TSiSIP Control Panel Rebranding & Modernization
 **Short name**: tsisip-ocp-rebrand
 **Created**: 2026-05-17
-**Status**: Draft
+**Status**: Implemented
+**Last Updated**: 2026-05-19
 
 ### Context
 
-The OpenSIPS Control Panel (OCP) v9 is the canonical web management interface for OpenSIPS 3.6 LTS. Within the TSiSIP ecosystem, the OCP serves as the primary operational cockpit for SIP administrators, NOC operators, and tenant managers. Currently, the OCP ships with a generic, unbranded visual identity that does not reflect the quality positioning of the TSiSIP platform. This feature delivers a complete visual and experiential rebranding of OCP v9 under the TSiSIP corporate identity, elevating perceived quality without altering the underlying PHP-native view architecture or breaking existing administrative workflows.
+OCP v9 is the upstream web management interface adapted by this project as the TSiSIP Control Panel. Within the TSiSIP ecosystem, it serves as the primary operational cockpit for SIP administrators, NOC operators, and tenant managers. Currently, the upstream OCP ships with a generic, unbranded visual identity that does not reflect the quality positioning of the TSiSIP platform. This feature delivers a complete visual and experiential rebranding of OCP v9 under the TSiSIP corporate identity, elevating perceived quality without altering the underlying PHP-native view architecture or breaking existing administrative workflows.
 
 ### Objective
 
@@ -68,7 +69,7 @@ Transform the OCP v9 user interface into a TSiSIP-branded, high-quality operatio
 - The corporate name "TSiSIP" appears in exact casing (all uppercase except the central lowercase "i") in all branded touchpoints: header title, login page, browser tab, and email templates
 - A new logo specification is created and deployed, replacing the generic OCP logo in `web/common/header.php` and the login view
 - Logo behavior is responsive: full horizontal lockup on desktop, compact icon-only variant on mobile viewports below 768px
-- No generic "OpenSIPS Control Panel" strings remain visible to authenticated users
+- No generic upstream "OpenSIPS Control Panel" strings remain visible to authenticated users
 
 ### FR-002: Color Palette & Theming
 **Description**: Define and apply a cold-tone color system that conveys metallic blue authority, technical precision, and enterprise trust.

@@ -383,3 +383,386 @@ body.tsisip-login::after {
 .tsisip-mb-4 { margin-bottom: 1rem; }
 .tsisip-mb-5 { margin-bottom: 1.25rem; }
 .tsisip-mb-6 { margin-bottom: 1.5rem; }
+
+/* ===== Role-Aware Density Modifiers ===== */
+[data-tsisip-role="admin"] .tsisip-sidebar {
+  border-right: 2px solid var(--tsisip-accent-teal);
+}
+
+[data-tsisip-role="devops"] .tsisip-table {
+  font-family: var(--tsisip-font-mono);
+}
+
+.tsisip-role-badge--admin {
+  background-color: rgba(13, 138, 110, 0.15);
+  color: var(--tsisip-accent-teal);
+}
+
+.tsisip-role-badge--devops {
+  background-color: rgba(37, 99, 168, 0.15);
+  color: var(--tsisip-accent-blue);
+}
+
+.tsisip-role-badge--dentist {
+  background-color: rgba(184, 50, 50, 0.15);
+  color: var(--tsisip-accent-error);
+}
+
+.tsisip-role-badge--assistant {
+  background-color: rgba(196, 134, 12, 0.15);
+  color: var(--tsisip-accent-warning);
+}
+
+.tsisip-role-badge--user {
+  background-color: rgba(37, 99, 168, 0.10);
+  color: var(--tsisip-accent-info);
+}
+
+.tsisip-role-badge--readonly {
+  background-color: rgba(136, 150, 164, 0.15);
+  color: var(--tsisip-text-muted);
+}
+
+/* ===== Layout Fixes for Sidebar ===== */
+#content {
+  margin-left: 240px;
+  padding: 1.5rem;
+  min-height: calc(100vh - 56px);
+}
+
+@media (max-width: 1023px) {
+  #content {
+    margin-left: 0;
+    padding: 1rem;
+  }
+}
+
+/* ===== Header Navigation ===== */
+.tsisip-header-nav {
+  display: flex;
+  gap: 1.5rem;
+  align-items: center;
+}
+
+.tsisip-header-link {
+  color: var(--tsisip-text-on-dark);
+  text-decoration: none;
+  font-size: var(--tsisip-text-sm);
+  font-weight: 500;
+  opacity: 0.85;
+  transition: opacity 0.2s ease;
+}
+
+.tsisip-header-link:hover,
+.tsisip-header-link.is-active {
+  opacity: 1;
+  text-decoration: underline;
+  text-underline-offset: 4px;
+}
+
+/* ===== Sidebar Navigation ===== */
+.tsisip-nav-list {
+  list-style: none;
+  margin: 0;
+  padding: 0.75rem 0;
+}
+
+.tsisip-nav-item {
+  margin: 0;
+}
+
+.tsisip-nav-link {
+  display: block;
+  padding: 0.625rem 1.25rem;
+  color: var(--tsisip-text-primary);
+  text-decoration: none;
+  font-size: var(--tsisip-text-sm);
+  font-weight: 500;
+  transition: background-color 0.15s ease, color 0.15s ease;
+}
+
+.tsisip-nav-link:hover {
+  background-color: rgba(26, 58, 92, 0.06);
+  color: var(--tsisip-primary-blue);
+}
+
+.tsisip-nav-item.is-active .tsisip-nav-link {
+  background-color: rgba(13, 138, 110, 0.08);
+  color: var(--tsisip-accent-teal);
+  border-right: 3px solid var(--tsisip-accent-teal);
+}
+
+/* ===== Wiki Styles ===== */
+.tsisip-wiki-page {
+  max-width: 1200px;
+}
+
+.tsisip-wiki-layout {
+  display: flex;
+  gap: 2rem;
+}
+
+.tsisip-wiki-toc {
+  width: 260px;
+  flex-shrink: 0;
+  position: sticky;
+  top: 1.5rem;
+  align-self: flex-start;
+  max-height: calc(100vh - 3rem);
+  overflow-y: auto;
+  background-color: var(--tsisip-surface-card);
+  border-radius: var(--tsisip-radius-md);
+  border: 1px solid var(--tsisip-border-light);
+  padding: 1rem;
+}
+
+.tsisip-wiki-toc-header {
+  margin-bottom: 0.75rem;
+}
+
+.tsisip-wiki-toc-header h3 {
+  margin: 0 0 0.5rem;
+  font-size: var(--tsisip-text-sm);
+  font-weight: 600;
+  color: var(--tsisip-text-secondary);
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+}
+
+.tsisip-wiki-toc-search {
+  min-height: 36px;
+  font-size: var(--tsisip-text-xs);
+  padding: 0.375rem 0.625rem;
+}
+
+.tsisip-wiki-toc-list {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+
+.tsisip-wiki-toc-item {
+  margin: 0;
+}
+
+.tsisip-wiki-toc-link {
+  display: block;
+  padding: 0.375rem 0.5rem;
+  color: var(--tsisip-text-primary);
+  text-decoration: none;
+  font-size: var(--tsisip-text-sm);
+  border-radius: var(--tsisip-radius-sm);
+  transition: background-color 0.15s ease, color 0.15s ease;
+}
+
+.tsisip-wiki-toc-link:hover {
+  background-color: rgba(26, 58, 92, 0.06);
+  color: var(--tsisip-primary-blue);
+}
+
+.tsisip-wiki-toc-link.is-active {
+  background-color: rgba(13, 138, 110, 0.08);
+  color: var(--tsisip-accent-teal);
+  font-weight: 600;
+}
+
+.tsisip-wiki-toc-level-3 .tsisip-wiki-toc-link {
+  padding-left: 1.25rem;
+  font-size: var(--tsisip-text-xs);
+  color: var(--tsisip-text-secondary);
+}
+
+.tsisip-wiki-toc-section {
+  display: flex;
+  align-items: center;
+  gap: 0.25rem;
+}
+
+.tsisip-wiki-toc-section .tsisip-wiki-toc-link {
+  flex: 1;
+}
+
+.tsisip-wiki-toc-toggle {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 20px;
+  height: 20px;
+  padding: 0;
+  border: none;
+  background: transparent;
+  color: var(--tsisip-text-muted);
+  cursor: pointer;
+  font-size: var(--tsisip-text-sm);
+  font-family: var(--tsisip-font-mono);
+  line-height: 1;
+}
+
+.tsisip-wiki-toc-toggle:hover {
+  color: var(--tsisip-text-primary);
+}
+
+.tsisip-wiki-toc-item.is-collapsed .tsisip-wiki-toc-toggle {
+  color: var(--tsisip-text-primary);
+}
+
+.tsisip-wiki-content {
+  flex: 1;
+  min-width: 0;
+}
+
+.tsisip-wiki-content h1,
+.tsisip-wiki-content h2,
+.tsisip-wiki-content h3,
+.tsisip-wiki-content h4 {
+  font-family: var(--tsisip-font-heading);
+  color: var(--tsisip-text-primary);
+  margin-top: 1.5rem;
+  margin-bottom: 0.75rem;
+}
+
+.tsisip-wiki-content h1 {
+  font-size: var(--tsisip-text-3xl);
+  border-bottom: 1px solid var(--tsisip-border-light);
+  padding-bottom: 0.5rem;
+}
+
+.tsisip-wiki-content h2 {
+  font-size: var(--tsisip-text-2xl);
+  color: var(--tsisip-primary-blue);
+}
+
+.tsisip-wiki-content h3 {
+  font-size: var(--tsisip-text-xl);
+}
+
+.tsisip-wiki-content p {
+  line-height: 1.7;
+  margin-bottom: 1rem;
+}
+
+.tsisip-wiki-content pre {
+  background-color: var(--tsisip-surface-header);
+  color: var(--tsisip-text-on-dark);
+  padding: 1rem;
+  border-radius: var(--tsisip-radius-md);
+  overflow-x: auto;
+  font-family: var(--tsisip-font-mono);
+  font-size: var(--tsisip-text-sm);
+}
+
+.tsisip-wiki-content code {
+  background-color: rgba(26, 58, 92, 0.08);
+  padding: 0.125rem 0.375rem;
+  border-radius: 4px;
+  font-family: var(--tsisip-font-mono);
+  font-size: 0.9em;
+}
+
+.tsisip-wiki-content pre code {
+  background: transparent;
+  padding: 0;
+}
+
+.tsisip-wiki-content blockquote {
+  border-left: 4px solid var(--tsisip-accent-teal);
+  margin: 1rem 0;
+  padding: 0.5rem 1rem;
+  background-color: rgba(13, 138, 110, 0.04);
+  color: var(--tsisip-text-secondary);
+}
+
+.tsisip-wiki-content ul,
+.tsisip-wiki-content ol {
+  margin-bottom: 1rem;
+  padding-left: 1.5rem;
+}
+
+.tsisip-wiki-content li {
+  margin-bottom: 0.375rem;
+}
+
+.tsisip-wiki-content hr {
+  border: none;
+  border-top: 1px solid var(--tsisip-border-light);
+  margin: 1.5rem 0;
+}
+
+.tsisip-wiki-content a {
+  color: var(--tsisip-accent-blue);
+  text-decoration: underline;
+  text-underline-offset: 2px;
+}
+
+.tsisip-wiki-content a:hover {
+  color: var(--tsisip-primary-blue);
+}
+
+.tsisip-wiki-content table {
+  margin-bottom: 1rem;
+}
+
+.tsisip-wiki-404 {
+  text-align: center;
+  padding: 3rem 1rem;
+}
+
+.tsisip-wiki-404 h1 {
+  font-size: var(--tsisip-text-3xl);
+  color: var(--tsisip-text-muted);
+  margin-bottom: 1rem;
+}
+
+.tsisip-wiki-404 p {
+  color: var(--tsisip-text-secondary);
+  margin-bottom: 1.5rem;
+}
+
+/* ===== Dashboard ===== */
+.tsisip-dashboard h1 {
+  font-size: var(--tsisip-text-2xl);
+  margin-bottom: 1.5rem;
+}
+
+.tsisip-dashboard-role {
+  color: var(--tsisip-accent-teal);
+}
+
+.tsisip-dashboard-section {
+  background-color: var(--tsisip-surface-card);
+  border-radius: var(--tsisip-radius-md);
+  padding: 1.5rem;
+  margin-bottom: 1.5rem;
+  box-shadow: var(--tsisip-shadow-sm);
+}
+
+.tsisip-dashboard-section h2 {
+  font-size: var(--tsisip-text-lg);
+  margin-top: 0;
+  margin-bottom: 1rem;
+  color: var(--tsisip-primary-blue);
+}
+
+.tsisip-dashboard-links {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.75rem;
+}
+
+/* ===== Responsive Adjustments ===== */
+@media (max-width: 1023px) {
+  .tsisip-wiki-layout {
+    flex-direction: column;
+  }
+  .tsisip-wiki-toc {
+    width: 100%;
+    position: static;
+    max-height: none;
+  }
+}
+
+@media (max-width: 767px) {
+  .tsisip-header-nav {
+    display: none;
+  }
+}

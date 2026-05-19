@@ -13,7 +13,9 @@ secrets/
 *.pid
 
 # Documentation (not needed in image)
-docs/
+docs/*
+!docs/wiki/
+!docs/wiki/*.md
 *.md
 
 # Speckit specs

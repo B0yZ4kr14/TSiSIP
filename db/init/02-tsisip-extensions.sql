@@ -91,6 +91,10 @@ CREATE TABLE IF NOT EXISTS userblacklist (
 CREATE INDEX IF NOT EXISTS idx_userblacklist_lookup
     ON userblacklist(username, domain, prefix);
 
+INSERT INTO version (table_name, table_version) VALUES
+    ('userblacklist', 2)
+ON CONFLICT (table_name) DO UPDATE SET table_version = EXCLUDED.table_version;
+
 -- cdr: Call Detail Records for billing and analytics
 CREATE TABLE IF NOT EXISTS cdr (
     id BIGSERIAL PRIMARY KEY,
