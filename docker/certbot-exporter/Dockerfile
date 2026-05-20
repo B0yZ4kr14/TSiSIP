@@ -1,10 +1,10 @@
-FROM python:3.11-slim@sha256:fc39d2e51b52f039abb0401539e852925e9750064927f5a45ab937fd1e25e8cf
+FROM python:3.11-slim@sha256:2c285c669cc837aa3bcf1af23ea1932b7b5214f9c9d3aad22417446ad91cb4fb
 
 RUN apt-get update && \
     apt-get install -y --no-install-recommends openssl curl ca-certificates && \
     rm -rf /var/lib/apt/lists/*
 
-RUN pip install --no-cache-dir prometheus_client==0.20.1
+RUN pip install --no-cache-dir prometheus_client==0.20.0
 
 WORKDIR /app
 COPY exporter.py /app/exporter.py

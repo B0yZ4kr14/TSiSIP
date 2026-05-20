@@ -1016,6 +1016,288 @@ Prometheus TSDB retention is configured explicitly in `docker-compose.yml` and `
 
 Adjust these values based on your storage capacity and metric retention requirements.
 
+## TLS Certificate Rotation (Feature 014-A)
+
+### Architecture
+
+TSiSIP automates TLS certificate lifecycle management using Let's Encrypt (ACME v2) with Tailscale as the validation challenge solver. The `certbot` sidecar container obtains, renews, and writes certificates to a shared Docker volume mounted at `/certs/live/` on the OpenSIPS and OCP containers.
+
+- **Automatic renewal**: Attempts daily at 02:00 UTC, 30 days before expiry
+- **Staging vs production**: `--staging` flag uses Let's Encrypt staging CA to avoid rate limits during testing
+- **Zero-downtime reload**: `tls-reload.sh` sends `SIGUSR1` to OpenSIPS and graceful Apache reload to OCP
+
+### Checking Current Certificate Expiry
+
+```bash
+# On the OpenSIPS container
+openssl x509 -in /certs/live/server.crt -noout -dates
+
+# On the host via volume mount
+docker compose exec opensips openssl x509 -in /certs/live/server.crt -noout -dates
+```
+
+The `notAfter` date is the expiry. If it is within 30 days, the next scheduled renewal run will attempt replacement.
+
+### Manually Triggering Rotation
+
+```bash
+# Staging (test) rotation — does not count against LE rate limits
+./scripts/cert-rotate.sh --staging
+
+# Production rotation — uses live Let's Encrypt CA
+./scripts/cert-rotate.sh --production
+```
+
+Monitor the `certbot` container logs during rotation:
+```bash
+docker compose logs -f certbot
+```
+
+### Reloading Certificates Without Restart
+
+```bash
+./scripts/tls-reload.sh
+```
+
+This script:
+1. Verifies the new certificate chain with `openssl verify`
+2. Sends `SIGUSR1` to the OpenSIPS process to trigger a TLS context reload
+3. Gracefully reloads Apache in the OCP container to pick up the new `SSLCertificateFile`
+4. Logs the reload event to the audit log
+
+Verify reload succeeded:
+```bash
+# Check OpenSIPS TLS context
+docker compose exec opensips opensips-cli -x mi get_statistics tls_opened_connections
+
+# Check OCP TLS handshake
+curl -vI https://tsiapp.io/TSiSIP/login.php 2>&1 | grep -E 'SSL|TLS|subject|issuer'
+```
+
+### Troubleshooting
+
+| Symptom | Cause | Fix |
+|---------|-------|-----|
+| `urn:ietf:params:acme:error:rateLimited` | Too many production requests | Switch to `--staging`; wait for the rate-limit window |
+| `Challenge failed` | Tailscale ACL blocks HTTP-01 path | Verify `tailscale serve` is active and port 80 is open on the Tailscale interface |
+| `CERTPATH_INVALID` | Intermediate chain missing | Ensure `fullchain.pem` (not just `cert.pem`) is copied to `server.crt` |
+| OpenSIPS still serves old cert after reload | Process did not receive SIGUSR1 | Run `./scripts/tls-reload.sh` again and check `docker compose logs opensips` |
+| OCP TLS handshake fails | Apache not reloaded | `docker compose exec ocp apachectl graceful` |
+
+### Prometheus Alerts
+
+| Alert | Meaning | Response |
+|-------|---------|----------|
+| `TSiSIPTLSCertExpiresSoon` | Certificate expires in ≤ 14 days | Check certbot logs; run `./scripts/cert-rotate.sh --production` manually |
+| `TSiSIPTLSCertExpired` | Certificate has passed `notAfter` | Immediate rotation required; clients will reject connections |
+| `TSiSIPTLSReloadFailed` | `tls-reload.sh` exit code ≠ 0 | Check script output; verify file permissions on `/certs/live/` |
+| `CertbotContainerDown` | Certbot container not running | `docker compose up -d certbot`; inspect `docker compose logs certbot` |
+
+## Audit Log & Compliance (Feature 014-B)
+
+### Accessing the Audit Dashboard
+
+1. Navigate to `https://tsiapp.io/TSiSIP/login.php`
+2. Log in with an account that has the `admin` or `devops` role
+3. From the OCP sidebar, select **Admin Tools → Audit Log & Compliance**
+
+The dashboard displays:
+- Event timeline with severity coloring
+- Filterable columns: timestamp, actor, action, resource, outcome, source IP
+- Hash chain verification status (green = intact, red = break detected)
+
+### Exporting Audit Data
+
+From the audit dashboard:
+1. Click **Export** in the top-right corner
+2. Choose format: **CSV** or **JSON**
+3. Apply filters (date range, actor, action, resource type) before exporting
+4. Click **Download** — the file is generated server-side and streamed via the browser
+
+Bulk export via CLI:
+```bash
+# CSV export for last 7 days
+docker compose exec postgres psql -U opensips -d opensips -c "
+    COPY (
+        SELECT event_time, actor, action, resource, outcome, source_ip, hash
+        FROM audit_log
+        WHERE event_time > NOW() - INTERVAL '7 days'
+        ORDER BY event_time
+    ) TO STDOUT WITH CSV HEADER;
+" > audit_export_$(date +%Y%m%d).csv
+
+# JSON export for compliance archive
+docker compose exec postgres psql -U opensips -d opensips -c "
+    SELECT json_agg(row_to_json(t))
+    FROM (
+        SELECT * FROM audit_log
+        WHERE event_time > NOW() - INTERVAL '30 days'
+        ORDER BY event_time
+    ) t;
+" > audit_archive_$(date +%Y%m%d).json
+```
+
+### Verifying Hash Chain Integrity
+
+Each audit record includes a `prev_hash` field linking it to the prior record. The dashboard auto-verifies the chain on page load. To verify manually:
+
+```bash
+docker compose exec postgres psql -U opensips -d opensips -c "
+    SELECT
+        id,
+        event_time,
+        hash = digest(concat(prev_hash::text, actor, action, resource, event_time::text), 'sha256') AS integrity_ok
+    FROM audit_log
+    ORDER BY id
+    LIMIT 20;
+"
+```
+
+If any row returns `integrity_ok = f`, the chain has been tampered with or corrupted. Immediately:
+1. Preserve the database snapshot
+2. Check filesystem and database access logs
+3. Escalate to the security officer
+
+### Retention Policy
+
+| Setting | Default | Where to Change |
+|---------|---------|-----------------|
+| Audit log retention | 90 days | Environment variable `AUDIT_RETENTION_DAYS` on the OCP container |
+| Hash archive retention | 90 days | Same as above |
+
+Change the retention period:
+```bash
+# Edit .env or docker-compose.yml
+docker compose up -d ocp
+```
+
+Values > 365 days require explicit storage approval due to PostgreSQL table growth.
+
+### Manual Retention Purge
+
+```bash
+# Purge records older than the current retention threshold
+docker compose exec ocp php /var/www/html/web/cli/purge-audit-log.php
+
+# Dry-run to see how many rows would be deleted
+docker compose exec ocp php /var/www/html/web/cli/purge-audit-log.php --dry-run
+
+# Force a specific retention window (overrides env var for this run)
+docker compose exec ocp php /var/www/html/web/cli/purge-audit-log.php --days=30
+```
+
+The purge script:
+1. Computes the cutoff date from `AUDIT_RETENTION_DAYS`
+2. Deletes rows in batches of 1,000 to avoid long table locks
+3. Runs `VACUUM` on the `audit_log` table
+4. Writes a summary to stdout and to the audit log itself
+
+## SIP Trunk Provider Management (Feature 014-C)
+
+### Architecture
+
+TSiSIP connects to upstream SIP trunk providers for PSTN ingress/egress. Each provider is modeled as a `sip_trunk_provider` record with associated DID mappings, health probes, and CPS throttling limits.
+
+| Component | Table / File | Purpose |
+|-----------|-------------|---------|
+| Provider registry | `sip_trunk_providers` | Credentials, registration server, failover peer |
+| DID mappings | `did_mappings` | Public DID → internal extension / tenant |
+| Health probes | Prometheus metrics + OCP status page | Registration state, OPTIONS ping, RTT |
+| CPS throttling | `cps_limits` per provider | Calls-per-second ceiling to prevent provider blacklisting |
+
+### Onboarding a New Trunk Provider
+
+1. Log in to the OCP at `https://tsiapp.io/TSiSIP/login.php` with an `admin` account
+2. Navigate to **Admin Tools → SIP Trunk Providers**
+3. Click **Add Provider** and fill:
+   - **Label**: Human-readable name (e.g., `VoIP Innovations`)
+   - **Registrar**: SIP registrar URI (e.g., `sip:sip.voipinnovations.com:5060`)
+   - **Username / Password**: Digest auth credentials (stored as HA1 hash)
+   - **Transport**: `udp`, `tcp`, or `tls`
+   - **Failover Peer**: Another provider label to route to if this one fails
+   - **CPS Limit**: Maximum calls per second (default `10`)
+4. Click **Save** — the provider is inserted into `sip_trunk_providers` with `enabled = true`
+5. OpenSIPS reloads the provider table automatically via `mi reload_sip_trunk_providers`
+
+Verify registration:
+```bash
+docker compose exec opensips opensips-cli -x mi get_statistics uac_reg
+```
+
+### Adding DID Mappings
+
+1. On the **SIP Trunk Providers** page, click **DIDs** next to the provider
+2. Click **Add DID**:
+   - **DID Number**: E.164 format (e.g., `+12025550123`)
+   - **Tenant**: Select the tenant that owns this DID
+   - **Destination**: Internal extension or SIP URI (e.g., `sip:reception@dev.tsisip.local`)
+   - **Active Hours**: Optional time-of-day routing (default `00:00-23:59`)
+3. Click **Save**
+
+Bulk import via SQL:
+```bash
+docker compose exec postgres psql -U opensips -d opensips -c "
+    INSERT INTO did_mappings (provider_id, did_number, tenant_id, destination, enabled)
+    SELECT p.id, '+12025550123', t.id, 'sip:reception@dev.tsisip.local', true
+    FROM sip_trunk_providers p, tenants t
+    WHERE p.label = 'VoIP Innovations' AND t.sip_domain = 'dev.tsisip.local'
+    ON CONFLICT (did_number) DO NOTHING;
+"
+```
+
+### Checking Trunk Health Status
+
+**Via OCP:**
+1. Go to **Admin Tools → SIP Trunk Providers**
+2. The status column shows:
+   - `Registered` — active registration, last OPTIONS 200 OK
+   - `Unreachable` — no response to OPTIONS within timeout
+   - `Throttled` — CPS limit hit, calls queued or rejected
+   - `Failover Active` — traffic is routing to the failover peer
+
+**Via Prometheus metrics:**
+```bash
+# Registration state (1 = registered, 0 = not registered)
+curl -s http://localhost:9090/api/v1/query?query=tsisip_trunk_registration_state | jq .
+
+# OPTIONS round-trip time
+curl -s http://localhost:9090/api/v1/query?query=tsisip_trunk_options_rtt_ms | jq .
+
+# Current CPS vs limit
+curl -s http://localhost:9090/api/v1/query?query=tsisip_trunk_cps_current | jq .
+```
+
+### Interpreting Registration State
+
+| State | Meaning | Operator Action |
+|-------|---------|-----------------|
+| `Registered` | UAC module has a valid registration with the provider | None |
+| `Registration Pending` | REGISTER sent, no 200 OK yet | Check network path to provider registrar |
+| `Authentication Failed` | 401/403 received on REGISTER | Verify credentials in OCP; re-check HA1 hash |
+| `Expired` | Registration expired without renewal | Check `uac_reg` timer; verify provider SIP domain |
+| `Disabled` | Provider manually disabled in OCP | Enable if intentional; otherwise investigate |
+
+### Troubleshooting
+
+| Symptom | Cause | Fix |
+|---------|-------|-----|
+| Inbound PSTN calls fail with `404` | DID not mapped | Verify DID exists in `did_mappings` and `enabled = true` |
+| Outbound calls dropped mid-call | Provider CPS throttling | Increase CPS limit in OCP or spread calls across multiple providers |
+| `503 Service Unavailable` on outbound | Trunk down, failover not configured | Add a failover peer in provider settings; verify failover provider is healthy |
+| High RTT on OPTIONS probe | Network latency or provider overload | Check `mtr` to provider IP; contact provider NOC if persistent |
+| Registration flapping | NAT keepalive mismatch | Increase `uac_reg` `timer_expires` in OpenSIPS config; enable NAT pings |
+
+### Grafana Dashboard
+
+Open the `TSiSIP — SIP Trunk Providers` dashboard in Grafana for:
+- Real-time registration state per provider
+- CPS utilization vs limit (gauge + time series)
+- OPTIONS RTT heatmap
+- DID call volume by provider and tenant
+- Failover event timeline
+
+URL: `http://<grafana-host>/d/tsisip-sip-trunk-providers`
+
 ---
 
 *Last Updated: 2026-05-19*
