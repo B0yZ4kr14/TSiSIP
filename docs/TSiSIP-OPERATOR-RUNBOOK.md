@@ -52,8 +52,95 @@ Public HTTPS is via the existing Nginx location `https://tsiapp.io/TSiSIP/`. The
 
 The OCP dashboard and the Professional Premium Wiki share the same authenticated session. Navigate to:
 
+- **Login**: `https://tsiapp.io/TSiSIP/login.php`
 - **Dashboard**: `https://tsiapp.io/TSiSIP/dashboard.php`
 - **Wiki**: `https://tsiapp.io/TSiSIP/Wiki`
+- **Logout**: `https://tsiapp.io/TSiSIP/logout.php`
+
+### Default Admin Credentials
+
+| Field | Value |
+|---|---|
+| Username | `Admin` |
+| Password | `admin123!` |
+| Role | `admin` |
+
+> **Security Warning**: Change the default password immediately after first login. See **Admin Password Management** below.
+
+### Session Cookie Security
+
+The OCP applies the following PHP session hardening via `docker/ocp/php-session-security.ini`:
+
+| Directive | Value | Purpose |
+|---|---|---|
+| `session.cookie_httponly` | `1` | Prevents JavaScript access to session cookie |
+| `session.cookie_samesite` | `"Strict"` | CSRF protection — cookie never sent on cross-site requests |
+| `session.use_strict_mode` | `1` | Prevents session fixation attacks |
+| `session.gc_maxlifetime` | `3600` | Session expires after 1 hour of inactivity |
+
+Because the OCP container receives HTTP traffic from the Nginx reverse proxy, `session.cookie_secure` cannot rely on PHP seeing HTTPS directly. The OCP detects HTTPS via the `X-Forwarded-Proto` header set by Nginx and enables `session.cookie_secure` dynamically in `common/config.php`.
+
+Verify the flag is present in the browser:
+1. Open DevTools → Application → Cookies → `https://tsiapp.io`
+2. Look for `PHPSESSID` — it must have `Secure`, `HttpOnly`, and `SameSite=Strict`
+
+Ensure Nginx forwards the protocol:
+```nginx
+proxy_set_header X-Forwarded-Proto $scheme;
+```
+
+## OCP Admin Tools
+
+The following administrative tools are available to `admin` and `devops` roles via the OCP sidebar under **Admin Tools**:
+
+### Subscriber Management
+
+**URL**: `https://tsiapp.io/TSiSIP/subscribers.php`
+
+Full CRUD on the OpenSIPS `subscriber` table. Passwords are never stored in plaintext; instead, HA1 hashes (MD5, SHA-256, SHA-512/256) are generated automatically on create/update to match the OpenSIPS `calculate_ha1 = 0` contract.
+
+| Action | How |
+|---|---|
+| List | Default view shows up to 25 subscribers per page |
+| Create | Fill username, domain, password, tenant, routing group, enabled |
+| Edit | Click **Edit** on any row; password change is optional |
+| Delete | Click **Delete** and confirm |
+
+**Security notes**:
+- All mutating actions require a valid CSRF token.
+- PDO prepared statements are used for all queries.
+- The `password` column in `subscriber` is always empty (`''`); only `ha1`, `ha1_sha256`, and `ha1_sha512t256` are populated.
+
+### CDR Viewer
+
+**URL**: `https://tsiapp.io/TSiSIP/cdr-viewer.php`
+
+Read-only view of Call Detail Records from the `cdr` table. Supports filtering by date range and SIP response code.
+
+| Filter | Description |
+|---|---|
+| From / To | Date range (inclusive) |
+| SIP Code | Exact match on `sip_code` (e.g., `200`, `404`, `486`) |
+
+Pagination shows 25 records per page. The table schema follows the stock OpenSIPS CDR module: `start_time`, `end_time`, `duration`, `sip_code`, `sip_reason`, `setuptime`.
+
+### Dispatcher Targets
+
+**URL**: `https://tsiapp.io/TSiSIP/dispatcher.php`
+
+Full CRUD on the OpenSIPS `dispatcher` table. Replaces the previous hard-coded HTML stub.
+
+| Field | Description |
+|---|---|
+| `setid` | Dispatcher set ID (integer) |
+| `destination` | SIP URI of the backend (e.g., `sip:10.0.0.1:5060`) |
+| `state` | `0` = active, `1` = inactive |
+| `weight` | Load-balancing weight |
+| `priority` | Failover priority within the set |
+| `attrs` | Optional module attributes |
+| `description` | Human-readable label |
+
+Changes take effect on the next OpenSIPS reload or restart.
 
 ## Wiki Navigation
 
@@ -86,6 +173,78 @@ Access to the wiki and OCP features is determined by the authenticated session r
 ### How Role Is Determined
 
 Role is established at session creation based on the authenticated user identity. The OCP session enforces the role for the lifetime of the session. Changing roles requires re-authentication with a different account.
+
+### Admin Password Management
+
+**Forced password change on first login**:
+
+The OCP enforces a mandatory passphrase change for any account with `force_password_change = TRUE`. After authentication, users are redirected to `change-password.php` and cannot access other pages until a strong passphrase is set.
+
+Passphrase requirements:
+- Minimum 12 characters
+- At least one uppercase letter
+- At least one lowercase letter
+- At least one number
+- At least one symbol
+
+**Reset force_password_change flag manually**:
+```bash
+docker compose exec postgres psql -U opensips -d opensips -c "
+UPDATE ocp_users
+SET force_password_change = TRUE,
+    updated_at = NOW()
+WHERE username = 'Admin';
+"
+```
+
+**Change admin password via SQL**:
+```bash
+# Connect to PostgreSQL
+docker compose exec postgres psql -U opensips -d opensips -c "
+UPDATE ocp_users
+SET password_hash = crypt('NEW_PASSWORD_HERE', gen_salt('bf', 12)),
+    force_password_change = FALSE,
+    updated_at = NOW()
+WHERE username = 'Admin';
+"
+```
+
+**Create a new admin user**:
+```bash
+docker compose exec postgres psql -U opensips -d opensips -c "
+INSERT INTO ocp_users (username, email, password_hash, role, enabled, force_password_change)
+VALUES (
+    'newadmin',
+    'newadmin@tsisip.local',
+    crypt('SecurePass123!', gen_salt('bf', 12)),
+    'admin',
+    true,
+    true
+)
+ON CONFLICT (username) DO NOTHING;
+"
+```
+
+**Unlock a locked account**:
+```bash
+docker compose exec postgres psql -U opensips -d opensips -c "
+UPDATE ocp_users
+SET failed_attempts = 0,
+    locked_until = NULL,
+    updated_at = NOW()
+WHERE username = 'LOCKED_USERNAME';
+"
+```
+
+**View login audit log**:
+```bash
+docker compose exec postgres psql -U opensips -d opensips -c "
+SELECT event_time, username, source_ip, result, reason
+FROM ocp_login_log
+ORDER BY event_time DESC
+LIMIT 20;
+"
+```
 
 ### Escalation Paths
 
@@ -161,6 +320,39 @@ docker compose up -d postgres
    ```bash
    docker compose exec ocp tail -50 /var/log/apache2/error.log
    ```
+
+### OCP login fails
+
+1. **Invalid credentials error**:
+   ```bash
+   # Verify user exists and is enabled
+   docker compose exec postgres psql -U opensips -d opensips -c "
+   SELECT username, role, enabled, failed_attempts, locked_until
+   FROM ocp_users WHERE LOWER(username) = LOWER('Admin');
+   "
+   ```
+
+2. **Account locked**:
+   ```bash
+   # Check if locked_until is in the future
+   docker compose exec postgres psql -U opensips -d opensips -c "
+   SELECT username, locked_until FROM ocp_users WHERE failed_attempts > 0;
+   "
+   # Unlock: UPDATE ocp_users SET failed_attempts=0, locked_until=NULL WHERE username='Admin';
+   ```
+
+3. **Database connection error** (OCP container logs show "Service temporarily unavailable"):
+   ```bash
+   # Verify secret is readable
+   docker compose exec ocp ls -la /tmp/db_password
+   # Verify PostgreSQL password
+   docker compose exec postgres psql -U opensips -d opensips -c "SELECT 1"
+   # If password mismatch, reset: ALTER USER opensips WITH PASSWORD '...';
+   ```
+
+4. **Session not persisting**:
+   - Check browser cookie settings (must accept `PHPSESSID`)
+   - Verify OCP container has write access to `/tmp` for session storage
 
 ### D3.js charts not rendering
 

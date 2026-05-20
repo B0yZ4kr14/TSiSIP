@@ -14,22 +14,30 @@ In plain terms:
 - It dynamically routes authenticated traffic to the correct Asterisk backend using tenant-scoped metadata.
 - RTPengine relays all media (voice/video RTP) so backend PBX IP addresses never leak to the public internet.
 - Asterisk and PostgreSQL live on isolated Docker networks with zero host-published ports.
+- An OCP (OpenSIPS Control Panel) v9 web interface provides operational dashboards, role-based wiki, and tenant management.
+
+The project follows **Spec-Driven Development (SDD)** via Speckit, with 11 tracked feature specifications (001–011).
 
 ---
 
 ## 2. Repository State
 
-- **Documentation-first greenfield with foundation committed**: Dockerfile, Docker Compose, OpenSIPS config template, PostgreSQL schema, container entrypoint, CI workflow, integration tests, and operator runbooks are committed.
+- **Documentation-first greenfield with active commits**: Dockerfile, Docker Compose, OpenSIPS config template, PostgreSQL schema, container entrypoints, CI workflows, integration tests, operator runbooks, and deploy pipelines are committed.
 - Git is initialized and has **active commits** on `master` branch.
 - The repository currently contains:
-  - Canonical architecture specification (`docs/`)
-  - Agent orchestration configuration (`.claude/`, `.claude-flow/`, `.swarm/`, `.sisyphus/`)
-  - GitHub-level guidance (`.github/copilot-instructions.md`)
-  - MCP configuration (`.mcp.json`)
-  - Docker build: `Dockerfile`, `docker-compose.yml`, `.dockerignore`
+  - Canonical architecture specification (`docs/TSiSIP-CANONICAL-SPEC.md`)
+  - Agent orchestration configuration (`.claude/`, `.claude-flow/`, `.swarm/`, `.sisyphus/`, `.omk/`, `.kimi/`)
+  - GitHub-level guidance (`.github/copilot-instructions.md`) and CI/CD workflows (`.github/workflows/`)
+  - MCP configuration (`.mcp.json`, `.omk/mcp.json`, `.kimi/mcp.json`)
+  - Docker builds: `Dockerfile`, `docker-compose.yml`, `docker-compose.prod.yml`, `docker-compose.vps.yml`, `.dockerignore`
   - OpenSIPS config: `opensips/opensips.cfg.tpl`
-  - Container entrypoint: `docker/entrypoint.sh`
+  - Container entrypoints: `docker/entrypoint.sh`, `docker/ocp/entrypoint.sh`
   - PostgreSQL schema: `db/init/01-stock-opensips-schema.sql`, `db/init/02-tsisip-extensions.sql`, `db/init/03-seed-data.sql`
+  - OCP web application: `web/` (PHP 8.2 + Apache)
+  - OCP theme build pipeline: `build/`, `scripts/build-ocp-theme.sh`
+  - Integration tests: `tests/integration/` (pytest + Python sockets)
+  - Frontend tests: `tests/` (Node.js — accessibility + D3.js/jQuery coexistence)
+  - Deploy automation: `deploy/scripts/orchestrate-deploy.sh`, `deploy/ansible/`
   - Secrets directory: `secrets/` (`.gitignore` protected)
   - Environment template: `.env.example`
   - This file (`AGENTS.md`)
@@ -41,17 +49,27 @@ In plain terms:
 | Layer | Technology | Role |
 |---|---|---|
 | SIP Proxy | OpenSIPS 3.6 LTS | Public signaling edge; auth, routing, topology hiding |
-| Database | PostgreSQL | Subscriber auth, tenant metadata, routing rules, dispatcher state |
-| Media Relay | RTPengine | Public RTP relay; SDP rewriting |
+| Database | PostgreSQL 16 | Subscriber auth, tenant metadata, routing rules, dispatcher state, CDR |
+| Media Relay | RTPengine | Public RTP relay; SDP rewriting; SRTP/DTLS support |
 | PBX Backend | Asterisk | Private voice/video application servers |
+| Admin Panel | OCP v9 + TSiSIP Theme | PHP 8.2 / Apache; dashboards, wiki, role-based navigation |
+| Observability | Prometheus + Grafana + Alertmanager + custom exporter | Metrics, alerting, anomaly detection |
+| Backup | Custom cron-based container | Encrypted PostgreSQL backups, WAL archiving, offsite replication |
 | Packaging | Docker image + Docker Compose | Canonical runtime delivery |
-| Public Ports | `5060/udp`, `5060/tcp` | SIP signaling (OpenSIPS only) |
-| Public Ports | `10000-20000/udp` | RTP media (RTPengine only) |
+| Build Tools | Node.js, GNU gettext (`msgfmt`), Bash | OCP asset pipeline, i18n compilation |
+| Test Framework | pytest (Python), Node.js (frontend) | Integration and frontend validation |
+| Deploy | Ansible + GitHub Actions + shell orchestrator | VPS bootstrap, image push, gated deploy |
+
+**Public Ports:**
+- OpenSIPS: `5060/udp`, `5060/tcp`, `5061/tcp` (TLS)
+- RTPengine: `10000-20000/udp` (or `10000-10999/udp` on VPS-lite)
+- OCP (internal/Nginx-proxied): `8084/tcp` on loopback (VPS) or `80/tcp` (container)
 
 **Non-negotiable rules:**
 - OpenSIPS 3.6 LTS is the **only** SIP proxy baseline. Changing it requires a documented architecture decision.
 - PostgreSQL is the **only** database. Do not introduce MySQL, MariaDB, or `db_mysql` variants.
 - OpenSIPS must be delivered through a **project-owned Docker image**, never bare-metal or VM-first install instructions.
+- Asterisk and PostgreSQL must have **zero host-published ports**.
 
 ---
 
@@ -60,7 +78,7 @@ In plain terms:
 ```text
 Internet / SIP clients
         |
-        | 5060/udp, 5060/tcp
+        | 5060/udp, 5060/tcp, 5061/tcp (TLS)
         v
 +-----------------------------+
 | OpenSIPS Docker image       |
@@ -69,6 +87,8 @@ Internet / SIP clients
 | - header routing            |
 | - topology hiding           |
 | - dispatcher failover       |
+| - rate limiting (pike)      |
+| - WebSocket/WebRTC          |
 +-------------+---------------+
               |
               | internal SIP control
@@ -85,6 +105,7 @@ Internet / RTP clients
 +-----------------------------+
 | RTPengine media relay       |
 | public RTP, internal control|
+| SRTP/DTLS enabled           |
 +-----------------------------+
 
 OpenSIPS
@@ -94,6 +115,17 @@ OpenSIPS
 +-----------------------------+
 | PostgreSQL                  |
 | auth + routing metadata     |
+| CDR + audit logs            |
++-----------------------------+
+
+OCP (Operator Control Panel)
+        |
+        | internal DB / SIP networks
+        v
++-----------------------------+
+| PHP 8.2 + Apache            |
+| Dashboards, Wiki, Auth      |
+| Role-based navigation       |
 +-----------------------------+
 ```
 
@@ -103,25 +135,17 @@ OpenSIPS
 |---|---|---:|---|
 | `sip_edge` | OpenSIPS, RTPengine | Yes | Public SIP and RTP ingress |
 | `sip_internal` | OpenSIPS, RTPengine, Asterisk | No | Internal SIP forwarding and RTPengine control |
-| `db_internal` | OpenSIPS, PostgreSQL | No | Database access only |
+| `db_internal` | OpenSIPS, PostgreSQL, OCP, Prometheus, Grafana, Backup, Exporter | No | Database access and observability |
+| `metrics_host` | (VPS-lite only) OCP, Backup, Postgres | Partial | Loopback-exposed metrics and OCP proxy |
 
 **Published ports:**
-- OpenSIPS: `5060/udp`, `5060/tcp`
+- OpenSIPS: `5060/udp`, `5060/tcp`, `5061/tcp`
 - RTPengine: `10000-20000/udp`
 
 **Forbidden published ports:**
 - Asterisk: any
 - PostgreSQL: any
 - RTPengine control socket (`--listen-ng`): any
-
-### Canonical Runtime Surfaces
-
-In addition to the SIP and RTP public ports, the following OCP runtime surfaces are available:
-
-| Surface | Endpoint | Network | Access |
-|---|---|---|---|
-| OCP Dashboard | `/TSiSIP/dashboard.php` | `metrics_host` | Authenticated session |
-| Professional Wiki | `/TSiSIP/Wiki` | `metrics_host` | Authenticated session, role-filtered |
 
 ---
 
@@ -131,24 +155,20 @@ In addition to the SIP and RTP public ports, the following OCP runtime surfaces 
 TSiSIP/
 ├── docs/                               # Canonical documentation
 │   ├── TSiSIP-CANONICAL-SPEC.md        # Architecture & tech baseline
-│   └── TSiSIP-AGENT-ORCHESTRATION-PLAYBOOK.md
-│                                       # Mandatory multi-agent doc workflow
+│   ├── TSiSIP-AGENT-ORCHESTRATION-PLAYBOOK.md
+│   ├── TSiSIP-OPERATOR-RUNBOOK.md
+│   ├── architecture/                   # ADRs
+│   ├── features/                       # Feature proposals
+│   └── wiki/                           # Embedded wiki markdown sources
 ├── .github/
-│   └── copilot-instructions.md         # Repo-specific implementation constraints
+│   ├── workflows/                      # CI/CD (ci.yml, deploy.yml)
+│   ├── agents/                         # Speckit agent definitions
+│   ├── prompts/                        # Speckit prompt templates
+│   └── copilot-instructions.md
 ├── .claude/                            # Claude Code agent definitions & helpers
-│   ├── agents/                         # 60+ role-specific agent prompts
-│   ├── commands/                       # Slash-command definitions
-│   ├── helpers/                        # Shell/JS hooks (pre-commit, post-edit, etc.)
-│   ├── skills/                         # Project-local skill definitions
-│   └── settings.json                   # Claude Code hooks, permissions, env
 ├── .claude-flow/                       # Ruflo (Claude Flow) V3 orchestration
-│   ├── config.yaml                     # Runtime config (topology, memory, neural)
-│   ├── CAPABILITIES.md                 # Full capabilities reference
-│   ├── data/                           # Memory storage
-│   ├── logs/                           # Operation logs
-│   ├── metrics/                        # Codebase maps, performance, security audits
-│   ├── sessions/                       # Session persistence
-│   └── swarm/                          # Swarm state
+├── .omk/                               # oh-my-kimi project config, hooks, memory
+├── .kimi/                              # Kimi-specific agent rules & skills
 ├── .swarm/
 │   └── state.json                      # Swarm runtime state
 ├── .sisyphus/
@@ -156,27 +176,162 @@ TSiSIP/
 ├── opensips/                           # OpenSIPS configuration template
 │   └── opensips.cfg.tpl
 ├── docker/                             # Container support files
-│   ├── entrypoint.sh                   # Runtime config renderer (envsubst + secrets)
+│   ├── entrypoint.sh                   # OpenSIPS runtime config renderer
+│   ├── ocp/
+│   │   ├── Dockerfile                  # OCP v9 PHP/Apache image
+│   │   ├── entrypoint.sh               # OCP secret-permission fixer
+│   │   └── php-session-security.ini    # PHP hardening
 │   ├── rtpengine/
-│   │   └── Dockerfile                  # RTPengine container image
-│   └── asterisk/
-│       └── Dockerfile                  # Asterisk PBX container image
+│   │   ├── Dockerfile
+│   │   └── healthcheck.sh
+│   ├── asterisk/
+│   │   ├── Dockerfile
+│   │   ├── healthcheck.sh
+│   │   ├── pjsip.conf
+│   │   └── extensions.conf
+│   ├── postgres/
+│   │   ├── Dockerfile
+│   │   └── healthcheck.sh
+│   ├── prometheus/
+│   │   ├── Dockerfile
+│   │   ├── alert-rules.yml
+│   │   ├── alertmanager.yml.tpl
+│   │   ├── prometheus.yml.tpl
+│   │   └── entrypoint.sh
+│   ├── grafana/
+│   │   └── Dockerfile
+│   ├── opensips-exporter/
+│   │   ├── Dockerfile
+│   │   └── exporter.py
+│   ├── anomaly-detector/
+│   │   ├── Dockerfile
+│   │   ├── detector.py
+│   │   └── baseline.py
+│   ├── backup/
+│   │   ├── Dockerfile
+│   │   ├── backup.sh
+│   │   ├── encrypt.sh
+│   │   ├── entrypoint.sh
+│   │   ├── metrics-exporter.sh
+│   │   ├── pitr-restore.sh
+│   │   ├── purge.sh
+│   │   ├── quota-check.sh
+│   │   ├── rclone.conf.tpl
+│   │   ├── replicate.sh
+│   │   ├── rotate-key.sh
+│   │   ├── rpo-monitor.sh
+│   │   ├── validate.sh
+│   │   └── wal-archive.sh
+│   ├── ca-tool/
+│   │   ├── Dockerfile
+│   │   ├── ca-init.sh
+│   │   ├── cert-gen.sh
+│   │   └── cert-rotate.sh
+│   └── healthcheck/                    # Shared healthcheck scripts
 ├── db/init/                            # PostgreSQL initialization scripts
-│   ├── 01-stock-opensips-schema.sql    # Baseline subscriber + dispatcher + version
-│   ├── 02-tsisip-extensions.sql        # Tenants, routing rules, audit log
-│   └── 03-seed-data.sql                # Dev tenant, dispatcher pool, HA1 subscriber
+│   ├── 01-stock-opensips-schema.sql
+│   ├── 02-tsisip-extensions.sql
+│   └── 03-seed-data.sql
+├── web/                                # OCP v9 PHP application
+│   ├── common/
+│   │   ├── config.php                  # DB auth, PDO, role hierarchy
+│   │   ├── header.php                  # Asset manifest loader
+│   │   ├── footer.php
+│   │   ├── role-nav.php                # Role-based sidebar navigation
+│   │   ├── csrf.php                    # CSRF token generation/validation
+│   │   ├── pagination.php              # Reusable LIMIT/OFFSET pagination
+│   │   └── ha1-generator.php           # HA1 hash generators for SIP auth
+│   ├── tsisip/                         # TSiSIP branded assets
+│   │   ├── css/
+│   │   ├── js/
+│   │   ├── assets/
+│   │   ├── locale/                     # .po/.mo i18n files
+│   │   └── asset-manifest.json
+│   ├── login.php
+│   ├── dashboard.php
+│   ├── subscribers.php                 # SIP subscriber CRUD with HA1 generation
+│   ├── cdr-viewer.php                  # Read-only CDR viewer with filters
+│   ├── dispatcher.php                  # Dispatcher target CRUD (replaces stub)
+│   ├── rtpengine.php
+│   ├── wiki.php
+│   ├── change-password.php
+│   ├── index.php
+│   ├── logout.php
+│   └── css/main.css
+├── build/                              # OCP theme build pipeline
+│   ├── generate-css-variables.js
+│   ├── generate-manifest.js
+│   ├── tsisip-theme.src.css
+│   ├── theme.json
+│   └── Makefile
+├── tests/
+│   ├── integration/                    # pytest + Python socket tests
+│   ├── accessibility-audit.test.js     # Node.js WCAG 2.1 AA checks
+│   ├── d3-jquery-coexistence.test.js   # Node.js frontend scope tests
+│   ├── performance/
+│   └── visual-regression/
+├── scripts/
+│   ├── build-ocp-theme.sh
+│   ├── rollback-ocp-theme.sh
+│   ├── ci-scan.sh
+│   ├── sip-auth-probe.py
+│   ├── cert-expiry-monitor.sh
+│   └── tls-reload.sh
+├── deploy/
+│   ├── ansible/
+│   │   ├── inventory.yml
+│   │   ├── playbook-deploy.yml
+│   │   └── playbook-hardening.yml
+│   ├── scripts/
+│   │   ├── orchestrate-deploy.sh       # Feature 009 deploy pipeline
+│   │   ├── vps-bootstrap.sh
+│   │   ├── vps-deploy.sh
+│   │   ├── vps-nginx-setup.sh
+│   │   ├── test-vps-local.sh
+│   │   └── safe-recovery.sh
+│   ├── nginx/
+│   ├── audit/
+│   ├── validate.sh
+│   ├── README.md
+│   ├── README-VPS-DEPLOY.md
+│   └── VPS-DEPLOY-READINESS.md
+├── specs/                              # Speckit SDD artifacts (001–011)
+│   ├── 001-opensips-docker-edge-proxy/
+│   ├── 002-tsisip-ocp-rebrand/
+│   ├── 003-prometheus-grafana-observability/
+│   ├── 004-health-checks-autohealing/
+│   ├── 005-postgresql-backup-restore/
+│   ├── 006-rate-limiting-ddos-protection/
+│   ├── 007-tls-srtp-encryption/
+│   ├── 008-devsecops-deployment/
+│   ├── 009-vps-deploy-automation/
+│   ├── 010-ocp-navigation-system-links/
+│   └── 011-ocp-forced-password-change/
+├── reports/                            # Quality gate & scan reports
 ├── secrets/                            # Runtime secrets (gitignored)
-├── .mcp.json                           # MCP server config (Ruflo)
-├── .env.example                        # Environment variable template
-├── .dockerignore                       # Docker build context exclusions
+├── design/
+│   ├── palette.md
+│   └── typography.md
+├── .env.example
+├── .dockerignore
 ├── Dockerfile                          # OpenSIPS 3.6 LTS source-build image
-├── docker-compose.yml                  # Canonical three-network topology
-├── CLAUDE.md                           # Generic Claude Code config (Ruflo rules)
-├── AGENTS.md                           # This file
-└── .gitignore                          # Excludes secrets/, .env, .env.*, *.log, *.pid
+├── docker-compose.yml                  # Full development stack (13 services)
+├── docker-compose.prod.yml             # Production stack (GHCR images)
+├── docker-compose.vps.yml              # VPS-lite profile (~4GB RAM, 7 services)
+├── Makefile
+├── CHANGELOG.md
+├── STATUS.md
+├── SECURITY.md
+├── ROADMAP.md
+├── DESIGN.md
+├── README.md
+├── CLAUDE.md
+├── KIMI.md
+├── GEMINI.md
+└── AGENTS.md                           # This file
 ```
 
-> **Note:** `.claude/`, `.claude-flow/`, `.swarm/`, and `.sisyphus/` are **agent orchestration state/config**, not TSiSIP application tooling. Do not confuse them with application source or deployment artifacts.
+> **Note:** `.claude/`, `.claude-flow/`, `.swarm/`, `.sisyphus/`, `.omk/`, and `.specify/` are **agent orchestration state/config**, not TSiSIP application tooling. Do not confuse them with application source or deployment artifacts.
 
 ---
 
@@ -186,10 +341,13 @@ TSiSIP/
 
 ```bash
 # Build the OpenSIPS image from source
-docker build -t tsisip-opensips:latest .
+docker build -t tsisip/opensips:latest .
 
 # Build the RTPengine image from source
 docker build -t tsisip/rtpengine:latest -f docker/rtpengine/Dockerfile .
+
+# Build the OCP image with theme assets
+./scripts/build-ocp-theme.sh
 
 # Validate rendered Compose configuration
 docker compose config
@@ -202,7 +360,7 @@ docker run --rm \
   -v $(pwd)/secrets/db_password:/run/secrets/db_password:ro \
   -v $(pwd)/secrets/auth_secret:/run/secrets/auth_secret:ro \
   -v $(pwd)/secrets/topology_secret:/run/secrets/topology_secret:ro \
-  tsisip-opensips:latest \
+  tsisip/opensips:latest \
   /entrypoint.sh /usr/local/sbin/opensips -c -f /etc/opensips/opensips.cfg
 
 # Start the database and verify schema initialization
@@ -215,13 +373,13 @@ docker compose build
 # Start the full stack
 docker compose up -d
 
-# Runtime SIP validation (T4.4 — OPTIONS 200 OK)
+# Runtime SIP validation (OPTIONS 200 OK)
 docker run --rm --network tsisip_sip_edge alpine \
   sh -c "apk add --no-cache sipsak >/dev/null 2>&1 && \
          sipsak -s sip:opensips:5060 -vv"
 # Expected: SIP/2.0 200 OK with Server: OpenSIPS (3.6.5 ...)
 
-# Runtime SIP validation (T4.5 — INVITE 407 Proxy-Authenticate)
+# Runtime SIP validation (INVITE 401 Unauthorized)
 python3 -c "
 import socket
 msg = b'INVITE sip:test@opensips:5060 SIP/2.0\r\n' \
@@ -238,7 +396,7 @@ sock.sendto(msg, ('127.0.0.1', 5060))
 data, _ = sock.recvfrom(4096)
 print(data.decode())
 "
-# Expected: SIP/2.0 407 Proxy Authentication Required with Proxy-Authenticate headers
+# Expected: SIP/2.0 401 Unauthorized with WWW-Authenticate headers
 ```
 
 **OCP Rebranding build and validation commands (Feature 002):**
@@ -278,6 +436,20 @@ docker compose exec ocp bash -c "curl -fsSL http://localhost/login.php | grep -q
 curl -fsSL http://localhost:8084/wiki.php | grep -q "TSiSIP Professional Wiki"
 ```
 
+**Makefile targets:**
+
+```bash
+make build        # Build Docker images and OCP theme assets
+make test         # Run all automated tests (Node.js frontend tests)
+make up           # Start the full Docker Compose stack
+make down         # Stop the Docker Compose stack
+make lint         # Validate Docker Compose and OpenSIPS config syntax
+make ocp-build    # Build OCP theme assets only
+make ocp-rollback # Rollback OCP theme to original OCP v9
+make clean        # Remove generated artifacts and Docker volumes
+make help         # Show available targets
+```
+
 **Additional repository checks:**
 
 ```bash
@@ -297,7 +469,7 @@ rg -n "OpenSIPS|PostgreSQL|RTPengine|Asterisk|db_postgres|sanity" docs .github A
 # Skill: speckit-memorylint
 ```
 
-> `CLAUDE.md` contains a generic `npm run build && npm test` example. **Ignore it for TSiSIP** until a `package.json` or equivalent manifest is committed.
+> `CLAUDE.md` contains a generic `npm run build && npm test` example. **Ignore it for TSiSIP** until a `package.json` or equivalent manifest is committed at the project root.
 
 ---
 
@@ -309,13 +481,14 @@ rg -n "OpenSIPS|PostgreSQL|RTPengine|Asterisk|db_postgres|sanity" docs .github A
 - `PostgreSQL`
 - `RTPengine`
 - `Asterisk`
+- `OCP` (OpenSIPS Control Panel)
 
 ### Database & Service Naming
 - Use **lowercase snake_case** for:
   - Database identifiers (tables, columns, indexes)
   - Docker service names
   - Docker network names
-- Examples: `sip_edge`, `sip_internal`, `db_internal`, `header_routing_rules`, `pbx_backends`, `auth_audit_log`
+- Examples: `sip_edge`, `sip_internal`, `db_internal`, `header_routing_rules`, `pbx_backends`, `auth_audit_log`, `ocp_users`, `ocp_login_log`
 
 ### OpenSIPS Config Conventions
 - Use integer algorithm arguments for dispatcher: `ds_select_dst($var(setid), 4, "f")`
@@ -327,6 +500,17 @@ rg -n "OpenSIPS|PostgreSQL|RTPengine|Asterisk|db_postgres|sanity" docs .github A
 - Only reference modules documented for **OpenSIPS 3.6 LTS**.
 - `sanity` is **forbidden** — it is not in the OpenSIPS 3.6 module documentation.
 - Do not add Kamailio-only modules or functions.
+
+### PHP Conventions
+- OCP uses **PHP 8.2** with PDO for PostgreSQL.
+- Use prepared statements for all database queries.
+- Passwords are stored with `password_hash()` (bcrypt) for OCP users; SIP auth uses HA1 hashes only.
+- Session security: `session.cookie_secure` enabled when HTTPS is detected via `X-Forwarded-Proto`.
+- Role hierarchy (lowest to highest): `readonly` -> `user` -> `assistant` -> `dentist` -> `devops` -> `admin`.
+
+### Shell Conventions
+- Entrypoint and deploy scripts use `set -euo pipefail` where bash is available; `set -eu` for POSIX `sh`.
+- Secrets are read with `awk` (not `tr`) to avoid busybox `tr` quirks: `awk 'BEGIN{RS=""; ORS=""} {print}'`.
 
 ---
 
@@ -366,6 +550,7 @@ Completion gate:
 - Store credentials as **HA1 hashes only** (`ha1`, `ha1_sha256`, `ha1_sha512t256`).
 - **Never** store plaintext passwords.
 - OpenSIPS must read precomputed HA1 columns (`calculate_ha1 = 0`).
+- OCP users use bcrypt `password_hash()` with account lockout after 5 failed attempts.
 
 ### Header Sanitization
 - Remove untrusted inbound headers before using routing metadata:
@@ -388,10 +573,19 @@ Completion gate:
 - Keep runtime secrets, private keys, generated credentials, `.env*` (except `.env.example`), and the `secrets/` directory **out of commits**.
 - `.gitignore` already excludes them.
 - Inject secrets at runtime via Docker secrets or environment-templated config files.
+- OCP copies secrets to `/tmp` with `www-data`-readable permissions at startup.
 
 ### Docker Runtime Hardening
-- Drop all capabilities except those required (`NET_BIND_SERVICE`, `SETUID`, `SETGID`).
+- Drop all capabilities except those required:
+  - OpenSIPS: `NET_BIND_SERVICE`, `SETUID`, `SETGID`
+  - RTPengine: `NET_BIND_SERVICE`, `NET_ADMIN`
 - Use `security_opt: ["no-new-privileges:true"]`.
+- All base images are pinned to SHA256 digests.
+
+### LGPD / Compliance
+- The project maintains a compliance framework for data retention and encryption.
+- Backup encryption uses AES-256-GCM via `openssl enc`.
+- CDR and audit logs include tenant isolation for multi-tenancy.
 
 ---
 
@@ -420,7 +614,120 @@ The following are **explicitly rejected** in TSiSIP documentation, configs, and 
 
 ---
 
-## 11. Agent Orchestration Notes
+## 11. Testing Strategy
+
+### Frontend Tests (Node.js)
+
+| Test | File | Purpose |
+|---|---|---|
+| D3.js + jQuery coexistence | `tests/d3-jquery-coexistence.test.js` | Verifies `tsisip-charts.js` uses isolated ES module scope and does not pollute global `$` |
+| Accessibility audit | `tests/accessibility-audit.test.js` | WCAG 2.1 AA checks: color contrast, ARIA labels, focus indicators, font-size, touch targets |
+
+### Integration Tests (Python + pytest)
+
+All tests live in `tests/integration/` and use raw Python sockets or `pytest` with `psycopg2-binary`:
+
+| Test | Validates |
+|---|---|
+| `test_end_to_end_call.py` | REGISTER -> 401 -> REGISTER(auth) -> 200 -> INVITE -> route -> Asterisk |
+| `test_multi_tenant_routing.py` | Tenant-scoped header routing and dispatcher set selection |
+| `test_webrtc_support.py` | WebSocket/WSS transport and SRTP/DTLS negotiation |
+| `test_tls_srtp.py` | TLS transport, certificate rotation, mTLS trunk validation |
+| `test_ddos_protection.py` | Rate limiting, pike module, circuit breaker behavior |
+| `test_rate_limiting.py` | Per-tenant and per-IP rate limit enforcement |
+| `test_backup_restore.py` | Encrypted backup creation, validation, purge, PITR restore |
+| `test_backup_rclone.py` | Offsite replication via rclone |
+| `test_certificate_rotation.py` | CA-tool cert generation and rotation |
+| `test_cdr_billing.py` | Call Detail Record generation and billing attribution |
+| `test_monitoring.py` | Prometheus metrics scraping and Grafana datasource health |
+| `test_observability.py` | Alertmanager alert routing and anomaly detection |
+| `test_anomaly_detection.py` | Z-score anomaly detection and Alertmanager integration |
+| `test_graceful_degradation.py` | Failover behavior when backends are unavailable |
+| `test_restart_policy.py` | Container restart policy compliance |
+| `test_circuit_breaker.py` | Circuit breaker state transitions |
+
+### Running Tests
+
+```bash
+# Frontend tests
+node tests/d3-jquery-coexistence.test.js
+node tests/accessibility-audit.test.js
+
+# Integration tests (requires running stack)
+pip install pytest psycopg2-binary
+pytest tests/integration/ -v --tb=short
+
+# Feature-specific integration tests
+pytest tests/integration/test_multi_tenant_routing.py -v
+pytest tests/integration/test_webrtc_support.py -v
+pytest tests/integration/test_cdr_billing.py -v
+pytest tests/integration/test_ddos_protection.py -v
+pytest tests/integration/test_anomaly_detection.py -v
+```
+
+### CI Test Execution
+
+GitHub Actions `.github/workflows/ci.yml` runs:
+1. `validate` — Docker Compose syntax, OpenSIPS config structure, committed-secrets scan, Ansible syntax-check, Nginx config validation
+2. `build-opensips` — Docker image build
+3. `build-ocp` — OCP image build + smoke test
+4. `build-supporting` — Matrix build of Prometheus, Grafana, exporter, backup, CA-tool, anomaly-detector
+5. `test-integration` — Stack startup, health checks, config validation, pytest suite
+6. `speckit-scan` — Brownfield + version-guard + memorylint
+7. `security-scan` — Trivy vulnerability scanner
+
+---
+
+## 12. Deployment Process
+
+TSiSIP uses the **Feature 009 VPS Deploy Automation Pipeline** for all production deploys. The pipeline is implemented in `deploy/scripts/orchestrate-deploy.sh` and is triggerable both locally and via GitHub Actions (`workflow_dispatch`).
+
+### Pipeline Stages (Gated)
+
+| Gate | Stage | Description | Halt on Failure |
+|---|---|---|---|
+| 0 | Pre-flight | Disk space, registry reachability, OpenSIPS config syntax, committed-secrets scan, Docker Compose syntax | Yes |
+| 1 | Impact Analysis | Git diff against `origin/master`; static heuristic for HIGH risk on core configs (`opensips.cfg.tpl`, compose files, `entrypoint.sh`) | Yes (override with `FORCE_DEPLOY=1`) |
+| 2 | Build | Builder agent detects changed Dockerfiles via `git diff`, builds only modified images | Yes |
+| 3 | Push | Pusher agent tags and pushes to GHCR; falls back to build-on-target if credentials missing | No (warn + fallback flag) |
+| 4 | Deploy | Deployer agent captures pre-deploy image digests, SSH syncs code, `docker compose pull && up` | Yes |
+| 5 | Verify | Verifier agent checks container health, OCP HTTP 200, SIP OPTIONS 200 OK, backup metrics | Yes -> automatic rollback |
+
+### Rollback Behavior
+
+Before deploy (Gate 4), the pipeline captures current running image digests on the target host into `.deploy-rollback/<run-id>-digests.txt`. If Gate 5 fails, the pipeline automatically re-tags the previous digests and restarts containers.
+
+### CLI Flags
+
+- `./orchestrate-deploy.sh` — full pipeline
+- `./orchestrate-deploy.sh --dry-run` — validates all gates without mutating state
+- `./orchestrate-deploy.sh --live-test` — runs post-deploy verification only
+
+### GitHub Actions Deploy Workflow
+
+`.github/workflows/deploy.yml` provides a `workflow_dispatch` trigger with:
+- `deploy_target`: production / staging
+- `dry_run`: boolean — validates gates without mutations
+- `force_deploy`: boolean — bypasses HIGH risk impact gate
+
+Jobs: `preflight` -> `impact` -> `build` -> `push` -> `deploy` -> `verify`
+
+### Ansible Playbooks
+
+- `deploy/ansible/playbook-deploy.yml` — Docker, Compose, and stack deployment on target host
+- `deploy/ansible/playbook-hardening.yml` — OS-level hardening (UFW, fail2ban, sysctl)
+
+### Constraints
+
+- Docker-first: only container images are deployed; no bare-metal package installation on target
+- PostgreSQL-only: no MySQL/MariaDB paths in deploy logic
+- OpenSIPS 3.6 LTS: config syntax gate rejects forbidden modules (e.g., `sanity`)
+- Secrets: no secrets committed; `.env` and `secrets/` are gitignored
+- Git mutations: pipeline does not auto-commit; SHA is recorded for audit only
+
+---
+
+## 13. Agent Orchestration Notes
 
 This repository uses an extensive agent orchestration setup. As an AI coding agent, you should be aware of the following:
 
@@ -443,9 +750,10 @@ When editing files in this repo, the hooks may trigger automatically. If you enc
 
 ---
 
-## 12. Useful Quick References
+## 14. Useful Quick References
 
 ### Canonical Spec Sections
+
 | Topic | File | Section |
 |---|---|---|
 | Architecture rules | `docs/TSiSIP-CANONICAL-SPEC.md` | Sections 2, 4, 5 |
@@ -463,12 +771,14 @@ When editing files in this repo, the hooks may trigger automatically. If you enc
 | Acceptance criteria | `docs/TSiSIP-CANONICAL-SPEC.md` | Section 21 |
 
 ### Official OpenSIPS Validation Sources
+
 - `https://www.opensips.org/Documentation/Manuals`
 - `https://www.opensips.org/Documentation/Manual-3-6`
 - `https://www.opensips.org/Documentation/Modules-3-6`
 - `https://opensips.org/docs/modules/3.6.x/<module>.html`
 
 ### Relevant RFCs
+
 | RFC | Role |
 |---|---|
 | RFC 3261 | SIP core, proxy behavior, transactions, dialogs, Digest |
@@ -481,60 +791,50 @@ When editing files in this repo, the hooks may trigger automatically. If you enc
 
 ---
 
-## 13. Deploy Pipeline
-
-TSiSIP uses the **Feature 009 VPS Deploy Automation Pipeline** for all production deploys. The pipeline is implemented in `deploy/scripts/orchestrate-deploy.sh` and is triggerable both locally and via GitHub Actions (`workflow_dispatch`).
-
-### Pipeline Stages (Gated)
-
-| Gate | Stage | Description | Halt on Failure |
-|---|---|---|---|
-| 0 | Pre-flight | Disk space, registry reachability, OpenSIPS config syntax, committed-secrets scan, Docker Compose syntax | Yes |
-| 1 | Impact Analysis | Git diff against `origin/master`; static heuristic for HIGH risk on core configs (`opensips.cfg.tpl`, compose files, `entrypoint.sh`) | Yes (override with `FORCE_DEPLOY=1`) |
-| 2 | Build | Builder agent detects changed Dockerfiles via `git diff`, builds only modified images | Yes |
-| 3 | Push | Pusher agent tags and pushes to GHCR; falls back to build-on-target if credentials missing | No (warn + fallback flag) |
-| 4 | Deploy | Deployer agent captures pre-deploy image digests, SSH syncs code, `docker compose pull && up` | Yes |
-| 5 | Verify | Verifier agent checks container health, OCP HTTP 200, SIP OPTIONS 200 OK, backup metrics | Yes → automatic rollback |
-
-### Rollback Behavior
-
-Before deploy (Gate 4), the pipeline captures current running image digests on the target host into `.deploy-rollback/<run-id>-digests.txt`. If Gate 5 fails, the pipeline automatically re-tags the previous digests and restarts containers.
-
-### CLI Flags
-
-- `./orchestrate-deploy.sh` — full pipeline
-- `./orchestrate-deploy.sh --dry-run` — validates all gates without mutating state
-- `./orchestrate-deploy.sh --live-test` — runs post-deploy verification only
-
-### OMK Agent Roles (Shell Functions)
-
-Each stage is implemented as a documented shell function in `orchestrate-deploy.sh`:
-
-- **`builder()`** — detects modified Dockerfiles, builds only affected images, retags existing `:test` images
-- **`pusher()`** — GHCR login, tag with `ghcr.io/b0yz4kr14/tsisip/*`, push; sets `FALLBACK_BUILD_ON_TARGET=1` on failure
-- **`deployer()`** — SSH to target, snapshot digests, git pull, update compose to GHCR prefix, compose up
-- **`verifier()`** — container health, HTTP probe on OCP login, Nginx `/TSiSIP/health`, SIP OPTIONS probe via Python socket, backup metrics loopback
-
-### GitHub Actions Workflow
-
-`.github/workflows/deploy.yml` provides a `workflow_dispatch` trigger with:
-- `deploy_target`: production / staging
-- `dry_run`: boolean — validates gates without mutations
-- `force_deploy`: boolean — bypasses HIGH risk impact gate
-
-Jobs: `preflight` → `impact` → `build` → `push` → `deploy` → `verify`
-
-### Constraints
-
-- Docker-first: only container images are deployed; no bare-metal package installation on target
-- PostgreSQL-only: no MySQL/MariaDB paths in deploy logic
-- OpenSIPS 3.6 LTS: config syntax gate rejects forbidden modules (e.g., `sanity`)
-- Secrets: no secrets committed; `.env` and `secrets/` are gitignored
-- Git mutations: pipeline does not auto-commit; SHA is recorded for audit only
-
----
-
 *Last updated: 2026-05-19. This file must be updated whenever new build tooling, manifests, or canonical architecture decisions are committed.*
+
+<!-- SPECKIT GOVERNANCE START -->
+## Speckit Agent Governance
+
+This project uses [GitHub Spec Kit](https://github.com/github/spec-kit) for Spec-Driven Development (SDD).
+
+### Active Tools
+- **Speckit CLI**: v0.8.12.dev0 (`specify`)
+- **Integration**: Kimi (default)
+- **Extensions**: Blueprint, Agent Governance, Architecture Guard, Spec Validate, SDD Utilities, Memory Loader
+- **Presets**: Agent Parity Governance, Architecture Governance, Security Governance
+- **Workflows**: Full SDD Cycle
+
+### Governance Files
+- `.specify/memory/agent-governance.md` — Source of truth for agent collaboration rules
+- `.specify/memory/constitution.md` — Project principles (managed by Architecture Guard)
+- `.specify/memory/architecture_constitution.md` — Architecture boundaries
+
+### Authority Order
+1. Current user instruction
+2. `docs/TSiSIP-CANONICAL-SPEC.md`
+3. This `AGENTS.md` file
+4. `.specify/memory/agent-governance.md`
+5. Skill-local `SKILL.md`
+6. Tool/MCP defaults
+
+### Write Boundaries
+- Code writes only during `/speckit.implement` or OMK-blessed flows
+- Required artifacts before implementation: `spec.md` + `plan.md` + `tasks.md`
+- Architecture guard must pass before implementation
+- No edits to governance, CI, MCP config, credential files, or tool settings without explicit request
+
+### MCP & Tool Policy
+
+| Tool | Purpose | Writes Allowed? | Validation |
+|------|---------|-----------------|------------|
+| GitNexus | Impact analysis | No | Blast radius report |
+| OMK | Orchestration, memory | Goals, todos only | Quality gates |
+| Obsidian Vault | Docs, sessions | Notes, changelog | Session review |
+| Speckit | SDD workflow | Specs, plans (gated) | Spec validate gate |
+| Firecrawl | Web research | No | Source logging |
+
+<!-- SPECKIT GOVERNANCE END -->
 
 <!-- SPECKIT START -->
 For additional context about technologies to be used, project structure,
@@ -544,7 +844,7 @@ shell commands, and other important information, read the current plan
 <!-- gitnexus:start -->
 # GitNexus — Code Intelligence
 
-This project is indexed by GitNexus as **TSiSIP** (2425 symbols, 2647 relationships, 2 execution flows). Use the GitNexus MCP tools to understand code, assess impact, and navigate safely.
+This project is indexed by GitNexus as **TSiSIP** (2683 symbols, 2919 relationships, 3 execution flows). Use the GitNexus MCP tools to understand code, assess impact, and navigate safely.
 
 > If any GitNexus tool warns the index is stale, run `npx gitnexus analyze` in terminal first.
 
