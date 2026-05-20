@@ -1,0 +1,10 @@
+{
+  "feature": "009-vps-deploy-automation",
+  "spec_hash": "sha256:6b3c359b0611e31dce1b4546b6721e766dea79bfeb174f1d7f4bd480b41913cf",
+  "spec_self_validation": "passed",
+  "spec_validated_at": "2026-05-19T15:20:00-03:00",
+  "spec_critical_count": 14,
+  "spec_missed_items": [],
+  "review_status": "not-required",
+  "approval_status": "allowed"
+}
