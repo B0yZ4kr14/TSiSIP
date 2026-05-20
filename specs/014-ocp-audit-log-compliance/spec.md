@@ -46,7 +46,7 @@ Build an immutable audit logging subsystem for the OCP that:
 
 ### AC1: PostgreSQL Schema — `ocp_audit_log`
 
-- [ ] A new table `ocp_audit_log` is created in `db/init/02-tsisip-extensions.sql` (or a new idempotent migration script) with the following exact columns:
+- [ ] A new table `ocp_audit_log` is created in `db/init/04-ocp-audit-schema.sql` (or a new idempotent migration script) with the following exact columns:
 
 | Column | Type | Constraints | Description |
 |---|---|---|---|
@@ -181,7 +181,7 @@ Build an immutable audit logging subsystem for the OCP that:
 
 - [ ] The retention period is configurable via an environment variable `OCP_AUDIT_RETENTION_DAYS` with a default value of `90`.
 
-- [ ] The OCP container entrypoint (`docker/ocp/entrypoint.sh`) exports `OCP_AUDIT_RETENTION_DAYS` to PHP-FPM by writing it to `/etc/php/8.2/fpm/pool.d/env.conf` (or the equivalent PHP-FPM environment pass-through mechanism).
+- [ ] The OCP container entrypoint (`docker/ocp/entrypoint.sh`) exports `OCP_AUDIT_RETENTION_DAYS` as an environment variable so it is available to Apache/mod_php (e.g., via `export OCP_AUDIT_RETENTION_DAYS=...` in the entrypoint or `SetEnv` in the Apache configuration).
 
 - [ ] A standalone PHP CLI script `web/cli/purge-audit-log.php` is created:
   - Must be executed from the command line only (`php_sapi_name() === 'cli'` or die).
@@ -239,7 +239,7 @@ Build an immutable audit logging subsystem for the OCP that:
 
 ### AC9: Testing & Validation
 
-- [ ] A manual test script `tests/audit-log-validation.php` is created (or documented steps) that:
+- [ ] A manual test script `tests/integration/test-ocp-audit.sh` is created (or documented steps) that:
   1. Logs in as an admin user.
   2. Creates a subscriber and verifies an `SUBSCRIBER_CREATE` row exists in `ocp_audit_log`.
   3. Toggles a subscriber and verifies `SUBSCRIBER_TOGGLE`.
@@ -363,10 +363,10 @@ $$ LANGUAGE plpgsql;
 - `web/audit-log.php`
 - `web/audit-export.php`
 - `web/cli/purge-audit-log.php`
-- `tests/audit-log-validation.php` (or manual test documentation)
+- `tests/integration/test-ocp-audit.sh` (or manual test documentation)
 
 ### Modified Files
-- `db/init/02-tsisip-extensions.sql` — add `ocp_audit_log` table, indexes, trigger, function
+- `db/init/04-ocp-audit-schema.sql` — add `ocp_audit_log` table, indexes, trigger, function
 - `web/common/config.php` — require `audit.php`, augment `authenticateUser()`
 - `web/login.php` — no direct change required (handled in `authenticateUser()`)
 - `web/logout.php` — add `logAuditEvent('LOGOUT', ...)`
@@ -376,7 +376,7 @@ $$ LANGUAGE plpgsql;
 - `web/common/role-nav.php` — add `Audit Log & Compliance` nav item
 - `web/dashboard.php` — add `Audit Log & Compliance` system link
 - `docker/ocp/Dockerfile` — create log dir, install/configure cron
-- `docker/ocp/entrypoint.sh` — pass `OCP_AUDIT_RETENTION_DAYS` to PHP-FPM
+- `docker/ocp/entrypoint.sh` — export `OCP_AUDIT_RETENTION_DAYS` for Apache/mod_php
 - `docker-compose.yml` — document `OCP_AUDIT_RETENTION_DAYS` env var
 
 ---

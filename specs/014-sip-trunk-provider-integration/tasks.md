@@ -219,31 +219,31 @@
 **Description**: Create `tests/integration/test_sip_trunk_outbound.py`. Authenticate as `devuser`, send INVITE to a non-local domain (e.g., `+1234567890@pstn`), verify 100 Trying and forwarded INVITE reaches the mock trunk target.
 **Files affected**: `tests/integration/test_sip_trunk_outbound.py`
 **Depends on**: T3.6, T5.3
-**Status**: [ ]
+**Status**: [x]
 
 ### T7.2: Trunk failover test
 **Description**: Create `tests/integration/test_sip_trunk_failover.py`. Configure two trunk providers. Block the primary (e.g., via iptables DROP). Send INVITE and verify failover to secondary within 5 seconds (measured by final 180 Ringing or 200 OK).
 **Files affected**: `tests/integration/test_sip_trunk_failover.py`
 **Depends on**: T7.1
-**Status**: [ ]
+**Status**: [x]
 
 ### T7.3: Inbound DID routing test
 **Description**: Create `tests/integration/test_sip_trunk_inbound.py`. Send unauthenticated INVITE from a trunk IP with a known DID in the R-URI. Verify 200 OK and that the forwarded INVITE to Asterisk contains the correct `X-Tenant-ID` header.
 **Files affected**: `tests/integration/test_sip_trunk_inbound.py`
 **Depends on**: T4.4
-**Status**: [ ]
+**Status**: [x]
 
 ### T7.4: CPS rate limit test
 **Description**: Create `tests/integration/test_sip_trunk_rate_limit.py`. Send burst INVITEs (2x configured CPS) to a trunk destination. Verify that excess calls receive `503 Service Unavailable` and the throttled count matches expectations within 1% overshoot.
 **Files affected**: `tests/integration/test_sip_trunk_rate_limit.py`
 **Depends on**: T3.3, T7.1
-**Status**: [ ]
+**Status**: [x]
 
 ### T7.5: Health probe exclusion test
 **Description**: Create `tests/integration/test_sip_trunk_health_probe.py`. Simulate an unresponsive trunk (drop OPTIONS replies). Verify the trunk is excluded from selection after 3 consecutive missed probes and re-included within 30 seconds of recovery.
 **Files affected**: `tests/integration/test_sip_trunk_health_probe.py`
 **Depends on**: T5.3, T7.1
-**Status**: [ ]
+**Status**: [x]
 
 ### T7.6: CI validation run
 **Description**: Run `docker compose config`, build the OpenSIPS image, run `opensips -c`, execute `scripts/ci-scan.sh`, and verify zero new findings. Fix any lint or syntax errors.

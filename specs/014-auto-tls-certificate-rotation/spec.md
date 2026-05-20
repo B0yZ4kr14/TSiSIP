@@ -73,7 +73,7 @@ volumes:
 |---------|-------------|---------|
 | `certbot` | `/etc/letsencrypt` -> `certbot_data` | ACME account, renewal state, cached certs |
 | `certbot` | `/certs/live` -> `tls_certs` | Final published certificate files |
-| `opensips` | `/certs/live` -> `tls_certs` | TLS profile reads `server.crt`, `server.key`, `chain.pem` |
+| `opensips` | `/certs/live` -> `tls_certs` | TLS profile reads `server.crt`, `server.key`, `ca.crt` |
 | `rtpengine` | `/certs/live` -> `tls_certs` | DTLS certificate files |
 
 OpenSIPS `tls_mgm` module parameters are updated to point directly at the volume path:
@@ -81,7 +81,7 @@ OpenSIPS `tls_mgm` module parameters are updated to point directly at the volume
 ```cfg
 modparam("tls_mgm", "certificate", "[default]/certs/live/server.crt")
 modparam("tls_mgm", "private_key", "[default]/certs/live/server.key")
-modparam("tls_mgm", "ca_list",   "[default]/certs/live/chain.pem")
+modparam("tls_mgm", "ca_list",   "[default]/certs/live/ca.crt")
 ```
 
 > **Note**: `server.crt` in the volume is a symlink or copy of the active certificate. The deploy-hook must update this atomically (write to temp, `mv` into place) to avoid OpenSIPS reading a partially written file during `tls_reload`.
@@ -94,7 +94,8 @@ OpenSIPS must expose the MI HTTP interface for programmatic reload triggers.
    ```cfg
    loadmodule "mi_http.so"
    modparam("mi_http", "mi_http_root_path", "/mi")
-   listen = http:0.0.0.0:8888
+   modparam("httpd", "ip", "${OPENSIPS_LISTEN_IP}")
+   modparam("httpd", "port", 8888)
    ```
    Port 8888/tcp is bound on `0.0.0.0` but is only reachable via the internal Docker network (`sip_internal`), which has `internal: true`. No host port mapping is required.
 
@@ -142,7 +143,7 @@ Alertmanager rules (added to `docker/prometheus/alerts.yml`):
 - [ ] **AC1: Let's Encrypt certificate issuance** — Running `docker compose up certbot` for the first time successfully completes an ACME HTTP-01 challenge, writes a valid certificate chain to `tls_certs`, and exits 0. `openssl x509 -in /var/lib/docker/volumes/tsisip_tls_certs/_data/server.crt -noout -text` shows `Issuer: C = US, O = Let's Encrypt`.
 - [ ] **AC2: Tailscale certificate issuance** — Running `docker compose up tailscale-cert` (with valid Tailscale auth injected) writes a valid Tailscale-issued certificate to `tls_certs`. `openssl x509 -in .../server.crt -noout -issuer` shows `Issuer: CN = Tailscale CA`.
 - [ ] **AC3: OpenSIPS MI HTTP interface** — `curl -fsSL http://opensips:8888/mi/version` from the `certbot` container returns OpenSIPS version JSON. `curl -fsSL -X POST http://opensips:8888/mi/tls_reload` returns HTTP 200.
-- [ ] **AC4: Zero-downtime reload** — During an active TLS SIP call (e.g., a REGISTER dialog), trigger `tls_reload` via MI HTTP. The active call/dialog remains stable (no 408/481). A new TLS handshake to port 5061 uses the updated certificate serial number.
+- [ ] **AC4: Zero-downtime reload** — Trigger `tls_reload` via MI HTTP (`curl -fsSL -X POST http://opensips:8888/mi/tls_reload`) and confirm HTTP 200 response. Verify with `opensips -c` that the TLS profile loads without error before and after reload. For staging environments, verify the certificate serial number changes in `openssl s_client` output after a simulated renewal.
 - [ ] **AC5: Daily renewal check** — The certbot container cron job runs at 02:00 UTC daily. Logs show `certbot renew --quiet` executing. When no renewal is needed, it exits 0 and emits no alerts.
 - [ ] **AC6: Proactive renewal at 30 days** — A certificate with 29 days remaining is detected by the daily check. Renewal is attempted, new cert is deployed, and `tls_reload` is triggered automatically.
 - [ ] **AC7: Fallback on ACME failure** — Simulate ACME failure (disconnect network or use invalid auth). The existing certificate remains in `tls_certs` and continues to be served by OpenSIPS. Alertmanager fires `CertRenewalFailed`. After restoring connectivity, the next daily run succeeds and clears the alert.
@@ -191,7 +192,8 @@ Add to `opensips/opensips.cfg.tpl`:
 # MI HTTP for programmatic TLS reload (Feature 014-A)
 loadmodule "mi_http.so"
 modparam("mi_http", "mi_http_root_path", "/mi")
-listen = http:0.0.0.0:8888
+modparam("httpd", "ip", "${OPENSIPS_LISTEN_IP}")
+modparam("httpd", "port", 8888)
 ```
 
 Update `tls_mgm` paths:
@@ -199,7 +201,7 @@ Update `tls_mgm` paths:
 ```cfg
 modparam("tls_mgm", "certificate", "[default]/certs/live/server.crt")
 modparam("tls_mgm", "private_key", "[default]/certs/live/server.key")
-modparam("tls_mgm", "ca_list",   "[default]/certs/live/chain.pem")
+modparam("tls_mgm", "ca_list",   "[default]/certs/live/ca.crt")
 ```
 
 ### Docker Compose Additions
@@ -262,20 +264,20 @@ set -e
 CERT_DIR="/certs/live"
 TMP_CERT="${CERT_DIR}/server.crt.new"
 TMP_KEY="${CERT_DIR}/server.key.new"
-TMP_CHAIN="${CERT_DIR}/chain.pem.new"
+TMP_CA="${CERT_DIR}/ca.crt.new"
 
 cp "$RENEWED_LINEAGE/fullchain.pem" "$TMP_CERT"
 cp "$RENEWED_LINEAGE/privkey.pem"   "$TMP_KEY"
-cp "$RENEWED_LINEAGE/chain.pem"     "$TMP_CHAIN"
+cp "$RENEWED_LINEAGE/chain.pem"     "$TMP_CA"
 
 # Validate before swap
 openssl x509 -in "$TMP_CERT" -noout -checkend 86400 >/dev/null
 openssl rsa -in "$TMP_KEY" -check -noout >/dev/null
 
 # Atomic swap
-mv -f "$TMP_CERT"  "${CERT_DIR}/server.crt"
-mv -f "$TMP_KEY"   "${CERT_DIR}/server.key"
-mv -f "$TMP_CHAIN" "${CERT_DIR}/chain.pem"
+mv -f "$TMP_CERT" "${CERT_DIR}/server.crt"
+mv -f "$TMP_KEY"  "${CERT_DIR}/server.key"
+mv -f "$TMP_CA"   "${CERT_DIR}/ca.crt"
 
 # Trigger OpenSIPS reload
 curl -fsSL -X POST "${OPENSIPS_MI_URL}/tls_reload"
