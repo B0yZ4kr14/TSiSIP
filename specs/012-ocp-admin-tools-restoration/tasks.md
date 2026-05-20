@@ -60,22 +60,22 @@
 - [x] T6.6: GitNexus detect-changes (GitNexus re-indexed successfully)
 
 ## Wave 7: Documentation
-- [ ] T7.1: Update operator runbook
-- [ ] T7.2: Update canonical spec
-- [ ] T7.3: Update AGENTS.md
-- [ ] T7.4: Create blueprint.md
-- [ ] T7.5: Update audit report
+- [x] T7.1: Update operator runbook
+- [x] T7.2: Update canonical spec
+- [x] T7.3: Update AGENTS.md
+- [x] T7.4: Create blueprint.md
+- [x] T7.5: Update audit report
 
 ## Wave 8: Build & Deploy
-- [ ] T8.1: Build OCP Docker image (use `TSISIP_IMAGE_TAG` or explicit version tag; avoid `:latest` in production per B13 remediation)
-- [ ] T8.2: Push to GHCR
-- [ ] T8.3: Deploy to VPS
-- [ ] T8.4: Validate acceptance criteria
-- [ ] T8.5: Verify nginx/URLs
+- [x] T8.1: Build OCP Docker image (use `TSISIP_IMAGE_TAG` or explicit version tag; avoid `:latest` in production per B13 remediation)
+- [x] T8.2: Push to GHCR
+- [x] T8.3: Deploy to VPS
+- [x] T8.4: Validate acceptance criteria
+- [x] T8.5: Verify nginx/URLs
 
 ## Wave 9: Git Commit & Closure
-- [ ] T9.1: Stage files
-- [ ] T9.2: Conventional commit
-- [ ] T9.3: Push to GitHub
-- [ ] T9.4: Update OMK Goal evidence
-- [ ] T9.5: Close Feature 012
+- [x] T9.1: Stage files
+- [x] T9.2: Conventional commit
+- [x] T9.3: Push to GitHub
+- [x] T9.4: Update OMK Goal evidence
+- [x] T9.5: Close Feature 012

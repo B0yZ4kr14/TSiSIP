@@ -1010,4 +1010,26 @@ This project is indexed by GitNexus as **TSiSIP** (3779 symbols, 4224 relationsh
 | Tools, resources, schema reference | `.claude/skills/gitnexus/gitnexus-guide/SKILL.md` |
 | Index, status, clean, wiki CLI commands | `.claude/skills/gitnexus/gitnexus-cli/SKILL.md` |
 
+**Feature 012 — OCP Administrative Tools Restoration tests:**
+
+```bash
+# Build OCP Docker image with admin tools
+docker build -t tsisip/ocp:latest -f docker/ocp/Dockerfile .
+
+# Validate OCP container health (admin login page)
+docker compose exec ocp bash -c "curl -fsSL http://localhost/login.php | grep -q 'TSiSIP'"
+
+# Validate subscribers.php is accessible and returns HTML
+docker compose exec ocp bash -c "curl -fsSL -u admin:admin http://localhost/subscribers.php | grep -q 'Subscribers'"
+
+# Validate cdr-viewer.php is accessible and returns HTML
+docker compose exec ocp bash -c "curl -fsSL -u admin:admin http://localhost/cdr-viewer.php | grep -q 'Call Detail Records'"
+
+# Validate dispatcher.php is accessible and returns HTML
+docker compose exec ocp bash -c "curl -fsSL -u admin:admin http://localhost/dispatcher.php | grep -q 'Dispatcher'"
+
+# Validate HA1 generator produces correct hashes
+php -r "require 'web/common/ha1-generator.php'; \$h = generateHa1Hashes('user', 'domain', 'pass'); assert(strlen(\$h['ha1']) === 32); assert(strlen(\$h['ha1_sha256']) === 64);"
+```
+
 <!-- gitnexus:end -->
