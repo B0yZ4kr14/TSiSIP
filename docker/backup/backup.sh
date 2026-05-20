@@ -11,7 +11,8 @@ WAL_DIR="${WAL_DIR:-/backup/wal}"
 ENCRYPTION_KEY_FILE="${ENCRYPTION_KEY_FILE:-/run/secrets/backup_encryption_key}"
 PGPASSWORD_FILE="${PGPASSWORD_FILE:-/run/secrets/db_password}"
 RETENTION_DAYS="${BACKUP_RETENTION_DAYS:-30}"
-ALLOW_UNENCRYPTED_BACKUPS="${ALLOW_UNENCRYPTED_BACKUPS:-false}"
+# Encryption is mandatory in all environments per TSiSIP security policy.
+# The ALLOW_UNENCRYPTED_BACKUPS opt-out has been removed (brownfield B8).
 
 # Ensure directories exist
 mkdir -p "$BACKUP_DIR" "$WAL_DIR"
@@ -54,16 +55,16 @@ rm -f "/tmp/backup/${BACKUP_FILE}"
 
 log "Backup compressed: ${BACKUP_DIR}/${BACKUP_FILE}.gz"
 
-# Encrypt unless explicitly disabled for non-production development.
-if [ -f "$ENCRYPTION_KEY_FILE" ] && [ -s "$ENCRYPTION_KEY_FILE" ]; then
-    /usr/local/bin/encrypt.sh encrypt "${BACKUP_DIR}/${BACKUP_FILE}.gz" "${BACKUP_DIR}/${BACKUP_FILE}.gz.enc"
-    rm -f "${BACKUP_DIR}/${BACKUP_FILE}.gz"
-    log "Backup encrypted: ${BACKUP_DIR}/${BACKUP_FILE}.gz.enc"
-    ln -sfn "${BACKUP_FILE}.gz.enc" "${BACKUP_DIR}/latest"
-else
-    log "WARNING: Unencrypted backups explicitly allowed for this environment"
-    ln -sfn "${BACKUP_FILE}.gz" "${BACKUP_DIR}/latest"
+# Encrypt backup (mandatory)
+if [ ! -f "$ENCRYPTION_KEY_FILE" ] || [ ! -s "$ENCRYPTION_KEY_FILE" ]; then
+    log "ERROR: Encryption key missing or empty: $ENCRYPTION_KEY_FILE"
+    exit 1
 fi
+
+/usr/local/bin/encrypt.sh encrypt "${BACKUP_DIR}/${BACKUP_FILE}.gz" "${BACKUP_DIR}/${BACKUP_FILE}.gz.enc"
+rm -f "${BACKUP_DIR}/${BACKUP_FILE}.gz"
+log "Backup encrypted: ${BACKUP_DIR}/${BACKUP_FILE}.gz.enc"
+ln -sfn "${BACKUP_FILE}.gz.enc" "${BACKUP_DIR}/latest"
 
 log "Backup completed successfully"
 
