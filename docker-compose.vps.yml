@@ -6,7 +6,7 @@
 
 services:
   postgres:
-    image: ghcr.io/b0yz4kr14/tsisip/postgres:${TSISIP_IMAGE_TAG:-latest}
+    image: ghcr.io/b0yz4kr14/tsisip/postgres:${TSISIP_IMAGE_TAG:?must be set}
     pull_policy: always
     networks: [db_internal, metrics_host]
     restart: unless-stopped
@@ -45,7 +45,7 @@ services:
       start_interval: 5s
 
   rtpengine:
-    image: ghcr.io/b0yz4kr14/tsisip/rtpengine:${TSISIP_IMAGE_TAG:-latest}
+    image: ghcr.io/b0yz4kr14/tsisip/rtpengine:${TSISIP_IMAGE_TAG:?must be set}
     pull_policy: always
     networks: [sip_edge, sip_internal]
     restart: on-failure
@@ -76,7 +76,7 @@ services:
       start_interval: 5s
 
   opensips:
-    image: ghcr.io/b0yz4kr14/tsisip/opensips:${TSISIP_IMAGE_TAG:-latest}
+    image: ghcr.io/b0yz4kr14/tsisip/opensips:${TSISIP_IMAGE_TAG:?must be set}
     pull_policy: always
     networks: [sip_edge, sip_internal, db_internal]
     restart: unless-stopped
@@ -121,7 +121,7 @@ services:
       start_interval: 5s
 
   asterisk-pbx-1:
-    image: ghcr.io/b0yz4kr14/tsisip/asterisk:${TSISIP_IMAGE_TAG:-latest}
+    image: ghcr.io/b0yz4kr14/tsisip/asterisk:${TSISIP_IMAGE_TAG:?must be set}
     pull_policy: always
     networks: [sip_internal]
     restart: unless-stopped
@@ -145,7 +145,7 @@ services:
       start_interval: 5s
 
   asterisk-pbx-2:
-    image: ghcr.io/b0yz4kr14/tsisip/asterisk:${TSISIP_IMAGE_TAG:-latest}
+    image: ghcr.io/b0yz4kr14/tsisip/asterisk:${TSISIP_IMAGE_TAG:?must be set}
     pull_policy: always
     networks: [sip_internal]
     restart: unless-stopped
@@ -169,7 +169,7 @@ services:
       start_interval: 5s
 
   ocp:
-    image: ghcr.io/b0yz4kr14/tsisip/ocp:${TSISIP_IMAGE_TAG:-latest}
+    image: ghcr.io/b0yz4kr14/tsisip/ocp:${TSISIP_IMAGE_TAG:?must be set}
     pull_policy: always
     networks: [sip_internal, db_internal, metrics_host]
     restart: unless-stopped
@@ -195,7 +195,7 @@ services:
       start_period: 10s
 
   backup:
-    image: ghcr.io/b0yz4kr14/tsisip/backup:${TSISIP_IMAGE_TAG:-latest}
+    image: ghcr.io/b0yz4kr14/tsisip/backup:${TSISIP_IMAGE_TAG:?must be set}
     # For hotfix builds on the VPS, allow using a locally built image.
     # CI can still publish `:latest` to GHCR later.
     pull_policy: if_not_present

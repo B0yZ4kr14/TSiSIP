@@ -42,7 +42,7 @@ preflight_check() {
         exit 0
     fi
 
-    # Connectivity + credential sanity check via rclone ls
+    # Connectivity + credential validation check via rclone ls
     if rclone ls \
         --config "$RCLONE_CONFIG" \
         --max-depth 1 \
