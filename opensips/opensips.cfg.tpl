@@ -101,10 +101,12 @@ modparam("sqlops", "db_url", "postgres://${DB_USER}:${DB_PASSWORD}@${DB_HOST}:54
 modparam("dispatcher", "db_url", "postgres://${DB_USER}:${DB_PASSWORD}@${DB_HOST}:5432/${DB_NAME}")
 modparam("dispatcher", "table_name", "dispatcher")
 modparam("dispatcher", "ds_ping_method", "OPTIONS")
-modparam("dispatcher", "ds_ping_interval", 10)
+# Wave 5: ds_ping_interval=30 for trunk provider probes (setid 100)
+# Per-destination attrs override: ping_interval=30 for PBX backends if needed.
+modparam("dispatcher", "ds_ping_interval", 30)
 modparam("dispatcher", "ds_probing_mode", 1)
-modparam("dispatcher", "ds_probing_threshold", 5)
-modparam("dispatcher", "persistent_state", 1)
+modparam("dispatcher", "ds_probing_threshold", 3)
+modparam("dispatcher", "persistent_state", "/var/run/opensips/dispatcher.state")
 
 # T3.1: Load-based dispatcher routing
 modparam("dispatcher", "ds_ping_from", "sip:healthcheck@localhost")
@@ -300,6 +302,13 @@ route {
 
     # T2.3: Verify mutual TLS for trunk connections
     route(TRUNK_VERIFY);
+
+    # --- BEGIN TRUNK INTEGRATION WAVE 4: Inbound DID Routing ---
+    # Inbound trunk-originated INVITEs bypass auth and route via DID mapping
+    if (is_method("INVITE")) {
+        route(INBOUND_DID_ROUTING);
+    }
+    # --- END TRUNK INTEGRATION WAVE 4: Inbound DID Routing ---
 
     # Check per-user blacklist entries after protocol-level health traffic
     if (!check_user_blacklist("$fU", "$fd", "$rU", "userblacklist")) {
@@ -622,16 +631,38 @@ route[TRUNK_ROUTING] {
         return;
     }
 
-    # External destination: select highest-priority enabled trunk
-    $var(trunk_query) = "SELECT id, name, host, port, transport, auth_username, from_domain, caller_id_prefix, srtp_mode, max_cps, priority FROM sip_trunk_providers WHERE enabled = true ORDER BY priority ASC LIMIT 1";
-    if (!sql_query_one($var(trunk_query), "$var(trunk_id);$var(trunk_name);$var(trunk_host);$var(trunk_port);$var(trunk_transport);$var(trunk_auth_user);$var(trunk_from_domain);$var(trunk_cid_prefix);$var(trunk_srtp);$var(trunk_cps);$var(trunk_priority)")) {
-        xlog("L_ERR", "TRUNK_ROUTING: DB unavailable during trunk selection\n");
-        sl_send_reply(503, "No Trunk Available");
-        exit;
+    # External destination: select highest-priority enabled and healthy trunk
+    $var(trunk_found) = 0;
+    $var(trunk_priority) = -1;
+    $var(attempt) = 0;
+    while ($var(attempt) < 5 && $var(trunk_found) == 0) {
+        $var(attempt) = $var(attempt) + 1;
+
+        $var(trunk_query) = "SELECT id, name, host, port, transport, auth_username, from_domain, caller_id_prefix, srtp_mode, max_cps, priority FROM sip_trunk_providers WHERE enabled = true AND priority > " + $var(trunk_priority) + " ORDER BY priority ASC LIMIT 1";
+        if (!sql_query_one($var(trunk_query), "$var(trunk_id);$var(trunk_name);$var(trunk_host);$var(trunk_port);$var(trunk_transport);$var(trunk_auth_user);$var(trunk_from_domain);$var(trunk_cid_prefix);$var(trunk_srtp);$var(trunk_cps);$var(trunk_priority)")) {
+            xlog("L_ERR", "TRUNK_ROUTING: DB unavailable during trunk selection\n");
+            sl_send_reply(503, "No Trunk Available");
+            exit;
+        }
+
+        if ($var(trunk_id) == NULL || $var(trunk_id) == 0) {
+            break;
+        }
+
+        # Wave 5: Skip unhealthy trunks based on dispatcher probe state
+        if (cache_fetch("local", "trunk_health_$var(trunk_id)", "$var(trunk_health)")) {
+            if ($var(trunk_health) == "unhealthy") {
+                xlog("L_INFO", "TRUNK_ROUTING: skipping unhealthy trunk $var(trunk_name) (id=$var(trunk_id))\n");
+            } else {
+                $var(trunk_found) = 1;
+            }
+        } else {
+            $var(trunk_found) = 1;
+        }
     }
 
-    if ($var(trunk_id) == NULL || $var(trunk_id) == 0) {
-        xlog("L_WARN", "TRUNK_ROUTING: no enabled trunk provider available for $ru\n");
+    if ($var(trunk_found) == 0) {
+        xlog("L_WARN", "TRUNK_ROUTING: no healthy trunk provider available for $ru\n");
         sl_send_reply(503, "No Trunk Available");
         exit;
     }
@@ -721,16 +752,36 @@ failure_route[TRUNK_FAILOVER] {
         }
     }
 
-    # On transport/failure, try next priority trunk
+    # On transport/failure, try next priority healthy trunk
     if (t_check_status("408|480|500|502|503|504")) {
-        $var(trunk_query) = "SELECT id, name, host, port, transport, auth_username, from_domain, caller_id_prefix, srtp_mode, max_cps, priority FROM sip_trunk_providers WHERE enabled = true AND priority > '$var(trunk_priority)' ORDER BY priority ASC LIMIT 1";
-        if (!sql_query_one($var(trunk_query), "$var(trunk_id);$var(trunk_name);$var(trunk_host);$var(trunk_port);$var(trunk_transport);$var(trunk_auth_user);$var(trunk_from_domain);$var(trunk_cid_prefix);$var(trunk_srtp);$var(trunk_cps);$var(trunk_priority)")) {
-            xlog("L_ERR", "TRUNK_FAILOVER: DB unavailable during failover selection\n");
-            exit;
+        $var(failover_found) = 0;
+        $var(failover_attempt) = 0;
+        while ($var(failover_attempt) < 5 && $var(failover_found) == 0) {
+            $var(failover_attempt) = $var(failover_attempt) + 1;
+            $var(trunk_query) = "SELECT id, name, host, port, transport, auth_username, from_domain, caller_id_prefix, srtp_mode, max_cps, priority FROM sip_trunk_providers WHERE enabled = true AND priority > '$var(trunk_priority)' ORDER BY priority ASC LIMIT 1";
+            if (!sql_query_one($var(trunk_query), "$var(trunk_id);$var(trunk_name);$var(trunk_host);$var(trunk_port);$var(trunk_transport);$var(trunk_auth_user);$var(trunk_from_domain);$var(trunk_cid_prefix);$var(trunk_srtp);$var(trunk_cps);$var(trunk_priority)")) {
+                xlog("L_ERR", "TRUNK_FAILOVER: DB unavailable during failover selection\n");
+                break;
+            }
+
+            if ($var(trunk_id) == NULL || $var(trunk_id) == 0) {
+                break;
+            }
+
+            # Wave 5: Skip unhealthy trunks during failover
+            if (cache_fetch("local", "trunk_health_$var(trunk_id)", "$var(trunk_health)")) {
+                if ($var(trunk_health) == "unhealthy") {
+                    xlog("L_INFO", "TRUNK_FAILOVER: skipping unhealthy trunk $var(trunk_name) (id=$var(trunk_id))\n");
+                } else {
+                    $var(failover_found) = 1;
+                }
+            } else {
+                $var(failover_found) = 1;
+            }
         }
 
-        if ($var(trunk_id) != NULL && $var(trunk_id) != 0) {
-            # Update R-URI to next trunk
+        if ($var(failover_found) == 1) {
+            # Update R-URI to next healthy trunk
             $ru = "sip:" + $rU + "@" + $var(trunk_host) + ":" + $var(trunk_port);
             if ($var(trunk_transport) == "tls") {
                 $ru = $ru + ";transport=tls";
@@ -790,6 +841,58 @@ branch_route[BRANCH_TRUNK_SRTP] {
     # --- END TRUNK INTEGRATION WAVE 3: Trunk SRTP Branch Route ---
 }
 
+route[INBOUND_DID_ROUTING] {
+    # --- BEGIN TRUNK INTEGRATION WAVE 4: Inbound DID Routing ---
+    # Only process INVITEs from known trunk IPs (check against sip_trunk_providers.host)
+    if (!sql_query_one("SELECT id FROM sip_trunk_providers WHERE host = '$si' AND enabled = true LIMIT 1", "$var(trunk_provider_id)")) {
+        xlog("L_ERR", "INBOUND_DID_ROUTING: DB unavailable during trunk lookup for $si\n");
+        sl_send_reply(480, "Temporarily Unavailable");
+        exit;
+    }
+
+    if ($var(trunk_provider_id) == NULL || $var(trunk_provider_id) == 0) {
+        # Not a trunk source; fall through to normal auth flow
+        return;
+    }
+
+    xlog("L_INFO", "INBOUND_DID_ROUTING: trunk-originated INVITE from $si (provider=$var(trunk_provider_id))\n");
+
+    # Query DID mapping for the called number (RURI user part)
+    if (!sql_query_one("SELECT tenant_id, dispatcher_setid FROM sip_trunk_did_mappings WHERE did_number = '$rU' AND enabled = true LIMIT 1", "$var(tenant_id);$var(did_setid)")) {
+        xlog("L_ERR", "INBOUND_DID_ROUTING: DB unavailable during DID lookup for $rU\n");
+        sl_send_reply(480, "Temporarily Unavailable");
+        exit;
+    }
+
+    if ($var(did_setid) == NULL || $var(did_setid) == 0) {
+        xlog("L_WARN", "INBOUND_DID_ROUTING: no DID mapping for $rU from trunk $si\n");
+        sl_send_reply(404, "DID Not Found");
+        exit;
+    }
+
+    # Mark direction and trunk metadata for CDR
+    $avp(direction) = "inbound";
+    $avp(trunk_provider_id) = $var(trunk_provider_id);
+
+    # Preserve tenant ID for downstream Asterisk routing
+    append_hf("X-Tenant-ID: $var(tenant_id)\r\n");
+
+    # Select backend from dispatcher set
+    if (!ds_select_dst($var(did_setid), 4, "f")) {
+        xlog("L_WARN", "INBOUND_DID_ROUTING: no backend available in set $var(did_setid) for DID $rU\n");
+        sl_send_reply(503, "No Backend Available");
+        exit;
+    }
+
+    # Apply topology hiding and media handling (HANDLE_INVITE applies topology_hiding + rtpengine_offer)
+    route(HANDLE_INVITE);
+
+    # Relay to selected backend
+    route(RELAY);
+    exit;
+    # --- END TRUNK INTEGRATION WAVE 4: Inbound DID Routing ---
+}
+
 route[RELAY] {
     # Add Record-Route for dialog path
     if (is_method("INVITE|SUBSCRIBE|REFER")) {
@@ -821,4 +924,25 @@ event_route[E_AUTH_FAILURE] {
 
 event_route[E_DISPATCHER_STATUS] {
     xlog("L_INFO", "E_DISPATCHER_STATUS: uri=$param(uri) status=$param(status)\n");
+
+    # --- BEGIN TRUNK INTEGRATION WAVE 5: Trunk Health Monitoring ---
+    # Track trunk provider health from dispatcher OPTIONS probes (setid 100)
+    if ($param(uri) =~ "^sip:") {
+        $var(trunk_uri) = $param(uri);
+        $var(trunk_host) = $(var(trunk_uri){uri.host});
+        if (!sql_query_one("SELECT id FROM sip_trunk_providers WHERE host = '$var(trunk_host)' AND enabled = true LIMIT 1", "$var(trunk_provider_id)")) {
+            xlog("L_ERR", "E_DISPATCHER_STATUS: failed to map $param(uri) to trunk provider\n");
+        } else {
+            if ($var(trunk_provider_id) != NULL && $var(trunk_provider_id) != 0) {
+                if ($param(status) == "0") {
+                    cache_store("local", "trunk_health_$var(trunk_provider_id)", "healthy", "3600");
+                    xlog("L_INFO", "E_DISPATCHER_STATUS: trunk $var(trunk_provider_id) marked healthy\n");
+                } else if ($param(status) == "1") {
+                    cache_store("local", "trunk_health_$var(trunk_provider_id)", "unhealthy", "3600");
+                    xlog("L_WARN", "E_DISPATCHER_STATUS: trunk $var(trunk_provider_id) marked unhealthy\n");
+                }
+            }
+        }
+    }
+    # --- END TRUNK INTEGRATION WAVE 5: Trunk Health Monitoring ---
 }

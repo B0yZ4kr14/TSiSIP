@@ -197,6 +197,7 @@ services:
       - DB_NAME=opensips
       - DB_USER=opensips
       - DB_PASSWORD_FILE=/run/secrets/db_password
+      - OCP_AUDIT_RETENTION_DAYS=${OCP_AUDIT_RETENTION_DAYS:-90}
     secrets:
       - db_password
       - trunk_cred_key
@@ -234,6 +235,32 @@ services:
     cap_drop: [ALL]
     cap_add: [SETUID, SETGID]
     security_opt: ["no-new-privileges:true"]
+
+  certbot-exporter:
+    image: ghcr.io/b0yz4kr14/tsisip/certbot-exporter:${TSISIP_IMAGE_TAG:?must be set}
+    pull_policy: if_not_present
+    networks: [sip_internal, metrics_host]
+    restart: on-failure
+    mem_limit: 64m
+    memswap_limit: 64m
+    environment:
+      CERT_PATH: /certs/live/server.crt
+      STATE_DIR: /var/lib/certbot-exporter
+      EXPORTER_PORT: 9101
+      CERT_SOURCE: certbot
+      TLS_DOMAIN: ${TLS_DOMAIN:-unknown}
+    cap_drop: [ALL]
+    security_opt: ["no-new-privileges:true"]
+    volumes:
+      - tls_certs:/certs/live:ro
+    expose:
+      - "9101"
+    healthcheck:
+      test: ["CMD-SHELL", "curl -fsSL http://localhost:9101/metrics | grep -q 'certbot'"]
+      interval: 30s
+      timeout: 5s
+      retries: 3
+      start_period: 10s
 
   backup:
     image: ghcr.io/b0yz4kr14/tsisip/backup:${TSISIP_IMAGE_TAG:?must be set}

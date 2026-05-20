@@ -162,6 +162,26 @@ def update_metrics():
             'build_date': version.get('Build-Date', 'unknown')
         })
 
+    # Wave 5: Trunk provider health from dispatcher setid=100
+    dispatcher = get_cached_or_fetch('ds_list')
+    if dispatcher and 'Partitions' in dispatcher:
+        for partition in dispatcher.get('Partitions', []):
+            for set_entry in partition.get('SETS', []):
+                setid = str(set_entry.get('id', '0'))
+                if setid == '100':
+                    for target in set_entry.get('Destinations', []):
+                        target_uri = target.get('URI', 'unknown')
+                        state = target.get('State', 0)
+                        # Extract host from SIP URI for labeling
+                        host = target_uri.replace('sip:', '').split(':')[0] if target_uri.startswith('sip:') else 'unknown'
+                        desc = target.get('description', 'unknown')
+                        # description format: "Trunk: <name>"
+                        trunk_name = desc.replace('Trunk: ', '') if desc.startswith('Trunk: ') else desc
+                        tsisip_trunk_provider_healthy.labels(
+                            trunk_name=trunk_name,
+                            trunk_host=host
+                        ).set(1 if state == 0 else 0)
+
     # T3.2: TLS certificate expiry
     cert_path = os.environ.get('TLS_CERT_PATH', '/certs/live/server.crt')
     if os.path.exists(cert_path):
@@ -226,5 +246,20 @@ opensips_dispatcher_circuit_state = Gauge(
 opensips_tls_certificate_expiry_timestamp = Gauge(
     'opensips_tls_certificate_expiry_timestamp',
     'Unix timestamp when the TLS certificate expires',
+    registry=registry
+)
+
+# Wave 5: Trunk provider health metrics
+tsisip_trunk_provider_healthy = Gauge(
+    'tsisip_trunk_provider_healthy',
+    'Trunk provider health status from dispatcher probes (1=healthy, 0=unhealthy)',
+    ['trunk_name', 'trunk_host'],
+    registry=registry
+)
+
+tsisip_trunk_calls_total = Counter(
+    'tsisip_trunk_calls_total',
+    'Total trunk-routed calls',
+    ['trunk_name', 'direction'],
     registry=registry
 )

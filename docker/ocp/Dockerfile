@@ -10,8 +10,10 @@ LABEL org.tsisip.feature="002-tsisip-ocp-rebrand"
 
 # Install system dependencies
 RUN apt-get update && apt-get install -y --no-install-recommends \
+    cron \
     gettext \
     libpq-dev \
+    postgresql-client \
     && rm -rf /var/lib/apt/lists/*
 
 # Install PHP extensions required by OCP v9
@@ -41,6 +43,18 @@ RUN chown -R www-data:www-data /var/www/html \
 ENV APACHE_DOCUMENT_ROOT=/var/www/html
 RUN sed -ri -e 's!/var/www/html!${APACHE_DOCUMENT_ROOT}!g' /etc/apache2/sites-available/*.conf \
     && sed -ri -e 's!/var/www/!${APACHE_DOCUMENT_ROOT}!g' /etc/apache2/apache2.conf /etc/apache2/conf-available/*.conf
+
+# Create log directory for audit retention and cron output
+RUN mkdir -p /var/log/tsisip \
+    && chown www-data:www-data /var/log/tsisip
+
+# Copy audit retention cron script
+COPY docker/ocp/cron/audit-retention.sh /usr/local/bin/audit-retention.sh
+RUN chmod +x /usr/local/bin/audit-retention.sh
+
+# Install daily cron job at 03:17 for audit retention
+RUN echo "17 3 * * * root /usr/local/bin/audit-retention.sh >> /var/log/tsisip/audit-retention-cron.log 2>&1" > /etc/cron.d/tsisip-audit-retention \
+    && chmod 0644 /etc/cron.d/tsisip-audit-retention
 
 # Copy custom entrypoint to fix secret permissions for www-data
 COPY docker/ocp/entrypoint.sh /usr/local/bin/ocp-entrypoint.sh

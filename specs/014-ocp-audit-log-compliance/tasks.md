@@ -110,31 +110,31 @@
 
 ## Wave 5: Export & Retention
 
-- [ ] T5.1: Create web/audit-export.php CSV stream: proper headers, UTF-8 BOM, fputcsv() to php://output, columns per spec AC4, no pagination limit
+- [x] T5.1: Create web/audit-export.php CSV stream: proper headers, UTF-8 BOM, fputcsv() to php://output, columns per spec AC4, no pagination limit
   - Files: web/audit-export.php (new)
   - Dependencies: T2.5, T4.2
 
-- [ ] T5.2: Create web/audit-export.php JSON stream: proper headers, output array of objects, stream rows to avoid memory exhaustion
+- [x] T5.2: Create web/audit-export.php JSON stream: proper headers, output array of objects, stream rows to avoid memory exhaustion
   - Files: web/audit-export.php
   - Dependencies: T5.1
 
-- [ ] T5.3: Log EXPORT_CSV or EXPORT_JSON audit event after headers sent, before stream ends, wrapped in try/catch so export is never blocked
+- [x] T5.3: Log EXPORT_CSV or EXPORT_JSON audit event after headers sent, before stream ends, wrapped in try/catch so export is never blocked
   - Files: web/audit-export.php
   - Dependencies: T5.1, T5.2
 
-- [ ] T5.4: Create web/cli/purge-audit-log.php — CLI-only guard, reads OCP_AUDIT_RETENTION_DAYS env with fallback 90, logs RETENTION_RUN, calls ocp_audit_log_retention_purge via PDO, prints count, exits 0/1
+- [x] T5.4: Create web/cli/purge-audit-log.php — CLI-only guard, reads OCP_AUDIT_RETENTION_DAYS env with fallback 90, logs RETENTION_RUN, calls ocp_audit_log_retention_purge via PDO, prints count, exits 0/1
   - Files: web/cli/purge-audit-log.php (new)
   - Dependencies: T2.5
 
-- [ ] T5.5: Update docker/ocp/entrypoint.sh — export OCP_AUDIT_RETENTION_DAYS (default 90) before exec apache2-foreground so mod_php inherits it
+- [x] T5.5: Update docker/ocp/entrypoint.sh — export OCP_AUDIT_RETENTION_DAYS (default 90) before exec apache2-foreground so mod_php inherits it
   - Files: docker/ocp/entrypoint.sh
   - Dependencies: none
 
-- [ ] T5.6: Update docker/ocp/Dockerfile — install cron, create /var/log/tsisip owned by www-data, add daily cron job at 03:17 for purge-audit-log.php
+- [x] T5.6: Update docker/ocp/Dockerfile — install cron, create /var/log/tsisip owned by www-data, add daily cron job at 03:17 for audit-retention.sh
   - Files: docker/ocp/Dockerfile
   - Dependencies: T5.4
 
-- [ ] T5.7: Update docker-compose.yml — add OCP_AUDIT_RETENTION_DAYS: 90 under ocp service environment block
+- [x] T5.7: Update docker-compose.yml — add OCP_AUDIT_RETENTION_DAYS: 90 under ocp service environment block
   - Files: docker-compose.yml
   - Dependencies: none
 

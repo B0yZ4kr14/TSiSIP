@@ -85,3 +85,72 @@ groups:
           summary: "OpenSIPS TLS certificate expires in less than 30 days"
           description: "TLS certificate for OpenSIPS expires in {{ $value | humanizeDuration }}"
           runbook_url: "https://docs.tsiapp.io/runbooks/opensips-tls-cert-expiry"
+
+  - name: tsisip-certificates
+    interval: 60s
+    rules:
+      - alert: CertExpiry30d
+        expr: certbot_days_until_expiry < 30
+        for: 5m
+        labels:
+          severity: warning
+          service: certbot
+        annotations:
+          summary: "TLS certificate expires in less than 30 days"
+          description: "Certificate for {{ $labels.domain }} expires in {{ $value | humanizeDuration }}"
+          runbook_url: "https://docs.tsiapp.io/runbooks/certbot-cert-expiry"
+
+      - alert: CertExpiry14d
+        expr: certbot_days_until_expiry < 14
+        for: 5m
+        labels:
+          severity: warning
+          service: certbot
+        annotations:
+          summary: "TLS certificate expires in less than 14 days"
+          description: "Certificate for {{ $labels.domain }} expires in {{ $value | humanizeDuration }}"
+          runbook_url: "https://docs.tsiapp.io/runbooks/certbot-cert-expiry"
+
+      - alert: CertExpiry7d
+        expr: certbot_days_until_expiry < 7
+        for: 5m
+        labels:
+          severity: critical
+          service: certbot
+        annotations:
+          summary: "TLS certificate expires in less than 7 days"
+          description: "Certificate for {{ $labels.domain }} expires in {{ $value | humanizeDuration }}"
+          runbook_url: "https://docs.tsiapp.io/runbooks/certbot-cert-expiry"
+
+      - alert: CertExpiry1d
+        expr: certbot_days_until_expiry < 1
+        for: 5m
+        labels:
+          severity: critical
+          service: certbot
+        annotations:
+          summary: "TLS certificate expires in less than 1 day"
+          description: "Certificate for {{ $labels.domain }} expires in {{ $value | humanizeDuration }}"
+          runbook_url: "https://docs.tsiapp.io/runbooks/certbot-cert-expiry"
+
+      - alert: CertExpired
+        expr: certbot_days_until_expiry <= 0
+        for: 1m
+        labels:
+          severity: critical
+          service: certbot
+        annotations:
+          summary: "TLS certificate has expired"
+          description: "Certificate for {{ $labels.domain }} has expired"
+          runbook_url: "https://docs.tsiapp.io/runbooks/certbot-cert-expiry"
+
+      - alert: CertRenewalFailed
+        expr: increase(certbot_renewal_failure_total[1h]) > 0
+        for: 5m
+        labels:
+          severity: critical
+          service: certbot
+        annotations:
+          summary: "Certificate renewal failed"
+          description: "Certificate renewal from {{ $labels.source }} has recorded new failures in the last hour"
+          runbook_url: "https://docs.tsiapp.io/runbooks/certbot-renewal-failed"

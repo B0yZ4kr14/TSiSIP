@@ -43,6 +43,13 @@ scrape_configs:
       - targets: ['node-exporter:9100']
     metrics_path: /metrics
 
+  # Certbot Exporter
+  - job_name: 'certbot'
+    scrape_interval: 60s
+    static_configs:
+      - targets: ['certbot-exporter:9101']
+    metrics_path: /metrics
+
   # Prometheus self-monitoring
   - job_name: 'prometheus'
     scrape_interval: 15s

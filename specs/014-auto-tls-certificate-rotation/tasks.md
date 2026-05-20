@@ -84,19 +84,19 @@
 
 ## Wave 4: Monitoring & Alerting
 
-- [ ] T4.1: Create `docker/certbot-exporter/Dockerfile` (Python-based with `prometheus_client`) and `docker/certbot-exporter/exporter.py` that exposes `certbot_renewal_success_timestamp`, `certbot_renewal_failure_total{source}`, and `certbot_days_until_expiry{domain,source}` on port 9102.
+- [x] T4.1: Create `docker/certbot-exporter/Dockerfile` (Python-based with `prometheus_client`) and `docker/certbot-exporter/exporter.py` that exposes `certbot_last_success_timestamp`, `certbot_renewal_failure_total{source}`, and `certbot_days_until_expiry{domain,source}` on port 9101.
   - **Files affected:** `docker/certbot-exporter/Dockerfile` (new), `docker/certbot-exporter/exporter.py` (new)
   - **Dependencies:** T2.7
 
-- [ ] T4.2: Add `certbot-exporter` service to `docker-compose.yml` on `sip_internal`, mounting `tls_certs:/certs/live:ro`, with resource limits and a healthcheck.
-  - **Files affected:** `docker-compose.yml`
+- [x] T4.2: Add `certbot-exporter` service to `docker-compose.yml`, `docker-compose.prod.yml`, and `docker-compose.vps.yml` on `sip_internal` (and `db_internal` for Prometheus reachability), mounting `tls_certs:/certs/live:ro`, with resource limits (64M) and a healthcheck.
+  - **Files affected:** `docker-compose.yml`, `docker-compose.prod.yml`, `docker-compose.vps.yml`
   - **Dependencies:** T4.1
 
-- [ ] T4.3: Append the five certificate alerts (`CertificateExpiringSoon30d`, `CertificateExpiringSoon14d`, `CertificateExpiringSoon7d`, `CertificateExpired`, `CertRenewalFailed`) to `docker/prometheus/alert-rules.yml` under a new `tsisip-certificates` group.
+- [x] T4.3: Append the six certificate alerts (`CertExpiry30d`, `CertExpiry14d`, `CertExpiry7d`, `CertExpiry1d`, `CertExpired`, `CertRenewalFailed`) to `docker/prometheus/alert-rules.yml` under a new `tsisip-certificates` group.
   - **Files affected:** `docker/prometheus/alert-rules.yml`
   - **Dependencies:** None
 
-- [ ] T4.4: Validate `docker/prometheus/alert-rules.yml` with `promtool check rules` (if available in the prometheus image) or `python -c "import yaml; yaml.safe_load(open('docker/prometheus/alert-rules.yml'))"`.
+- [x] T4.4: Validate `docker/prometheus/alert-rules.yml` with `python -c "import yaml; yaml.safe_load(open('docker/prometheus/alert-rules.yml'))"` and verified `docker compose config` passes for all three compose files.
   - **Files affected:** `docker/prometheus/alert-rules.yml`
   - **Dependencies:** T4.3
 

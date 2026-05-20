@@ -150,6 +150,7 @@ services:
       - trunk_cred_key
     volumes:
       - tls_certs:/certs/live:rw
+      - opensips_state:/var/run/opensips
     depends_on:
       postgres:
         condition: service_healthy
@@ -239,6 +240,7 @@ services:
       DB_HOST: postgres
       DB_NAME: opensips
       DB_USER: opensips
+      OCP_AUDIT_RETENTION_DAYS: ${OCP_AUDIT_RETENTION_DAYS:-90}
     secrets:
       - db_password
       - trunk_cred_key
@@ -464,6 +466,35 @@ services:
         limits:
           memory: 128M
 
+  certbot-exporter:
+    build:
+      context: ./docker/certbot-exporter
+    image: tsisip/certbot-exporter:${TSISIP_IMAGE_TAG:?must be set}
+    networks: [sip_internal, db_internal]
+    restart: on-failure
+    deploy:
+      resources:
+        limits:
+          memory: 64M
+    environment:
+      CERT_PATH: /certs/live/server.crt
+      STATE_DIR: /var/lib/certbot-exporter
+      EXPORTER_PORT: 9101
+      CERT_SOURCE: certbot
+      TLS_DOMAIN: ${TLS_DOMAIN:-unknown}
+    cap_drop: [ALL]
+    security_opt: ["no-new-privileges:true"]
+    volumes:
+      - tls_certs:/certs/live:ro
+    expose:
+      - "9101"
+    healthcheck:
+      test: ["CMD-SHELL", "curl -fsSL http://localhost:9101/metrics | grep -q 'certbot'"]
+      interval: 30s
+      timeout: 5s
+      retries: 3
+      start_period: 10s
+
   backup:
     build:
       context: ./docker/backup
@@ -541,6 +572,7 @@ volumes:
   tls_certs:
   certbot_data:
   tailscale_state:
+  opensips_state:
 
 secrets:
   db_password:

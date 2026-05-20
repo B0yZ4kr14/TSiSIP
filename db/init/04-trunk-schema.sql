@@ -90,3 +90,76 @@ INSERT INTO version (table_name, table_version) VALUES
     ('sip_trunk_did_mappings', 1),
     ('sip_trunk_registrations', 1)
 ON CONFLICT (table_name) DO UPDATE SET table_version = EXCLUDED.table_version;
+
+-- --- BEGIN TRUNK INTEGRATION WAVE 5: Dispatcher Trunk Probe Sync ---
+-- PostgreSQL trigger to keep dispatcher setid=100 synchronized with
+-- enabled sip_trunk_providers for OPTIONS health probing.
+
+CREATE OR REPLACE FUNCTION sync_trunk_providers_to_dispatcher()
+RETURNS TRIGGER AS $$
+BEGIN
+    IF TG_OP = 'INSERT' THEN
+        IF NEW.enabled = true THEN
+            INSERT INTO dispatcher (setid, destination, state, weight, priority, attrs, description)
+            VALUES (
+                100,
+                'sip:' || NEW.host || ':' || NEW.port,
+                0,
+                '1',
+                NEW.priority,
+                'ping_interval=30;ping_from=sip:healthcheck@tsisip',
+                'Trunk: ' || NEW.name
+            );
+        END IF;
+        RETURN NEW;
+    ELSIF TG_OP = 'UPDATE' THEN
+        DELETE FROM dispatcher WHERE setid = 100 AND description = 'Trunk: ' || OLD.name;
+        IF NEW.enabled = true THEN
+            INSERT INTO dispatcher (setid, destination, state, weight, priority, attrs, description)
+            VALUES (
+                100,
+                'sip:' || NEW.host || ':' || NEW.port,
+                0,
+                '1',
+                NEW.priority,
+                'ping_interval=30;ping_from=sip:healthcheck@tsisip',
+                'Trunk: ' || NEW.name
+            );
+        END IF;
+        RETURN NEW;
+    ELSIF TG_OP = 'DELETE' THEN
+        DELETE FROM dispatcher WHERE setid = 100 AND description = 'Trunk: ' || OLD.name;
+        RETURN OLD;
+    END IF;
+    RETURN NULL;
+END;
+$$ LANGUAGE plpgsql;
+
+DROP TRIGGER IF EXISTS trunk_provider_dispatcher_sync ON sip_trunk_providers;
+CREATE TRIGGER trunk_provider_dispatcher_sync
+AFTER INSERT OR UPDATE OR DELETE ON sip_trunk_providers
+FOR EACH ROW EXECUTE FUNCTION sync_trunk_providers_to_dispatcher();
+
+-- Seed existing enabled trunk providers into dispatcher setid=100
+DO $$
+BEGIN
+    IF EXISTS (SELECT 1 FROM sip_trunk_providers WHERE enabled = true) THEN
+        INSERT INTO dispatcher (setid, destination, state, weight, priority, attrs, description)
+        SELECT
+            100,
+            'sip:' || host || ':' || port,
+            0,
+            '1',
+            priority,
+            'ping_interval=30;ping_from=sip:healthcheck@tsisip',
+            'Trunk: ' || name
+        FROM sip_trunk_providers
+        WHERE enabled = true
+        AND NOT EXISTS (
+            SELECT 1 FROM dispatcher d
+            WHERE d.setid = 100
+            AND d.description = 'Trunk: ' || sip_trunk_providers.name
+        );
+    END IF;
+END $$;
+-- --- END TRUNK INTEGRATION WAVE 5: Dispatcher Trunk Probe Sync ---

@@ -107,7 +107,7 @@
 **Description**: Update the main `route{}` in `opensips/opensips.cfg.tpl` to call `route(TRUNK_ROUTING)` for authenticated INVITEs before `route(HEADER_ROUTING)`. Ensure local tenant domains bypass trunk routing.
 **Files affected**: `opensips/opensips.cfg.tpl`
 **Depends on**: T3.1, T3.4
-**Status**: [ ]
+**Status**: [x]
 
 ---
 
@@ -117,25 +117,25 @@
 **Description**: Add `route[INBOUND_DID_ROUTING]` to `opensips/opensips.cfg.tpl`. It checks `check_source_address(3)` (trunk IPs group), queries `sip_trunk_did_mappings` by `$rU`, appends `X-Tenant-ID`, selects backend via `ds_select_dst`, and routes through `HANDLE_INVITE` + `RELAY`.
 **Files affected**: `opensips/opensips.cfg.tpl`
 **Depends on**: T2.5
-**Status**: [ ]
+**Status**: [x]
 
 ### T4.2: Wire INBOUND_DID_ROUTING into main request route
 **Description**: Update the main `route{}` to call `route(INBOUND_DID_ROUTING)` immediately after `route(TRUNK_VERIFY)` and before `route(AUTH)` for INVITEs. Ensure non-trunk traffic falls through to normal auth.
 **Files affected**: `opensips/opensips.cfg.tpl`
 **Depends on**: T4.1
-**Status**: [ ]
+**Status**: [x]
 
 ### T4.3: Add topology hiding for inbound trunk calls
 **Description**: Verify that `topology_hiding("C")` is applied in `route[HANDLE_INVITE]` for all INVITEs, including those from trunk sources. Ensure no internal Asterisk addresses leak to trunk providers.
 **Files affected**: `opensips/opensips.cfg.tpl`
 **Depends on**: T4.2
-**Status**: [ ]
+**Status**: [x]
 
 ### T4.4: Handle unknown DID responses
 **Description**: Ensure `INBOUND_DID_ROUTING` returns `404 DID Not Found` for unmapped DIDs and `503 No Backend Available` when `ds_select_dst` fails.
 **Files affected**: `opensips/opensips.cfg.tpl`
 **Depends on**: T4.1
-**Status**: [ ]
+**Status**: [x]
 
 ---
 
@@ -145,25 +145,25 @@
 **Description**: Create an initialization trigger or OCP action that inserts enabled trunk provider destinations into the `dispatcher` table with `setid=100`. Each row maps a trunk provider to its host:port destination for OPTIONS probing.
 **Files affected**: `db/init/04-trunk-schema.sql` or `opensips/opensips.cfg.tpl`
 **Depends on**: T3.6, T4.4
-**Status**: [ ]
+**Status**: [x]
 
 ### T5.2: Implement dispatcher health event handler
 **Description**: Update `event_route[E_DISPATCHER_STATUS]` in `opensips/opensips.cfg.tpl` to store `trunk_health_<provider_id>` in `cachedb_local` when setid=100 destinations change state. On 3 consecutive failures, store `unhealthy`; on success, store `healthy`.
 **Files affected**: `opensips/opensips.cfg.tpl`
 **Depends on**: T5.1
-**Status**: [ ]
+**Status**: [x]
 
 ### T5.3: Filter unhealthy trunks from selection
 **Description**: Update `route[TRUNK_ROUTING]` and `failure_route[TRUNK_FAILOVER]` to query `cache_fetch("local", "trunk_health_<id>")` and skip providers marked `unhealthy` during SQL selection.
 **Files affected**: `opensips/opensips.cfg.tpl`
 **Depends on**: T5.2
-**Status**: [ ]
+**Status**: [x]
 
 ### T5.4: Add Prometheus trunk metrics
 **Description**: Update `docker/opensips-exporter/` (or `acc` configuration) to expose per-trunk counters and gauges: `tsisip_trunk_calls_total`, `tsisip_trunk_calls_active`, `tsisip_trunk_cps_throttled_total`, `tsisip_trunk_pdd_ms`, `tsisip_trunk_probe_latency_ms`, `tsisip_trunk_probe_failures_total`.
 **Files affected**: `docker/opensips-exporter/`, `opensips/opensips.cfg.tpl`
 **Depends on**: T5.3
-**Status**: [ ]
+**Status**: [x]
 
 ### T5.5: Create Grafana trunk dashboard
 **Description**: Create `docker/grafana/provisioning/dashboards/tsisip/sip-trunk-provider.json` with panels for trunk health status, active calls per trunk, CPS throttled rate, probe latency, and registration state.
