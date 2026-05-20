@@ -4,6 +4,15 @@ set -euo pipefail
 # TSiSIP Backup Container Entrypoint
 # Sets up cron jobs and starts cron daemon
 
+# Load S3 credentials from Docker secrets if available
+# (B17 Remediation — replaces plain env vars for RCLONE_S3_ACCESS_KEY / RCLONE_S3_SECRET_KEY)
+if [ -f /run/secrets/rclone_s3_access_key ]; then
+    export RCLONE_S3_ACCESS_KEY="$(cat /run/secrets/rclone_s3_access_key)"
+fi
+if [ -f /run/secrets/rclone_s3_secret_key ]; then
+    export RCLONE_S3_SECRET_KEY="$(cat /run/secrets/rclone_s3_secret_key)"
+fi
+
 # Render rclone config from template
 if [ -f /etc/rclone/rclone.conf.tpl ]; then
     envsubst < /etc/rclone/rclone.conf.tpl > /etc/rclone/rclone.conf

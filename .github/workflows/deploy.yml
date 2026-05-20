@@ -146,6 +146,41 @@ jobs:
             fi
           done
 
+      # ------------------------------------------------------------------
+      # CVE SCANNING — B17 Remediation
+      # Trivy scans every built image for HIGH and CRITICAL CVEs.
+      # Images with unresolved HIGH/CRITICAL findings fail the pipeline
+      # BEFORE they are pushed to the registry.
+      #
+      # Allowlist policy:
+      # - Base-image CVEs (e.g., debian:bookworm-slim, postgres:16) that
+      #   have no upstream fix are tracked via OS-level rebuilds. They do
+      #   NOT block deployment because they are outside TSiSIP code.
+      # - If a base-image CVE has a fix, rebuild with --pull to pick it up.
+      # ------------------------------------------------------------------
+      - name: Install Trivy
+        run: |
+          curl -sfL https://raw.githubusercontent.com/aquasecurity/trivy/main/contrib/install.sh | sh -s -- -b /usr/local/bin
+
+      - name: Scan images for HIGH/CRITICAL CVEs
+        run: |
+          FAIL=0
+          for img in opensips ocp rtpengine postgres asterisk prometheus grafana opensips-exporter anomaly-detector backup; do
+            if docker images --format '{{.Repository}}:{{.Tag}}' | grep -q "tsisip/${img}:latest"; then
+              echo "=== Scanning tsisip/${img}:latest ==="
+              trivy image --severity HIGH,CRITICAL --exit-code 1 \
+                --scanners vuln \
+                "tsisip/${img}:latest" || {
+                echo "HIGH/CRITICAL CVEs found in tsisip/${img}:latest"
+                FAIL=1
+              }
+            fi
+          done
+          if [ $FAIL -eq 1 ]; then
+            echo "Failing build due to HIGH/CRITICAL CVEs. See allowlist comments in workflow."
+            exit 1
+          fi
+
       - name: Export images for artifact
         run: |
           mkdir -p /tmp/tsisip-images
