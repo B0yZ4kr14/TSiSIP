@@ -66,9 +66,14 @@ services:
       - --port-max=10999
       - --log-stderr
       - --foreground
+      - --dtls-cert-file=/certs/live/server.crt
+      - --dtls-key-file=/certs/live/server.key
+      - --dtls-passive
     cap_drop: [ALL]
     cap_add: [NET_BIND_SERVICE, NET_ADMIN]
     security_opt: ["no-new-privileges:true"]
+    volumes:
+      - tls_certs:/certs/live:ro
     healthcheck:
       test: ["CMD-SHELL", "/usr/local/bin/healthcheck.sh"]
       interval: 15s
@@ -104,8 +109,10 @@ services:
       - server.crt
       - server.key
       - crl.pem
+      - trunk_cred_key
     volumes:
       - ./opensips/opensips.cfg.tpl:/etc/opensips/opensips.cfg.tpl:ro
+      - tls_certs:/certs/live:rw
     depends_on:
       postgres:
         condition: service_healthy
@@ -192,6 +199,7 @@ services:
       - DB_PASSWORD_FILE=/run/secrets/db_password
     secrets:
       - db_password
+      - trunk_cred_key
     cap_drop: [ALL]
     security_opt: ["no-new-privileges:true"]
     depends_on:
@@ -203,6 +211,29 @@ services:
       timeout: 5s
       retries: 3
       start_period: 10s
+
+  certbot:
+    image: tsisip/certbot:${TSISIP_IMAGE_TAG:-latest}
+    pull_policy: if_not_present
+    networks: [sip_internal]
+    restart: unless-stopped
+    mem_limit: 128m
+    memswap_limit: 128m
+    environment:
+      TLS_DOMAIN: ${TLS_DOMAIN}
+      ACME_EMAIL: ${ACME_EMAIL}
+      ACME_SERVER: ${ACME_SERVER:-https://acme-v02.api.letsencrypt.org/directory}
+      CERTBOT_STAGING: "${CERTBOT_STAGING:-0}"
+      OPENSIPS_MI_URL: http://opensips:8888/mi
+    volumes:
+      - certbot_data:/etc/letsencrypt
+      - tls_certs:/certs/live
+    depends_on:
+      opensips:
+        condition: service_healthy
+    cap_drop: [ALL]
+    cap_add: [SETUID, SETGID]
+    security_opt: ["no-new-privileges:true"]
 
   backup:
     image: ghcr.io/b0yz4kr14/tsisip/backup:${TSISIP_IMAGE_TAG:?must be set}
@@ -260,6 +291,8 @@ networks:
 volumes:
   postgres_data:
   backup_data:
+  tls_certs:
+  certbot_data:
 
 secrets:
   db_password:
@@ -282,3 +315,5 @@ secrets:
     file: ./secrets/rclone_s3_access_key
   rclone_s3_secret_key:
     file: ./secrets/rclone_s3_secret_key
+  trunk_cred_key:
+    file: ./secrets/trunk_cred_key

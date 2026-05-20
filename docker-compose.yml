@@ -94,13 +94,15 @@ services:
       - --log-stderr
       - --foreground
       # T4.1/T5.2: SRTP/DTLS configuration
-      - --dtls-cert-file=/run/secrets/server.crt
-      - --dtls-key-file=/run/secrets/server.key
+      - --dtls-cert-file=/certs/live/server.crt
+      - --dtls-key-file=/certs/live/server.key
       - --dtls-passive
       - --srtp-ciphers=AES_GCM_256:AES_256_CM_HMAC_SHA1_80
     secrets:
       - server.crt
       - server.key
+    volumes:
+      - tls_certs:/certs/live:ro
     cap_drop: [ALL]
     cap_add: [NET_BIND_SERVICE, NET_ADMIN]
     security_opt: ["no-new-privileges:true"]
@@ -145,6 +147,9 @@ services:
       - server.crt
       - server.key
       - crl.pem
+      - trunk_cred_key
+    volumes:
+      - tls_certs:/certs/live:rw
     depends_on:
       postgres:
         condition: service_healthy
@@ -234,7 +239,9 @@ services:
       DB_HOST: postgres
       DB_NAME: opensips
       DB_USER: opensips
-    secrets: [db_password]
+    secrets:
+      - db_password
+      - trunk_cred_key
     depends_on:
       postgres:
         condition: service_healthy
@@ -395,8 +402,10 @@ services:
       OPENSIPS_MI_PORT: 8888
       EXPORTER_PORT: 9442
       CACHE_TTL_SECONDS: 10
-      TLS_CERT_PATH: /run/secrets/server.crt
+      TLS_CERT_PATH: /certs/live/server.crt
     cap_drop: [ALL]
+    volumes:
+      - tls_certs:/certs/live:ro
     security_opt: ["no-new-privileges:true"]
     secrets:
       - server.crt
@@ -410,6 +419,51 @@ services:
       start_period: 10s
 
   # --- Backup Service ---
+  certbot:
+    build:
+      context: ./docker/certbot
+    image: tsisip/certbot:${TSISIP_IMAGE_TAG:-latest}
+    networks: [sip_internal]
+    restart: unless-stopped
+    environment:
+      TLS_DOMAIN: ${TLS_DOMAIN}
+      ACME_EMAIL: ${ACME_EMAIL}
+      ACME_SERVER: ${ACME_SERVER:-https://acme-v02.api.letsencrypt.org/directory}
+      CERTBOT_STAGING: "${CERTBOT_STAGING:-0}"
+      OPENSIPS_MI_URL: http://opensips:8888/mi
+    volumes:
+      - certbot_data:/etc/letsencrypt
+      - tls_certs:/certs/live
+    depends_on:
+      opensips:
+        condition: service_healthy
+    cap_drop: [ALL]
+    cap_add: [SETUID, SETGID]
+    security_opt: ["no-new-privileges:true"]
+    deploy:
+      resources:
+        limits:
+          memory: 256M
+
+  tailscale-cert:
+    build:
+      context: ./docker/tailscale-cert
+    image: tsisip/tailscale-cert:${TSISIP_IMAGE_TAG:-latest}
+    networks: [sip_internal]
+    restart: unless-stopped
+    environment:
+      TS_HOSTNAME: ${TS_HOSTNAME:-tsisip}
+      OPENSIPS_MI_URL: http://opensips:8888/mi
+    volumes:
+      - tls_certs:/certs/live
+      - tailscale_state:/var/lib/tailscale
+    cap_drop: [ALL]
+    security_opt: ["no-new-privileges:true"]
+    deploy:
+      resources:
+        limits:
+          memory: 128M
+
   backup:
     build:
       context: ./docker/backup
@@ -484,6 +538,9 @@ volumes:
   prometheus_data:
   alertmanager_data:
   grafana_data:
+  tls_certs:
+  certbot_data:
+  tailscale_state:
 
 secrets:
   db_password:
@@ -508,3 +565,5 @@ secrets:
     file: ./secrets/rclone_s3_access_key
   rclone_s3_secret_key:
     file: ./secrets/rclone_s3_secret_key
+  trunk_cred_key:
+    file: ./secrets/trunk_cred_key

@@ -9,31 +9,31 @@
 **Description**: Create `db/init/04-trunk-schema.sql` containing `sip_trunk_providers` (with pgcrypto-encrypted credentials), `sip_trunk_did_mappings`, and `sip_trunk_registrations` tables. Include all indexes, check constraints, and foreign keys as specified in the feature spec (FR-001, FR-003).
 **Files affected**: `db/init/04-trunk-schema.sql`
 **Depends on**: —
-**Status**: [ ]
+**Status**: [x]
 
 ### T1.2: Seed dev trunk data
 **Description**: Update `db/init/03-seed-data.sql` to insert one sample trunk provider (registration_required=false, transport=udp, priority=10) and one DID mapping to the default tenant for local integration testing.
 **Files affected**: `db/init/03-seed-data.sql`
 **Depends on**: T1.1
-**Status**: [ ]
+**Status**: [x]
 
 ### T1.3: Add Docker secret for credential encryption
 **Description**: Add `trunk_cred_key` secret entry to `docker-compose.yml` under `secrets:` and mount it into the `opensips` and `ocp` service definitions. Ensure it is read-only.
 **Files affected**: `docker-compose.yml`
 **Depends on**: T1.1
-**Status**: [ ]
+**Status**: [x]
 
 ### T1.4: Create secret placeholder and env documentation
 **Description**: Create an empty `secrets/trunk_cred_key` file. Update `.env.example` to document the secret purpose and generation command (e.g., `openssl rand -base64 32`).
 **Files affected**: `secrets/trunk_cred_key`, `.env.example`
 **Depends on**: T1.3
-**Status**: [ ]
+**Status**: [x]
 
 ### T1.5: Validate schema idempotency
 **Description**: Run `docker compose up -d postgres`, wait for healthy state, and verify `psql -c "\dt sip_trunk_*"` returns all three tables with correct columns and constraints.
 **Files affected**: `db/init/04-trunk-schema.sql`
 **Depends on**: T1.2, T1.4
-**Status**: [ ]
+**Status**: [x]
 
 ---
 

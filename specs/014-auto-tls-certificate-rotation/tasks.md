@@ -2,37 +2,37 @@
 
 ## Wave 1: Infrastructure & Storage Layout
 
-- [ ] T1.1: Add `tls_certs`, `certbot_data`, and `tailscale_state` volume declarations to the global `volumes` section of `docker-compose.yml`.
+- [x] T1.1: Add `tls_certs`, `certbot_data`, and `tailscale_state` volume declarations to the global `volumes` section of `docker-compose.yml`.
   - **Files affected:** `docker-compose.yml`
   - **Dependencies:** None
 
-- [ ] T1.2: Mount `tls_certs:/certs/live:rw` into the `opensips` service and update its `depends_on` to include `certbot` (condition: service_started) if desired.
+- [x] T1.2: Mount `tls_certs:/certs/live:rw` into the `opensips` service and update its `depends_on` to include `certbot` (condition: service_started) if desired.
   - **Files affected:** `docker-compose.yml`
   - **Dependencies:** T1.1
 
-- [ ] T1.3: Mount `tls_certs:/certs/live:ro` into the `rtpengine` service and change `--dtls-cert-file` and `--dtls-key-file` from `/run/secrets/` to `/certs/live/`.
+- [x] T1.3: Mount `tls_certs:/certs/live:ro` into the `rtpengine` service and change `--dtls-cert-file` and `--dtls-key-file` from `/run/secrets/` to `/certs/live/`.
   - **Files affected:** `docker-compose.yml`
   - **Dependencies:** T1.1
 
-- [ ] T1.4: Mount `tls_certs:/certs/live:ro` into the `opensips-exporter` service and set environment variable `TLS_CERT_PATH=/certs/live/server.crt`.
+- [x] T1.4: Mount `tls_certs:/certs/live:ro` into the `opensips-exporter` service and set environment variable `TLS_CERT_PATH=/certs/live/server.crt`.
   - **Files affected:** `docker-compose.yml`
   - **Dependencies:** T1.1
 
-- [ ] T1.5: Append `TLS_DOMAIN`, `ACME_EMAIL`, `ACME_STAGING`, and `TS_HOSTNAME` to `.env.example` with descriptive comments.
+- [x] T1.5: Append `TLS_DOMAIN`, `ACME_EMAIL`, `ACME_STAGING`, and `TS_HOSTNAME` to `.env.example` with descriptive comments.
   - **Files affected:** `.env.example`
   - **Dependencies:** None
 
-- [ ] T1.6: Update `docker/entrypoint.sh` to check whether `/certs/live/server.crt` exists; if not, copy `server.crt`, `server.key`, and `ca.crt` from `/run/secrets/` into `/certs/live/` as a bootstrap step.
+- [x] T1.6: Update `docker/entrypoint.sh` to check whether `/certs/live/server.crt` exists; if not, copy `server.crt`, `server.key`, and `ca.crt` from `/run/secrets/` into `/certs/live/` as a bootstrap step.
   - **Files affected:** `docker/entrypoint.sh`
   - **Dependencies:** None
 
-- [ ] T1.7: Run `docker compose config` to validate YAML syntax and service resolution after all Wave 1 compose edits.
+- [x] T1.7: Run `docker compose config` to validate YAML syntax and service resolution after all Wave 1 compose edits.
   - **Files affected:** `docker-compose.yml`
   - **Dependencies:** T1.1, T1.2, T1.3, T1.4
 
 ## Wave 2: Core Implementation — Certbot & Tailscale
 
-- [ ] T2.1: Create `docker/certbot/Dockerfile` using Alpine base, installing `certbot`, `curl`, `openssl`, and `crontabs`.
+- [x] T2.1: Create `docker/certbot/Dockerfile` using Alpine base, installing `certbot`, `curl`, `openssl`, and `crontabs`.
   - **Files affected:** `docker/certbot/Dockerfile` (new)
   - **Dependencies:** T1.7
 
@@ -40,19 +40,19 @@
   - **Files affected:** `docker/certbot/entrypoint.sh` (new)
   - **Dependencies:** T2.1
 
-- [ ] T2.3: Create `docker/certbot/deploy-hook.sh` that validates the renewed certificate chain (`openssl x509 -checkend`), performs an atomic `mv` into `/certs/live/`, and calls `curl -fsSL -X POST "${OPENSIPS_MI_URL}/tls_reload"`.
+- [x] T2.3: Create `docker/certbot/deploy-hook.sh` that validates the renewed certificate chain (`openssl x509 -checkend`), performs an atomic `mv` into `/certs/live/`, and calls `curl -fsSL -X POST "${OPENSIPS_MI_URL}/tls_reload"`.
   - **Files affected:** `docker/certbot/deploy-hook.sh` (new)
   - **Dependencies:** T2.1
 
-- [ ] T2.4: Create `docker/tailscale-cert/Dockerfile` using a minimal base image with the Tailscale CLI installed.
+- [x] T2.4: Create `docker/tailscale-cert/Dockerfile` using a minimal base image with the Tailscale CLI installed.
   - **Files affected:** `docker/tailscale-cert/Dockerfile` (new)
   - **Dependencies:** T1.7
 
-- [ ] T2.5: Create `docker/tailscale-cert/renew.sh` that runs `tailscale cert`, validates the output, atomically copies the certificate and key to `/certs/live/`, and triggers OpenSIPS `tls_reload` via MI HTTP.
+- [x] T2.5: Create `docker/tailscale-cert/renew.sh` that runs `tailscale cert`, validates the output, atomically copies the certificate and key to `/certs/live/`, and triggers OpenSIPS `tls_reload` via MI HTTP.
   - **Files affected:** `docker/tailscale-cert/renew.sh` (new)
   - **Dependencies:** T2.4
 
-- [ ] T2.6: Append `certbot` and `tailscale-cert` service blocks to `docker-compose.yml`, including volume mounts, network membership (`sip_internal`), environment variables, resource limits, and restart policies.
+- [x] T2.6: Append `certbot` and `tailscale-cert` service blocks to `docker-compose.yml`, including volume mounts, network membership (`sip_internal`), environment variables, resource limits, and restart policies.
   - **Files affected:** `docker-compose.yml`
   - **Dependencies:** T2.2, T2.3, T2.5
 

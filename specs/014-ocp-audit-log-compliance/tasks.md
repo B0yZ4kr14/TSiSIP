@@ -2,24 +2,24 @@
 
 ## Wave 1: Database Schema & Migrations
 
-- [ ] T1.1: Append ocp_audit_log CREATE TABLE IF NOT EXISTS DDL to db/init/02-tsisip-extensions.sql
-  - Files: db/init/02-tsisip-extensions.sql
+- [x] T1.1: Create db/init/04-ocp-audit-schema.sql with ocp_audit_log CREATE TABLE IF NOT EXISTS DDL
+  - Files: db/init/04-ocp-audit-schema.sql
   - Dependencies: none
 
-- [ ] T1.2: Add performance indexes on ocp_audit_log (event_time, user_id+event_time, action+event_time, resource_type+resource_id+event_time, ip_address+event_time, GIN on details)
-  - Files: db/init/02-tsisip-extensions.sql
+- [x] T1.2: Add performance indexes on ocp_audit_log (event_time, user_id+event_time, action+event_time, resource_type+resource_id+event_time, ip_address+event_time, GIN on details)
+  - Files: db/init/04-ocp-audit-schema.sql
   - Dependencies: T1.1
 
-- [ ] T1.3: Create fn_ocp_audit_log_immutable() and attach ocp_audit_log_immutable BEFORE UPDATE OR DELETE trigger
-  - Files: db/init/02-tsisip-extensions.sql
+- [x] T1.3: Create fn_ocp_audit_log_immutable() and attach ocp_audit_log_immutable BEFORE UPDATE OR DELETE trigger
+  - Files: db/init/04-ocp-audit-schema.sql
   - Dependencies: T1.1
 
-- [ ] T1.4: Create ocp_audit_log_retention_purge(retention_days INTEGER) function returning deleted row count
-  - Files: db/init/02-tsisip-extensions.sql
+- [x] T1.4: Create ocp_audit_log_retention_purge(retention_days INTEGER) function returning deleted row count
+  - Files: db/init/04-ocp-audit-schema.sql
   - Dependencies: T1.1
 
-- [ ] T1.5: Add GRANT / REVOKE statements for opensips (INSERT, SELECT, SEQUENCE usage) and tsisip_retention (DELETE bypass via trigger role check)
-  - Files: db/init/02-tsisip-extensions.sql
+- [x] T1.5: Add GRANT / REVOKE statements for opensips (INSERT, SELECT, SEQUENCE usage) and tsisip_retention (DELETE bypass via trigger role check)
+  - Files: db/init/04-ocp-audit-schema.sql
   - Dependencies: T1.3, T1.4
 
 ## Wave 2: Core Audit Library

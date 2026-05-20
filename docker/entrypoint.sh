@@ -31,6 +31,17 @@ for cert in ca.crt server.crt server.key crl.pem; do
     fi
 done
 
+# Bootstrap shared certificate volume if empty (Feature 014-A)
+mkdir -p /certs/live
+if [ ! -f /certs/live/server.crt ]; then
+    for cert in server.crt server.key ca.crt; do
+        if [ -f "/run/secrets/${cert}" ]; then
+            read_secret "/run/secrets/${cert}" > "/certs/live/${cert}"
+            chmod 644 "/certs/live/${cert}"
+        fi
+    done
+fi
+
 envsubst '
   $OPENSIPS_LISTEN_IP
   $HOST_PUBLIC_IP
