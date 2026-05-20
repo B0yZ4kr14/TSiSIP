@@ -25,11 +25,11 @@ function tsisip_asset(string $logicalName, string $type = 'css'): string {
     return 'tsisip/' . $fallbackDir . $logicalName;
 }
 
-// User role for density rules (whitelisted)
+// User role from OCP session (populated by login.php via config.php)
 $validRoles = ['admin', 'devops', 'dentist', 'assistant', 'user', 'readonly'];
 $userRole = 'readonly';
-if (isset($_SESSION['user_role']) && in_array($_SESSION['user_role'], $validRoles, true)) {
-    $userRole = $_SESSION['user_role'];
+if (isset($_SESSION['ocp_user_role']) && in_array($_SESSION['ocp_user_role'], $validRoles, true)) {
+    $userRole = $_SESSION['ocp_user_role'];
 }
 
 // Locale for i18n
@@ -41,7 +41,7 @@ $ocpLocale = isset($_SESSION['lang']) ? $_SESSION['lang'] : 'en_US';
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta name="theme-color" content="#0A1628">
-    <title><?php echo _('TSiSIP — TSiSIP Control Panel'); ?></title>
+    <title><?php echo _('TSiSIP — Control Panel'); ?></title>
 
     <!-- OCP Base Styles -->
     <link rel="stylesheet" href="css/main.css">
@@ -82,6 +82,12 @@ $ocpLocale = isset($_SESSION['lang']) ? $_SESSION['lang'] : 'en_US';
     <span class="tsisip-badge tsisip-role-badge--<?php echo htmlspecialchars($userRole, ENT_QUOTES, 'UTF-8'); ?>">
         <?php echo htmlspecialchars(ucfirst($userRole), ENT_QUOTES, 'UTF-8'); ?>
     </span>
+
+    <?php if (!empty($_SESSION['ocp_user_id'])): ?>
+        <a href="logout.php" class="tsisip-header-link" aria-label="<?php echo _('Sign out'); ?>">
+            <?php echo _('Logout'); ?>
+        </a>
+    <?php endif; ?>
 
     <button type="button"
             class="tsisip-sidebar-toggle"

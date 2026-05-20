@@ -1,11 +1,35 @@
 ---
-name: "speckit-plan"
-description: "Execute the implementation planning workflow using the plan template to generate design artifacts."
-compatibility: "Requires spec-kit project structure with .specify/ directory"
+name: speckit-plan
+description: Execute the implementation planning workflow using the plan template
+  to generate design artifacts.
+compatibility: Requires spec-kit project structure with .specify/ directory
 metadata:
-  author: "github-spec-kit"
-  source: "templates/commands/plan.md"
+  author: github-spec-kit
+  source: preset:agent-parity-governance
 ---
+
+# Speckit Plan Skill
+
+Before continuing, apply the Agent Parity Governance preset:
+
+- plan an atomic update across all maintained agent surfaces
+- plan synchronised updates to project templates and the local
+  `.specify/memory/constitution.md`
+- plan a parity-verification artefact for the change
+
+Before continuing, apply the Architecture Governance preset:
+
+- plan explicit architecture evidence work
+- plan threat-model and ADR updates when boundaries, integrations, or flows
+  change
+- surface Zero Trust and SAMM work explicitly when relevant
+
+Before continuing, apply the Security Governance preset:
+
+- plan explicit MSL applicability or non-MSL justification work when relevant
+- plan explicit secure-development verification work
+- plan dependency and supply-chain evidence updates where relevant
+- surface security review checkpoints instead of leaving them implicit
 
 
 ## User Input

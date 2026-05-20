@@ -1,14 +1,43 @@
 ---
-description: Create or update the feature specification from a natural language feature description.
-handoffs: 
-  - label: Build Technical Plan
-    agent: speckit.plan
-    prompt: Create a plan for the spec. I am building with...
-  - label: Clarify Spec Requirements
-    agent: speckit.clarify
-    prompt: Clarify specification requirements
-    send: true
+description: Create or update the feature specification from a natural language feature
+  description.
+handoffs:
+- label: Build Technical Plan
+  agent: speckit.plan
+  prompt: Create a plan for the spec. I am building with...
+- label: Clarify Spec Requirements
+  agent: speckit.clarify
+  prompt: Clarify specification requirements
+  send: true
 ---
+
+
+<!-- Source: agent-parity-governance -->
+Before continuing, apply the Agent Parity Governance preset:
+
+- identify whether shared agent guidance, project templates, or
+  `.specify/memory/constitution.md` is affected
+- list every maintained agent surface that must be updated together
+- record any intentional deviation explicitly
+
+Before continuing, apply the Architecture Governance preset:
+
+- identify whether runtime or hardware constraints affect memory-safe language
+  choice
+- identify trust boundaries affected by the requested work
+- determine whether threat modeling, ADR updates, or Zero Trust review apply
+- document `N/A` decisions with rationale
+
+Before continuing, apply the Security Governance preset:
+
+- determine whether the primary implementation language is memory-safe
+- document a short justification if the language is not memory-safe
+- determine whether `NIST SSDF`, `CWE Top 25`, `OWASP ASVS`, `SBOM`, `VEX`,
+  and `SLSA` are relevant
+- document `N/A` decisions with rationale
+- identify which security evidence artefacts should be created or updated under
+  `docs/security/`
+
 
 ## User Input
 

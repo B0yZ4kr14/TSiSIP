@@ -23,6 +23,10 @@ RUN docker-php-ext-install \
 # Enable Apache mod_rewrite for OCP pretty URLs
 RUN a2enmod rewrite
 
+# Copy PHP session security hardening configuration
+# Aligns with CANONICAL-SPEC Section 17 Security Model
+COPY docker/ocp/php-session-security.ini /usr/local/etc/php/conf.d/99-session-security.ini
+
 # Copy OCP application source (stubs; replace with actual OCP v9 source in production)
 COPY web/ /var/www/html/
 
@@ -38,10 +42,14 @@ ENV APACHE_DOCUMENT_ROOT=/var/www/html
 RUN sed -ri -e 's!/var/www/html!${APACHE_DOCUMENT_ROOT}!g' /etc/apache2/sites-available/*.conf \
     && sed -ri -e 's!/var/www/!${APACHE_DOCUMENT_ROOT}!g' /etc/apache2/apache2.conf /etc/apache2/conf-available/*.conf
 
+# Copy custom entrypoint to fix secret permissions for www-data
+COPY docker/ocp/entrypoint.sh /usr/local/bin/ocp-entrypoint.sh
+RUN chmod +x /usr/local/bin/ocp-entrypoint.sh
+
 # Health check: expect 200 OK with TSiSIP logo in response body
 HEALTHCHECK --interval=30s --timeout=5s --start-period=20s --retries=3 \
     CMD curl -fsSL http://localhost/login.php | grep -q 'TSiSIP' || exit 1
 
 EXPOSE 80
 
-CMD ["apache2-foreground"]
+ENTRYPOINT ["/usr/local/bin/ocp-entrypoint.sh"]

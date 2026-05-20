@@ -1,0 +1,299 @@
+{
+  "schema_version": "1.0",
+  "extensions": {
+    "blueprint": {
+      "version": "1.0.0",
+      "source": "local",
+      "manifest_hash": "sha256:c0c5bf7b0ac6236d660693ff792a3658f5cc0b1742a7cf3cb69e1675e1811ada",
+      "enabled": true,
+      "priority": 10,
+      "registered_commands": {
+        "agy": [
+          "speckit.blueprint.generate",
+          "speckit.blueprint.validate"
+        ],
+        "claude": [
+          "speckit.blueprint.generate",
+          "speckit.blueprint.validate"
+        ],
+        "codex": [
+          "speckit.blueprint.generate",
+          "speckit.blueprint.validate"
+        ],
+        "copilot": [
+          "speckit.blueprint.generate",
+          "speckit.blueprint.validate"
+        ],
+        "kimi": [
+          "speckit.blueprint.generate",
+          "speckit.blueprint.validate"
+        ],
+        "opencode": [
+          "speckit.blueprint.generate",
+          "speckit.blueprint.validate"
+        ]
+      },
+      "registered_skills": [],
+      "installed_at": "2026-05-19T22:50:48.850618+00:00"
+    },
+    "agent-governance": {
+      "version": "1.1.0",
+      "source": "local",
+      "manifest_hash": "sha256:ac1b0e3205fef2fe359c63d58a4c4136375546f81160182e18c71750d62a8eda",
+      "enabled": true,
+      "priority": 10,
+      "registered_commands": {
+        "agy": [
+          "speckit.agent-governance.refresh"
+        ],
+        "claude": [
+          "speckit.agent-governance.refresh"
+        ],
+        "codex": [
+          "speckit.agent-governance.refresh"
+        ],
+        "copilot": [
+          "speckit.agent-governance.refresh"
+        ],
+        "kimi": [
+          "speckit.agent-governance.refresh"
+        ],
+        "opencode": [
+          "speckit.agent-governance.refresh"
+        ]
+      },
+      "registered_skills": [],
+      "installed_at": "2026-05-19T22:50:49.564434+00:00"
+    },
+    "architecture-guard": {
+      "version": "1.8.4",
+      "source": "local",
+      "manifest_hash": "sha256:5a78f292d5b334e866a69c47d68450991c9ca31f2b92ed629545f3c69c504681",
+      "enabled": true,
+      "priority": 10,
+      "registered_commands": {
+        "agy": [
+          "speckit.architecture-guard.governed-plan",
+          "speckit.architecture-guard.governed-tasks",
+          "speckit.architecture-guard.governed-implement",
+          "speckit.architecture-guard.architecture-workflow",
+          "speckit.architecture-guard.architecture-review",
+          "speckit.architecture-guard.violation-detection",
+          "speckit.architecture-guard.refactor-generator",
+          "speckit.architecture-guard.architecture-apply",
+          "speckit.architecture-guard.init",
+          "speckit.architecture-guard.architecture-verify"
+        ],
+        "claude": [
+          "speckit.architecture-guard.governed-plan",
+          "speckit.architecture-guard.governed-tasks",
+          "speckit.architecture-guard.governed-implement",
+          "speckit.architecture-guard.architecture-workflow",
+          "speckit.architecture-guard.architecture-review",
+          "speckit.architecture-guard.violation-detection",
+          "speckit.architecture-guard.refactor-generator",
+          "speckit.architecture-guard.architecture-apply",
+          "speckit.architecture-guard.init",
+          "speckit.architecture-guard.architecture-verify"
+        ],
+        "codex": [
+          "speckit.architecture-guard.governed-plan",
+          "speckit.architecture-guard.governed-tasks",
+          "speckit.architecture-guard.governed-implement",
+          "speckit.architecture-guard.architecture-workflow",
+          "speckit.architecture-guard.architecture-review",
+          "speckit.architecture-guard.violation-detection",
+          "speckit.architecture-guard.refactor-generator",
+          "speckit.architecture-guard.architecture-apply",
+          "speckit.architecture-guard.init",
+          "speckit.architecture-guard.architecture-verify"
+        ],
+        "copilot": [
+          "speckit.architecture-guard.governed-plan",
+          "speckit.architecture-guard.governed-tasks",
+          "speckit.architecture-guard.governed-implement",
+          "speckit.architecture-guard.architecture-workflow",
+          "speckit.architecture-guard.architecture-review",
+          "speckit.architecture-guard.violation-detection",
+          "speckit.architecture-guard.refactor-generator",
+          "speckit.architecture-guard.architecture-apply",
+          "speckit.architecture-guard.init",
+          "speckit.architecture-guard.architecture-verify"
+        ],
+        "kimi": [
+          "speckit.architecture-guard.governed-plan",
+          "speckit.architecture-guard.governed-tasks",
+          "speckit.architecture-guard.governed-implement",
+          "speckit.architecture-guard.architecture-workflow",
+          "speckit.architecture-guard.architecture-review",
+          "speckit.architecture-guard.violation-detection",
+          "speckit.architecture-guard.refactor-generator",
+          "speckit.architecture-guard.architecture-apply",
+          "speckit.architecture-guard.init",
+          "speckit.architecture-guard.architecture-verify"
+        ],
+        "opencode": [
+          "speckit.architecture-guard.governed-plan",
+          "speckit.architecture-guard.governed-tasks",
+          "speckit.architecture-guard.governed-implement",
+          "speckit.architecture-guard.architecture-workflow",
+          "speckit.architecture-guard.architecture-review",
+          "speckit.architecture-guard.violation-detection",
+          "speckit.architecture-guard.refactor-generator",
+          "speckit.architecture-guard.architecture-apply",
+          "speckit.architecture-guard.init",
+          "speckit.architecture-guard.architecture-verify"
+        ]
+      },
+      "registered_skills": [],
+      "installed_at": "2026-05-19T22:50:50.409290+00:00"
+    },
+    "spec-validate": {
+      "version": "1.0.1",
+      "source": "local",
+      "manifest_hash": "sha256:170187e5d80a7d0435b5924e601f65215a18f36914e6cb15cfd1e3662333ac92",
+      "enabled": true,
+      "priority": 10,
+      "registered_commands": {
+        "agy": [
+          "speckit.spec-validate.validate",
+          "speckit.spec-validate.validate-tasks",
+          "speckit.spec-validate.review",
+          "speckit.spec-validate.gate",
+          "speckit.spec-validate.status",
+          "speckit.spec-validate.analytics"
+        ],
+        "claude": [
+          "speckit.spec-validate.validate",
+          "speckit.spec-validate.validate-tasks",
+          "speckit.spec-validate.review",
+          "speckit.spec-validate.gate",
+          "speckit.spec-validate.status",
+          "speckit.spec-validate.analytics"
+        ],
+        "codex": [
+          "speckit.spec-validate.validate",
+          "speckit.spec-validate.validate-tasks",
+          "speckit.spec-validate.review",
+          "speckit.spec-validate.gate",
+          "speckit.spec-validate.status",
+          "speckit.spec-validate.analytics"
+        ],
+        "copilot": [
+          "speckit.spec-validate.validate",
+          "speckit.spec-validate.validate-tasks",
+          "speckit.spec-validate.review",
+          "speckit.spec-validate.gate",
+          "speckit.spec-validate.status",
+          "speckit.spec-validate.analytics"
+        ],
+        "kimi": [
+          "speckit.spec-validate.validate",
+          "speckit.spec-validate.validate-tasks",
+          "speckit.spec-validate.review",
+          "speckit.spec-validate.gate",
+          "speckit.spec-validate.status",
+          "speckit.spec-validate.analytics"
+        ],
+        "opencode": [
+          "speckit.spec-validate.validate",
+          "speckit.spec-validate.validate-tasks",
+          "speckit.spec-validate.review",
+          "speckit.spec-validate.gate",
+          "speckit.spec-validate.status",
+          "speckit.spec-validate.analytics"
+        ]
+      },
+      "registered_skills": [],
+      "installed_at": "2026-05-19T22:50:56.544749+00:00"
+    },
+    "speckit-utils": {
+      "version": "1.0.0",
+      "source": "local",
+      "manifest_hash": "sha256:e4970a3d868ad26c27c2b7b57cec58a017b0f6d31e1186dd64ca30c8e8da7721",
+      "enabled": true,
+      "priority": 10,
+      "registered_commands": {
+        "agy": [
+          "speckit.speckit-utils.resume",
+          "speckit.resume",
+          "speckit.speckit-utils.doctor",
+          "speckit.doctor",
+          "speckit.speckit-utils.validate",
+          "speckit.validate"
+        ],
+        "claude": [
+          "speckit.speckit-utils.resume",
+          "speckit.resume",
+          "speckit.speckit-utils.doctor",
+          "speckit.doctor",
+          "speckit.speckit-utils.validate",
+          "speckit.validate"
+        ],
+        "codex": [
+          "speckit.speckit-utils.resume",
+          "speckit.resume",
+          "speckit.speckit-utils.doctor",
+          "speckit.doctor",
+          "speckit.speckit-utils.validate",
+          "speckit.validate"
+        ],
+        "copilot": [
+          "speckit.speckit-utils.resume",
+          "speckit.resume",
+          "speckit.speckit-utils.doctor",
+          "speckit.doctor",
+          "speckit.speckit-utils.validate",
+          "speckit.validate"
+        ],
+        "kimi": [
+          "speckit.speckit-utils.resume",
+          "speckit.resume",
+          "speckit.speckit-utils.doctor",
+          "speckit.doctor",
+          "speckit.speckit-utils.validate",
+          "speckit.validate"
+        ],
+        "opencode": [
+          "speckit.speckit-utils.resume",
+          "speckit.resume",
+          "speckit.speckit-utils.doctor",
+          "speckit.doctor",
+          "speckit.speckit-utils.validate",
+          "speckit.validate"
+        ]
+      },
+      "registered_skills": [],
+      "installed_at": "2026-05-19T22:50:57.397797+00:00"
+    },
+    "memory-loader": {
+      "version": "1.0.0",
+      "source": "local",
+      "manifest_hash": "sha256:d1caef45965accd4316d8aede0a4ac67f910017ea3c501814cfc7e2d8177ab0b",
+      "enabled": true,
+      "priority": 10,
+      "registered_commands": {
+        "agy": [
+          "speckit.memory-loader.load"
+        ],
+        "claude": [
+          "speckit.memory-loader.load"
+        ],
+        "codex": [
+          "speckit.memory-loader.load"
+        ],
+        "copilot": [
+          "speckit.memory-loader.load"
+        ],
+        "kimi": [
+          "speckit.memory-loader.load"
+        ],
+        "opencode": [
+          "speckit.memory-loader.load"
+        ]
+      },
+      "registered_skills": [],
+      "installed_at": "2026-05-19T22:50:58.204578+00:00"
+    }
+  }
+}

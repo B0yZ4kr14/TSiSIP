@@ -2,6 +2,7 @@
 Feature 007 Integration Tests: End-to-End SIP Call Flow
 Validates: REGISTER -> 401 -> REGISTER(auth) -> 200 -> INVITE -> ROUTE -> Asterisk
 """
+import os
 import pytest
 import socket
 import hashlib
@@ -92,7 +93,9 @@ def _build_invite(
     return msg.encode()
 
 
-def _send_receive(msg: bytes, host: str = "127.0.0.1", port: int = 5060, timeout: int = 5) -> bytes:
+def _send_receive(msg: bytes, host: str = None, port: int = 5060, timeout: int = 5) -> bytes:
+    if host is None:
+        host = os.environ.get("TARGET_HOST", "127.0.0.1")
     sock = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
     sock.settimeout(timeout)
     try:

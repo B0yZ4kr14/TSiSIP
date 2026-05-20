@@ -1,11 +1,11 @@
 {
-  "ai": "codex",
+  "ai": "kimi",
   "ai_skills": true,
   "auto_create_checklists": true,
   "branch_numbering": "sequential",
-  "context_file": "AGENTS.md",
+  "context_file": "KIMI.md",
   "feature_directory": "specs",
-  "integration": "codex",
+  "integration": "kimi",
   "max_clarifications": 3,
   "script": "sh",
   "spec_template": ".specify/templates/spec-template.md"

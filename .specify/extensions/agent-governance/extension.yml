@@ -1,0 +1,46 @@
+schema_version: "1.0"
+
+extension:
+  id: agent-governance
+  name: "Agent Governance"
+  version: "1.1.0"
+  description: "Project-local agent governance memory and context projection"
+  author: "bigben"
+  repository: "https://github.com/bigsmartben/spec-kit-agent-governance"
+  homepage: "https://github.com/bigsmartben/spec-kit-agent-governance"
+  license: "MIT"
+
+requires:
+  speckit_version: ">=0.8.0"
+  tools:
+    - name: "python3"
+      required: false
+
+provides:
+  commands:
+    - name: "speckit.agent-governance.refresh"
+      file: "commands/speckit.agent-governance.refresh.md"
+      description: "Create or refresh repository agent governance instructions"
+
+hooks:
+  after_constitution:
+    command: "speckit.agent-governance.refresh"
+    optional: true
+    prompt: "Refresh agent governance after constitution changes?"
+    description: "Projects governance memory into the active agent context file"
+  after_plan:
+    command: "speckit.agent-governance.refresh"
+    optional: true
+    prompt: "Refresh agent governance after planning?"
+    description: "Keeps agent context aligned with current repository governance"
+  after_tasks:
+    command: "speckit.agent-governance.refresh"
+    optional: true
+    prompt: "Refresh agent governance after task generation?"
+    description: "Keeps agent context aligned with current repository governance"
+
+tags:
+  - "governance"
+  - "agents"
+  - "memory"
+  - "context"

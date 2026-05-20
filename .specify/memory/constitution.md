@@ -1,96 +1,85 @@
-<!--
-SYNC IMPACT REPORT
-Version: 1.0.0 (no changes)
-Modified principles: None
-Added sections: Governance, Versioning, Amendment Procedure
-Templates requiring updates:
-  - .specify/templates/spec-template.md (aligned)
-Follow-up TODOs: None
-Last validated: 2026-05-17
--->
+# Project Constitution — TSiSIP
 
-# TSiSIP Project Constitution
+> Governance document for Architecture Guard and agent orchestration.
 
-> Non-negotiable principles for all specifications, plans, and implementations.
->
-> **Version**: 1.0.0
-> **Ratified**: 2026-05-16
-> **Last Amended**: 2026-05-17
+## Project Identity
 
-## 1. Docker-First Delivery
+- **Name**: TSiSIP
+- **Type**: Infrastructure Platform (Docker-first SIP Edge Proxy)
+- **Primary Stack**: OpenSIPS 3.6 LTS + PostgreSQL + RTPengine + Asterisk + PHP 8.2 (OCP)
 
-**MUST**: All TSiSIP runtime components are delivered through project-owned Docker images.
-**MUST NOT**: Document or implement bare-metal, VM-first, or host-package-installation runtime paths as canonical.
+## Engineering Philosophy
 
-## 2. PostgreSQL-Only Persistence
+1. **Docker-image-first**: All runtime components must be delivered as project-owned Docker images. Bare-metal or VM-first installations are rejected.
+2. **PostgreSQL-only**: OpenSIPS auth, routing, and tenant metadata use PostgreSQL exclusively. MySQL/MariaDB variants are forbidden.
+3. **Security boundary**: OpenSIPS is the only public SIP entry point. Asterisk and PostgreSQL must have zero host-published ports.
+4. **Precomputed HA1**: Subscriber credentials store HA1 hashes only (`calculate_ha1 = 0`). Plaintext passwords are never stored.
+5. **Topology hiding**: Backend PBX IP addresses must never leak to the public internet via `topology_hiding("C")`.
+6. **Explicit RTP management**: Use `rtpengine_offer()`, `rtpengine_answer()`, `rtpengine_delete()` — not `rtpengine_manage()` as baseline.
+7. **Spec-driven changes**: All features require `spec.md` + `plan.md` + `tasks.md` before implementation.
 
-**MUST**: Use PostgreSQL for all relational persistence.
-**MUST**: Use db_postgres, PostgreSQL DSNs, and PostgreSQL DDL exclusively.
-**MUST NOT**: Introduce MySQL, MariaDB, db_mysql, or alternative SQL dialects.
+## Security Expectations
 
-## 3. OpenSIPS 3.6 LTS Baseline
+- Public entry points (5060/udp, 5060/tcp) must authenticate all non-OPTIONS requests against PostgreSQL-backed subscriber credentials.
+- Secrets (`secrets/` directory, `.env*`, runtime credentials) must never be committed.
+- TLS v1.2+ only; SRTP for media relay; mTLS for trusted SIP trunk endpoints.
+- Header sanitization: strip `Authorization`, `Proxy-Authorization`, and untrusted routing headers before forwarding.
+- Docker containers must run with `cap_drop: [ALL]` and minimal `cap_add`.
 
-**MUST**: Reference only OpenSIPS modules, parameters, and functions documented for OpenSIPS 3.6 LTS.
-**MUST**: Validate all OpenSIPS claims against official opensips.org documentation.
-**MUST NOT**: Use sanity module (not present in OpenSIPS 3.6 LTS).
-**MUST NOT**: Use Kamailio-only functions (auth_check, auth_challenge).
+## Testing Expectations
 
-## 4. Edge Isolation & Backend Privacy
+- New OpenSIPS config changes must validate with `opensips -c`.
+- New Docker images must pass healthchecks before deployment.
+- Runtime SIP validation: OPTIONS 200 OK, INVITE 407 Proxy Authentication Required.
+- Integration tests must cover auth, routing, and failover paths.
 
-**MUST**: OpenSIPS is the only public SIP signaling endpoint (5060/udp, 5060/tcp).
-**MUST**: RTPengine is the only public RTP endpoint (10000-20000/udp).
-**MUST NOT**: Publish host ports for Asterisk or PostgreSQL.
-**MUST NOT**: Expose RTPengine ng-control socket externally.
-**MUST**: Asterisk and PostgreSQL reside on internal Docker networks only.
+## Documentation Standards
 
-## 5. Authentication & Secrets
+- Architecture decisions are documented in `docs/TSiSIP-CANONICAL-SPEC.md`.
+- Agent orchestration rules live in `AGENTS.md` and `.specify/memory/agent-governance.md`.
+- All specs live in `specs/{NNN-feature-name}/` with `spec.md`, `plan.md`, `tasks.md`.
+- Runbooks and operator guidance belong in `docs/TSiSIP-OPERATOR-RUNBOOK.md`.
 
-**MUST**: Store SIP Digest credentials as HA1 hashes only (ha1, ha1_sha256, ha1_sha512t256).
-**MUST NOT**: Store or transport plaintext passwords.
-**MUST**: Strip Authorization and Proxy-Authorization headers before backend relay.
-**MUST**: Inject runtime secrets via Docker secrets or environment-templated config.
-**MUST NOT**: Commit secrets, .env* (except .env.example), or private keys.
+## Review Process
 
-## 6. Topology Hiding
+- P0 findings (security, auth contract, topology leaks) block release until resolved.
+- Non-blocking architecture drift becomes tracked refactor work in `.specify/memory/`.
+- Changes to `docs/TSiSIP-CANONICAL-SPEC.md` require multi-agent validation per `docs/TSiSIP-AGENT-ORCHESTRATION-PLAYBOOK.md`.
+- Governance changes require explicit approval through the Socratic/Popperian review swarm.
 
-**MUST**: Use topology_hiding to conceal backend PBX IP addresses.
-**MUST**: Use topology_hiding("C") as canonical baseline.
-**MUST**: Remove untrusted inbound headers before routing.
+## High-Level Architecture Intent
 
-## 7. RTP Relay
+- **Architecture style**: Microservices (Docker Compose orchestration, 3-network topology)
+- **Consistency goal**: Every container is independently replaceable; state lives in PostgreSQL and volumes only.
+- **Evolution policy**: Use Constitution Update Proposals for new architecture standards. Spec Kit extensions (Architecture Guard, Spec Validate) enforce drift detection.
 
-**MUST**: Relay media through RTPengine with SDP rewriting.
-**MUST**: Use explicit rtpengine_offer(), rtpengine_answer(), rtpengine_delete().
-**MUST NOT**: Use rtpengine_manage() as canonical baseline.
-**MUST**: Bind RTPengine ng-control to internal Docker network address only.
+## Accepted Deviations
 
-## 8. Dynamic Data-Driven Routing
+- The `cdr` table uses stock OpenSIPS schema with TSiSIP extensions; custom `CREATE TABLE` replacing stock schema is rejected.
+- `cachedb_local` replaces `htable` (module absent in OpenSIPS 3.6 source tree).
+- OCP v9 PHP frontend uses stubs; production may migrate to full OCP v9 source later.
 
-**MUST**: Derive dispatcher set from authenticated tenant-scoped PostgreSQL metadata.
-**MUST NOT**: Hard-code dispatcher destination selection.
+## Governance and Evolution Policy
 
-## 9. Documentation & Specification Quality
+- Governance changes require explicit approval from the solution-architecture agent.
+- Architecture enforcement changes target `.specify/memory/architecture_constitution.md`.
+- Repeated drift triggers an Architecture Constitution Update Proposal via `/speckit.architecture-guard.init`.
 
-**MUST**: Specifications focus on WHAT and WHY, not HOW.
-**MUST**: Requirements be testable and unambiguous.
-**MUST**: Success criteria be measurable and technology-agnostic.
-**MUST**: All claims be falsifiable and source-validated.
+## Blocking vs Non-Blocking Rules
 
----
+**Blocking (P0)**:
+- Security-sensitive changes cannot merge without security-review agent sign-off.
+- OpenSIPS config must pass `opensips -c` validation.
+- Docker Compose must not expose Asterisk or PostgreSQL ports publicly.
+- Auth contract must use precomputed HA1 (`calculate_ha1 = 0`).
 
-## Governance
+**Non-Blocking**:
+- CSS/frontend cosmetic changes.
+- Documentation wording improvements (unless canonical spec).
+- Log message formatting.
 
-### Amendment Procedure
-1. Propose change as PR with rationale.
-2. Validate against all active specs for conflicts.
-3. Require approval from at least one architect-level reviewer.
-4. Update LAST_AMENDED_DATE and bump version per semantic rules below.
+## Notes
 
-### Versioning Policy
-- MAJOR: Backward-incompatible governance or principle removals/redefinitions.
-- MINOR: New principle added or materially expanded guidance.
-- PATCH: Clarifications, wording, typo fixes, non-semantic refinements.
-
-### Compliance Review
-- All specs must pass constitution alignment check before /speckit-implement.
-- Constitution conflicts are automatically CRITICAL and block implementation.
+- This Constitution is versioned alongside the codebase.
+- Update it through a Constitution Update Proposal when patterns evolve.
+- Architecture Guard uses this document for governance and `architecture_constitution.md` for architecture enforcement.

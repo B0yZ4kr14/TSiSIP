@@ -795,6 +795,64 @@ TSiSIP includes a Professional Premium Wiki embedded in the OCP control panel:
 
 The wiki is deployed as part of the OCP Docker image.
 
+### 19.1 OCP Authentication
+
+The TSiSIP Control Panel requires authenticated access for all protected pages.
+
+**Authentication mechanism**:
+- PostgreSQL-backed `ocp_users` table with bcrypt password hashes (`crypt('password', gen_salt('bf', 12))`)
+- PHP `password_verify()` for hash validation (supports `$2a$` and `$2y$` bcrypt)
+- Session-based authentication with `PHPSESSID` cookie
+- Account lockout after 5 failed attempts (15-minute lockout via `locked_until`)
+- Audit logging to `ocp_login_log` (username, source_ip, user_agent, result, reason)
+
+**Default administrative user**:
+- Username: `Admin`
+- Password: `admin123!` (must be changed on first production deploy)
+- Role: `admin`
+
+**Role hierarchy**:
+| Role | Level | Accessible Pages |
+|---|---|---|
+| admin | 5 | All pages + Administrators + Developers |
+| devops | 4 | System Overview, DevOps SIP, Runbooks, Security |
+| dentist | 3 | System Overview, Operators & Users, Dentists |
+| assistant | 2 | System Overview, Operators & Users, Assistants |
+| user | 1 | System Overview, Operators & Users |
+| readonly | 0 | System Overview, Operators & Users (read-only) |
+
+**Dashboard sections**:
+- **System Management**: Visible to `admin` and `devops` roles only. Contains links to `dispatcher.php` (Dispatcher Targets) and `rtpengine.php` (RTPengine Sessions).
+- **Documentation & Wiki**: Visible to all authenticated roles. Contains role-appropriate wiki page quick links.
+- **System Status**: Visible to all authenticated roles. Shows operational status of OpenSIPS, RTPengine, PostgreSQL, and OCP with colored indicators.
+
+**Route protection**:
+- `dashboard.php`, `wiki.php`, `dispatcher.php`, `rtpengine.php` require `requireAuth()`
+- Unauthenticated requests redirect to `login.php`
+- `logout.php` destroys session and invalidates cookie
+
+**Database schema**:
+```sql
+CREATE TABLE ocp_users (
+    id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+    username VARCHAR(64) NOT NULL UNIQUE,
+    email VARCHAR(255) NOT NULL DEFAULT '',
+    password_hash VARCHAR(255) NOT NULL,
+    role VARCHAR(32) NOT NULL DEFAULT 'readonly'
+        CHECK (role IN ('admin', 'devops', 'dentist', 'assistant', 'user', 'readonly')),
+    enabled BOOLEAN NOT NULL DEFAULT TRUE,
+    failed_attempts INTEGER NOT NULL DEFAULT 0,
+    locked_until TIMESTAMPTZ,
+    last_login_at TIMESTAMPTZ,
+    created_at TIMESTAMPTZ NOT NULL DEFAULT NOW(),
+    updated_at TIMESTAMPTZ NOT NULL DEFAULT NOW()
+);
+```
+
+**Container integration**:
+- OCP container reads database password from `/tmp/db_password` (copied from Docker secret by entrypoint with www-data-readable permissions)
+- PDO connection uses `pgsql:host=postgres;dbname=opensips;port=5432`
+
 ## 20. Rejected non-canonical patterns
 
 The following patterns are explicitly rejected for TSiSIP documentation, examples, specs, and implementation snippets:

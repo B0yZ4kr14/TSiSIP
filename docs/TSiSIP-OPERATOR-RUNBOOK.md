@@ -57,6 +57,28 @@ The OCP dashboard and the Professional Premium Wiki share the same authenticated
 - **Wiki**: `https://tsiapp.io/TSiSIP/Wiki`
 - **Logout**: `https://tsiapp.io/TSiSIP/logout.php`
 
+### OCP Container Operational Note
+
+The OCP container (`tsisip-ocp-1`) on the TSiAPP VPS currently runs as a manual Docker container rather than being managed by `docker compose`. This is due to a Docker Compose network state inconsistency that prevents `docker compose up -d ocp` from completing without attempting to remove active networks.
+
+**Current workaround**:
+```bash
+# If OCP needs restart
+docker rm -f tsisip-ocp-1
+docker run -d --name tsisip-ocp-1 \
+  --network tsisip_sip_internal \
+  -p 127.0.0.1:8084:80 \
+  --restart unless-stopped \
+  -e DB_HOST=postgres -e DB_NAME=opensips -e DB_USER=opensips \
+  -e DB_PASSWORD=opensips123 \
+  -e APACHE_DOCUMENT_ROOT=/var/www/html \
+  ghcr.io/b0yz4kr14/tsisip/ocp:latest
+docker network connect tsisip_db_internal tsisip-ocp-1
+docker network connect tsisip_metrics_host tsisip-ocp-1
+```
+
+**Planned fix**: Investigate compose network state and restore declarative management.
+
 ### Default Admin Credentials
 
 | Field | Value |

@@ -1,0 +1,22 @@
+# Feature 011 Tasks
+
+- [x] T1: Add `force_password_change` column to `02-tsisip-extensions.sql`
+- [x] T2: Update `03-seed-data.sql` to set flag for Admin
+- [x] T3: Update `authenticateUser()` in `config.php` to return flag
+- [x] T4: Add `checkPasswordChange()` guard in `config.php`
+- [x] T5: Update `login.php` to store flag and redirect
+- [x] T6: Create `change-password.php` with validation
+- [x] T7: Add `checkPasswordChange()` to `dashboard.php`
+- [x] T8: Add `checkPasswordChange()` to `dispatcher.php`
+- [x] T9: Add `checkPasswordChange()` to `rtpengine.php`
+- [x] T10: Add `checkPasswordChange()` to `wiki.php`
+- [x] T11: Update `role-nav.php` with Account section
+- [x] T12: Create `docker/ocp/php-session-security.ini`
+- [x] T13: Update `docker/ocp/Dockerfile` to copy security config
+- [x] T14: Add HTTPS detection via X-Forwarded-Proto in `config.php`
+- [x] T15: Update nginx configs to ensure X-Forwarded-Proto forwarding
+- [x] T16: Update `docs/TSiSIP-OPERATOR-RUNBOOK.md`
+- [x] T17: Build and push OCP Docker image
+- [x] T18: Update database schema on VPS
+- [x] T19: Deploy new image on VPS
+- [x] T20: Validate acceptance criteria (login redirect, cookie flags, passphrase change)

@@ -3,7 +3,9 @@
  * TSiSIP Control Panel — Wiki Engine
  * Markdown renderer with TOC generation and role-based access.
  */
-session_start();
+require_once __DIR__ . '/common/config.php';
+requireAuth();
+checkPasswordChange();
 require_once __DIR__ . '/common/header.php';
 
 $wikiDir     = __DIR__ . '/../docs/wiki/';

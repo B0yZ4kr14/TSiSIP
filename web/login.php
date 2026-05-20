@@ -1,14 +1,37 @@
 <?php
 /**
  * TSiSIP Control Panel Login
- * Premium branded login view for the TSiSIP ecosystem
+ * Authenticates against PostgreSQL ocp_users table with bcrypt hashing.
  */
 
-session_start();
+require_once __DIR__ . '/common/config.php';
 
 $error = '';
+
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-    $error = _('Invalid credentials');
+    $username = $_POST['username'] ?? '';
+    $password = $_POST['pass'] ?? '';
+
+    if ($username === '' || $password === '') {
+        $error = _('Username and passphrase are required.');
+    } else {
+        $user = authenticateUser($username, $password);
+        if ($user !== null) {
+            $_SESSION['ocp_user_id']    = $user['id'];
+            $_SESSION['ocp_username']   = $user['username'];
+            $_SESSION['ocp_user_email'] = $user['email'];
+            $_SESSION['ocp_user_role']  = $user['role'];
+            $_SESSION['ocp_force_password_change'] = $user['force_password_change'];
+            if ($user['force_password_change']) {
+                header('Location: change-password.php');
+            } else {
+                header('Location: dashboard.php');
+            }
+            exit;
+        } else {
+            $error = _('Invalid credentials');
+        }
+    }
 }
 
 $manifestPath = __DIR__ . '/tsisip/asset-manifest.json';

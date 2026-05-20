@@ -1,5 +1,5 @@
 {
-  "version": "0.8.11",
+  "version": "0.8.12.dev0",
   "integration_state_schema": 1,
   "installed_integrations": [
     "codex",
@@ -25,6 +25,6 @@
       "invoke_separator": "."
     }
   },
-  "integration": "codex",
-  "default_integration": "codex"
+  "integration": "kimi",
+  "default_integration": "kimi"
 }

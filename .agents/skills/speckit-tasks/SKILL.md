@@ -1,11 +1,35 @@
 ---
-name: "speckit-tasks"
-description: "Generate an actionable, dependency-ordered tasks.md for the feature based on available design artifacts."
-compatibility: "Requires spec-kit project structure with .specify/ directory"
+name: speckit-tasks
+description: Generate an actionable, dependency-ordered tasks.md for the feature based
+  on available design artifacts.
+compatibility: Requires spec-kit project structure with .specify/ directory
 metadata:
-  author: "github-spec-kit"
-  source: "templates/commands/tasks.md"
+  author: github-spec-kit
+  source: preset:agent-parity-governance
 ---
+
+# Speckit Tasks Skill
+
+Before continuing, apply the Agent Parity Governance preset:
+
+- add explicit tasks to update every maintained agent surface in the
+  same change
+- add tasks to propagate shared rules into project templates and the
+  local constitution mirror
+- add a parity-verification task using the agent-parity checklist
+
+Before continuing, apply the Architecture Governance preset:
+
+- convert architecture obligations into explicit tasks
+- include `docs/security/` evidence updates
+- do not leave threat-modeling or ADR work implicit
+
+Before continuing, apply the Security Governance preset:
+
+- convert MSL applicability and justification needs into explicit tasks
+- convert security obligations into explicit tasks
+- include evidence-production tasks under `docs/security/`
+- avoid leaving secure-development work as undocumented assumptions
 
 
 ## User Input

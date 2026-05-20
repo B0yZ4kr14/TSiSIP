@@ -124,6 +124,43 @@ CREATE INDEX IF NOT EXISTS idx_cdr_from_user ON cdr(from_user);
 CREATE INDEX IF NOT EXISTS idx_cdr_tenant ON cdr(tenant_id);
 CREATE INDEX IF NOT EXISTS idx_cdr_status ON cdr(call_status);
 
+-- ocp_users: administrative users for TSiSIP Control Panel
+CREATE TABLE IF NOT EXISTS ocp_users (
+    id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+    username VARCHAR(64) NOT NULL UNIQUE,
+    email VARCHAR(255) NOT NULL DEFAULT '',
+    password_hash VARCHAR(255) NOT NULL,
+    role VARCHAR(32) NOT NULL DEFAULT 'readonly'
+        CHECK (role IN ('admin', 'devops', 'dentist', 'assistant', 'user', 'readonly')),
+    enabled BOOLEAN NOT NULL DEFAULT TRUE,
+    failed_attempts INTEGER NOT NULL DEFAULT 0,
+    locked_until TIMESTAMPTZ,
+    last_login_at TIMESTAMPTZ,
+    force_password_change BOOLEAN NOT NULL DEFAULT TRUE,
+    created_at TIMESTAMPTZ NOT NULL DEFAULT NOW(),
+    updated_at TIMESTAMPTZ NOT NULL DEFAULT NOW()
+);
+
+CREATE INDEX IF NOT EXISTS idx_ocp_users_enabled
+    ON ocp_users(username, enabled)
+    WHERE enabled = true;
+
+-- ocp_login_log: audit trail for OCP authentication events
+CREATE TABLE IF NOT EXISTS ocp_login_log (
+    id BIGSERIAL PRIMARY KEY,
+    event_time TIMESTAMPTZ NOT NULL DEFAULT NOW(),
+    username VARCHAR(64) NOT NULL,
+    source_ip INET NOT NULL,
+    user_agent VARCHAR(512),
+    result VARCHAR(32) NOT NULL,
+    reason VARCHAR(255)
+);
+
+CREATE INDEX IF NOT EXISTS idx_ocp_login_event_time
+    ON ocp_login_log(event_time);
+CREATE INDEX IF NOT EXISTS idx_ocp_login_username
+    ON ocp_login_log(username, event_time);
+
 -- trunk_ips: trusted SIP trunk endpoints requiring mutual TLS (T2.3)
 CREATE TABLE IF NOT EXISTS trunk_ips (
     id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
