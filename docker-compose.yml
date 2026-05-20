@@ -251,7 +251,7 @@ services:
     cap_add: [SETUID, SETGID]
     security_opt: ["no-new-privileges:true"]
     healthcheck:
-      test: ["CMD-SHELL", "curl -fsSL http://localhost/login.php | grep -q 'TSiSIP' || exit 1"]
+      test: ["CMD-SHELL", "curl -fsSL http://localhost/login.php | grep -q 'TSiSIP' && curl -fsSL http://localhost/healthcheck-audit.php | grep -q 'status.*ok' || exit 1"]
       interval: 30s
       timeout: 5s
       retries: 3
@@ -442,6 +442,13 @@ services:
     cap_drop: [ALL]
     cap_add: [SETUID, SETGID]
     security_opt: ["no-new-privileges:true"]
+    healthcheck:
+      test: ["CMD-SHELL", "/usr/local/bin/healthcheck.sh"]
+      interval: 60s
+      timeout: 10s
+      retries: 3
+      start_period: 30s
+      start_interval: 10s
     deploy:
       resources:
         limits:

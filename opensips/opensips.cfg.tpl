@@ -106,7 +106,6 @@ modparam("dispatcher", "ds_ping_method", "OPTIONS")
 modparam("dispatcher", "ds_ping_interval", 30)
 modparam("dispatcher", "ds_probing_mode", 1)
 modparam("dispatcher", "ds_probing_threshold", 3)
-modparam("dispatcher", "persistent_state", "/var/run/opensips/dispatcher.state")
 
 # T3.1: Load-based dispatcher routing
 modparam("dispatcher", "ds_ping_from", "sip:healthcheck@localhost")

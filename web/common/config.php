@@ -222,3 +222,21 @@ function isDevOpsOrHigher(): bool {
 function isAdmin(): bool {
     return ($_SESSION['ocp_user_role'] ?? '') === 'admin';
 }
+
+/**
+ * Read the trunk credential encryption key from container secrets.
+ */
+function getTrunkCredKey(): string {
+    $key = '';
+    $secretPath = '/tmp/trunk_cred_key';
+    if (!file_exists($secretPath)) {
+        $secretPath = '/run/secrets/trunk_cred_key';
+    }
+    if (file_exists($secretPath) && is_readable($secretPath)) {
+        $key = rtrim(file_get_contents($secretPath), "\r\n");
+    }
+    if ($key === '') {
+        $key = getenv('TRUNK_CRED_KEY') ?: '';
+    }
+    return $key;
+}

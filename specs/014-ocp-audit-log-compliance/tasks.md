@@ -140,26 +140,26 @@
 
 ## Wave 6: Testing & Validation
 
-- [ ] T6.1: Create tests/audit-log-validation.php manual test script covering login, subscriber CRUD, password change, logout, and direct SQL UPDATE rejection by trigger
-  - Files: tests/audit-log-validation.php (new)
+- [x] T6.1: Create tests/integration/test-ocp-audit.sh covering PHP CLI insert, immutability trigger, retention purge, hash chain, CSV/JSON export via curl
+  - Files: tests/integration/test-ocp-audit.sh (new), tests/integration/test-audit-dashboard.sh (new)
   - Dependencies: T3.1-T3.6, T4.1, T5.4
 
-- [ ] T6.2: Run PHP syntax check on all new and modified files: find web/ -name *.php -exec php -l {} \;
+- [x] T6.2: Run PHP syntax check on all new and modified files via scripts/ci-scan.sh
   - Files: all modified/new PHP files
   - Dependencies: T3.1-T3.6, T4.1, T5.1, T5.2, T5.4
 
-- [ ] T6.3: Build OCP Docker image (docker compose build ocp) and verify container health check passes
-  - Files: docker/ocp/Dockerfile
+- [x] T6.3: Build OCP Docker image (docker compose build ocp) and verify container health check passes, including audit endpoint
+  - Files: docker/ocp/Dockerfile, web/healthcheck-audit.php, docker-compose.yml
   - Dependencies: T5.6
 
-- [ ] T6.4: Verify immutability trigger blocks UPDATE and DELETE from application role (opensips)
-  - Files: db/init/02-tsisip-extensions.sql
+- [x] T6.4: Verify immutability trigger blocks UPDATE and DELETE from application role (opensips); verify retention purge works via SECURITY DEFINER
+  - Files: db/init/04-ocp-audit-schema.sql
   - Dependencies: T1.3
 
-- [ ] T6.5: Verify hash chain continuity: no NULL prev_hash except first row, every prev_hash matches preceding rows hash
+- [x] T6.5: Verify hash chain continuity via verifyAuditLogIntegrity() PHP CLI across all rows
   - Files: web/common/audit.php
   - Dependencies: T2.2
 
-- [ ] T6.6: Security review — confirm no credential material in details JSONB, all queries use PDO prepared statements, role gates enforced on audit-log.php and audit-export.php
-  - Files: web/common/audit.php, web/audit-log.php, web/audit-export.php
+- [x] T6.6: Security review — confirm no credential material in details JSONB, all queries use PDO prepared statements, role gates enforced on audit-log.php and audit-export.php; CI scan updated
+  - Files: web/common/audit.php, web/audit-log.php, web/audit-export.php, scripts/ci-scan.sh
   - Dependencies: T4.1, T5.1

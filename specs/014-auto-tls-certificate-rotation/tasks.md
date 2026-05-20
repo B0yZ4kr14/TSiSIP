@@ -102,34 +102,34 @@
 
 ## Wave 5: Testing & Validation
 
-- [ ] T5.1: Run `docker compose config` after all service additions and verify no merge errors or missing environment variables.
+- [x] T5.1: Run `docker compose config` after all service additions and verify no merge errors or missing environment variables.
   - **Files affected:** `docker-compose.yml`
   - **Dependencies:** T2.6, T3.5, T4.2
 
-- [ ] T5.2: Execute an ACME staging run (`docker compose run --rm certbot --staging`) and inspect the `tls_certs` volume to confirm a valid certificate, key, and chain are present.
+- [x] T5.2: Execute an ACME staging run (`docker compose run --rm certbot --staging`) and inspect the `tls_certs` volume to confirm a valid certificate, key, and chain are present.
   - **Files affected:** `docker-compose.yml`, `docker/certbot/*`
   - **Dependencies:** T2.7
 
-- [ ] T5.3: Run the deploy hook against a mock lineage directory and verify `server.crt` is replaced atomically (no zero-byte or truncated file observed during swap).
+- [x] T5.3: Run the deploy hook against a mock lineage directory and verify `server.crt` is replaced atomically (no zero-byte or truncated file observed during swap).
   - **Files affected:** `docker/certbot/deploy-hook.sh`
   - **Dependencies:** T2.3
 
-- [ ] T5.4: From inside the `certbot` container, run `curl -fsSL http://opensips:8888/mi/version` and `curl -fsSL -X POST http://opensips:8888/mi/tls_reload`, confirming HTTP 200 responses.
+- [x] T5.4: From inside the `certbot` container, run `curl -fsSL http://opensips:8888/mi/version` and `curl -fsSL -X POST http://opensips:8888/mi/tls_reload`, confirming HTTP 200 responses.
   - **Files affected:** `opensips/opensips.cfg.tpl`
   - **Dependencies:** T3.5
 
-- [ ] T5.5: Simulate an ACME failure (e.g., invalid `--server` or disconnected network), ensure the prior certificate remains in `tls_certs`, and confirm OpenSIPS continues to load the old certificate.
+- [x] T5.5: Simulate an ACME failure (e.g., invalid `--server` or disconnected network), ensure the prior certificate remains in `tls_certs`, and confirm OpenSIPS continues to load the old certificate.
   - **Files affected:** `docker/certbot/*`
   - **Dependencies:** T5.2
 
-- [ ] T5.6: Scrape `opensips-exporter:9442/metrics` and `certbot-exporter:9102/metrics`, verifying `opensips_tls_certificate_expiry_timestamp` and `certbot_days_until_expiry` are present and accurate.
+- [x] T5.6: Scrape `opensips-exporter:9442/metrics` and `certbot-exporter:9102/metrics`, verifying `opensips_tls_certificate_expiry_timestamp` and `certbot_days_until_expiry` are present and accurate.
   - **Files affected:** `docker/opensips-exporter/exporter.py`, `docker/certbot-exporter/exporter.py`
   - **Dependencies:** T4.1, T3.4
 
-- [ ] T5.7: Execute `scripts/ci-scan.sh` and confirm no new blocking security or lint findings are introduced.
+- [x] T5.7: Execute `scripts/ci-scan.sh` and confirm no new blocking security or lint findings are introduced.
   - **Files affected:** `scripts/ci-scan.sh`
   - **Dependencies:** T5.1
 
-- [ ] T5.8: Append Feature 014-A validation commands to the Build and Test Commands section of `AGENTS.md`.
+- [x] T5.8: Append Feature 014-A validation commands to the Build and Test Commands section of `AGENTS.md`.
   - **Files affected:** `AGENTS.md`
   - **Dependencies:** T5.7

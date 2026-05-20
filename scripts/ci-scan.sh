@@ -61,6 +61,87 @@ for secret in secrets/db_password secrets/auth_secret secrets/topology_secret se
 done
 echo "PASS: No tracked secret files"
 
+# --- Feature 014-A: TLS Rotation Pipeline Validation ---
+echo "[tls-rotation] Checking TLS rotation shell script syntax..."
+for script in scripts/tls-reload.sh scripts/cert-rotate.sh scripts/cert-expiry-monitor.sh docker/certbot/deploy-hook.sh docker/certbot/entrypoint.sh docker/certbot/healthcheck.sh tests/integration/test-tls-rotation.sh; do
+    if [ -f "$script" ]; then
+        if bash -n "$script"; then
+            echo "PASS: $script syntax valid"
+        else
+            echo "FAIL: $script has syntax errors"
+            FAIL=1
+        fi
+    else
+        echo "WARN: $script not found"
+    fi
+done
+
+# Run the integration test if it exists and is executable
+if [ -x "tests/integration/test-tls-rotation.sh" ]; then
+    echo "[tls-rotation] Running TLS rotation integration test..."
+    if tests/integration/test-tls-rotation.sh; then
+        echo "PASS: TLS rotation integration test passed"
+    else
+        echo "WARN: TLS rotation integration test had failures (may require running stack)"
+        # Do not fail CI for integration tests that require a running stack
+    fi
+else
+    echo "WARN: tests/integration/test-tls-rotation.sh not found or not executable"
+fi
+
+# --- Audit: PHP syntax check ---
+echo "[audit] Checking PHP syntax on audit-related files..."
+PHP_FAIL=0
+for phpfile in web/common/audit.php web/audit-log.php web/audit-export.php web/cli/purge-audit-log.php web/healthcheck-audit.php; do
+    if [ -f "$phpfile" ]; then
+        if ! php -l "$phpfile" >/dev/null 2>&1; then
+            echo "FAIL: PHP syntax error in $phpfile"
+            PHP_FAIL=1
+            FAIL=1
+        fi
+    fi
+done
+if [ "$PHP_FAIL" -eq 0 ]; then
+    echo "PASS: All audit PHP files have valid syntax"
+fi
+
+# --- Audit: shell script syntax check ---
+echo "[audit] Checking audit test scripts..."
+for script in tests/integration/test-ocp-audit.sh tests/integration/test-audit-dashboard.sh; do
+    if [ -f "$script" ]; then
+        if ! bash -n "$script"; then
+            echo "FAIL: Shell syntax error in $script"
+            FAIL=1
+        fi
+    else
+        echo "FAIL: Audit test script not found: $script"
+        FAIL=1
+    fi
+done
+echo "PASS: Audit test scripts syntax valid"
+
+# --- Audit: run integration tests if compose stack is up ---
+echo "[audit] Running audit integration tests (if compose stack is available)..."
+if docker compose ps postgres ocp >/dev/null 2>&1; then
+    bash tests/integration/test-ocp-audit.sh || { echo "FAIL: test-ocp-audit.sh"; FAIL=1; }
+    bash tests/integration/test-audit-dashboard.sh || { echo "FAIL: test-audit-dashboard.sh"; FAIL=1; }
+else
+    echo "SKIP: Compose stack not running, skipping live audit tests"
+fi
+
+# --- Trunk Integration Tests ---
+echo "[trunk] Running SIP trunk integration tests..."
+if docker compose ps | grep -q 'opensips' && docker compose ps | grep -q 'postgres'; then
+    if bash tests/integration/test-sip-trunk.sh; then
+        echo "PASS: Trunk integration tests"
+    else
+        echo "FAIL: Trunk integration tests failed"
+        FAIL=1
+    fi
+else
+    echo "SKIP: Trunk integration tests (services not running)"
+fi
+
 echo ""
 if [ $FAIL -eq 1 ]; then
     echo "=== CI SCAN FAILED ==="

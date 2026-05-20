@@ -179,37 +179,37 @@
 **Description**: Update `web/common/role-nav.php` to add "Trunk Providers", "DID Mappings", and "Trunk Status" links under the Administration section for admin and devops roles.
 **Files affected**: `web/common/role-nav.php`
 **Depends on**: T1.5
-**Status**: [ ]
+**Status**: [x]
 
 ### T6.2: Create trunk provider CRUD page
 **Description**: Create `web/trunk_providers.php` with list, add, edit, disable, and delete operations for `sip_trunk_providers`. Use pgcrypto `encrypt()` / `decrypt()` with the Docker secret key for `auth_password_encrypted`. Mask password input; decrypt only for authorized edits. Enforce role check (admin or devops).
 **Files affected**: `web/trunk_providers.php`
 **Depends on**: T6.1
-**Status**: [ ]
+**Status**: [x]
 
 ### T6.3: Create DID mapping CRUD page
 **Description**: Create `web/trunk_dids.php` to manage `sip_trunk_did_mappings`. Allow selecting a trunk provider and tenant from dropdowns. Enforce `UNIQUE (did_number, trunk_provider_id)` at the UI level. Show enabled/disabled state.
 **Files affected**: `web/trunk_dids.php`
 **Depends on**: T6.2
-**Status**: [ ]
+**Status**: [x]
 
 ### T6.4: Create trunk status page
 **Description**: Create `web/trunk_status.php` displaying real-time registration state (from `sip_trunk_registrations`), dispatcher health status, last probe time, and a button to trigger an MI-based health probe reload.
 **Files affected**: `web/trunk_status.php`
 **Depends on**: T6.3
-**Status**: [ ]
+**Status**: [x]
 
 ### T6.5: Add trunk audit logging
 **Description**: Ensure every create, update, delete, and disable action in `web/trunk_providers.php` and `web/trunk_dids.php` writes an entry to `ocp_audit_log` (or `auth_audit_log` if ocp_audit_log does not exist; create it if needed).
 **Files affected**: `web/trunk_providers.php`, `web/trunk_dids.php`, `db/init/04-trunk-schema.sql`
 **Depends on**: T6.2
-**Status**: [ ]
+**Status**: [x]
 
 ### T6.6: Update OCP container for secret access
 **Description**: Update `docker/ocp/Dockerfile` or `docker/ocp/entrypoint.sh` to copy the trunk credential encryption secret into `/tmp/` with `www-data`-readable permissions, matching the existing `db_password` pattern in `web/common/config.php`.
 **Files affected**: `docker/ocp/Dockerfile` or `docker/ocp/entrypoint.sh`
 **Depends on**: T6.2
-**Status**: [ ]
+**Status**: [x]
 
 ---
 
@@ -249,7 +249,7 @@
 **Description**: Run `docker compose config`, build the OpenSIPS image, run `opensips -c`, execute `scripts/ci-scan.sh`, and verify zero new findings. Fix any lint or syntax errors.
 **Files affected**: `docker-compose.yml`, `opensips/opensips.cfg.tpl`
 **Depends on**: T7.2, T7.3, T7.4, T7.5
-**Status**: [ ]
+**Status**: [x]
 
 ### T7.7: Update operator runbook
 **Description**: Update `docs/TSiSIP-OPERATOR-RUNBOOK.md` with procedures for: onboarding a new trunk provider, adding a DID mapping, troubleshooting registration failures, interpreting health probe results, and rotating the trunk credential encryption key.

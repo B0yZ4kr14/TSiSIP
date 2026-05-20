@@ -9,6 +9,9 @@ RUN chmod +x /usr/local/bin/deploy-hook.sh
 COPY entrypoint.sh /usr/local/bin/entrypoint.sh
 RUN chmod +x /usr/local/bin/entrypoint.sh
 
+COPY healthcheck.sh /usr/local/bin/healthcheck.sh
+RUN chmod +x /usr/local/bin/healthcheck.sh
+
 # Setup cron for daily renewal check at 02:00 UTC
 RUN echo "0 2 * * * /usr/local/bin/certbot renew --quiet --deploy-hook /usr/local/bin/deploy-hook.sh" | crontab -
 

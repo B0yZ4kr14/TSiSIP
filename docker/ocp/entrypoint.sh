@@ -2,7 +2,7 @@
 set -eu
 
 # Fix secret permissions so www-data can read them
-for secret in db_password auth_secret topology_secret; do
+for secret in db_password auth_secret topology_secret trunk_cred_key; do
     src="/run/secrets/${secret}"
     dst="/tmp/${secret}"
     if [ -f "$src" ]; then

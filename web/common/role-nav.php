@@ -8,11 +8,14 @@
 $adminPages = [];
 if ($userRole === 'admin' || $userRole === 'devops') {
     $adminPages = [
-        'subscribers'  => _('Subscribers'),
-        'cdr-viewer'   => _('CDR Viewer'),
-        'dispatcher'   => _('Dispatcher Targets'),
-        'rtpengine'    => _('RTPengine Sessions'),
-        'audit-log'    => _('Audit Log'),
+        'subscribers'     => _('Subscribers'),
+        'cdr-viewer'      => _('CDR Viewer'),
+        'dispatcher'      => _('Dispatcher Targets'),
+        'rtpengine'       => _('RTPengine Sessions'),
+        'trunk-providers' => _('Trunk Providers'),
+        'trunk-dids'      => _('DID Mappings'),
+        'trunk-status'    => _('Trunk Status'),
+        'audit-log'       => _('Audit Log'),
     ];
 }
 

@@ -432,8 +432,56 @@ docker build -t tsisip/ocp:latest -f docker/ocp/Dockerfile .
 # Validate OCP container health (run after compose up)
 docker compose exec ocp bash -c "curl -fsSL http://localhost/login.php | grep -q 'TSiSIP'"
 
+# Validate audit healthcheck endpoint
+docker compose exec ocp bash -c "curl -fsSL http://localhost/healthcheck-audit.php | grep -q 'status.*ok'"
+
 # Validate wiki rendering
 curl -fsSL http://localhost:8084/wiki.php | grep -q "TSiSIP Professional Wiki"
+```
+
+**Audit Log & Compliance Dashboard tests (Feature 014-B Wave 6):**
+
+```bash
+# Run end-to-end audit pipeline tests (requires running compose stack)
+OCP_SEED_ADMIN_PASS=$(grep -oP "crypt\\('\\K[^']+" db/init/03-seed-data.sql | head -n1) \
+    bash tests/integration/test-ocp-audit.sh
+
+# Run dashboard UI/filter tests (requires running compose stack)
+OCP_SEED_ADMIN_PASS=$(grep -oP "crypt\\('\\K[^']+" db/init/03-seed-data.sql | head -n1) \
+    bash tests/integration/test-audit-dashboard.sh
+
+# Validate PHP syntax for all audit-related files
+for f in web/common/audit.php web/audit-log.php web/audit-export.php \
+         web/cli/purge-audit-log.php web/healthcheck-audit.php; do
+    php -l "$f"
+done
+```
+
+**Automated TLS Certificate Rotation tests (Feature 014-A Wave 5):**
+
+```bash
+# Validate TLS rotation integration tests (works without running stack)
+bash tests/integration/test-tls-rotation.sh
+
+# Validate OpenSIPS config with TLS enabled (requires built image)
+docker run --rm --entrypoint /usr/local/sbin/opensips \
+  -v $(pwd)/opensips/opensips.cfg.tpl:/etc/opensips/opensips.cfg.tpl:ro \
+  tsisip/opensips:latest \
+  -c -f /etc/opensips/opensips.cfg
+
+# Validate certbot image build and --dry-run support
+docker build -t tsisip/certbot:latest -f docker/certbot/Dockerfile docker/certbot/
+docker run --rm --entrypoint /usr/local/bin/certbot tsisip/certbot:latest --help | grep -q dry-run
+
+# Validate deploy-hook.sh syntax and healthcheck
+bash -n docker/certbot/deploy-hook.sh
+bash -n docker/certbot/healthcheck.sh
+
+# Manually trigger certificate rotation (staging mode)
+./scripts/cert-rotate.sh --staging
+
+# Reload OpenSIPS TLS certificates without downtime
+./scripts/tls-reload.sh
 ```
 
 **Makefile targets:**

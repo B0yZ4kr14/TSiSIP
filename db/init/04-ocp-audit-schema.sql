@@ -62,9 +62,23 @@ CREATE TRIGGER ocp_audit_log_immutable
     EXECUTE FUNCTION fn_ocp_audit_log_immutable();
 
 -- -----------------------------------------------------------
+-- Role privileges
+-- Create tsisip_retention role if absent; grant minimal perms.
+-- Must be done before creating SECURITY DEFINER functions owned by it.
+-- -----------------------------------------------------------
+DO $$
+BEGIN
+    IF NOT EXISTS (SELECT 1 FROM pg_roles WHERE rolname = 'tsisip_retention') THEN
+        CREATE ROLE tsisip_retention WITH LOGIN;
+    END IF;
+END
+$$;
+
+-- -----------------------------------------------------------
 -- Retention purge function
 -- Accepts retention period in days; returns count of deleted rows.
--- Must be executed as tsisip_retention (or superuser) to bypass trigger.
+-- SECURITY DEFINER so opensips caller executes as tsisip_retention,
+-- bypassing the immutability trigger.
 -- -----------------------------------------------------------
 CREATE OR REPLACE FUNCTION ocp_audit_log_retention_purge(retention_days INTEGER)
 RETURNS INTEGER AS $$
@@ -76,19 +90,9 @@ BEGIN
     GET DIAGNOSTICS deleted_count = ROW_COUNT;
     RETURN deleted_count;
 END;
-$$ LANGUAGE plpgsql;
+$$ LANGUAGE plpgsql SECURITY DEFINER;
 
--- -----------------------------------------------------------
--- Role privileges
--- Create tsisip_retention role if absent; grant minimal perms.
--- -----------------------------------------------------------
-DO $$
-BEGIN
-    IF NOT EXISTS (SELECT 1 FROM pg_roles WHERE rolname = 'tsisip_retention') THEN
-        CREATE ROLE tsisip_retention WITH LOGIN;
-    END IF;
-END
-$$;
+ALTER FUNCTION ocp_audit_log_retention_purge OWNER TO tsisip_retention;
 
 -- OCP application user: INSERT and SELECT only
 GRANT INSERT, SELECT ON ocp_audit_log TO opensips;
