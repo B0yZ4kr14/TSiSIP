@@ -1,0 +1,1 @@
+B4: FALSO POSITIVO — opensips.cfg.tpl já implementa www_authorize para REGISTER e proxy_authorize para non-REGISTER

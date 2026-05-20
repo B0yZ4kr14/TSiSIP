@@ -59,7 +59,7 @@ services:
     command:
       - rtpengine
       - --interface=${RTPENGINE_PRIVATE_IP:-127.0.0.1}/${HOST_PUBLIC_IP:-127.0.0.1}
-      - --listen-ng=${RTPENGINE_INTERNAL_IP:-0.0.0.0}:22222
+      - --listen-ng=${RTPENGINE_INTERNAL_IP}:22222
       - --port-min=10000
       - --port-max=10999
       - --log-stderr

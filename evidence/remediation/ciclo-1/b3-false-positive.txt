@@ -1,0 +1,1 @@
+B3: FALSO POSITIVO — todas as vars já estão em .env.example
