@@ -1005,6 +1005,17 @@ gh workflow run ci.yml -f deploy_target=staging
 | `test-integration` fails | Container health check timeout | Increase sleep or check logs |
 | `security-scan` fails | CVE in base image | Update base image digest or patch packages |
 
+## Observability Stack Notes
+
+### Prometheus Retention
+
+Prometheus TSDB retention is configured explicitly in `docker-compose.yml` and `docker-compose.prod.yml` to prevent unbounded time-series growth. The current settings are:
+
+- `--storage.tsdb.retention.time=30d`
+- `--storage.tsdb.retention.size=10GB`
+
+Adjust these values based on your storage capacity and metric retention requirements.
+
 ---
 
 *Last Updated: 2026-05-19*

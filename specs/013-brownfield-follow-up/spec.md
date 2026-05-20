@@ -18,13 +18,13 @@ Post-remediation validation scan identified 3 new findings after the 5-cycle bro
 
 ## Acceptance Criteria
 
-- [ ] AC1: docker/backup/backup.sh runs without unbound variable error when encryption key is present.
-- [ ] AC2: docker/backup/backup.sh fails fatally when encryption key is missing.
-- [ ] AC3: docker-compose.yml has healthcheck on anomaly-detector and backup.
-- [ ] AC4: docker-compose.prod.yml has healthcheck on anomaly-detector and backup.
-- [ ] AC5: docker-compose.vps.yml has healthcheck on backup.
-- [ ] AC6: CI scan (scripts/ci-scan.sh) passes after changes.
-- [ ] AC7: All changes committed with conventional commits.
+- [x] AC1: docker/backup/backup.sh runs without unbound variable error when encryption key is present.
+- [x] AC2: docker/backup/backup.sh fails fatally when encryption key is missing.
+- [x] AC3: docker-compose.yml has healthcheck on anomaly-detector and backup.
+- [x] AC4: docker-compose.prod.yml has healthcheck on anomaly-detector and backup.
+- [x] AC5: docker-compose.vps.yml has healthcheck on backup.
+- [x] AC6: CI scan (scripts/ci-scan.sh) passes after changes.
+- [x] AC7: All changes committed with conventional commits.
 
 ## References
 

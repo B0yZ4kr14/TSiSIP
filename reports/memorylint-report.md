@@ -1,5 +1,7 @@
 # Memory Lint Report
 
+> **SUPERSEDED**: This report reflects the initial scan (2026-05-18). See `reports/remediation-summary.md` for resolution status (M1–M7, M10 fixed; M8 deferred; M9 accepted) and `reports/memorylint-audit-2026-05-20.md` for the current audit. Commit `9180cad` further increased VPS backup `mem_limit` from 128 MB to 256 MB.
+
 **Host Memory:** 62 GiB total / 1.2 GiB available (heavily utilized)
 **Cgroup Version:** v2 (`stat -fc %T /sys/fs/cgroup/` returns `tmpfs` or `cgroup2fs`)
 

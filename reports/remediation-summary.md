@@ -27,8 +27,11 @@
 | B11 | RTP port range published | ACCEPTED | Required by design; DDoS mitigated |
 | B12 | Self-signed certs | ACCEPTED | `.gitignore` excludes; rotation runbook exists |
 | B13 | Commented lines in config | DEFERRED | Documentation comments |
-| B14 | `sleep` without polling | DEFERRED | Deploy scripts; low impact |
-| B15 | `.env.example` coverage | ACCEPTED | 27 vars documented |
+| B14 (initial) | `sleep` without polling | DEFERRED | Deploy scripts; low impact |
+| B15 (initial) | `.env.example` coverage | ACCEPTED | 27 vars documented |
+| B14 (residual) | `ALLOW_UNENCRYPTED_BACKUPS` reference in `backup.sh` | **FIXED** | Feature 013; commit `d09c385` |
+| B15 (residual) | Missing healthchecks on `backup`/`anomaly-detector` | **FIXED** | Feature 013; commit `d09c385` |
+| B16 (residual) | CI pipeline publishes `:latest` tag | **FIXED** | Feature 013; commit `d09c385` |
 
 ---
 
@@ -51,6 +54,8 @@
 ---
 
 ## Memory Lint — Status
+
+> Historical M1–M10 scan: see `memorylint-report.md`. Updated audit in `memorylint-audit-2026-05-20.md` reflects current state. Commit `9180cad` increased VPS backup `mem_limit` from 128 MB to 256 MB (M3).
 
 | ID | Finding | Status |
 |----|---------|--------|

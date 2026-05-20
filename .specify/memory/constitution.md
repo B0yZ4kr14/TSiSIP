@@ -99,7 +99,7 @@ Re-check after Phase 1 design if the plan introduces new services, networks, or 
 
 - Brownfield scans run non-destructively against the canonical spec and AGENTS.md.
 - Findings are tracked by severity (CRITICAL, HIGH, MEDIUM, LOW) with cycle-based remediation.
-- Each remediation cycle must include: (a) fix, (b) evidence in evidence/remediation/, (c) post-fix validation scan.
+- Each remediation cycle must include: (a) fix, (b) evidence in a cycle-specific subdirectory under evidence/remediation/ (e.g., ciclo-1/, feature-013/), (c) post-fix validation scan.
 - Residual bugs introduced during remediation are treated as P0 regressions.
 
 ## Blocking vs Non-Blocking Rules

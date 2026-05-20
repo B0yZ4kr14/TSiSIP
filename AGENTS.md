@@ -791,7 +791,7 @@ When editing files in this repo, the hooks may trigger automatically. If you enc
 
 ---
 
-*Last updated: 2026-05-19. This file must be updated whenever new build tooling, manifests, or canonical architecture decisions are committed.*
+*Last updated: 2026-05-20. This file must be updated whenever new build tooling, manifests, or canonical architecture decisions are committed.*
 
 <!-- SPECKIT GOVERNANCE START -->
 ## Speckit Agent Governance
@@ -845,7 +845,7 @@ shell commands, and other important information, read the current plan
 
 ## Brownfield Remediation Status
 
-Last scan: 2026-05-20. Report: `reports/brownfield-scan-2026-05-20.md`.
+Last scan: 2026-05-20. Reports: `reports/brownfield-scan-2026-05-20.md`, `reports/brownfield-scan-2026-05-20-post-remediation.md`.
 
 | Cycle | Findings | Status | Commit |
 |---|---|---|---|
@@ -872,13 +872,30 @@ Last scan: 2026-05-20. Report: `reports/brownfield-scan-2026-05-20.md`.
 | B11 | LOW | Changed cert-gen example IP from RFC1918 to TEST-NET-1 (`192.0.2.1`) | `evidence/remediation/ciclo-4/` |
 | B12 | LOW | Rephrased "sanity check" to "validation check" in comment | `evidence/remediation/ciclo-5/` |
 | B13 | LOW | Removed `latest` fallback from production compose files; `.env.example` now documents pinning | `evidence/remediation/ciclo-5/` |
+| B14 | MEDIUM | Fixed residual `ALLOW_UNENCRYPTED_BACKUPS` reference in `docker/backup/backup.sh` (Feature 013) | `evidence/remediation/feature-013/` |
+| B15 | MEDIUM | Added healthchecks to `backup` and `anomaly-detector` services across all compose profiles | `evidence/remediation/feature-013/` |
+| B16 | LOW | Documented CI `:latest` tag policy in deploy workflow; tagged releases preferred | `evidence/remediation/feature-013/` |
 
-> **13/13 findings addressed**. Zero outstanding brownfield items.
+> **16/16 findings addressed**. Zero outstanding brownfield items.
+
+## Memorylint Status
+
+Last scan: 2026-05-20. Report: `reports/memorylint-audit-2026-05-20.md`.
+
+| ID | Service | Finding | Status | Commit |
+|---|---|---|---|---|
+| M1 | OpenSIPS | `pkg_mem_size` may be tight under high load | LOW — monitor | — |
+| M2 | PostgreSQL | `work_mem` × `max_connections` approaches reservation | LOW — monitor | — |
+| M3 | VPS Backup | `mem_limit` insufficient for large dumps | **FIXED** | `9180cad` |
+| M4 | Prometheus | Retention policy unbounded growth risk | LOW — document | — |
+| M5 | OpenSIPS | `shm_mem_size` not explicit in `.cfg.tpl` | LOW — add for clarity | — |
+
+> All critical and high memorylint findings resolved. See `reports/remediation-summary.md` for historical M1-M10 resolution.
 
 <!-- gitnexus:start -->
 # GitNexus — Code Intelligence
 
-This project is indexed by GitNexus as **TSiSIP** (2817 symbols, 3050 relationships, 3 execution flows). Use the GitNexus MCP tools to understand code, assess impact, and navigate safely.
+This project is indexed by GitNexus as **TSiSIP** (2988 symbols, 3208 relationships, 3 execution flows). Use the GitNexus MCP tools to understand code, assess impact, and navigate safely.
 
 > If any GitNexus tool warns the index is stale, run `npx gitnexus analyze` in terminal first.
 

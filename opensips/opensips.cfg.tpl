@@ -24,6 +24,9 @@ db_default_url="postgres://${DB_USER}:${DB_PASSWORD}@${DB_HOST}:5432/${DB_NAME}"
 
 mpath="/usr/local/lib64/opensips/modules/"
 
+# M5: Explicit shared memory size (512 MB) for dialog state, pike, ratelimit tables
+shm_mem_size = 512
+
 # --- Modules ---
 loadmodule "db_postgres.so"
 loadmodule "sqlops.so"

@@ -34,13 +34,7 @@ The backup job fails closed when:
 - `PGPASSWORD_FILE` is missing or empty.
 - `ENCRYPTION_KEY_FILE` is missing or empty.
 
-Unencrypted backups require an explicit development override:
-
-```bash
-ALLOW_UNENCRYPTED_BACKUPS=true
-```
-
-Do not use that override in production.
+Encryption is mandatory in all environments; no unencrypted backup override exists.
 
 ## Network Boundaries
 

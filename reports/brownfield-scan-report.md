@@ -1,5 +1,7 @@
 # Brownfield Scan Report
 
+> **SUPERSEDED**: This report reflects the state at commit `b271047` (2026-05-18). All findings B1–B16 have since been resolved. See `brownfield-scan-2026-05-20.md` and `brownfield-scan-2026-05-20-post-remediation.md` for current state.
+
 **Scan Metadata:**
 - Scope: all
 - Branch: master
