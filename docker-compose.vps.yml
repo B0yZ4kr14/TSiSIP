@@ -201,7 +201,7 @@ services:
     pull_policy: if_not_present
     networks: [db_internal, metrics_host]
     restart: on-failure
-    mem_limit: 128m
+    mem_limit: 256m
     memswap_limit: 128m
     ports:
       - "127.0.0.1:9101:9101/tcp"
