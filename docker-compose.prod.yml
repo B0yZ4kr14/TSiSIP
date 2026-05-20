@@ -99,6 +99,7 @@ services:
     environment:
       OPENSIPS_LISTEN_IP: ${OPENSIPS_LISTEN_IP}
       HOST_PUBLIC_IP: ${HOST_PUBLIC_IP}
+      OPENSIPS_HOST: 127.0.0.1
       DB_HOST: postgres
       DB_NAME: opensips
       DB_USER: opensips

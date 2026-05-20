@@ -14,7 +14,7 @@ usage() {
     echo ""
     echo "  Server certificate:"
     echo "    $0 server --cn <common_name> --san <subject_alt_names>"
-    echo "    Example: $0 server --cn tsiapp.io --san 'DNS:tsiapp.io,IP:192.168.1.1'"
+    echo "    Example: $0 server --cn tsiapp.io --san 'DNS:tsiapp.io,IP:192.0.2.1'"
     echo ""
     echo "  Client certificate:"
     echo "    $0 client --cn <trunk_id>"
