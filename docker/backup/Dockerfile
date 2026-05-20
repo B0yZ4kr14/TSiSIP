@@ -10,14 +10,20 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
     netcat-openbsd \
     && rm -rf /var/lib/apt/lists/*
 
-# Create backup directories
-RUN mkdir -p /backup/daily /backup/wal /backup/validate /backup/metrics /tmp/backup
+# Create non-root user for future migration (container still runs as root for cron daemon)
+RUN groupadd -r tsisip-backup && useradd -r -g tsisip-backup -G postgres tsisip-backup
+
+# Create backup directories with correct ownership
+RUN mkdir -p /backup/daily /backup/wal /backup/validate /backup/metrics /tmp/backup \
+    && chown -R tsisip-backup:postgres /backup /tmp/backup
 
 # Copy scripts
 COPY *.sh /usr/local/bin/
-COPY rclone.conf.tpl /etc/rclone/rclone.conf.tpl
-
 RUN chmod +x /usr/local/bin/*.sh
+
+# Prepare rclone config directory for non-root user
+RUN mkdir -p /etc/rclone && chown -R tsisip-backup:tsisip-backup /etc/rclone
+COPY --chown=tsisip-backup:tsisip-backup rclone.conf.tpl /etc/rclone/rclone.conf.tpl
 
 # Environment defaults
 ENV BACKUP_SCHEDULE="0 2 * * *" \

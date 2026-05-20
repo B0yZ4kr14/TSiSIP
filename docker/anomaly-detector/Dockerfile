@@ -12,8 +12,12 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
 COPY requirements.txt .
 RUN pip install --no-cache-dir -r requirements.txt
 
-COPY detector.py .
-COPY baseline.py .
+# Create non-root user
+RUN groupadd -r detector && useradd -r -g detector detector
+RUN chown -R detector:detector /app
+
+COPY --chown=detector:detector detector.py .
+COPY --chown=detector:detector baseline.py .
 
 # Health check
 HEALTHCHECK --interval=30s --timeout=5s --start-period=10s --retries=3 \
@@ -21,4 +25,5 @@ HEALTHCHECK --interval=30s --timeout=5s --start-period=10s --retries=3 \
 
 EXPOSE 8080
 
+USER detector
 CMD ["python", "detector.py"]

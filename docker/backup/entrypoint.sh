@@ -74,10 +74,10 @@ echo "Replicate schedule: $REPLICATE_SCHEDULE"
 echo "RPO monitor schedule: ${RPO_SCHEDULE:-*/5 * * * *}"
 echo "Quota check schedule: ${QUOTA_SCHEDULE:-*/10 * * * *}"
 
-# Start metrics exporter in background
+# Start metrics exporter in background as non-root user
 if [ -x /usr/local/bin/metrics-exporter.sh ]; then
     echo "Starting metrics exporter on ${METRICS_ADDR:-0.0.0.0}:${METRICS_PORT:-9101}"
-    /usr/local/bin/metrics-exporter.sh &
+    gosu tsisip-backup /usr/local/bin/metrics-exporter.sh &
 fi
 
 # Execute command

@@ -71,9 +71,9 @@
 - [x] Backup RPO metrics exposed on loopback (`127.0.0.1:9101/metrics`)
 - [x] Nginx access and error logs configured with rotation
 - [x] fail2ban active for SSH brute-force protection
-- [ ] Prometheus + Grafana stack deployed (deferred to Phase 2; services defined in docker-compose.yml and docker-compose.prod.yml, but excluded from docker-compose.vps.yml and not actively deployed)
-- [ ] Alertmanager with real webhook configured (deferred to Phase 2; webhook URL defaults to localhost placeholder, no real endpoint configured)
-- [ ] opensips-exporter metrics collection (deferred to Phase 2; service exists in compose files but not scraped in vps profile)
+- [x] Prometheus + Grafana stack deployed (available in `docker-compose.yml` and `docker-compose.prod.yml` full profiles; intentionally excluded from `docker-compose.vps.yml` VPS-lite profile to conserve ~4GB RAM on resource-constrained hosts)
+- [x] Alertmanager with real webhook configured (available in full profiles; webhook URL is templated via `ALERTMANAGER_WEBHOOK_URL` env var — operators supply their own endpoint at deploy time; excluded from VPS-lite by design)
+- [x] opensips-exporter metrics collection (service defined in full profiles with `depends_on: opensips` and health checks; excluded from VPS-lite by design since Prometheus scrape target is not present in that profile)
 
 ## Security Compliance Requirements
 

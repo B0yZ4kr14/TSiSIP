@@ -7,7 +7,7 @@
 - [ ] Image tags use deterministic identifiers (git short-SHA or semantic version), not floating `latest` in production. (compose files default to `latest` when TSISIP_IMAGE_TAG is unset)
 - [ ] Images are scanned for CVEs before deployment (Trivy or Clair). (not yet implemented)
 - [x] No secrets are baked into image layers; all credentials injected at runtime.
-- [ ] Containers run as non-root where possible; privilege drop is configured inside the entrypoint. (partial — prometheus runs as nobody, OCP as www-data, postgres as postgres; opensips/rtpengine/asterisk/backup/anomaly-detector/opensips-exporter run as root)
+- [x] Containers run as non-root where possible; privilege drop is configured inside the entrypoint. (opensips-exporter runs as `exporter`, anomaly-detector runs as `detector`, prometheus as `nobody`, OCP workers as `www-data`, postgres as `postgres`; backup metrics exporter drops to `tsisip-backup` but main process remains root due to Debian cron daemon requirement; opensips/rtpengine/asterisk require capabilities and remain root)
 - [ ] `cap_drop: [ALL]` is set on every service; only required capabilities are added back. (partial — only opensips, rtpengine, and ocp have it; postgres, asterisk, prometheus, alertmanager, anomaly-detector, grafana, opensips-exporter, and backup do not)
 - [ ] `security_opt: ["no-new-privileges:true"]` is set on every service. (partial — only opensips, rtpengine, and ocp have it)
 
@@ -29,7 +29,7 @@
 - [x] `auth_secret` is exactly 32 bytes.
 - [x] No plaintext passwords in seed data; only HA1 hashes are stored.
 - [ ] Deploy secrets (GitHub token, SSH key) are stored separately from operational secrets (vault key, backup key). (partial — documented in audit but not enforced in discovery scripts)
-- [ ] Ansible tasks handling secrets use `no_log: true`. (partial — only GHCR login task has no_log; other tasks do not)
+- [x] Ansible tasks handling secrets use `no_log: true`. (GHCR login and `.env` template deployment both use `no_log: true`)
 - [x] Bootstrap scripts generate secrets with `openssl rand` and set `chmod 600`.
 
 ## Nginx TLS Configuration Checks
