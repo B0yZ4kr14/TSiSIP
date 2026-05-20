@@ -841,6 +841,40 @@ For additional context about technologies to be used, project structure,
 shell commands, and other important information, read the current plan
 <!-- SPECKIT END -->
 
+---
+
+## Brownfield Remediation Status
+
+Last scan: 2026-05-20. Report: `reports/brownfield-scan-2026-05-20.md`.
+
+| Cycle | Findings | Status | Commit |
+|---|---|---|---|
+| Ciclo 1 | B1 (CRITICAL), B2 (HIGH), B3 (HIGH), B4 (HIGH) | **COMPLETE** | `da0964e` |
+| Ciclo 2 | B5 (MEDIUM), B6 (MEDIUM), B7 (MEDIUM) | **COMPLETE** | `7b91a1a` |
+| Ciclo 3 | B8 (MEDIUM), B9 (MEDIUM) | **COMPLETE** | `4147c14` |
+| Ciclo 4 | B10 (LOW), B11 (LOW) | **COMPLETE** | `b7296be` |
+| Ciclo 5 | B12 (LOW), B13 (LOW) | **COMPLETE** | `96cfadd` |
+
+### Resolution Summary
+
+| ID | Severity | Resolution | Evidence |
+|---|---|---|---|
+| B1 | CRITICAL | Removed plaintext password comment from seed data; retained bcrypt hash with `force_password_change` | `evidence/remediation/ciclo-1/` |
+| B2 | HIGH | RTPengine `--listen-ng` no longer falls back to `0.0.0.0`; binds only to `${RTPENGINE_INTERNAL_IP}:22222` | `evidence/remediation/ciclo-1/` |
+| B3 | HIGH | **FALSE POSITIVE** — all 4 env vars present in `.env.example` | `evidence/remediation/ciclo-1/` |
+| B4 | HIGH | **FALSE POSITIVE** — auth contract already uses `proxy_authorize` for non-REGISTER | `evidence/remediation/ciclo-1/` |
+| B5 | MEDIUM | **ACCEPTABLE** — `sed` stub in `orchestrate-deploy.sh` is syntax-check only, not runtime | `evidence/remediation/ciclo-2/b5-acceptable.txt` |
+| B6 | MEDIUM | E2E test host parameterized via `TARGET_HOST` env var | `evidence/remediation/ciclo-2/` |
+| B7 | MEDIUM | Documented OCP manual container workaround in OPERATOR-RUNBOOK | `evidence/remediation/ciclo-2/` |
+| B8 | MEDIUM | Removed `ALLOW_UNENCRYPTED_BACKUPS` opt-out; encryption now mandatory | `evidence/remediation/ciclo-3/` |
+| B9 | MEDIUM | **FALSE POSITIVE** — observability services are active in prod/dev; intentionally absent in VPS-lite | `evidence/remediation/ciclo-3/` |
+| B10 | LOW | Added explicit `OPENSIPS_HOST: 127.0.0.1` to all production compose files | `evidence/remediation/ciclo-4/` |
+| B11 | LOW | Changed cert-gen example IP from RFC1918 to TEST-NET-1 (`192.0.2.1`) | `evidence/remediation/ciclo-4/` |
+| B12 | LOW | Rephrased "sanity check" to "validation check" in comment | `evidence/remediation/ciclo-5/` |
+| B13 | LOW | Removed `latest` fallback from production compose files; `.env.example` now documents pinning | `evidence/remediation/ciclo-5/` |
+
+> **13/13 findings addressed**. Zero outstanding brownfield items.
+
 <!-- gitnexus:start -->
 # GitNexus — Code Intelligence
 
