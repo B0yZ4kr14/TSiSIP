@@ -48,11 +48,17 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             );
             $upd->execute([':hash' => $newHash, ':id' => $_SESSION['ocp_user_id']]);
 
+            logAuditEvent('PASSWORD_CHANGE', 'ocp_user', $_SESSION['ocp_username'] ?? 'unknown', true);
+
             unset($_SESSION['ocp_force_password_change']);
             $success = _('Passphrase updated successfully.');
             header('Location: dashboard.php');
             exit;
         }
+    }
+
+    if ($error !== '') {
+        logAuditEvent('PASSWORD_CHANGE', 'ocp_user', $_SESSION['ocp_username'] ?? 'unknown', false, ['reason' => $error]);
     }
 }
 

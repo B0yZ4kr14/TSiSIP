@@ -24,87 +24,87 @@
 
 ## Wave 2: Core Audit Library
 
-- [ ] T2.1: Create web/common/audit.php with logAuditEvent(string action, ?string resourceType = null, ?string resourceId = null, bool success = true, ?array details = null): void
+- [x] T2.1: Create web/common/audit.php with logAuditEvent(string action, ?string resourceType = null, ?string resourceId = null, bool success = true, ?array details = null): void
   - Files: web/common/audit.php (new)
   - Dependencies: T1.1
 
-- [ ] T2.2: Implement SHA-256 hash chain inside logAuditEvent() — query last row hash, compute canonical concatenation hash, insert with prev_hash and hash
+- [x] T2.2: Implement SHA-256 hash chain inside logAuditEvent() — query last row hash, compute canonical concatenation hash, insert with prev_hash and hash
   - Files: web/common/audit.php
   - Dependencies: T2.1
 
-- [ ] T2.3: Implement proxy-aware IP (HTTP_X_FORWARDED_FOR then REMOTE_ADDR), input truncation to column limits, and resilient error handling (catch-all -> error_log(), no throw)
+- [x] T2.3: Implement proxy-aware IP (HTTP_X_FORWARDED_FOR then REMOTE_ADDR), input truncation to column limits, and resilient error handling (catch-all -> error_log(), no throw)
   - Files: web/common/audit.php
   - Dependencies: T2.1
 
-- [ ] T2.4: Add verifyAuditLogIntegrity(): array offline validator in web/common/audit.php
+- [x] T2.4: Add verifyAuditLogIntegrity(): array offline validator in web/common/audit.php
   - Files: web/common/audit.php
   - Dependencies: T2.2
 
-- [ ] T2.5: Update web/common/config.php to require_once __DIR__ . /audit.php after existing requires
+- [x] T2.5: Update web/common/config.php to require_once __DIR__ . /audit.php after existing requires
   - Files: web/common/config.php
   - Dependencies: T2.1
 
-- [ ] T2.6: Augment authenticateUser() in web/common/config.php to call logAuditEvent(LOGIN, ocp_user, username, true) on success and logAuditEvent(LOGIN, ocp_user, username, false, [reason => reason]) on failure
+- [x] T2.6: Augment authenticateUser() in web/common/config.php to call logAuditEvent(LOGIN, ocp_user, username, true) on success and logAuditEvent(LOGIN, ocp_user, username, false, [reason => reason]) on failure
   - Files: web/common/config.php
   - Dependencies: T2.5
 
 ## Wave 3: OCP Integration — Instrument Existing Pages
 
-- [ ] T3.1: Instrument web/logout.php — call logAuditEvent(LOGOUT, ocp_user, session username or unknown, true) before clearing session
+- [x] T3.1: Instrument web/logout.php — call logAuditEvent(LOGOUT, ocp_user, session username or unknown, true) before clearing session
   - Files: web/logout.php
   - Dependencies: T2.5
 
-- [ ] T3.2: Instrument web/change-password.php — call logAuditEvent(PASSWORD_CHANGE, ocp_user, session username, true) on success and logAuditEvent(PASSWORD_CHANGE, ocp_user, session username, false, [reason => error]) on failure
+- [x] T3.2: Instrument web/change-password.php — call logAuditEvent(PASSWORD_CHANGE, ocp_user, session username, true) on success and logAuditEvent(PASSWORD_CHANGE, ocp_user, session username, false, [reason => error]) on failure
   - Files: web/change-password.php
   - Dependencies: T2.5
 
-- [ ] T3.3: Instrument web/subscribers.php create action — emit SUBSCRIBER_CREATE with resource_type=subscriber, resource_id=username, details containing domain, tenant_id, enabled (exclude passwords and HA1)
+- [x] T3.3: Instrument web/subscribers.php create action — emit SUBSCRIBER_CREATE with resource_type=subscriber, resource_id=username, details containing domain, tenant_id, enabled (exclude passwords and HA1)
   - Files: web/subscribers.php
   - Dependencies: T2.5
 
-- [ ] T3.4: Instrument web/subscribers.php update action — emit SUBSCRIBER_UPDATE with same safe detail rules
+- [x] T3.4: Instrument web/subscribers.php update action — emit SUBSCRIBER_UPDATE with same safe detail rules
   - Files: web/subscribers.php
   - Dependencies: T2.5
 
-- [ ] T3.5: Instrument web/subscribers.php toggle action — emit SUBSCRIBER_TOGGLE with resource_id=id and toggle state in details
+- [x] T3.5: Instrument web/subscribers.php toggle action — emit SUBSCRIBER_TOGGLE with resource_id=id and toggle state in details
   - Files: web/subscribers.php
   - Dependencies: T2.5
 
-- [ ] T3.6: Instrument web/dispatcher.php — emit DISPATCHER_CREATE, DISPATCHER_UPDATE, DISPATCHER_DELETE, DISPATCHER_TOGGLE on respective POST actions with resource_type=dispatcher and relevant metadata
+- [x] T3.6: Instrument web/dispatcher.php — emit DISPATCHER_CREATE, DISPATCHER_UPDATE, DISPATCHER_DELETE, DISPATCHER_TOGGLE on respective POST actions with resource_type=dispatcher and relevant metadata
   - Files: web/dispatcher.php
   - Dependencies: T2.5
 
 ## Wave 4: Compliance Dashboard
 
-- [ ] T4.1: Create web/audit-log.php with auth guards (requireAuth, checkPasswordChange, requireRole devops), include common header, footer, role-nav, page title Audit Log & Compliance
+- [x] T4.1: Create web/audit-log.php with auth guards (requireAuth, checkPasswordChange, requireRole devops), include common header, footer, role-nav, page title Audit Log & Compliance
   - Files: web/audit-log.php (new)
   - Dependencies: T2.5
 
-- [ ] T4.2: Build server-side filter form in web/audit-log.php: from, to, action dropdown, username text, resource_type dropdown, success dropdown, ip_address text, q full-text against details::text
+- [x] T4.2: Build server-side filter form in web/audit-log.php: from, to, action dropdown, username text, resource_type dropdown, success dropdown, ip_address text, q full-text against details::text
   - Files: web/audit-log.php
   - Dependencies: T4.1
 
-- [ ] T4.3: Implement parameterized count query and paginated result query (event_time DESC, default perPage 50, max 200)
+- [x] T4.3: Implement parameterized count query and paginated result query (event_time DESC, default perPage 50, max 200)
   - Files: web/audit-log.php
   - Dependencies: T4.2
 
-- [ ] T4.4: Render result table with columns: Event Time, User, Action, Resource, Resource ID, IP Address, Success badge (green/red), Details toggle
+- [x] T4.4: Render result table with columns: Event Time, User, Action, Resource, Resource ID, IP Address, Success badge (green/red), Details toggle
   - Files: web/audit-log.php
   - Dependencies: T4.3
 
-- [ ] T4.5: Add export toolbar with Export CSV and Export JSON buttons submitting same filters to audit-export.php
+- [x] T4.5: Add export toolbar with Export CSV and Export JSON buttons submitting same filters to audit-export.php
   - Files: web/audit-log.php
   - Dependencies: T4.4
 
-- [ ] T4.6: Update web/common/role-nav.php — add Audit Log item under Administration section for admin/devops, pointing to audit-log.php
+- [x] T4.6: Update web/common/role-nav.php — add Audit Log item under Administration section for admin/devops, pointing to audit-log.php
   - Files: web/common/role-nav.php
   - Dependencies: T4.1
 
-- [ ] T4.7: Update web/dashboard.php — add Audit Log & Compliance link in System Management for admin/devops
+- [x] T4.7: Update web/dashboard.php — add Audit Log & Compliance link in System Management for admin/devops
   - Files: web/dashboard.php
   - Dependencies: T4.1
 
-- [ ] T4.8: Update web/common/pagination.php — raise perPage ceiling from 100 to 200
+- [x] T4.8: Update web/common/pagination.php — raise perPage ceiling from 100 to 200
   - Files: web/common/pagination.php
   - Dependencies: none
 

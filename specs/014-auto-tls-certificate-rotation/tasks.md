@@ -36,7 +36,7 @@
   - **Files affected:** `docker/certbot/Dockerfile` (new)
   - **Dependencies:** T1.7
 
-- [ ] T2.2: Create `docker/certbot/entrypoint.sh` that performs initial ACME certificate issuance (with `--staging` support), sets up a daily cron job at 02:00 UTC, and starts `crond` in the foreground.
+- [x] T2.2: Create `docker/certbot/entrypoint.sh` that performs initial ACME certificate issuance (with `--staging` support), sets up a daily cron job at 02:00 UTC, and starts `crond` in the foreground.
   - **Files affected:** `docker/certbot/entrypoint.sh` (new)
   - **Dependencies:** T2.1
 
@@ -56,29 +56,29 @@
   - **Files affected:** `docker-compose.yml`
   - **Dependencies:** T2.2, T2.3, T2.5
 
-- [ ] T2.7: Build the `certbot` and `tailscale-cert` images with `docker compose build certbot tailscale-cert` and verify both exit 0.
+- [x] T2.7: Build the `certbot` and `tailscale-cert` images with `docker compose build certbot tailscale-cert` and verify both exit 0.
   - **Files affected:** `docker-compose.yml`
   - **Dependencies:** T2.6
 
 ## Wave 3: OpenSIPS Integration
 
-- [ ] T3.1: Add `loadmodule "mi_http.so"`, `modparam("mi_http", "mi_http_root_path", "/mi")`, and `listen = http:0.0.0.0:8888` to `opensips/opensips.cfg.tpl`.
+- [x] T3.1: Add `loadmodule "httpd.so"` and `loadmodule "mi_http.so"`, with `modparam("httpd", "ip", "...")`, `modparam("httpd", "port", 8888)`, and `modparam("mi_http", "root", "/mi")` to `opensips/opensips.cfg.tpl`.
   - **Files affected:** `opensips/opensips.cfg.tpl`
   - **Dependencies:** None
 
-- [ ] T3.2: Update `tls_mgm` `certificate`, `private_key`, and `ca_list` paths in `opensips/opensips.cfg.tpl` from `/etc/opensips/tls/` to `/certs/live/`.
+- [x] T3.2: Update `tls_mgm` `certificate`, `private_key`, and `ca_list` paths in `opensips/opensips.cfg.tpl` from `/etc/opensips/tls/` to `/certs/live/`.
   - **Files affected:** `opensips/opensips.cfg.tpl`
   - **Dependencies:** T3.1
 
-- [ ] T3.3: Refactor `scripts/tls-reload.sh` to use MI HTTP (`curl -fsSL -X POST http://opensips:8888/mi/tls_reload`) as the primary reload mechanism, retaining `opensipsctl fifo tls_reload` as a manual fallback.
+- [x] T3.3: Refactor `scripts/tls-reload.sh` to use MI HTTP (`curl -fsSL http://opensips:8888/mi/tls_reload`) as the primary reload mechanism, retaining SIGHUP as a fallback.
   - **Files affected:** `scripts/tls-reload.sh`
   - **Dependencies:** T3.1
 
-- [ ] T3.4: Update the default `TLS_CERT_PATH` in `docker/opensips-exporter/exporter.py` from `/run/secrets/server.crt` to `/certs/live/server.crt`.
+- [x] T3.4: Update the default `TLS_CERT_PATH` in `docker/opensips-exporter/exporter.py` from `/run/secrets/server.crt` to `/certs/live/server.crt`.
   - **Files affected:** `docker/opensips-exporter/exporter.py`
   - **Dependencies:** T1.4
 
-- [ ] T3.5: Build the OpenSIPS image and run config validation (`opensips -c -f /etc/opensips/opensips.cfg`) inside a throwaway container to ensure `mi_http.so` and updated `tls_mgm` paths parse correctly.
+- [x] T3.5: Build the OpenSIPS image and run config validation (`opensips -c -f /etc/opensips/opensips.cfg`) inside a throwaway container to ensure `mi_http.so` and updated `tls_mgm` paths parse correctly.
   - **Files affected:** `Dockerfile`, `opensips/opensips.cfg.tpl`
   - **Dependencies:** T3.2, T3.4
 

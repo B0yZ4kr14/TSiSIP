@@ -79,6 +79,11 @@ CREATE TABLE IF NOT EXISTS sip_trunk_registrations (
 CREATE INDEX IF NOT EXISTS idx_sip_trunk_registrations_provider
     ON sip_trunk_registrations(trunk_provider_id);
 
+-- CDR enrichment columns for Feature 014-C trunk-routed calls
+ALTER TABLE cdr ADD COLUMN IF NOT EXISTS trunk_provider_id INTEGER;
+ALTER TABLE cdr ADD COLUMN IF NOT EXISTS trunk_name VARCHAR(255);
+ALTER TABLE cdr ADD COLUMN IF NOT EXISTS direction VARCHAR(16);
+
 -- version tracking for OpenSIPS db_postgres compatibility
 INSERT INTO version (table_name, table_version) VALUES
     ('sip_trunk_providers', 1),

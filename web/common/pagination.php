@@ -10,7 +10,7 @@
  */
 function getPagination(int $page, int $perPage = 25): array {
     $page = max(1, $page);
-    $perPage = max(1, min(100, $perPage));
+    $perPage = max(1, min(200, $perPage));
     $offset = ($page - 1) * $perPage;
     return ['limit' => $perPage, 'offset' => $offset];
 }

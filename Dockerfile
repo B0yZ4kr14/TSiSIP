@@ -9,6 +9,7 @@ RUN apt-get update \
     gcc make bison flex \
     libpq-dev libssl-dev \
     libwebsockets-dev \
+    libmicrohttpd-dev \
     pkg-config libncurses-dev \
  && rm -rf /var/lib/apt/lists/*
 
@@ -17,15 +18,15 @@ RUN git clone --depth 1 --branch ${OPENSIPS_VERSION} https://github.com/OpenSIPS
 
 WORKDIR /usr/src/opensips
 # Build with standard modules including db_postgres, auth, dialog, dispatcher, rtpengine, topology_hiding
-RUN make all include_modules="db_postgres auth auth_db dialog dispatcher rtpengine topology_hiding permissions sqlops rr tm maxfwd sipmsgops signaling sl proto_udp proto_tcp proto_ws proto_wss pike ratelimit userblacklist tls_mgm tls_openssl proto_tls acc" \
- && make prefix=/usr/local install include_modules="db_postgres auth auth_db dialog dispatcher rtpengine topology_hiding permissions sqlops rr tm maxfwd sipmsgops signaling sl proto_udp proto_tcp proto_ws proto_wss pike ratelimit userblacklist tls_mgm tls_openssl proto_tls acc"
+RUN make all include_modules="db_postgres auth auth_db dialog dispatcher rtpengine topology_hiding permissions sqlops rr tm maxfwd sipmsgops signaling sl proto_udp proto_tcp proto_ws proto_wss pike ratelimit userblacklist tls_mgm tls_openssl proto_tls acc httpd mi_http" \
+ && make prefix=/usr/local install include_modules="db_postgres auth auth_db dialog dispatcher rtpengine topology_hiding permissions sqlops rr tm maxfwd sipmsgops signaling sl proto_udp proto_tcp proto_ws proto_wss pike ratelimit userblacklist tls_mgm tls_openssl proto_tls acc httpd mi_http"
 
 # --- Runtime image ---
 FROM debian:bookworm-slim@sha256:67b30a61dc87758f0caf819646104f29ecbda97d920aaf5edc834128ac8493d3
 ENV DEBIAN_FRONTEND=noninteractive
 
 RUN apt-get update \
- && apt-get install -y --no-install-recommends ca-certificates gettext-base libpq5 libssl3 netcat-openbsd procps \
+ && apt-get install -y --no-install-recommends ca-certificates gettext-base libpq5 libssl3 libmicrohttpd12 netcat-openbsd procps \
  && rm -rf /var/lib/apt/lists/*
 
 COPY --from=builder /usr/local/sbin/opensips /usr/local/sbin/opensips
@@ -39,6 +40,8 @@ COPY docker/entrypoint.sh /entrypoint.sh
 RUN chmod +x /entrypoint.sh
 
 EXPOSE 5060/udp 5060/tcp 5061/tcp
+# MI HTTP port (internal Docker networks only — not published to host by default)
+EXPOSE 8888/tcp
 ENTRYPOINT ["/entrypoint.sh"]
 CMD ["/usr/local/sbin/opensips", "-F", "-f", "/etc/opensips/opensips.cfg", "-m", "512", "-M", "32"]
 

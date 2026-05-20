@@ -52,6 +52,13 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                         ':description' => $description,
                     ]);
                     $success = _('Dispatcher destination added.');
+                    logAuditEvent('DISPATCHER_CREATE', 'dispatcher', $destination, true, [
+                        'setid'       => $setid,
+                        'state'       => $state,
+                        'weight'      => $weight,
+                        'priority'    => $priority,
+                        'description' => $description,
+                    ]);
                 } catch (PDOException $e) {
                     $error = _('Failed to add destination: ') . $e->getMessage();
                 }
@@ -87,6 +94,14 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                         ':description' => $description,
                     ]);
                     $success = _('Dispatcher destination updated.');
+                    logAuditEvent('DISPATCHER_UPDATE', 'dispatcher', $destination, true, [
+                        'id'          => $id,
+                        'setid'       => $setid,
+                        'state'       => $state,
+                        'weight'      => $weight,
+                        'priority'    => $priority,
+                        'description' => $description,
+                    ]);
                 } catch (PDOException $e) {
                     $error = _('Failed to update: ') . $e->getMessage();
                 }
@@ -97,6 +112,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                 $stmt = $pdo->prepare("DELETE FROM dispatcher WHERE id = :id");
                 $stmt->execute([':id' => $id]);
                 $success = _('Dispatcher destination deleted.');
+                logAuditEvent('DISPATCHER_DELETE', 'dispatcher', (string)$id, true);
             }
         } elseif ($action === 'toggle') {
             $id    = intval($_POST['id'] ?? 0);
@@ -105,6 +121,9 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                 $stmt = $pdo->prepare("UPDATE dispatcher SET state = :state WHERE id = :id");
                 $stmt->execute([':id' => $id, ':state' => $state]);
                 $success = _('State toggled.');
+                logAuditEvent('DISPATCHER_TOGGLE', 'dispatcher', (string)$id, true, [
+                    'state' => $state,
+                ]);
             }
         }
     }

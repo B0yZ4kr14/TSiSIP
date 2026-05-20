@@ -5,6 +5,8 @@
 
 require_once __DIR__ . '/common/config.php';
 
+logAuditEvent('LOGOUT', 'ocp_user', $_SESSION['ocp_username'] ?? 'unknown', true);
+
 $_SESSION = [];
 
 if (ini_get('session.use_cookies')) {

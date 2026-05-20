@@ -25,7 +25,8 @@ db_default_url="postgres://${DB_USER}:${DB_PASSWORD}@${DB_HOST}:5432/${DB_NAME}"
 mpath="/usr/local/lib64/opensips/modules/"
 
 # M5: Explicit shared memory size (512 MB) for dialog state, pike, ratelimit tables
-shm_mem_size = 512
+# NOTE: shm_mem_size is a startup parameter (-m 512) in OpenSIPS 3.6,
+# not a config file variable. Set via CMD in Dockerfile/docker-compose.yml.
 
 # --- Modules ---
 loadmodule "db_postgres.so"
@@ -57,7 +58,28 @@ loadmodule "proto_ws.so"
 loadmodule "proto_wss.so"
 loadmodule "acc.so"
 
+# --- BEGIN TLS ROTATION WAVE 3 ---
+# httpd provides the HTTP server infrastructure; mi_http exposes the MI interface over it
+loadmodule "httpd.so"
+loadmodule "mi_http.so"
+# --- END TLS ROTATION WAVE 3 ---
+
+# --- BEGIN TRUNK INTEGRATION WAVE 2: Module Loading ---
+# UAC modules for trunk provider registration and outbound authentication
+loadmodule "uac.so"
+loadmodule "uac_auth.so"
+loadmodule "uac_registrant.so"
+# --- END TRUNK INTEGRATION WAVE 2: Module Loading ---
+
 # --- Module parameters ---
+
+# --- BEGIN TLS ROTATION WAVE 3 ---
+# httpd binds to internal Docker networks only (port 8888 is NOT published in compose)
+modparam("httpd", "ip", "${OPENSIPS_LISTEN_IP}")
+modparam("httpd", "port", 8888)
+# mi_http root path for MI commands
+modparam("mi_http", "root", "/mi")
+# --- END TLS ROTATION WAVE 3 ---
 
 # auth
 modparam("auth", "nonce_expire", 30)
@@ -110,16 +132,19 @@ modparam("topology_hiding", "force_dialog", 1)
 modparam("topology_hiding", "th_callid_passwd", "${TOPOLOGY_SECRET}")
 modparam("topology_hiding", "th_callid_prefix", "TSISIP_")
 
+# --- BEGIN TLS ROTATION WAVE 3 ---
 # tls_mgm - OpenSIPS 3.6 syntax: server_domain defines the domain name,
 # then certificate/private_key/ca_list are separate modparams using [domain]/path syntax.
+# Updated to use shared tls_certs volume for automated certificate rotation.
 modparam("tls_mgm", "server_domain", "default")
-modparam("tls_mgm", "certificate", "[default]/etc/opensips/tls/server.crt")
-modparam("tls_mgm", "private_key", "[default]/etc/opensips/tls/server.key")
-modparam("tls_mgm", "ca_list", "[default]/etc/opensips/tls/ca.crt")
+modparam("tls_mgm", "certificate", "[default]/certs/live/server.crt")
+modparam("tls_mgm", "private_key", "[default]/certs/live/server.key")
+modparam("tls_mgm", "ca_list", "[default]/certs/live/ca.crt")
 modparam("tls_mgm", "verify_cert", "[default]1")
 modparam("tls_mgm", "require_cert", "[default]0")
 modparam("tls_mgm", "ciphers_list", "[default]ECDHE-ECDSA-AES128-GCM-SHA256:ECDHE-RSA-AES128-GCM-SHA256:ECDHE-ECDSA-AES256-GCM-SHA384:ECDHE-RSA-AES256-GCM-SHA384:TLS_AES_128_GCM_SHA256:TLS_AES_256_GCM_SHA384:!CBC:!aNULL:!MD5:!DSS")
 modparam("tls_mgm", "tls_method", "[default]TLSv1_2:TLSv1_3")
+# --- END TLS ROTATION WAVE 3 ---
 
 # tm
 modparam("tm", "fr_timeout", 5)
@@ -158,6 +183,32 @@ modparam("cachedb_local", "cachedb_url", "local:///")
 modparam("userblacklist", "db_url", "postgres://${DB_USER}:${DB_PASSWORD}@${DB_HOST}:5432/${DB_NAME}")
 modparam("userblacklist", "db_table", "userblacklist")
 modparam("userblacklist", "use_domain", 0)
+
+# --- BEGIN TRUNK INTEGRATION WAVE 2: UAC Registrant Configuration ---
+# uac_registrant: auto-REGISTER to trunk providers requiring registration
+modparam("uac_registrant", "db_url", "postgres://${DB_USER}:${DB_PASSWORD}@${DB_HOST}:5432/${DB_NAME}")
+modparam("uac_registrant", "table_name", "sip_trunk_registrations")
+modparam("uac_registrant", "timer_interval", 60)
+# --- END TRUNK INTEGRATION WAVE 2: UAC Registrant Configuration ---
+
+# --- BEGIN TRUNK INTEGRATION WAVE 2: UAC Auth Configuration ---
+# uac_auth: per-trunk digest authentication via AVPs
+modparam("uac_auth", "auth_username_avp", "$avp(trunk_auth_user)")
+modparam("uac_auth", "auth_password_avp", "$avp(trunk_auth_pass)")
+modparam("uac_auth", "auth_realm_avp", "$avp(trunk_auth_realm)")
+# --- END TRUNK INTEGRATION WAVE 2: UAC Auth Configuration ---
+
+# --- BEGIN TRUNK INTEGRATION WAVE 2: Dispatcher Trunk Probe Documentation ---
+# Trunk health probes use dispatcher setid 100.
+# Per-destination ping_interval should be set via dispatcher table attrs column
+# (e.g., attrs='ping_interval=30;ping_from=sip:healthcheck@tsisip') or MI.
+# Global ds_probing_threshold=5 applies; setid-specific destinations are
+# populated via SQL insert into dispatcher(setid=100) or MI ds_reload.
+# --- END TRUNK INTEGRATION WAVE 2: Dispatcher Trunk Probe Documentation ---
+
+# --- BEGIN TRUNK INTEGRATION WAVE 3: ACC CDR Enrichment ---
+modparam("acc", "extra_fields", "db: trunk_provider_id; trunk_name; direction")
+# --- END TRUNK INTEGRATION WAVE 3: ACC CDR Enrichment ---
 
 
 # --- Request Route ---
@@ -268,7 +319,10 @@ route {
     # Authentication
     route(AUTH);
 
-    # Header-based routing
+    # Trunk routing for outbound calls to non-local domains
+    route(TRUNK_ROUTING);
+
+    # Header-based routing (local tenant domains)
     route(HEADER_ROUTING);
 
     # INVITE-specific handling: dialog + topology hiding + media
@@ -547,6 +601,193 @@ route[TRUNK_VERIFY] {
         xlog("L_INFO", "TRUNK_VERIFY: trunk $si authenticated via mTLS CN=$tls_peer_subject_cn\n");
     }
     $avp(trunk_check) = NULL;
+}
+
+route[TRUNK_ROUTING] {
+    # --- BEGIN TRUNK INTEGRATION WAVE 3: Outbound Trunk Routing ---
+    # Only process INVITEs for trunk routing
+    if (!is_method("INVITE")) {
+        return;
+    }
+
+    # Check if destination is a local tenant domain
+    if (!sql_query_one("SELECT 1 FROM tenants WHERE sip_domain = '$rd' AND enabled = true LIMIT 1", "$var(is_local_domain)")) {
+        xlog("L_ERR", "TRUNK_ROUTING: DB unavailable during local domain check for $rd\n");
+        sl_send_reply(480, "Temporarily Unavailable");
+        exit;
+    }
+
+    if ($var(is_local_domain) != 0) {
+        # Local domain; continue to HEADER_ROUTING -> Asterisk
+        return;
+    }
+
+    # External destination: select highest-priority enabled trunk
+    $var(trunk_query) = "SELECT id, name, host, port, transport, auth_username, from_domain, caller_id_prefix, srtp_mode, max_cps, priority FROM sip_trunk_providers WHERE enabled = true ORDER BY priority ASC LIMIT 1";
+    if (!sql_query_one($var(trunk_query), "$var(trunk_id);$var(trunk_name);$var(trunk_host);$var(trunk_port);$var(trunk_transport);$var(trunk_auth_user);$var(trunk_from_domain);$var(trunk_cid_prefix);$var(trunk_srtp);$var(trunk_cps);$var(trunk_priority)")) {
+        xlog("L_ERR", "TRUNK_ROUTING: DB unavailable during trunk selection\n");
+        sl_send_reply(503, "No Trunk Available");
+        exit;
+    }
+
+    if ($var(trunk_id) == NULL || $var(trunk_id) == 0) {
+        xlog("L_WARN", "TRUNK_ROUTING: no enabled trunk provider available for $ru\n");
+        sl_send_reply(503, "No Trunk Available");
+        exit;
+    }
+
+    # Per-trunk CPS rate limiting (T3.3)
+    if (!rl_check("trunk_$var(trunk_id)", $var(trunk_cps), "TAILDROP")) {
+        xlog("L_WARN", "TRUNK_ROUTING: trunk $var(trunk_name) CPS exceeded (limit=$var(trunk_cps))\n");
+        sl_send_reply(503, "Trunk Capacity Exceeded");
+        exit;
+    }
+
+    # Mark direction and trunk metadata for CDR (T3.5)
+    $avp(direction) = "outbound";
+    $avp(trunk_provider_id) = $var(trunk_id);
+
+    # Create dialog for trunk call
+    if (!create_dialog("B")) {
+        sl_send_reply(500, "Internal Server Error");
+        exit;
+    }
+
+    # Enable CDR accounting
+    do_accounting("db", "cdr");
+
+    # Topology hiding
+    topology_hiding("C");
+
+    # Rewrite R-URI to trunk provider destination
+    $ru = "sip:" + $rU + "@" + $var(trunk_host) + ":" + $var(trunk_port);
+    if ($var(trunk_transport) == "tls") {
+        $ru = $ru + ";transport=tls";
+    } else if ($var(trunk_transport) == "tcp") {
+        $ru = $ru + ";transport=tcp";
+    }
+
+    # Apply caller ID prefix if configured
+    if ($var(trunk_cid_prefix) != NULL && $var(trunk_cid_prefix) != "") {
+        uac_replace_from("$var(trunk_cid_prefix)$fU", "sip:$var(trunk_cid_prefix)$fU@$fd");
+    }
+
+    # Override From domain if configured
+    if ($var(trunk_from_domain) != NULL && $var(trunk_from_domain) != "") {
+        uac_replace_from("$fU", "sip:$fU@$var(trunk_from_domain)");
+    }
+
+    # Set auth realm for potential UAC auth challenge
+    if ($var(trunk_auth_user) != NULL && $var(trunk_auth_user) != "") {
+        $avp(trunk_auth_realm) = $var(trunk_host);
+        # NOTE: $avp(trunk_auth_pass) must be populated by runtime credential resolver
+        # as auth_password_encrypted is pgcrypto-encrypted and not directly usable.
+    }
+
+    # Set branch route for SRTP handling (T3.4)
+    t_on_branch("BRANCH_TRUNK_SRTP");
+
+    # Set failure route for trunk failover (T3.2)
+    t_on_failure("TRUNK_FAILOVER");
+
+    xlog("L_INFO", "TRUNK_ROUTING: routing to trunk $var(trunk_name) ($var(trunk_host):$var(trunk_port)) for $ru\n");
+
+    # Add Record-Route for dialog path
+    record_route();
+
+    # Relay statefully
+    if (!t_relay()) {
+        sl_reply_error();
+    }
+    exit;
+    # --- END TRUNK INTEGRATION WAVE 3: Outbound Trunk Routing ---
+}
+
+failure_route[TRUNK_FAILOVER] {
+    # --- BEGIN TRUNK INTEGRATION WAVE 3: Trunk Failover ---
+    # Handle trunk auth challenge (401|407)
+    if (t_check_status("401|407")) {
+        if ($var(trunk_auth_user) != NULL && $var(trunk_auth_user) != "") {
+            if (uac_auth("MD5,SHA-256")) {
+                t_on_failure("TRUNK_FAILOVER");
+                t_on_branch("BRANCH_TRUNK_SRTP");
+                record_route();
+                if (!t_relay()) {
+                    t_reply(500, "Server Error");
+                }
+                exit;
+            }
+            xlog("L_ERR", "TRUNK_FAILOVER: uac_auth failed for trunk $var(trunk_name)\n");
+        }
+    }
+
+    # On transport/failure, try next priority trunk
+    if (t_check_status("408|480|500|502|503|504")) {
+        $var(trunk_query) = "SELECT id, name, host, port, transport, auth_username, from_domain, caller_id_prefix, srtp_mode, max_cps, priority FROM sip_trunk_providers WHERE enabled = true AND priority > '$var(trunk_priority)' ORDER BY priority ASC LIMIT 1";
+        if (!sql_query_one($var(trunk_query), "$var(trunk_id);$var(trunk_name);$var(trunk_host);$var(trunk_port);$var(trunk_transport);$var(trunk_auth_user);$var(trunk_from_domain);$var(trunk_cid_prefix);$var(trunk_srtp);$var(trunk_cps);$var(trunk_priority)")) {
+            xlog("L_ERR", "TRUNK_FAILOVER: DB unavailable during failover selection\n");
+            exit;
+        }
+
+        if ($var(trunk_id) != NULL && $var(trunk_id) != 0) {
+            # Update R-URI to next trunk
+            $ru = "sip:" + $rU + "@" + $var(trunk_host) + ":" + $var(trunk_port);
+            if ($var(trunk_transport) == "tls") {
+                $ru = $ru + ";transport=tls";
+            } else if ($var(trunk_transport) == "tcp") {
+                $ru = $ru + ";transport=tcp";
+            }
+
+            # Apply caller ID prefix if configured
+            if ($var(trunk_cid_prefix) != NULL && $var(trunk_cid_prefix) != "") {
+                uac_replace_from("$var(trunk_cid_prefix)$fU", "sip:$var(trunk_cid_prefix)$fU@$fd");
+            }
+
+            # Override From domain if configured
+            if ($var(trunk_from_domain) != NULL && $var(trunk_from_domain) != "") {
+                uac_replace_from("$fU", "sip:$fU@$var(trunk_from_domain)");
+            }
+
+            # Set auth realm for potential UAC auth challenge
+            if ($var(trunk_auth_user) != NULL && $var(trunk_auth_user) != "") {
+                $avp(trunk_auth_realm) = $var(trunk_host);
+            }
+
+            t_on_branch("BRANCH_TRUNK_SRTP");
+            t_on_failure("TRUNK_FAILOVER");
+
+            xlog("L_INFO", "TRUNK_FAILOVER: failing over to trunk $var(trunk_name) ($var(trunk_host):$var(trunk_port))\n");
+
+            record_route();
+            if (!t_relay()) {
+                t_reply(500, "Server Error");
+            }
+            exit;
+        }
+    }
+
+    xlog("L_ERR", "TRUNK_FAILOVER: all trunk targets failed for $ru\n");
+    # --- END TRUNK INTEGRATION WAVE 3: Trunk Failover ---
+}
+
+branch_route[BRANCH_TRUNK_SRTP] {
+    # --- BEGIN TRUNK INTEGRATION WAVE 3: Trunk SRTP Branch Route ---
+    xlog("L_INFO", "BRANCH_TRUNK_SRTP: branch to trunk $var(trunk_name) ($du)\n");
+
+    if ($var(trunk_srtp) == "sdes") {
+        if (!rtpengine_offer("RTP/SAVP replace-origin replace-session-connection")) {
+            xlog("L_ERR", "BRANCH_TRUNK_SRTP: SRTP offer failed for $ci\n");
+        }
+    } else if ($var(trunk_srtp) == "dtls") {
+        if (!rtpengine_offer("UDP/TLS/RTP/SAVP replace-origin replace-session-connection")) {
+            xlog("L_ERR", "BRANCH_TRUNK_SRTP: DTLS-SRTP offer failed for $ci\n");
+        }
+    } else {
+        if (!rtpengine_offer("replace-origin replace-session-connection")) {
+            xlog("L_ERR", "BRANCH_TRUNK_SRTP: RTP offer failed for $ci\n");
+        }
+    }
+    # --- END TRUNK INTEGRATION WAVE 3: Trunk SRTP Branch Route ---
 }
 
 route[RELAY] {

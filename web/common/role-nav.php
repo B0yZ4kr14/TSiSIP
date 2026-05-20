@@ -12,6 +12,7 @@ if ($userRole === 'admin' || $userRole === 'devops') {
         'cdr-viewer'   => _('CDR Viewer'),
         'dispatcher'   => _('Dispatcher Targets'),
         'rtpengine'    => _('RTPengine Sessions'),
+        'audit-log'    => _('Audit Log'),
     ];
 }
 

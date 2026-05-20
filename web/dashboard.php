@@ -6,6 +6,7 @@
 require_once __DIR__ . '/common/config.php';
 requireAuth();
 checkPasswordChange();
+logAuditEvent('CONFIG_VIEW', 'system', 'dashboard', true);
 require_once __DIR__ . '/common/header.php';
 
 $roleLabels = [
@@ -27,6 +28,7 @@ if ($userRole === 'admin' || $userRole === 'devops') {
     $systemLinks = [
         ['url' => 'dispatcher.php',  'label' => _('Dispatcher Targets'),  'icon' => 'route'],
         ['url' => 'rtpengine.php',   'label' => _('RTPengine Sessions'),  'icon' => 'broadcast'],
+        ['url' => 'audit-log.php',   'label' => _('Audit Log & Compliance'), 'icon' => 'shield'],
     ];
 }
 

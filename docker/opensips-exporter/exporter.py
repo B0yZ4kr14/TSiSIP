@@ -163,7 +163,7 @@ def update_metrics():
         })
 
     # T3.2: TLS certificate expiry
-    cert_path = os.environ.get('TLS_CERT_PATH', '/run/secrets/server.crt')
+    cert_path = os.environ.get('TLS_CERT_PATH', '/certs/live/server.crt')
     if os.path.exists(cert_path):
         try:
             result = subprocess.run(

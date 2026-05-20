@@ -43,31 +43,31 @@
 **Description**: Update `opensips/opensips.cfg.tpl` to load `uac.so`, `uac_auth.so`, and `uac_registrant.so` after the existing module block. Gate loading behind a comment indicating these are required only when trunk providers are configured.
 **Files affected**: `opensips/opensips.cfg.tpl`
 **Depends on**: T1.5
-**Status**: [ ]
+**Status**: [x]
 
 ### T2.2: Configure uac_registrant module parameters
 **Description**: Add `modparam("uac_registrant", "db_url", DB_URL)`, `modparam("uac_registrant", "table_name", "sip_trunk_registrations")`, and `modparam("uac_registrant", "timer_interval", 60)` to `opensips/opensips.cfg.tpl`.
 **Files affected**: `opensips/opensips.cfg.tpl`
 **Depends on**: T2.1
-**Status**: [ ]
+**Status**: [x]
 
 ### T2.3: Configure dispatcher trunk probe set
 **Description**: Add dispatcher configuration for trunk health probe set (setid 100). Set `ds_ping_method=OPTIONS`, `ds_ping_interval=30`, `ds_probing_mode=1`, and `ds_probing_threshold=3` for this set. Document that actual destinations are populated via `dispatcher` table inserts or MI commands.
 **Files affected**: `opensips/opensips.cfg.tpl`
 **Depends on**: T2.2
-**Status**: [ ]
+**Status**: [x]
 
 ### T2.4: Update entrypoint for trunk secret
 **Description**: Update `docker/entrypoint.sh` to read the trunk credential encryption secret from `/run/secrets/trunk_cred_key` (if present) and export it as an environment variable for config substitution.
 **Files affected**: `docker/entrypoint.sh`
 **Depends on**: T2.1
-**Status**: [ ]
+**Status**: [x]
 
 ### T2.5: Validate OpenSIPS config syntax
 **Description**: Build the OpenSIPS image and run `opensips -c -f /etc/opensips/opensips.cfg` inside a container with all required secrets and environment variables mounted.
 **Files affected**: `opensips/opensips.cfg.tpl`, `docker/entrypoint.sh`
 **Depends on**: T2.3, T2.4
-**Status**: [ ]
+**Status**: [x]
 
 ---
 
@@ -77,31 +77,31 @@
 **Description**: Add `route[TRUNK_ROUTING]` to `opensips/opensips.cfg.tpl`. It checks whether the destination domain exists in `tenants`; if not, queries `sip_trunk_providers` for the highest-priority enabled trunk, applies CPS rate limiting, rewrites the R-URI, applies caller ID prefix and From domain override, and sets SRTP branch route and failure route.
 **Files affected**: `opensips/opensips.cfg.tpl`
 **Depends on**: T2.5
-**Status**: [ ]
+**Status**: [x]
 
 ### T3.2: Implement TRUNK_FAILOVER failure route
 **Description**: Add `failure_route[TRUNK_FAILOVER]` that triggers on `408|500|502|503|504`. On failure, query the next priority trunk from `sip_trunk_providers`, update `$ru`, and re-attempt relay with a new branch route. If no trunks remain, forward the final failure reply.
 **Files affected**: `opensips/opensips.cfg.tpl`
 **Depends on**: T3.1
-**Status**: [ ]
+**Status**: [x]
 
 ### T3.3: Implement per-trunk CPS rate limiting
 **Description**: In `route[TRUNK_ROUTING]`, call `rl_check("trunk_$avp(trunk_id)", $avp(trunk_cps), "TAILDROP")` before relay. On exceed, return `503 Service Unavailable` and increment a Prometheus-compatible counter.
 **Files affected**: `opensips/opensips.cfg.tpl`
 **Depends on**: T3.1
-**Status**: [ ]
+**Status**: [x]
 
 ### T3.4: Add SRTP branch route for trunk calls
 **Description**: Add `branch_route[BRANCH_TRUNK_SRTP]` that sets the correct RTPengine offer flags based on `$avp(trunk_srtp)`: none uses plain RTP, sdes uses `RTP/SAVP`, dtls uses `UDP/TLS/RTP/SAVP`.
 **Files affected**: `opensips/opensips.cfg.tpl`
 **Depends on**: T3.1
-**Status**: [ ]
+**Status**: [x]
 
 ### T3.5: Enrich CDR with trunk metadata
 **Description**: Update the `acc` module configuration in `opensips/opensips.cfg.tpl` to include `$avp(trunk_id)`, `$avp(trunk_name)`, and `$avp(direction)` in logged CDR fields. Ensure `do_accounting("db", "cdr")` captures these AVPs.
 **Files affected**: `opensips/opensips.cfg.tpl`
 **Depends on**: T3.1
-**Status**: [ ]
+**Status**: [x]
 
 ### T3.6: Wire TRUNK_ROUTING into main request route
 **Description**: Update the main `route{}` in `opensips/opensips.cfg.tpl` to call `route(TRUNK_ROUTING)` for authenticated INVITEs before `route(HEADER_ROUTING)`. Ensure local tenant domains bypass trunk routing.

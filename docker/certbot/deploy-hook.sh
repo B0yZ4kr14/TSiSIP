@@ -23,10 +23,18 @@ mv -f "$TMP_CERT"  "${CERT_DIR}/server.crt"
 mv -f "$TMP_KEY"   "${CERT_DIR}/server.key"
 mv -f "$TMP_CHAIN" "${CERT_DIR}/chain.pem"
 
+# Also update ca.crt expected by OpenSIPS tls_mgm
+cp -f "${CERT_DIR}/chain.pem" "${CERT_DIR}/ca.crt.new"
+mv -f "${CERT_DIR}/ca.crt.new" "${CERT_DIR}/ca.crt"
+
+# Set secure permissions
+chmod 644 "${CERT_DIR}/server.crt" "${CERT_DIR}/chain.pem" "${CERT_DIR}/ca.crt"
+chmod 600 "${CERT_DIR}/server.key"
+
 # Trigger OpenSIPS reload via MI HTTP
 OPENSIPS_MI_URL="${OPENSIPS_MI_URL:-http://opensips:8888/mi}"
 
-if curl -fsSL -X POST "${OPENSIPS_MI_URL}/tls_reload" >/dev/null 2>&1; then
+if curl -fsSL --max-time 10 "${OPENSIPS_MI_URL}/tls_reload" >/dev/null 2>&1; then
     echo "[CERTBOT] Deployed new certificate and triggered tls_reload via MI HTTP"
     exit 0
 fi

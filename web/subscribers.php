@@ -54,6 +54,11 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                         ':enabled'       => $enabled,
                     ]);
                     $success = _('Subscriber created successfully.');
+                    logAuditEvent('SUBSCRIBER_CREATE', 'subscriber', $username, true, [
+                        'domain'    => $domain,
+                        'tenant_id' => $tenantId,
+                        'enabled'   => $enabled,
+                    ]);
                 } catch (PDOException $e) {
                     $error = _('Failed to create subscriber: ') . $e->getMessage();
                 }
@@ -117,6 +122,11 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                         ]);
                     }
                     $success = _('Subscriber updated successfully.');
+                    logAuditEvent('SUBSCRIBER_UPDATE', 'subscriber', $username, true, [
+                        'domain'    => $domain,
+                        'tenant_id' => $tenantId,
+                        'enabled'   => $enabled,
+                    ]);
                 } catch (PDOException $e) {
                     $error = _('Failed to update subscriber: ') . $e->getMessage();
                 }
@@ -128,6 +138,9 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                 $stmt = $pdo->prepare("UPDATE subscriber SET enabled = :enabled, modified_at = NOW() WHERE id = :id");
                 $stmt->execute([':id' => $id, ':enabled' => ($enabled === '1' ? true : false)]);
                 $success = _('Subscriber status updated.');
+                logAuditEvent('SUBSCRIBER_TOGGLE', 'subscriber', $id, true, [
+                    'enabled' => ($enabled === '1' ? true : false),
+                ]);
             }
         }
     }

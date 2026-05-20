@@ -17,6 +17,8 @@ if (session_status() === PHP_SESSION_NONE) {
     session_start();
 }
 
+require_once __DIR__ . '/audit.php';
+
 // --- Database Configuration ---
 $dbHost = getenv('DB_HOST') ?: 'postgres';
 $dbName = getenv('DB_NAME') ?: 'opensips';
@@ -74,6 +76,7 @@ function authenticateUser(string $username, string $password): ?array {
     $user = $stmt->fetch();
 
     if (!$user) {
+        logAuditEvent('LOGIN', 'ocp_user', $username, false, ['reason' => 'User not found']);
         return null;
     }
 
@@ -81,11 +84,13 @@ function authenticateUser(string $username, string $password): ?array {
         $lockedUntil = new DateTime($user['locked_until']);
         $now = new DateTime('now', new DateTimeZone('UTC'));
         if ($lockedUntil > $now) {
+            logAuditEvent('LOGIN', 'ocp_user', $username, false, ['reason' => 'Account locked']);
             return null;
         }
     }
 
     if (!$user['enabled']) {
+        logAuditEvent('LOGIN', 'ocp_user', $username, false, ['reason' => 'Account disabled']);
         return null;
     }
 
@@ -99,6 +104,7 @@ function authenticateUser(string $username, string $password): ?array {
         )->execute([':id' => $user['id']]);
 
         logLoginAttempt($user['username'], 'failure', 'Invalid password');
+        logAuditEvent('LOGIN', 'ocp_user', $username, false, ['reason' => 'Invalid password']);
         return null;
     }
 
@@ -112,6 +118,7 @@ function authenticateUser(string $username, string $password): ?array {
     )->execute([':id' => $user['id']]);
 
     logLoginAttempt($user['username'], 'success');
+    logAuditEvent('LOGIN', 'ocp_user', $user['username'], true);
 
     return [
         'id'       => $user['id'],
