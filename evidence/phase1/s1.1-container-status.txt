@@ -1,0 +1,27 @@
+Warning: Permanently added '100.111.74.69' (ED25519) to the list of known hosts.
+NAME                      IMAGE                                       COMMAND                  SERVICE          CREATED        STATUS                  PORTS
+tsisip-asterisk-pbx-1-1   ghcr.io/b0yz4kr14/tsisip/asterisk:latest    "asterisk -f -vvv"       asterisk-pbx-1   26 hours ago   Up 26 hours (healthy)   5038/tcp, 5060/tcp, 5060/udp
+tsisip-asterisk-pbx-2-1   ghcr.io/b0yz4kr14/tsisip/asterisk:latest    "asterisk -f -vvv"       asterisk-pbx-2   26 hours ago   Up 26 hours (healthy)   5038/tcp, 5060/tcp, 5060/udp
+tsisip-backup-1           ghcr.io/b0yz4kr14/tsisip/backup:latest      "/usr/local/bin/entr…"   backup           10 hours ago   Up 10 hours (healthy)   5432/tcp, 127.0.0.1:9101->9101/tcp
+tsisip-opensips-1         ghcr.io/b0yz4kr14/tsisip/opensips:latest    "/entrypoint.sh /usr…"   opensips         10 hours ago   Up 10 hours (healthy)   0.0.0.0:5060-5061->5060-5061/tcp, 0.0.0.0:5060->5060/udp, [::]:5060-5061->5060-5061/tcp, [::]:5060->5060/udp
+tsisip-postgres-1         ghcr.io/b0yz4kr14/tsisip/postgres:latest    "docker-entrypoint.s…"   postgres         10 hours ago   Up 10 hours (healthy)   5432/tcp
+tsisip-rtpengine-1        ghcr.io/b0yz4kr14/tsisip/rtpengine:latest   "rtpengine --interfa…"   rtpengine        31 hours ago   Up 31 hours (healthy)   11000-20000/udp, 0.0.0.0:10000-10999->10000-10999/udp, [::]:10000-10999->10000-10999/udp, 22222/udp
+Warning: Permanently added '100.111.74.69' (ED25519) to the list of known hosts.
+failed to execute template: template: :1:14: executing "" at <.RestartCount>: can't evaluate field RestartCount in type *formatter.ContainerContext
+Warning: Permanently added '100.111.74.69' (ED25519) to the list of known hosts.
+/tsisip-ocp-1: restart=0
+/orthoplus-app: restart=0
+/orthoplus-agent: restart=0
+/orthoplus-backend: restart=0
+/orthoplus-redis-exporter: restart=0
+/orthoplus-grafana: restart=0
+/orthoplus-db: restart=0
+/orthoplus-redis: restart=0
+/orthoplus-prometheus: restart=0
+/orthoplus-node-exporter: restart=0
+/tsisip-opensips-1: restart=0
+/tsisip-backup-1: restart=0
+/tsisip-postgres-1: restart=0
+/tsisip-asterisk-pbx-2-1: restart=0
+/tsisip-asterisk-pbx-1-1: restart=0
+/tsisip-rtpengine-1: restart=0

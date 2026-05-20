@@ -1,0 +1,56 @@
+ls: cannot access '/opt/tsisip/backups/': No such file or directory
+---SECRETS---
+total 44
+drwxr-xr-x  2 tsi tsi 4096 May 16 23:33 .
+drwxr-xr-x 30 tsi tsi 4096 May 19 22:26 ..
+-rw-r--r--  1 tsi tsi   32 May 17 20:00 auth_secret
+-rw-r--r--  1 tsi tsi   41 May 17 21:04 backup_encryption_key
+-rw-r--r--  1 tsi tsi 1285 May 18 00:58 ca.crt
+-rw-r--r--  1 tsi tsi    1 May 18 00:58 crl.pem
+-rw-r--r--  1 tsi tsi   12 May 16 23:33 db_password
+-rw-r--r--  1 tsi tsi   42 May 17 21:04 grafana_admin_password
+-rw-r--r--  1 tsi tsi 1395 May 18 00:58 server.crt
+-rw-r--r--  1 tsi tsi 1704 May 18 00:58 server.key
+-rw-r--r--  1 tsi tsi   33 May 16 23:33 topology_secret
+ls: cannot access '/backups/': No such file or directory
+total 12
+drwxr-xr-x 2 root root 4096 Mar  2 21:50 .
+drwxr-xr-x 1 root root 4096 May  5 00:00 ..
+#!/bin/bash
+set -euo pipefail
+
+# TSiSIP PostgreSQL Logical Backup Script
+# Creates compressed, encrypted pg_dump backups
+
+TIMESTAMP=$(date +%Y%m%d_%H%M%S)
+BACKUP_FILE="opensips_${TIMESTAMP}.dump"
+BACKUP_DIR="${BACKUP_DIR:-/backup/daily}"
+WAL_DIR="${WAL_DIR:-/backup/wal}"
+ENCRYPTION_KEY_FILE="${ENCRYPTION_KEY_FILE:-/run/secrets/backup_encryption_key}"
+RETENTION_DAYS="${BACKUP_RETENTION_DAYS:-30}"
+
+# Ensure directories exist
+mkdir -p "$BACKUP_DIR" "$WAL_DIR"
+
+log() {
+    echo "[$(date '+%Y-%m-%d %H:%M:%S')] $*"
+}
+
+log "Starting backup: $BACKUP_FILE"
+
+# Create logical backup with custom format and compression
+# Use --lock-wait-timeout to avoid long locks
+# Use REPEATABLE READ for consistency
+PGPASSWORD="$(cat "$PGPASSWORD_FILE" 2>/dev/null || echo '')" \
+pg_dump -h "$PGHOST" -p "$PGPORT" -U "$PGUSER" -d "$PGDATABASE" \
+    -Fc -Z9 \
+    --lock-wait-timeout=5000 \
+    --transaction-isolation=repeatable-read \
+total 32
+drwxr-xr-x 2 root root 4096 May 19 17:29 .
+drwxr-xr-x 5 root root 4096 May 20 04:00 ..
+lrwxrwxrwx 1 root root   36 May 19 17:29 latest -> opensips_20260519_172913.dump.gz.enc
+-rw------- 1 root root 5744 May 19 16:28 opensips_20260519_162844.dump.gz.enc
+-rw------- 1 root root   64 May 19 16:28 opensips_20260519_162844.dump.gz.enc.hmac
+-rw------- 1 root root 5744 May 19 17:29 opensips_20260519_172913.dump.gz.enc
+-rw------- 1 root root   64 May 19 17:29 opensips_20260519_172913.dump.gz.enc.hmac
