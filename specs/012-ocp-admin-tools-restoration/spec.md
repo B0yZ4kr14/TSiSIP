@@ -17,12 +17,15 @@ Popperian falsification of the premise "TSiSIP OCP is a theme rebrand of OCP v9"
 
 An operator must have GUI access to subscriber CRUD, CDR viewing, and dispatcher management to fulfill the TSiSIP mission as a multi-tenant SIP edge proxy platform.
 
-## Goals
+## Functional Goals
 
 1. **Subscriber Management** (`subscribers.php`) — Full CRUD on the `subscriber` table with tenant scoping, HA1 hash generation, and role-based access.
 2. **CDR Viewer** (`cdr-viewer.php`) — Read-only filtered query interface on the `cdr` table with date range, tenant, and call status filters.
 3. **Real Dispatcher Management** (`dispatcher.php`) — Replace the current stub with full CRUD on the `dispatcher` table, including set ID grouping and state toggling.
 4. **Documentation Update** — Update all canonical docs to reflect the restored capabilities and remaining limitations.
+
+## Deployment & Closure Goals
+
 5. **VPS Deploy** — Build, push, and deploy the updated OCP image to the TSiAPP VPS.
 6. **GitHub Commit** — Commit all changes with conventional commits.
 
@@ -82,8 +85,8 @@ Subscriber management respects `tenant_id`. Admin sees all tenants; devops sees 
 - [ ] AC9: `dispatcher.php` supports toggle of `state` column (0=active, 1=inactive)
 - [ ] AC10: All pages enforce role-based access (admin/devops only)
 - [ ] AC11: CSRF tokens present on all mutating forms
-- [ ] AC12: Deployed to VPS and validated
-- [ ] AC13: Committed to GitHub with conventional commits
+- [x] AC12: Deployed to VPS and validated
+- [x] AC13: Committed to GitHub with conventional commits
 
 ## References
 

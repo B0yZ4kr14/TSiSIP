@@ -22,6 +22,7 @@
 - [ ] T2.3: Create `web/common/ha1-generator.php`
 - [ ] T2.4: Update `web/common/role-nav.php`
 - [ ] T2.5: Update `web/common/config.php`
+- [ ] T2.6: Create reusable input validation helper (`web/common/validate-input.php`) — length, charset, SQL injection guards per R6
 
 ## Wave 3: Subscriber Management
 - [ ] T3.1: `subscribers.php` — list view with pagination
@@ -30,6 +31,7 @@
 - [ ] T3.4: `subscribers.php` — toggle enabled
 - [ ] T3.5: Tenant dropdown integration
 - [ ] T3.6: CSRF protection on subscribers
+- [ ] T3.7: Integrate `requireRole('devops')` guard on `subscribers.php`
 
 ## Wave 4: CDR Viewer
 - [ ] T4.1: `cdr-viewer.php` — list view with pagination
@@ -37,6 +39,8 @@
 - [ ] T4.3: Tenant filter
 - [ ] T4.4: Call status filter
 - [ ] T4.5: from_user search
+- [ ] T4.6: Integrate `requireRole('devops')` guard on `cdr-viewer.php`
+- [ ] T4.7: Validate `cdr-viewer.php` has no POST handlers or mutating operations (read-only enforcement)
 
 ## Wave 5: Dispatcher Management
 - [ ] T5.1: Rewrite `dispatcher.php` with real DB data
@@ -45,12 +49,13 @@
 - [ ] T5.4: Delete dispatcher with confirmation
 - [ ] T5.5: State toggle (active/inactive)
 - [ ] T5.6: CSRF protection on dispatcher
+- [ ] T5.7: Integrate `requireRole('devops')` guard on `dispatcher.php`
 
 ## Wave 6: QA & Security Review
 - [ ] T6.1: SQL injection audit
 - [ ] T6.2: CSRF review
 - [ ] T6.3: RBAC review
-- [ ] T6.4: HA1 correctness review
+- [ ] T6.4: HA1 correctness review against RFC 3261 (MD5) and RFC 8760 (SHA-256, SHA-512/256)
 - [ ] T6.5: PHP syntax check all new files
 - [ ] T6.6: GitNexus detect-changes
 
@@ -62,7 +67,7 @@
 - [ ] T7.5: Update audit report
 
 ## Wave 8: Build & Deploy
-- [ ] T8.1: Build OCP Docker image
+- [ ] T8.1: Build OCP Docker image (use `TSISIP_IMAGE_TAG` or explicit version tag; avoid `:latest` in production per B13 remediation)
 - [ ] T8.2: Push to GHCR
 - [ ] T8.3: Deploy to VPS
 - [ ] T8.4: Validate acceptance criteria

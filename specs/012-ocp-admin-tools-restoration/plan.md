@@ -5,7 +5,7 @@
 - [x] W0.1: Create OMK Goal for Feature 012
 - [x] W0.2: Create spec directory and spec.md
 - [x] W0.3: Create plan.md (this document)
-- [ ] W0.4: Create tasks.md with dependency graph
+- [x] W0.4: Create tasks.md with dependency graph
 - [ ] W0.5: GitNexus impact analysis on `web/`, `db/`, `docs/`
 - [ ] W0.6: Verify speckit governance extensions active
 
@@ -70,7 +70,7 @@
 - [ ] W6.1: Review all new PHP files for SQL injection vulnerabilities
 - [ ] W6.2: Review CSRF token implementation
 - [ ] W6.3: Review role-based access guards
-- [ ] W6.4: Review HA1 generation correctness (RFC 3261, RFC 8760)
+- [ ] W6.4: Review HA1 generation correctness against RFC 3261 (MD5) and RFC 8760 (SHA-256, SHA-512/256)
 - [ ] W6.5: Run PHP syntax check on all new files
 - [ ] W6.6: Run GitNexus detect-changes and validate risk level
 
