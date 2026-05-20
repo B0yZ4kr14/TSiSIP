@@ -54,7 +54,7 @@
 CREATE TABLE sip_trunk_providers (
     id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
     name VARCHAR(128) NOT NULL UNIQUE,
-    host INET NOT NULL,
+    host VARCHAR(255) NOT NULL,
     port INTEGER NOT NULL DEFAULT 5060 CHECK (port > 0 AND port <= 65535),
     transport VARCHAR(8) NOT NULL DEFAULT 'udp'
         CHECK (transport IN ('udp', 'tcp', 'tls')),
