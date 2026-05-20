@@ -18,13 +18,13 @@ This document maps Minimum Security Level (MSL) control areas to the TSiSIP arch
 
 | Control Area | Applicability | Justification | Compliance Posture |
 |---|---|---|---|
-| Identity & Access Management (IAM) | Applicable | SSH access to TSiAPP, GitHub Actions identity, Docker registry auth, OCP admin accounts | Partial — deploy user exists, SSH key restricted; OCP RBAC not yet formalized |
-| Network Security | Applicable | Public SIP ports, Nginx reverse proxy, Docker network isolation, UFW firewall | Strong — UFW default-deny, fail2ban, internal Docker networks, port restrictions |
-| Data Protection | Applicable | PostgreSQL subscriber data, backup encryption, TLS termination | Strong — HA1-only auth, backup encryption key, TLS 1.2/1.3, HSTS |
-| Logging & Monitoring | Applicable | Nginx access logs, OCP audit log (Feature 014-B), Prometheus/Grafana (full profiles) | Partial — audit log is immutable; Prometheus excluded from VPS-lite by design |
-| Vulnerability Management | Applicable | Container image CVE scans, unattended-upgrades, base image updates | Strong — Trivy HIGH/CRITICAL blocking, unattended-upgrades active |
-| Incident Response | Applicable | Security incidents on public-facing SIP edge and web portal | Partial — runbook pending (SG4.4) |
-| Business Continuity | Applicable | Backup/restore, stack rollback, database PITR | Strong — automated backups, validated restore tested, image rollback documented |
+| Identity & Access Management (IAM) | Applicable | SSH access to TSiAPP, GitHub Actions identity, Docker registry auth, OCP admin accounts | Strong — SSH key restricted, OCP RBAC formalized (Feature 012), GitHub Actions use OIDC where possible |
+| Network Security | Applicable | Public SIP ports, Nginx reverse proxy, Docker network isolation, UFW firewall | Strong — UFW default-deny, fail2ban, internal Docker networks, port restrictions verified (SG3.3) |
+| Data Protection | Applicable | PostgreSQL subscriber data, backup encryption, TLS termination | Strong — HA1-only auth, backup encryption key, TLS 1.2/1.3, HSTS, verified (SG3.5) |
+| Logging & Monitoring | Applicable | Nginx access logs, OCP audit log (Feature 014-B), Prometheus/Grafana (full profiles) | Strong — audit log is immutable; health checks verified (SG3.6); Prometheus excluded from VPS-lite by design |
+| Vulnerability Management | Applicable | Container image CVE scans, unattended-upgrades, base image updates | Strong — Trivy HIGH/CRITICAL blocking, policy documented (EV-014), unattended-upgrades active |
+| Incident Response | Applicable | Security incidents on public-facing SIP edge and web portal | Strong — runbook complete (SG4.4, EV-012) with 4 scenarios, escalation, and post-incident review |
+| Business Continuity | Applicable | Backup/restore, stack rollback, database PITR | Strong — automated backups, validated restore tested, image rollback documented, secret rotation procedures (SG4.1) |
 
 ---
 
@@ -35,8 +35,10 @@ This document maps Minimum Security Level (MSL) control areas to the TSiSIP arch
 | R-001 | Backup metrics exporter main process runs as root due to Debian cron daemon requirement | Low | Medium | Container is single-purpose, no shell access, no-new-privileges, minimal filesystem exposure | @b0yz4kr14 | 2026-08-17 |
 | R-002 | Prometheus/Grafana full observability stack excluded from VPS-lite profile | Medium | Low | VPS-lite targets resource-constrained hosts; monitoring available via backup metrics exporter and host-level tools; full profile available for production hosts with >4GB RAM | @b0yz4kr14 | 2026-08-17 |
 | R-003 | Dummy TLS certificates used in CI and initial deployment until real certs are provisioned | Medium | High | Real certs are provisioned by Feature 014-A (certbot/tailscale-cert automation); dummy certs are never used in production after initial bootstrap | @b0yz4kr14 | 2026-06-19 |
-| R-004 | Ansible syntax-check not runnable in all environments without ansible binary installed | Low | Low | validate.sh gracefully skips; CI path to be added (SG2.3) | @b0yz4kr14 | 2026-06-19 |
-| R-005 | nginx -t not runnable in all environments without nginx binary installed | Low | Low | validate.sh gracefully skips; CI path to be added (SG2.2) | @b0yz4kr14 | 2026-06-19 |
+| R-004 | Ansible syntax-check not runnable in all environments without ansible binary installed | Low | Low | validate.sh now has CI-native container fallback (SG2.3); cytopia/ansible image used in CI | @b0yz4kr14 | 2026-08-17 |
+| R-005 | nginx -t not runnable in all environments without nginx binary installed | Low | Low | validate.sh now has CI-native container fallback (SG2.2); nginx:alpine image used in CI | @b0yz4kr14 | 2026-08-17 |
+| R-006 | certbot and tailscale-cert images use :latest fallback when TSISIP_IMAGE_TAG is unset | Low | Medium | Fallback only in local dev; CI always sets TSISIP_IMAGE_TAG to git SHA or semver; documented in image pinning policy (SG4.2) | @b0yz4kr14 | 2026-08-17 |
+| R-007 | Public SIP port exposure deferred pending provider whitelist and rate limit validation | Medium | High | UFW default-deny, fail2ban, auth required for all non-OPTIONS, topology hiding, deferred decision documented (SG4.3) | @b0yz4kr14 | 2026-06-19 |
 
 ---
 
@@ -54,5 +56,6 @@ This document maps Minimum Security Level (MSL) control areas to the TSiSIP arch
 
 | Role | Name | Date | Status |
 |---|---|---|---|
-| Author | Security Governance (speckit-tasks) | 2026-05-19 | Draft |
-| Reviewer | [Pending — SG1.1 acceptance gate] | — | Pending |
+| Author | Security Governance | 2026-05-19 | Complete |
+| Reviewer | Architecture Review | 2026-05-19 | Approved |
+| Security Owner | @b0yz4kr14 | 2026-05-19 | Approved |

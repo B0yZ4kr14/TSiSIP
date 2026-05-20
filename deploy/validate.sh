@@ -68,21 +68,39 @@ else
     fail "ansible/playbook-hardening.yml missing"
 fi
 
-# 8. Ansible syntax check (if ansible-playbook available)
+# 8. Ansible syntax check (SG2.3)
+info "=== Ansible Syntax Check ==="
 if command -v ansible-playbook >/dev/null 2>&1; then
     if ansible-playbook --syntax-check -i "$SCRIPT_DIR/ansible/inventory.yml" "$SCRIPT_DIR/ansible/playbook-deploy.yml" >/dev/null 2>&1; then
-        pass "ansible playbook-deploy.yml syntax valid"
+        pass "ansible playbook-deploy.yml syntax valid (host binary)"
     else
         fail "ansible playbook-deploy.yml syntax error"
     fi
     
     if ansible-playbook --syntax-check -i "$SCRIPT_DIR/ansible/inventory.yml" "$SCRIPT_DIR/ansible/playbook-hardening.yml" >/dev/null 2>&1; then
-        pass "ansible playbook-hardening.yml syntax valid"
+        pass "ansible playbook-hardening.yml syntax valid (host binary)"
     else
         fail "ansible playbook-hardening.yml syntax error"
     fi
+elif [ -n "${CI:-}" ] || [ -n "${GITHUB_ACTIONS:-}" ]; then
+    # CI-native check using Docker
+    if docker run --rm -v "$SCRIPT_DIR/ansible:/ansible:ro" \
+        cytopia/ansible:latest-tools ansible-playbook --syntax-check \
+        -i /ansible/inventory.yml /ansible/playbook-deploy.yml >/dev/null 2>&1; then
+        pass "ansible playbook-deploy.yml syntax valid (container CI)"
+    else
+        fail "ansible playbook-deploy.yml syntax error (container CI)"
+    fi
+    
+    if docker run --rm -v "$SCRIPT_DIR/ansible:/ansible:ro" \
+        cytopia/ansible:latest-tools ansible-playbook --syntax-check \
+        -i /ansible/inventory.yml /ansible/playbook-hardening.yml >/dev/null 2>&1; then
+        pass "ansible playbook-hardening.yml syntax valid (container CI)"
+    else
+        fail "ansible playbook-hardening.yml syntax error (container CI)"
+    fi
 else
-    info "ansible-playbook not available, skipping syntax checks"
+    info "ansible-playbook not available and not in CI, skipping syntax checks"
 fi
 
 # 9. Nginx config exists
@@ -92,15 +110,24 @@ else
     fail "nginx/tsisip-reverse-proxy.conf missing"
 fi
 
-# 10. Nginx syntax check (if nginx available)
+# 10. Nginx syntax check (SG2.2)
+info "=== Nginx Syntax Check ==="
 if command -v nginx >/dev/null 2>&1; then
     if nginx -t -c "$SCRIPT_DIR/nginx/tsisip-reverse-proxy.conf" >/dev/null 2>&1; then
-        pass "nginx config syntax valid"
+        pass "nginx config syntax valid (host binary)"
     else
         fail "nginx config syntax error"
     fi
+elif [ -n "${CI:-}" ] || [ -n "${GITHUB_ACTIONS:-}" ]; then
+    # CI-native check using nginx container
+    if docker run --rm -v "$SCRIPT_DIR/nginx:/etc/nginx:ro" nginx:alpine \
+        nginx -t -c /etc/nginx/tsisip-reverse-proxy.conf >/dev/null 2>&1; then
+        pass "nginx config syntax valid (container CI)"
+    else
+        fail "nginx config syntax error (container CI)"
+    fi
 else
-    info "nginx not available, skipping syntax check"
+    info "nginx not available and not in CI, skipping syntax check"
 fi
 
 # 11. Audit document exists
@@ -132,6 +159,16 @@ if [ -f "$SCRIPT_DIR/Makefile" ]; then
 else
     fail "Makefile missing"
 fi
+
+# 15. Security verification scripts exist (SG3.x)
+info "=== Security Verification Scripts ==="
+for script in verify-network-isolation.sh verify-secrets-audit.sh verify-nginx-tls.sh verify-health-checks.sh; do
+    if [ -x "$SCRIPT_DIR/../scripts/$script" ]; then
+        pass "$script exists and is executable"
+    else
+        fail "$script missing or not executable"
+    fi
+done
 
 # Summary
 echo ""

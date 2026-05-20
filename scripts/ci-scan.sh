@@ -22,8 +22,6 @@ fi
 # --- Brownfield: Check for forbidden modules ---
 echo "[brownfield] Checking for forbidden modules..."
 for mod in db_mysql db_sqlite sanity; do
-    # Only match actual module references (loadmodule, modparam, or module names in config)
-    # Ignore comments and unrelated usage of the word
     if grep -rE "loadmodule.*${mod}|modparam.*${mod}|module.*${mod}" opensips/ db/ docker/ 2>/dev/null; then
         echo "FAIL: Forbidden module reference: $mod"
         FAIL=1
@@ -35,10 +33,8 @@ echo "PASS: No forbidden modules"
 echo "[version-guard] Checking for unpinned base images..."
 for df in Dockerfile docker/*/Dockerfile; do
     if [ -f "$df" ]; then
-        # Find FROM lines without @sha256
         if grep '^FROM ' "$df" | grep -v '@sha256' | grep -v 'prom/' | grep -v 'grafana/' | grep -v 'postgres:'; then
             echo "WARN: Unpinned base image in $df (prom/grafana/postgres excluded)"
-            # Not failing on warnings, just warning
         fi
     fi
 done
@@ -63,6 +59,43 @@ for secret in secrets/db_password secrets/auth_secret secrets/topology_secret se
 done
 echo "PASS: No tracked secret files"
 
+# --- Security: Run SG3 verification scripts ---
+echo "[security] Running network isolation verification..."
+if bash scripts/verify-network-isolation.sh >/dev/null 2>&1; then
+    echo "PASS: Network isolation verification"
+else
+    echo "FAIL: Network isolation verification failed"
+    FAIL=1
+fi
+
+echo "[security] Running secrets audit..."
+if bash scripts/verify-secrets-audit.sh >/dev/null 2>&1; then
+    echo "PASS: Secrets audit"
+else
+    echo "FAIL: Secrets audit failed"
+    FAIL=1
+fi
+
+echo "[security] Running nginx TLS verification..."
+if bash scripts/verify-nginx-tls.sh >/dev/null 2>&1; then
+    echo "PASS: Nginx TLS verification"
+else
+    echo "FAIL: Nginx TLS verification failed"
+    FAIL=1
+fi
+
+echo "[security] Running health check verification..."
+if bash scripts/verify-health-checks.sh >/dev/null 2>&1; then
+    echo "PASS: Health check verification"
+else
+    echo "FAIL: Health check verification failed"
+    FAIL=1
+fi
+
+# --- Security: Secret age audit (non-blocking) ---
+echo "[security] Running secret age audit..."
+bash scripts/secret-age-audit.sh || true
+
 # --- Feature 014-A: TLS Rotation Pipeline Validation ---
 echo "[tls-rotation] Checking TLS rotation shell script syntax..."
 for script in scripts/tls-reload.sh scripts/cert-rotate.sh scripts/cert-expiry-monitor.sh docker/certbot/deploy-hook.sh docker/certbot/entrypoint.sh docker/certbot/healthcheck.sh tests/integration/test-tls-rotation.sh; do
@@ -85,7 +118,6 @@ if [ -x "tests/integration/test-tls-rotation.sh" ]; then
         echo "PASS: TLS rotation integration test passed"
     else
         echo "WARN: TLS rotation integration test had failures (may require running stack)"
-        # Do not fail CI for integration tests that require a running stack
     fi
 else
     echo "WARN: tests/integration/test-tls-rotation.sh not found or not executable"
@@ -146,6 +178,15 @@ if docker compose ps | grep -q 'opensips' && docker compose ps | grep -q 'postgr
     fi
 else
     echo "SKIP: Trunk integration tests (services not running)"
+fi
+
+# --- Deployment Validation ---
+echo "[deploy] Running deployment validation..."
+if bash deploy/validate.sh; then
+    echo "PASS: Deployment validation"
+else
+    echo "FAIL: Deployment validation failed"
+    FAIL=1
 fi
 
 echo ""
