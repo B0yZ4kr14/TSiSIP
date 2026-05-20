@@ -169,7 +169,7 @@
 **Description**: Create `docker/grafana/provisioning/dashboards/tsisip/sip-trunk-provider.json` with panels for trunk health status, active calls per trunk, CPS throttled rate, probe latency, and registration state.
 **Files affected**: `docker/grafana/provisioning/dashboards/tsisip/sip-trunk-provider.json`
 **Depends on**: T5.4
-**Status**: [ ]
+**Status**: [x]
 
 ---
 
@@ -255,4 +255,4 @@
 **Description**: Update `docs/TSiSIP-OPERATOR-RUNBOOK.md` with procedures for: onboarding a new trunk provider, adding a DID mapping, troubleshooting registration failures, interpreting health probe results, and rotating the trunk credential encryption key.
 **Files affected**: `docs/TSiSIP-OPERATOR-RUNBOOK.md`
 **Depends on**: T7.6
-**Status**: [ ]
+**Status**: [x]
