@@ -484,6 +484,34 @@ bash -n docker/certbot/healthcheck.sh
 ./scripts/tls-reload.sh
 ```
 
+**SIP Trunk Provider Integration tests (Feature 014-C Wave 7):**
+
+```bash
+# Validate OpenSIPS config with trunk modules (requires built image)
+docker run --rm \
+  -e DB_HOST=postgres -e DB_NAME=opensips -e DB_USER=opensips \
+  -e HOST_PUBLIC_IP=127.0.0.1 -e OPENSIPS_LISTEN_IP=0.0.0.0 \
+  -e RTPENGINE_HOST=rtpengine -e TRUNK_CRED_KEY=dummy \
+  -v $(pwd)/secrets/db_password:/run/secrets/db_password:ro \
+  -v $(pwd)/secrets/auth_secret:/run/secrets/auth_secret:ro \
+  -v $(pwd)/secrets/topology_secret:/run/secrets/topology_secret:ro \
+  -v $(pwd)/secrets/server.crt:/run/secrets/server.crt:ro \
+  -v $(pwd)/secrets/server.key:/run/secrets/server.key:ro \
+  -v $(pwd)/secrets/ca.crt:/run/secrets/ca.crt:ro \
+  tsisip-opensips:latest \
+  /entrypoint.sh /usr/local/sbin/opensips -c -f /etc/opensips/opensips.cfg
+
+# Run Python integration tests (requires running compose stack)
+python3 tests/integration/test_sip_trunk_outbound.py
+python3 tests/integration/test_sip_trunk_failover.py
+python3 tests/integration/test_sip_trunk_inbound.py
+python3 tests/integration/test_sip_trunk_rate_limit.py
+python3 tests/integration/test_sip_trunk_health_probe.py
+
+# Validate trunk schema in PostgreSQL
+docker compose exec postgres psql -U opensips -d opensips -c "\dt sip_trunk_*"
+```
+
 **Makefile targets:**
 
 ```bash
