@@ -12,7 +12,6 @@ ENCRYPTION_KEY_FILE="${ENCRYPTION_KEY_FILE:-/run/secrets/backup_encryption_key}"
 PGPASSWORD_FILE="${PGPASSWORD_FILE:-/run/secrets/db_password}"
 RETENTION_DAYS="${BACKUP_RETENTION_DAYS:-30}"
 # Encryption is mandatory in all environments per TSiSIP security policy.
-# The ALLOW_UNENCRYPTED_BACKUPS opt-out has been removed (brownfield B8).
 
 # Ensure directories exist
 mkdir -p "$BACKUP_DIR" "$WAL_DIR"
@@ -28,7 +27,7 @@ if [ ! -f "$PGPASSWORD_FILE" ] || [ ! -s "$PGPASSWORD_FILE" ]; then
     exit 1
 fi
 
-if [ "$ALLOW_UNENCRYPTED_BACKUPS" != "true" ] && { [ ! -f "$ENCRYPTION_KEY_FILE" ] || [ ! -s "$ENCRYPTION_KEY_FILE" ]; }; then
+if [ ! -f "$ENCRYPTION_KEY_FILE" ] || [ ! -s "$ENCRYPTION_KEY_FILE" ]; then
     log "ERROR: Encryption key missing or empty: $ENCRYPTION_KEY_FILE"
     exit 1
 fi

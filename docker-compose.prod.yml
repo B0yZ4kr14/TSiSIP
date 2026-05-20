@@ -265,6 +265,14 @@ services:
           memory: 1G
         reservations:
           memory: 512M
+    healthcheck:
+      test:
+      - CMD-SHELL
+      - curl -fsSL http://localhost:8080/health || exit 1
+      interval: 15s
+      timeout: 5s
+      retries: 3
+      start_period: 10s
   grafana:
     image: ghcr.io/b0yz4kr14/tsisip/grafana:${TSISIP_IMAGE_TAG:?must be set}
     networks:
@@ -371,6 +379,14 @@ services:
           memory: 1G
         reservations:
           memory: 512M
+    healthcheck:
+      test:
+      - CMD-SHELL
+      - /usr/local/bin/healthcheck.sh
+      interval: 15s
+      timeout: 5s
+      retries: 3
+      start_period: 10s
   asterisk-pbx-1:
     image: ghcr.io/b0yz4kr14/tsisip/asterisk:${TSISIP_IMAGE_TAG:?must be set}
     networks:
