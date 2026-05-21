@@ -216,9 +216,6 @@ services:
     restart: unless-stopped
     mem_limit: 128m
     memswap_limit: 128m
-    dns:
-      - 8.8.8.8
-      - 1.1.1.1
     environment:
       TLS_DOMAIN: ${TLS_DOMAIN}
       ACME_EMAIL: ${ACME_EMAIL}
