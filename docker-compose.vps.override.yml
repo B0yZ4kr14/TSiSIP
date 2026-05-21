@@ -1,0 +1,29 @@
+# Local test override for VPS profile
+services:
+  postgres:
+    image: tsisip/postgres:latest
+    pull_policy: if_not_present
+  rtpengine:
+    image: tsisip/rtpengine:test
+    pull_policy: if_not_present
+  opensips:
+    image: tsisip/opensips:test
+    pull_policy: if_not_present
+  asterisk-pbx-1:
+    image: tsisip/asterisk:latest
+    pull_policy: if_not_present
+  asterisk-pbx-2:
+    image: tsisip/asterisk:latest
+    pull_policy: if_not_present
+  ocp:
+    image: tsisip/ocp:test
+    pull_policy: if_not_present
+  certbot:
+    image: tsisip/certbot:test
+    pull_policy: if_not_present
+  certbot-exporter:
+    image: tsisip/certbot-exporter:test
+    pull_policy: if_not_present
+  backup:
+    image: tsisip/backup:test
+    pull_policy: if_not_present

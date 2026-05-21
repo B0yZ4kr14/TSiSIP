@@ -32,6 +32,7 @@ services:
       POSTGRES_PASSWORD_FILE: /run/secrets/db_password
       PGDATA: /var/lib/postgresql/data
     cap_drop: [ALL]
+    cap_add: [SETUID, SETGID, CHOWN, FOWNER, DAC_OVERRIDE]
     security_opt: ["no-new-privileges:true"]
     secrets: [db_password]
     volumes:
@@ -61,7 +62,7 @@ services:
     command:
       - rtpengine
       - --interface=${RTPENGINE_PRIVATE_IP:-127.0.0.1}/${HOST_PUBLIC_IP:-127.0.0.1}
-      - --listen-ng=${RTPENGINE_INTERNAL_IP}:22222
+      - --listen-ng=${RTPENGINE_INTERNAL_IP:-127.0.0.1}:22222
       - --port-min=10000
       - --port-max=10999
       - --log-stderr
@@ -270,7 +271,7 @@ services:
     networks: [db_internal, metrics_host]
     restart: on-failure
     mem_limit: 256m
-    memswap_limit: 128m
+    memswap_limit: 256m
     ports:
       - "127.0.0.1:9101:9101/tcp"
     environment:
