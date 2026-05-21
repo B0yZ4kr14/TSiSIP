@@ -133,3 +133,15 @@ The brownfield surface has shrunk significantly. All historical B1–B16 finding
 **Authority**: `docs/TSiSIP-CANONICAL-SPEC.md`, `AGENTS.md`  
 **Scan date**: 2026-05-21  
 **Next scan recommended**: Before next feature implementation or VPS deployment
+
+---
+
+## Remediation Status
+
+| ID | Severity | File | Fix Applied | Commit |
+|---|---|---|---|---|
+| B1 | HIGH | `docker-compose.vps.yml:65` | `:-127.0.0.1` → `:?must be set` | `1aa2209` |
+| B2 | MEDIUM | `docker-compose.vps.yml` certbot | `:-latest` → `:?must be set` | `1aa2209` |
+| B3 | MEDIUM | `deploy/scripts/vps-deploy.sh:101` | Hard-coded sed → Docker network gateway discovery | `1aa2209` |
+
+**Post-remediation scan**: 2026-05-21. All 3 findings resolved. Zero remaining brownfield items.

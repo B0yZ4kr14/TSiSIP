@@ -85,3 +85,17 @@
 ---
 
 **Next check**: After dependency updates, Dockerfile changes, or CI workflow edits.
+
+---
+
+## Remediation Status
+
+| ID | Severity | File | Fix Applied | Commit |
+|---|---|---|---|---|
+| V1 | MEDIUM | `docker-compose.yml` certbot + tailscale-cert | `:-latest` → `:?must be set` | `1aa2209` |
+| V2 | MEDIUM | `docker-compose.vps.yml` certbot | `:-latest` → `:?must be set` | `1aa2209` |
+| V3 | MEDIUM | `docker/anomaly-detector/requirements.txt` | `>=` → `==` (exact versions pinned) | `1aa2209` |
+| V4 | LOW | `docker/opensips-exporter/Dockerfile` | Already resolved — inline `==` pinning present | N/A |
+| V5 | LOW | `.github/workflows/ci.yml` | `@master` → `@0.28.0` | `1aa2209` |
+
+**Post-remediation scan**: 2026-05-21. 4/5 findings resolved. V4 was false positive (inline pinning already present).
