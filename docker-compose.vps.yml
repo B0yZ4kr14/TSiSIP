@@ -67,14 +67,9 @@ services:
       - --port-max=10999
       - --log-stderr
       - --foreground
-      - --dtls-cert-file=/certs/live/server.crt
-      - --dtls-key-file=/certs/live/server.key
-      - --dtls-passive
     cap_drop: [ALL]
     cap_add: [NET_BIND_SERVICE, NET_ADMIN]
     security_opt: ["no-new-privileges:true"]
-    volumes:
-      - tls_certs:/certs/live:ro
     healthcheck:
       test: ["CMD-SHELL", "/usr/local/bin/healthcheck.sh"]
       interval: 15s
