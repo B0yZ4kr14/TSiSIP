@@ -9,8 +9,8 @@
 **Files affected**: `docs/architecture/global-requirement-id-scheme.md`
 **Depends on**: —
 
-### [ ] T1.2: Create Feature 018 spec, plan, and tasks
-**Description**: Create tracking artifacts for the migration work.
+### [x] T1.2: Create Feature 018 spec, plan, and tasks
+**Description**: Create tracking artifacts for the migration work. *(Self-referential: artifacts created during speckit-specify phase.)*
 **Files affected**: `specs/018-global-requirement-id-migration/`
 **Depends on**: T1.1
 
