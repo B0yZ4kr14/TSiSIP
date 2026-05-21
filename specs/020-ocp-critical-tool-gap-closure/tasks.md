@@ -1,0 +1,76 @@
+# Feature 020 Tasks
+
+## Wave 0: Security Foundation
+- [ ] T0.1: Create docs/security/020-ocp-gap-closure-security-assessment.md — data classification, access control, input validation, retention policy
+- [ ] T0.2: Create docs/security/020-ocp-gap-closure-threat-model.md — STRIDE analysis for MI command runner, dialog viewer, TLS reload
+- [ ] T0.3: Update docs/security/008-security-evidence-index.md with Feature 020 entries and expiration dates
+- [ ] T0.4: MSL applicability review — assess if dialog data and MI output fall under MSL; document justification with risk acceptance
+- [ ] T0.5: Secure-development verification — scan web/ for SQL injection patterns (grep for raw concatenation in queries), XSS vulnerabilities (unescaped echo), missing auth checks
+
+## Wave 1: Core CRUD Tools
+- [ ] T1.1: Create `web/dialplan.php` — list dialplan rules with pagination and filters
+- [ ] T1.2: Create `web/dialplan.php` POST handlers — create/update/delete with PDO prepared statements and CSRF validation
+- [ ] T1.3: Create `web/domains.php` — list SIP domains with pagination
+- [ ] T1.4: Create `web/domains.php` POST handlers — create/update/delete with PDO prepared statements and CSRF validation
+- [ ] T1.5: Create `web/dialog.php` — read-only dialog viewer querying `dialog` table or MI `dlg_list`
+- [ ] T1.6: Add `web/dialplan.php`, `web/domains.php`, `web/dialog.php` to `common/role-nav.php` with `requireRole('devops')`
+- [ ] T1.7: Run secret-leakage scan on all new PHP files — verify zero plaintext secrets, credentials, or IP addresses
+- [ ] T1.8: Run CSRF validation test on all mutating forms (dialplan create/update/delete, domains create/update/delete)
+
+## Wave 2: MI Commands & Statistics
+- [ ] T2.1: Define MI command whitelist array in PHP — `ds_reload`, `tls_reload`, `get_statistics`, `dlg_list`, `dlg_end_dlg`, `domain_reload`
+- [ ] T2.2: Create `web/mi-commands.php` — form with dropdown for whitelisted commands + execute button
+- [ ] T2.3: Implement MI command output display with `htmlspecialchars()` and `<pre>` formatting
+- [ ] T2.4: Implement `dlg_end_dlg` privilege gate — `requireRole('admin')` only
+- [ ] T2.5: Log all executed MI commands to `auth_audit_log` table with timestamp, user, command, output length
+- [ ] T2.6: Create `web/statistics.php` — query `get_statistics` MI command for 6+ key metrics
+- [ ] T2.7: Integrate D3.js charts (bar/line) for statistics display with 30-second auto-refresh
+- [ ] T2.8: Negative test — attempt POST with non-whitelisted MI command; verify 403 rejection
+- [ ] T2.9: Negative test — attempt `dlg_end_dlg` as devops role; verify 403 rejection
+- [ ] T2.10: Update `dashboard.php` with cards/links to new MI commands and statistics pages
+
+## Wave 3: TLS Management
+- [ ] T3.1: Create `web/tls-management.php` — display loaded TLS certificates (expiry, issuer, subject)
+- [ ] T3.2: Implement `tls_reload` trigger button with `requireRole('admin')` gate
+- [ ] T3.3: Audit log entry for every TLS reload attempt (success and failure)
+- [ ] T3.4: Test TLS reload propagation — update cert in secrets/, trigger reload, verify new connections use updated cert
+
+## Wave 4: Validation & Closure
+- [ ] T4.1: Run `speckit.spec-validate.validate` on Feature 020 spec.md
+- [ ] T4.2: Run architecture-guard verification — check for constitution violations (Docker-first, PostgreSQL-only, module validity, secret hygiene, network isolation)
+- [ ] T4.3: Run ripple analysis on all new PHP files to detect untested side effects
+- [ ] T4.4: Run brownfield scan against canonical spec and AGENTS.md
+- [ ] T4.5: Write conventional commit with all Feature 020 changes and push to master
+- [ ] T4.6: Update AGENTS.md Section 15 with new OCP tool references
+- [ ] T4.7: Update docs/TSiSIP-OPERATOR-RUNBOOK.md with operational procedures for new tools
+
+## Security Review Checkpoints
+
+| Checkpoint | Trigger | Gate Condition |
+|---|---|---|
+| SR-1 | After T0.3 | Threat model must cover MI command injection, dialog data exposure, TLS reload privilege escalation |
+| SR-2 | After T1.7 | All CRUD pages must pass secret-leakage scan and CSRF validation with zero findings |
+| SR-3 | After T2.8 | MI command whitelist must reject non-approved commands; `dlg_end_dlg` must be admin-only |
+
+## Dependency Graph
+
+```
+W0 (Security) → W1 (CRUD) → W2 (MI/Stats) → W3 (TLS) → W4 (Validation)
+     ↓              ↓              ↓
+   SR-1           SR-2           SR-3
+```
+
+## Traceability Matrix
+
+| AC | Task(s) |
+|---|---|
+| AC1 (dialog viewer) | T1.5 |
+| AC2 (MI commands) | T2.1–T2.5 |
+| AC3 (statistics) | T2.6–T2.7 |
+| AC4 (dialplan CRUD) | T1.1–T1.2 |
+| AC5 (domains CRUD) | T1.3–T1.4 |
+| AC6 (TLS management) | T3.1–T3.4 |
+| AC7 (RBAC devops) | T1.6, T2.2, T2.6, T3.1 |
+| AC8 (CSRF) | T1.2, T1.4, T1.8 |
+| AC9 (security assessment) | T0.1 |
+| AC10 (threat model) | T0.2 |
