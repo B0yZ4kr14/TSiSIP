@@ -98,8 +98,14 @@ EOF
 fi
 
 if grep -q 'RTPENGINE_INTERNAL_IP=10\.0\.0\.2' "${ENV_FILE}" 2>/dev/null; then
-    sed -i 's/RTPENGINE_INTERNAL_IP=10.0.0.2/RTPENGINE_INTERNAL_IP=172.21.0.1/' "${ENV_FILE}"
-    log_warn "Corrigido RTPENGINE_INTERNAL_IP de 10.0.0.2 para 172.21.0.1"
+    # Discover the actual Docker network gateway for sip_internal
+    RTPENGINE_INTERNAL_IP=$(docker network inspect tsisip_sip_internal --format='{{range .IPAM.Config}}{{.Gateway}}{{end}}' 2>/dev/null || echo "172.21.0.1")
+    if grep -q "^RTPENGINE_INTERNAL_IP=" "${ENV_FILE}" 2>/dev/null; then
+        sed -i "s|^RTPENGINE_INTERNAL_IP=.*|RTPENGINE_INTERNAL_IP=${RTPENGINE_INTERNAL_IP}|" "${ENV_FILE}"
+    else
+        echo "RTPENGINE_INTERNAL_IP=${RTPENGINE_INTERNAL_IP}" >> "${ENV_FILE}"
+    fi
+    log_warn "Ajustado RTPENGINE_INTERNAL_IP para ${RTPENGINE_INTERNAL_IP} (descoberto da rede Docker)"
 fi
 
 log_info "Verificando login no GHCR..."

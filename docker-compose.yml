@@ -424,7 +424,7 @@ services:
   certbot:
     build:
       context: ./docker/certbot
-    image: tsisip/certbot:${TSISIP_IMAGE_TAG:-latest}
+    image: tsisip/certbot:${TSISIP_IMAGE_TAG:?must be set}
     networks: [sip_internal]
     restart: unless-stopped
     environment:
@@ -457,7 +457,7 @@ services:
   tailscale-cert:
     build:
       context: ./docker/tailscale-cert
-    image: tsisip/tailscale-cert:${TSISIP_IMAGE_TAG:-latest}
+    image: tsisip/tailscale-cert:${TSISIP_IMAGE_TAG:?must be set}
     networks: [sip_internal]
     restart: unless-stopped
     environment:

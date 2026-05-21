@@ -62,7 +62,7 @@ services:
     command:
       - rtpengine
       - --interface=${RTPENGINE_PRIVATE_IP:-127.0.0.1}/${HOST_PUBLIC_IP:-127.0.0.1}
-      - --listen-ng=${RTPENGINE_INTERNAL_IP:-127.0.0.1}:22222
+      - --listen-ng=${RTPENGINE_INTERNAL_IP:?must be set}:22222
       - --port-min=10000
       - --port-max=10999
       - --log-stderr
@@ -215,7 +215,7 @@ services:
       start_period: 10s
 
   certbot:
-    image: tsisip/certbot:${TSISIP_IMAGE_TAG:-latest}
+    image: tsisip/certbot:${TSISIP_IMAGE_TAG:?must be set}
     pull_policy: if_not_present
     networks: [sip_internal]
     restart: unless-stopped
