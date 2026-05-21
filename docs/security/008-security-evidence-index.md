@@ -53,3 +53,23 @@
 | Security Owner | @b0yz4kr14 | 2026-05-19 | Approved |
 
 **Governance Statement**: All security governance deliverables for Feature 008 have been produced, reviewed, and committed to the repository. The one pending item (SG3.1) is blocked on external certificate deployment and will be completed within 30 days. Zero hard failures in CI scan.
+
+---
+
+## 4. Post-Drift Security Governance Artefacts (2026-05-21)
+
+Produced during `speckit-drift` with Security Governance preset:
+
+| Evidence ID | Description | Location | Produced By | Date |
+|---|---|---|---|---|
+| EV-016 | OWASP ASVS 4.0 Gap Analysis | `docs/security/008-owasp-asvs-gap-analysis.md` | speckit-drift | 2026-05-21 |
+| EV-017 | NIST SSDF v1.1 Gap Analysis | `docs/security/008-nist-ssdf-gap-analysis.md` | speckit-drift | 2026-05-21 |
+| EV-018 | CWE Top 25 Mapping | `docs/security/008-cwe-top-25-mapping.md` | speckit-drift | 2026-05-21 |
+| EV-019 | Supply Chain Security Status (SBOM/VEX/SLSA) | `docs/security/008-supply-chain-status.md` | speckit-drift | 2026-05-21 |
+
+**Open Actions from Drift**:
+- SEC-ACTION-001: Fix CSRF on `web/change-password.php` (HIGH)
+- SEC-ACTION-002: Create `ocp_password_changes` audit table (MEDIUM)
+- SEC-ACTION-003: Add SBOM generation to CI (HIGH)
+- SEC-ACTION-004: Add SLSA provenance to GitHub Actions (MEDIUM)
+- SEC-ACTION-005: Create formal threat model document (LOW)
