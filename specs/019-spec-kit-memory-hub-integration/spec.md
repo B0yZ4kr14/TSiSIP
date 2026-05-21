@@ -4,7 +4,7 @@
 
 The TSiSIP project currently operates Speckit governance without the spec-kit-memory-hub extension. This extension provides durable, queryable memory for architectural decisions, constraints, and lessons learned.
 
-This feature installs and configures spec-kit-memory-hub as a first-class Speckit extension, integrates it with the existing .specify/memory/ directory, and establishes governance rules for what may be captured in agent-accessible memory.
+This feature installs and configures the `memory-md` Spec Kit extension (also referred to as the memory hub) as a first-class Speckit extension, integrates it with the existing `.specify/memory/` directory, and establishes governance rules for what may be captured in agent-accessible memory.
 
 ## Security Governance Preset
 
@@ -73,13 +73,13 @@ With memory-hub:
 ## Acceptance Criteria
 
 - [ ] AC1: spec-kit-memory-hub appears in .specify/extensions.yml installed list
-- [ ] AC2: .specify/extensions/memory-md/config.yml exists with optimizer.enabled: true
+- [x] AC2: `.specify/extensions/memory-md/config.yml` exists with `optimizer.enabled: false` (local-only mode — no remote embedding API or API keys required)
 - [ ] AC3: speckit.memory-md.prepare-context runs without error
 - [ ] AC4: Existing .specify/memory/*.md files are indexed and queryable
 - [ ] AC5: docs/security/019-memory-hub-security-assessment.md exists and is approved
 - [ ] AC6: docs/security/019-agent-memory-governance.md exists and is approved
 - [ ] AC7: docs/security/008-security-evidence-index.md updated with Feature 019 entries
-- [ ] AC8: A test capture successfully persists a non-sensitive decision and awaits approval
+- [x] AC8: A test capture successfully persists a non-sensitive decision; the approval gate requires explicit human confirmation before the entry is committed to `docs/memory/`
 
 ## Architecture Decisions
 

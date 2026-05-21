@@ -5,7 +5,7 @@
 **Agent:** `devops-docs`
 
 - [ ] W0.1: Verify specify-cli version supports memory-hub extension (v0.8.12.dev0+)
-- [ ] W0.2: Install spec-kit-memory-hub extension via specify-cli
+- [ ] W0.2: Install memory-md extension via specify-cli
 - [ ] W0.3: Update .specify/extensions.yml installed list with memory-hub
 - [ ] W0.4: Create .specify/extensions/memory-md/ directory structure
 - [ ] W0.5: Run speckit-utils.doctor to validate post-install health
@@ -37,9 +37,9 @@
 
 **Security Review Checkpoint 2** (after W2.5): Validate no secrets, credentials, or PII exist in the bootstrapped index.
 
-- [ ] W2.1: Create .specify/extensions/memory-md/config.yml with optimizer.enabled: true
+- [ ] W2.1: Create .specify/extensions/memory-md/config.yml with optimizer.enabled: false (local-only)
 - [ ] W2.2: Configure index path (project-local inside .specify/extensions/memory-md/)
-- [ ] W2.3: Configure embedding model and chunking strategy for markdown files
+- [ ] W2.3: Configure optimizer chunking strategy for markdown files
 - [ ] W2.4: Bootstrap index from existing .specify/memory/*.md files
 - [ ] W2.5: Verify all indexed content is non-sensitive (automated grep scan for patterns: password=, secret=, api_key, private_key)
 

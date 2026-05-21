@@ -2,8 +2,8 @@
 
 ## Wave 0: Setup & Extension Installation
 - [x] T0.1: Verify specify-cli version supports memory-hub extension (v0.8.12.dev0+)
-- [x] T0.2: Install spec-kit-memory-hub extension via specify-cli
-- [x] T0.3: Update .specify/extensions.yml installed list with spec-kit-memory-hub
+- [x] T0.2: Install memory-md extension via specify-cli
+- [x] T0.3: Update .specify/extensions.yml installed list with memory-md
 - [x] T0.4: Create .specify/extensions/memory-md/ directory structure
 - [x] T0.5: Run speckit-utils.doctor to validate post-install health
 
@@ -17,7 +17,7 @@
 ## Wave 2: Configuration & Bootstrap
 - [x] T2.1: Create .specify/extensions/memory-md/config.yml with optimizer.enabled: false (local-only)
 - [x] T2.2: Configure index path (project-local inside .specify/extensions/memory-md/)
-- [x] T2.3: Configure embedding model and markdown chunking strategy
+- [x] T2.3: Configure optimizer chunking strategy for markdown files
 - [x] T2.4: Bootstrap index from existing .specify/memory/*.md files
 - [x] T2.5: Verify indexed content contains zero secrets or PII (automated grep scan)
 
