@@ -66,6 +66,7 @@ CREATE TABLE IF NOT EXISTS sip_trunk_registrations (
     username VARCHAR(255) NOT NULL,
     password BYTEA,
     binding_uri VARCHAR(255) NOT NULL,
+    binding_params VARCHAR(255),
     expiry INTEGER NOT NULL DEFAULT 3600 CHECK (expiry > 0),
     forced_socket VARCHAR(128),
     cluster_shtag VARCHAR(128),
@@ -88,7 +89,7 @@ ALTER TABLE cdr ADD COLUMN IF NOT EXISTS direction VARCHAR(16);
 INSERT INTO version (table_name, table_version) VALUES
     ('sip_trunk_providers', 1),
     ('sip_trunk_did_mappings', 1),
-    ('sip_trunk_registrations', 1)
+    ('sip_trunk_registrations', 3)
 ON CONFLICT (table_name) DO UPDATE SET table_version = EXCLUDED.table_version;
 
 -- --- BEGIN TRUNK INTEGRATION WAVE 5: Dispatcher Trunk Probe Sync ---

@@ -181,7 +181,7 @@ modparam("cachedb_local", "cachedb_url", "local:///")
 # T4.2 MI commands (via cachedb_local script functions):
 #   Add ban:     cache_store("local", "ban_list_<ip>", "<reason>", "3600")
 #   Delete ban:  cache_remove("local", "ban_list_<ip>")
-#   Check ban:   cache_fetch("local", "ban_list_<ip>", "$avp(result)")
+#   Check ban:   cache_fetch("local", "ban_list_<ip>", $avp(result))
 
 # userblacklist (ban list)
 modparam("userblacklist", "db_url", "postgres://${DB_USER}:${DB_PASSWORD}@${DB_HOST}:5432/${DB_NAME}")
@@ -257,7 +257,7 @@ route {
     }
 
     # T4.1: Ban list check (initial requests only — in-dialog already handled)
-    if (cache_fetch("local", "ban_list_$si", "$avp(ban_reason)")) {
+    if (cache_fetch("local", "ban_list_$si", $avp(ban_reason))) {
         xlog("L_WARN", "BAN_LIST denied $si (reason=$avp(ban_reason))\n");
         sl_send_reply(403, "Forbidden");
         exit;
@@ -265,7 +265,7 @@ route {
 
     # T5.3: Global anomaly throttle with dynamic threshold
     # Normal baseline: 500 rps. When anomaly_state flag is set, reduce to 250 rps.
-    if (cache_fetch("local", "anomaly_state_global_throttle", "$avp(throttle_active)")) {
+    if (cache_fetch("local", "anomaly_state_global_throttle", $avp(throttle_active))) {
         if (!rl_check("global_alert", 250, "TAILDROP")) {
             xlog("L_WARN", "Global anomaly throttle active - $si rate limited\n");
             drop;
@@ -415,7 +415,7 @@ route[AUTH] {
     }
 
     # After 3 failed auths within 60s, return 429 Too Many Requests
-    if (cache_fetch("local", "auth_failures_$var(auth_key)", "$avp(auth_fail_count)") && $avp(auth_fail_count) >= 3) {
+    if (cache_fetch("local", "auth_failures_$var(auth_key)", $avp(auth_fail_count)) && $avp(auth_fail_count) >= 3) {
         xlog("L_WARN", "Auth throttled for $var(auth_key) from $si - too many failures\n");
         sl_send_reply(429, "Too Many Requests");
         exit;
@@ -438,7 +438,7 @@ route[AUTH] {
             # T2.1: Increment auth failure counter (60s TTL)
             cache_add("local", "auth_failures_$var(auth_key)", "1", "60");
             # T2.2 / T4.1: Ban source IP after 3 auth failures
-            if (cache_fetch("local", "auth_failures_$var(auth_key)", "$avp(auth_fail_count)") && $avp(auth_fail_count) >= 3) {
+            if (cache_fetch("local", "auth_failures_$var(auth_key)", $avp(auth_fail_count)) && $avp(auth_fail_count) >= 3) {
                 xlog("L_WARN", "Auth failure threshold reached for $var(auth_key) from $si - adding to ban_list\n");
                 cache_store("local", "ban_list_$si", "auth_exceeded", "3600");
             }
@@ -461,7 +461,7 @@ route[AUTH] {
         # T2.1: Increment auth failure counter (60s TTL)
         cache_add("local", "auth_failures_$var(auth_key)", "1", "60");
         # T2.2 / T4.1: Ban source IP after 3 auth failures
-        if (cache_fetch("local", "auth_failures_$var(auth_key)", "$avp(auth_fail_count)") && $avp(auth_fail_count) >= 3) {
+        if (cache_fetch("local", "auth_failures_$var(auth_key)", $avp(auth_fail_count)) && $avp(auth_fail_count) >= 3) {
             xlog("L_WARN", "Auth failure threshold reached for $var(auth_key) from $si - adding to ban_list\n");
             cache_store("local", "ban_list_$si", "auth_exceeded", "3600");
         }
@@ -652,7 +652,7 @@ route[TRUNK_ROUTING] {
         }
 
         # Wave 5: Skip unhealthy trunks based on dispatcher probe state
-        if (cache_fetch("local", "trunk_health_$var(trunk_id)", "$var(trunk_health)")) {
+        if (cache_fetch("local", "trunk_health_$var(trunk_id)", $var(trunk_health))) {
             if ($var(trunk_health) == "unhealthy") {
                 xlog("L_INFO", "TRUNK_ROUTING: skipping unhealthy trunk $var(trunk_name) (id=$var(trunk_id))\n");
             } else {
@@ -771,7 +771,7 @@ failure_route[TRUNK_FAILOVER] {
             }
 
             # Wave 5: Skip unhealthy trunks during failover
-            if (cache_fetch("local", "trunk_health_$var(trunk_id)", "$var(trunk_health)")) {
+            if (cache_fetch("local", "trunk_health_$var(trunk_id)", $var(trunk_health))) {
                 if ($var(trunk_health) == "unhealthy") {
                     xlog("L_INFO", "TRUNK_FAILOVER: skipping unhealthy trunk $var(trunk_name) (id=$var(trunk_id))\n");
                 } else {
