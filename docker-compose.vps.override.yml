@@ -7,7 +7,7 @@ services:
     image: tsisip/rtpengine:test
     pull_policy: if_not_present
   opensips:
-    image: tsisip/opensips:test
+    image: tsisip/opensips:latest
     pull_policy: if_not_present
   asterisk-pbx-1:
     image: tsisip/asterisk:latest
