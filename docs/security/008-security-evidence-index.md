@@ -68,8 +68,8 @@ Produced during `speckit-drift` with Security Governance preset:
 | EV-019 | Supply Chain Security Status (SBOM/VEX/SLSA) | `docs/security/008-supply-chain-status.md` | speckit-drift | 2026-05-21 |
 
 **Open Actions from Drift**:
-- SEC-ACTION-001: Fix CSRF on `web/change-password.php` (HIGH)
-- SEC-ACTION-002: Create `ocp_password_changes` audit table (MEDIUM)
-- SEC-ACTION-003: Add SBOM generation to CI (HIGH)
-- SEC-ACTION-004: Add SLSA provenance to GitHub Actions (MEDIUM)
-- SEC-ACTION-005: Create formal threat model document (LOW)
+- ✅ SEC-ACTION-001: Fix CSRF on `web/change-password.php` (HIGH) — `commit a8045f7`
+- ✅ SEC-ACTION-002: Create `ocp_password_changes` audit table (MEDIUM) — `commit a8045f7`
+- ✅ SEC-ACTION-003: Add SBOM generation to CI (HIGH) — `commit a8045f7`
+- ✅ SEC-ACTION-004: Add SLSA provenance to GitHub Actions (MEDIUM) — `commit a8045f7`
+- SEC-ACTION-005: Create formal threat model document (LOW) — pending
