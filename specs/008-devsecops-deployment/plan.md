@@ -7,7 +7,11 @@ This plan translates the feature specification into an executable implementation
 ## Architecture & Stack Choices
 
 ### Deployment Platform
-- **Target**: VPS 'TSiAPP' (Debian/Ubuntu)
+- **Target**: VPS **TSiAPP** (Debian/Ubuntu)
+  - Public IP: `179.190.15.116`
+  - Tailscale IP: `100.111.74.69`
+  - SSH User: `tsi` (root for bootstrap)
+  - SSH Key: `TSiHomeLab` (Ed25519)
 - **Orchestration**: Ansible 2.15+
 - **Container Runtime**: Docker Engine + Docker Compose V2
 - **Reverse Proxy**: Nginx 1.24+

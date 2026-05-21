@@ -12,6 +12,19 @@
 
 TSiSIP is a Docker-first SIP edge-proxy platform built on OpenSIPS 3.6 LTS. The stack requires automated, secure deployment to VPS **TSiAPP** with credential isolation, reverse proxy termination, and resilience validation. This feature coordinates provisioning, hardening, and orchestration of the TSiSIP web portal and SIP edge environment with zero credential exposure.
 
+### Canonical VPS Parameters
+
+| Parameter | Value | Source |
+|-----------|-------|--------|
+| Hostname | `TSiAPP` | docs/VPS-TSiAPP-ACCESS.md |
+| Public IP | `179.190.15.116` | docs/VPS-TSiAPP-ACCESS.md |
+| Tailscale IP | `100.111.74.69` | docs/VPS-TSiAPP-ACCESS.md |
+| SSH Port | `22` | docs/VPS-TSiAPP-ACCESS.md |
+| Default User | `tsi` | docs/VPS-TSiAPP-ACCESS.md |
+| SSH Key | `TSiHomeLab` (Ed25519) | deploy/ssh/TSiAPP-config |
+| Deploy Directory | `/opt/tsisip` | deploy/ansible/inventory.yml |
+| Registry Prefix | `ghcr.io/b0yz4kr14/tsisip/*` | deploy/scripts/orchestrate-deploy.sh |
+
 ### Objective
 
 Deliver a repeatable, auditable deployment pipeline that:
