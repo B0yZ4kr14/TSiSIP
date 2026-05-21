@@ -28,6 +28,7 @@ RUN a2enmod rewrite
 # Copy PHP session security hardening configuration
 # Aligns with CANONICAL-SPEC Section 17 Security Model
 COPY docker/ocp/php-session-security.ini /usr/local/etc/php/conf.d/99-session-security.ini
+COPY docker/ocp/php.ini /usr/local/etc/php/conf.d/98-memory-opcache.ini
 
 # Copy OCP application source (stubs; replace with actual OCP v9 source in production)
 COPY web/ /var/www/html/

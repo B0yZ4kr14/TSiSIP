@@ -49,7 +49,7 @@ pg_dump -h "$PGHOST" -p "$PGPORT" -U "$PGUSER" -d "$PGDATABASE" \
 log "Backup created: /tmp/backup/${BACKUP_FILE}"
 
 # Compress with gzip
-gzip -c "/tmp/backup/${BACKUP_FILE}" > "${BACKUP_DIR}/${BACKUP_FILE}.gz"
+nice -n 10 gzip -c "/tmp/backup/${BACKUP_FILE}" > "${BACKUP_DIR}/${BACKUP_FILE}.gz"
 rm -f "/tmp/backup/${BACKUP_FILE}"
 
 log "Backup compressed: ${BACKUP_DIR}/${BACKUP_FILE}.gz"

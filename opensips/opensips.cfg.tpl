@@ -26,6 +26,9 @@ mpath="/usr/local/lib64/opensips/modules/"
 
 # M5: Explicit shared memory size (512 MB) for dialog state, pike, ratelimit tables
 # NOTE: shm_mem_size is a startup parameter (-m 512) in OpenSIPS 3.6,
+#        set via docker-compose deploy.resources.limits.memory (1G).
+#        pkg_mem_size per process should be ~((container_limit - shm_mem_size) / children).
+#        Example: (1GB - 512MB) / 8 children = ~64MB per child.
 # not a config file variable. Set via CMD in Dockerfile/docker-compose.yml.
 
 # --- Modules ---
