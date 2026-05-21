@@ -29,9 +29,10 @@ vendor/
 *.cache
 
 # Local SSH config (may contain real paths after template instantiation)
-.ssh/config
-.ssh/config.d/
-.ssh/known_hosts
+.ssh/
+
+# Sisyphus execution artifacts
+.sisyphus/evidence/
 
 # Generated TSiSIP assets (build output)
 web/tsisip/assets/
