@@ -1,4 +1,4 @@
-# Feature 014-B: OCP Audit Log & Compliance Dashboard
+# Feature 016: OCP Audit Log & Compliance Dashboard
 
 ## Overview
 
@@ -284,7 +284,7 @@ Build an immutable audit logging subsystem for the OCP that:
 
 ```sql
 -- ============================================================
--- Feature 014-B: OCP Audit Log & Compliance Dashboard
+-- Feature 016: OCP Audit Log & Compliance Dashboard
 -- ============================================================
 
 CREATE TABLE IF NOT EXISTS ocp_audit_log (

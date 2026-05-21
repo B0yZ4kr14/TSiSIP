@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 """
-Feature 014-C T7.2: SIP Trunk Failover Test
+Feature 017 T7.2: SIP Trunk Failover Test
 
 Purpose:
   Validates automatic failover from a failed primary trunk provider to a

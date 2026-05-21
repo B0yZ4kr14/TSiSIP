@@ -96,7 +96,7 @@ fi
 echo "[security] Running secret age audit..."
 bash scripts/secret-age-audit.sh || true
 
-# --- Feature 014-A: TLS Rotation Pipeline Validation ---
+# --- Feature 015: TLS Rotation Pipeline Validation ---
 echo "[tls-rotation] Checking TLS rotation shell script syntax..."
 for script in scripts/tls-reload.sh scripts/cert-rotate.sh scripts/cert-expiry-monitor.sh docker/certbot/deploy-hook.sh docker/certbot/entrypoint.sh docker/certbot/healthcheck.sh tests/integration/test-tls-rotation.sh; do
     if [ -f "$script" ]; then

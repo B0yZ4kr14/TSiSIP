@@ -50,7 +50,7 @@ This plan coordinates the closure of two remaining active features:
 
 ---
 
-## 4. Phase 1: Feature 014-C Closure (P1)
+## 4. Phase 1: Feature 017 Closure (P1)
 
 ### 1.1 T5.5 — Create Grafana Trunk Dashboard
 **Files**: `docker/grafana/dashboards/trunk-dashboard.json` (new)

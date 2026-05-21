@@ -19,7 +19,7 @@
 
 | Prerequisite | Status | Target Date |
 |---|---|---|
-| TLS certificate automation (Feature 014-A) | Complete | 2026-05-19 |
+| TLS certificate automation (Feature 015) | Complete | 2026-05-19 |
 | Trunk provider IP whitelist configuration | Pending | 2026-05-26 |
 | Rate limiting and DDoS protection validation (Feature 006) | Pending | 2026-05-26 |
 | SIP authentication hardening review | Pending | 2026-05-26 |
@@ -46,7 +46,7 @@
 
 Public SIP exposure will be activated when ALL of the following are true:
 
-1. [x] TLS certificate automation is operational (Feature 014-A)
+1. [x] TLS certificate automation is operational (Feature 015)
 2. [ ] At least one trunk provider IP range is whitelisted in OpenSIPS config
 3. [ ] Feature 006 (rate limiting / DDoS protection) is validated under load
 4. [ ] fail2ban SIP jail is configured and tested

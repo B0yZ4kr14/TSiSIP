@@ -439,7 +439,7 @@ docker compose exec ocp bash -c "curl -fsSL http://localhost/healthcheck-audit.p
 curl -fsSL http://localhost:8084/wiki.php | grep -q "TSiSIP Professional Wiki"
 ```
 
-**Audit Log & Compliance Dashboard tests (Feature 014-B Wave 6):**
+**Audit Log & Compliance Dashboard tests (Feature 016 Wave 6):**
 
 ```bash
 # Run end-to-end audit pipeline tests (requires running compose stack)
@@ -457,7 +457,7 @@ for f in web/common/audit.php web/audit-log.php web/audit-export.php \
 done
 ```
 
-**Automated TLS Certificate Rotation tests (Feature 014-A Wave 5):**
+**Automated TLS Certificate Rotation tests (Feature 015 Wave 5):**
 
 ```bash
 # Validate TLS rotation integration tests (works without running stack)
@@ -484,7 +484,7 @@ bash -n docker/certbot/healthcheck.sh
 ./scripts/tls-reload.sh
 ```
 
-**SIP Trunk Provider Integration tests (Feature 014-C Wave 7):**
+**SIP Trunk Provider Integration tests (Feature 017 Wave 7):**
 
 ```bash
 # Validate OpenSIPS config with trunk modules (requires built image)

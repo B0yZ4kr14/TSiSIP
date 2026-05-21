@@ -1,4 +1,4 @@
-# Feature 014-A Tasks
+# Feature 015 Tasks
 
 ## Wave 1: Infrastructure & Storage Layout
 
@@ -130,6 +130,6 @@
   - **Files affected:** `scripts/ci-scan.sh`
   - **Dependencies:** T5.1
 
-- [x] T5.8: Append Feature 014-A validation commands to the Build and Test Commands section of `AGENTS.md`.
+- [x] T5.8: Append Feature 015 validation commands to the Build and Test Commands section of `AGENTS.md`.
   - **Files affected:** `AGENTS.md`
   - **Dependencies:** T5.7

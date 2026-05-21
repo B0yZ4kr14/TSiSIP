@@ -1,4 +1,4 @@
-# Feature 014-B Implementation Plan: OCP Audit Log & Compliance Dashboard
+# Feature 016 Implementation Plan: OCP Audit Log & Compliance Dashboard
 
 ## Wave 1: Database Schema & Migrations (Coder Agent)
 

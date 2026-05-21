@@ -28,8 +28,8 @@
 | **Category** | Inconsistency |
 | **Severity** | CRITICAL |
 | **Location** | `specs/` directory |
-| **Finding** | Three distinct features share the number `014`: `014-auto-tls-certificate-rotation`, `014-ocp-audit-log-compliance`, `014-sip-trunk-provider-integration`. |
-| **Impact** | Breaks the `specs/{NNN-feature}/` naming convention. Causes ambiguity in cross-references, commit messages, and OMK goal tracking. Makes it impossible to uniquely identify "Feature 014" in conversation. |
+| **Finding** | Three distinct features share the number `014`: `015-auto-tls-certificate-rotation`, `016-ocp-audit-log-compliance`, `017-sip-trunk-provider-integration`. |
+| **Impact** | Breaks the `specs/{NNN-feature}/` naming convention. Causes ambiguity in cross-references, commit messages, and OMK goal tracking. Makes it impossible to uniquely identify "Feature 015/016/017" in conversation. |
 | **Recommendation** | Renumber two of the three features to unique IDs (e.g., 014 → auto-tls, 015 → audit-log, 016 → sip-trunk). Update all internal references, runbook mentions, and OMK goals. |
 
 ---
@@ -84,7 +84,7 @@
 | **Category** | Underspecification |
 | **Severity** | MEDIUM |
 | **Location** | `specs/004-007/`, `specs/012-014/` (excluding 014-audit) |
-| **Finding** | Specs for 004, 005, 006, 007, 012, 013, 014-auto-tls, 014-sip-trunk have no `**Status**:` line. |
+| **Finding** | Specs for 004, 005, 006, 007, 012, 013, 015-auto-tls, 017-sip-trunk have no `**Status**:` line. |
 | **Impact** | Cannot determine at a glance whether these features are Draft, In Progress, Implemented, or Complete. The project status dashboard (`STATUS.md`) may be the only source of truth, creating a single point of failure. |
 | **Recommendation** | Add a `**Status**:` line to every spec.md following the convention used in 001, 002, 008, 010, 014-audit. Possible states: `Draft`, `Specified`, `In Progress`, `Implemented`, `Complete`. |
 
@@ -105,9 +105,9 @@
 - 011: 10 waves (very granular)
 - 012: 10 waves
 - 013: 7 waves
-- 014-auto-tls: 5 waves
+- 015-auto-tls: 5 waves
 - 014-audit: 6 waves
-- 014-sip-trunk: 0 waves |
+- 017-sip-trunk: 0 waves |
 | **Impact** | Makes it hard to compare effort across features. A "wave" in 011 is not comparable to a "wave" in 014-audit. |
 | **Recommendation** | Standardize wave sizing in the constitution or plan-template.md. Suggested: 4–6 waves per feature, each representing a deployable increment. |
 
@@ -130,14 +130,14 @@
 
 ---
 
-### A8 — LOW — Feature 014-sip-trunk Has No Implementation Artifacts
+### A8 — LOW — Feature 017-sip-trunk Has No Implementation Artifacts
 
 | Field | Value |
 |---|---|
 | **ID** | A8 |
 | **Category** | Coverage Gap |
 | **Severity** | LOW |
-| **Location** | `specs/014-sip-trunk-provider-integration/` |
+| **Location** | `specs/017-sip-trunk-provider-integration/` |
 | **Finding** | `spec.md` exists, `plan.md` exists, but `tasks.md` is empty (0 tasks). No implementation files referenced. |
 | **Impact** | Feature is specified but not planned or tracked. Risk of scope creep or abandonment. |
 | **Recommendation** | Either generate `tasks.md` and begin implementation, or move to `specs/_backlog/` if deprioritized. |
@@ -154,7 +154,7 @@
 | **Location** | `specs/orchestrated-014c-008sg-plan.md` |
 | **Finding** | A loose file exists directly under `specs/`, not inside a numbered directory. Already flagged by speckit-doctor (D1). |
 | **Impact** | Breaks directory conventions. |
-| **Recommendation** | Move to `specs/014-sip-trunk-provider-integration/plan-orchestrated.md` or archive. |
+| **Recommendation** | Move to `specs/017-sip-trunk-provider-integration/plan-orchestrated.md` or archive. |
 
 ---
 
@@ -175,9 +175,9 @@
 | 011-ocp-forced-password-change | (none) | ✅ | ✅ | 20/20 | A5 |
 | 012-ocp-admin-tools-restoration | (none) | ✅ | ✅ | 60/60 | A5 |
 | 013-brownfield-follow-up | (none) | ✅ | ✅ | 20/20 | A5 |
-| 014-auto-tls-certificate-rotation | (none) | ✅ | ✅ | 31/31 | A1, A5 |
-| 014-ocp-audit-log-compliance | Specified | ✅ | ✅ | 38/38 | A1 |
-| 014-sip-trunk-provider-integration | (none) | ✅ | ❌ | N/A | A1, A5, A8 |
+| 015-auto-tls-certificate-rotation | (none) | ✅ | ✅ | 31/31 | A1, A5 |
+| 016-ocp-audit-log-compliance | Specified | ✅ | ✅ | 38/38 | A1 |
+| 017-sip-trunk-provider-integration | (none) | ✅ | ❌ | N/A | A1, A5, A8 |
 
 ## Constitution Alignment
 
@@ -187,7 +187,7 @@
 | PostgreSQL-only | 0 | `db_mysql` only appears in Rejected Patterns |
 | OpenSIPS 3.6 LTS | 0 | Consistently referenced across all specs |
 | Precomputed HA1 | 0 | Mentioned in 001 spec and AGENTS.md |
-| Topology hiding | 0 | Referenced in 001 and 014-sip-trunk specs |
+| Topology hiding | 0 | Referenced in 001 and 017-sip-trunk specs |
 
 **Constitution alignment: PASS** — No CRITICAL constitution violations detected.
 

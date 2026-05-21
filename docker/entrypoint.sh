@@ -35,7 +35,7 @@ for cert in ca.crt server.crt server.key crl.pem; do
     fi
 done
 
-# Bootstrap shared certificate volume if empty (Feature 014-A Wave 3)
+# Bootstrap shared certificate volume if empty (Feature 015 Wave 3)
 mkdir -p /certs/live
 if [ ! -f /certs/live/server.crt ]; then
     for cert in server.crt server.key ca.crt; do

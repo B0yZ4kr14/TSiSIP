@@ -1,8 +1,8 @@
-# Feature 014-C Implementation Plan: SIP Trunk Provider Integration
+# Feature 017 Implementation Plan: SIP Trunk Provider Integration
 
 ## Overview
 
-This plan translates the Feature 014-C specification into an executable implementation roadmap for outbound PSTN routing, trunk registration, inbound DID routing, per-trunk encryption profiles, health monitoring, rate limiting, and OCP admin management.
+This plan translates the Feature 017 specification into an executable implementation roadmap for outbound PSTN routing, trunk registration, inbound DID routing, per-trunk encryption profiles, health monitoring, rate limiting, and OCP admin management.
 
 ---
 

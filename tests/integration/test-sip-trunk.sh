@@ -1,6 +1,6 @@
 #!/bin/bash
 # TSiSIP SIP Trunk Provider Integration Tests
-# Feature 014-C Wave 7: Testing & Validation
+# Feature 017 Wave 7: Testing & Validation
 
 set -euo pipefail
 

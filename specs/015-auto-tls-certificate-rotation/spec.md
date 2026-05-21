@@ -1,4 +1,4 @@
-# Feature 014-A: Automated TLS Certificate Rotation
+# Feature 015: Automated TLS Certificate Rotation
 
 ## Overview
 
@@ -189,7 +189,7 @@ Alertmanager rules (added to `docker/prometheus/alerts.yml`):
 Add to `opensips/opensips.cfg.tpl`:
 
 ```cfg
-# MI HTTP for programmatic TLS reload (Feature 014-A)
+# MI HTTP for programmatic TLS reload (Feature 015)
 loadmodule "mi_http.so"
 modparam("mi_http", "mi_http_root_path", "/mi")
 modparam("httpd", "ip", "${OPENSIPS_LISTEN_IP}")

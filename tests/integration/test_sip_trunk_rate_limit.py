@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 """
-Feature 014-C T7.4: SIP Trunk CPS Rate Limit Test
+Feature 017 T7.4: SIP Trunk CPS Rate Limit Test
 
 Purpose:
   Validates per-trunk CPS rate limiting using the ratelimit module.

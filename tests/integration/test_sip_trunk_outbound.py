@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 """
-Feature 014-C T7.1: Outbound SIP Trunk Call Test
+Feature 017 T7.1: Outbound SIP Trunk Call Test
 
 Purpose:
   Validates that an authenticated internal subscriber INVITE to a non-local

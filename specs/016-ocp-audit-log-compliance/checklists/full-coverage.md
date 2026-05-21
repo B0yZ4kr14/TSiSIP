@@ -1,6 +1,6 @@
-# Feature 014 Checklist: Full Coverage — Requirements Quality Validation
+# Feature 016 Checklist: Full Coverage — Requirements Quality Validation
 
-> **Purpose**: Validate the quality, clarity, completeness, and consistency of Feature 014-B requirements (spec.md, plan.md, tasks.md) before release sign-off.
+> **Purpose**: Validate the quality, clarity, completeness, and consistency of Feature 016 requirements (spec.md, plan.md, tasks.md) before release sign-off.
 > **Depth**: Formal release gate (~40 items)
 > **Generated**: 2026-05-21
 > **Authority**: `docs/TSiSIP-CANONICAL-SPEC.md`, `AGENTS.md`, Speckit checklist template

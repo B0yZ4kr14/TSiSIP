@@ -1016,7 +1016,7 @@ Prometheus TSDB retention is configured explicitly in `docker-compose.yml` and `
 
 Adjust these values based on your storage capacity and metric retention requirements.
 
-## TLS Certificate Rotation (Feature 014-A)
+## TLS Certificate Rotation (Feature 015)
 
 ### Architecture
 
@@ -1093,7 +1093,7 @@ curl -vI https://tsiapp.io/TSiSIP/login.php 2>&1 | grep -E 'SSL|TLS|subject|issu
 | `TSiSIPTLSReloadFailed` | `tls-reload.sh` exit code ≠ 0 | Check script output; verify file permissions on `/certs/live/` |
 | `CertbotContainerDown` | Certbot container not running | `docker compose up -d certbot`; inspect `docker compose logs certbot` |
 
-## Audit Log & Compliance (Feature 014-B)
+## Audit Log & Compliance (Feature 016)
 
 ### Accessing the Audit Dashboard
 
@@ -1192,7 +1192,7 @@ The purge script:
 3. Runs `VACUUM` on the `audit_log` table
 4. Writes a summary to stdout and to the audit log itself
 
-## SIP Trunk Provider Management (Feature 014-C)
+## SIP Trunk Provider Management (Feature 017)
 
 ### Architecture
 

@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 """
-Feature 014-C T7.3: Inbound SIP Trunk DID Routing Test
+Feature 017 T7.3: Inbound SIP Trunk DID Routing Test
 
 Purpose:
   Validates that an unauthenticated INVITE arriving from a trusted trunk

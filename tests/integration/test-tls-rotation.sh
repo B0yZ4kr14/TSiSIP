@@ -1,5 +1,5 @@
 #!/bin/bash
-# TSiSIP Feature 014-A: Automated TLS Certificate Rotation — Integration Tests
+# TSiSIP Feature 015: Automated TLS Certificate Rotation — Integration Tests
 # Wave 5: Testing & Validation
 #
 # Validates the TLS rotation pipeline end-to-end without requiring

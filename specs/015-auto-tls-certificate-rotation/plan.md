@@ -1,4 +1,4 @@
-# Feature 014-A: Automated TLS Certificate Rotation — Implementation Plan
+# Feature 015: Automated TLS Certificate Rotation — Implementation Plan
 
 ## Wave 1: Infrastructure & Storage Layout (Coder Agent)
 
@@ -64,7 +64,7 @@ Depends on: W4
 - [ ] W5.5: Simulate renewal failure (invalid ACME auth) and confirm existing cert remains in `tls_certs` and OpenSIPS continues to serve it.
 - [ ] W5.6: Verify Prometheus metrics endpoints (`opensips-exporter:9442`, `certbot-exporter:9102`) return expected TLS expiry metrics.
 - [ ] W5.7: Run `scripts/ci-scan.sh` and confirm zero new blocking findings.
-- [ ] W5.8: Update `AGENTS.md` Build and Test Commands section with Feature 014-A validation commands if needed.
+- [ ] W5.8: Update `AGENTS.md` Build and Test Commands section with Feature 015 validation commands if needed.
 
 ## Dependency Graph
 

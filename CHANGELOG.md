@@ -11,7 +11,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Added
 
-#### Feature 014-A: Automated TLS Certificate Rotation
+#### Feature 015: Automated TLS Certificate Rotation
 - Containerized certbot service for Let's Encrypt ACME v2 HTTP-01 challenges
 - Tailscale internal certificate service for tailnet endpoints
 - Zero-downtime OpenSIPS TLS reload via MI HTTP (`tls_reload`)
@@ -19,7 +19,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Prometheus certbot-exporter with 6 Alertmanager alert rules (30d/14d/7d/1d/expired/renewal-failed)
 - Integration tests (`tests/integration/test-tls-rotation.sh`)
 
-#### Feature 014-B: OCP Audit Log & Compliance Dashboard
+#### Feature 016: OCP Audit Log & Compliance Dashboard
 - Immutable PostgreSQL audit log (`ocp_audit_log`) with SHA-256 hash chain
 - Compliance dashboard (`web/audit-log.php`) with filters, pagination, JSON details
 - CSV/JSON export endpoint (`web/audit-export.php`)
@@ -27,7 +27,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - PHP audit library (`web/common/audit.php`) instrumenting login, logout, password changes, subscriber/dispatcher CRUD
 - Integration tests (`tests/integration/test-ocp-audit.sh`, `test-audit-dashboard.sh`)
 
-#### Feature 014-C: SIP Trunk Provider Integration
+#### Feature 017: SIP Trunk Provider Integration
 - PostgreSQL schema for trunk providers, DID mappings, and registrations
 - OpenSIPS outbound trunk routing with priority selection and failover (`route[TRUNK_ROUTING]`)
 - Inbound DID routing with trusted-IP bypass (`route[INBOUND_DID_ROUTING]`)
@@ -51,7 +51,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - M5: Explicit OpenSIPS `shm_mem_size = 512` in config template
 
 ### Changed
-- `AGENTS.md` updated with Feature 014-A/B/C test commands and validation procedures
+- `AGENTS.md` updated with Feature 015/B/C test commands and validation procedures
 - `docs/TSiSIP-OPERATOR-RUNBOOK.md` expanded with operator sections for TLS rotation, audit compliance, and trunk management
 - Cross-project consistency: `constitution.md`, `brownfield-scan-report.md`, `memorylint-report.md`, `remediation-summary.md`, and `security-compliance.md` synchronized with ground truth
 

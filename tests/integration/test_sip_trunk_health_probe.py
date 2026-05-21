@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 """
-Feature 014-C T7.5: SIP Trunk Health Probe Test
+Feature 017 T7.5: SIP Trunk Health Probe Test
 
 Purpose:
   Validates dispatcher-based health probe exclusion and re-inclusion.

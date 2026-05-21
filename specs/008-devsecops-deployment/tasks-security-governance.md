@@ -68,7 +68,7 @@
 ## Phase SG-3 — Evidence Production (Security Controls)
 
 ### [pending] SG3.1: Obtain and archive formal TLS grade evidence
-**Description**: Once real TLS certificates are deployed on TSiAPP (via Feature 014-A automation or manual provisioning), run a Qualys SSL Labs scan against the public endpoint. Save the full report (PDF or HTML) to `docs/security/evidence/008-ssl-labs-grade-<date>.html`. Target grade: A+. If grade is below A+, create remediation tasks. Update `specs/008-devsecops-deployment/spec.md` status to reflect completion.
+**Description**: Once real TLS certificates are deployed on TSiAPP (via Feature 015 automation or manual provisioning), run a Qualys SSL Labs scan against the public endpoint. Save the full report (PDF or HTML) to `docs/security/evidence/008-ssl-labs-grade-<date>.html`. Target grade: A+. If grade is below A+, create remediation tasks. Update `specs/008-devsecops-deployment/spec.md` status to reflect completion.
 **Phase**: SG-3  
 **Depends on**: SG2.2 (nginx config must be valid)  
 **Parallel**: No  

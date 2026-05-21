@@ -91,7 +91,7 @@ VALUES (
 )
 ON CONFLICT (username) DO NOTHING;
 
--- Feature 014-C: Sample trunk provider and DID mapping for dev testing
+-- Feature 017: Sample trunk provider and DID mapping for dev testing
 INSERT INTO sip_trunk_providers (
     name, host, port, transport, auth_username, auth_password_encrypted,
     from_domain, caller_id_prefix, priority, enabled,

@@ -43,9 +43,9 @@
 | 011-ocp-forced-password-change | (none) | (none) | ⚠️ Missing status |
 | 012-ocp-admin-tools-restoration | (none) | (none) | ⚠️ Missing status |
 | 013-brownfield-follow-up | (none) | (none) | ⚠️ Missing status |
-| 014-auto-tls-certificate-rotation | (none) | (none) | ⚠️ Missing status |
-| 014-ocp-audit-log-compliance | Specified (Ready for Implementation) | (none) | ⚠️ Missing status |
-| 014-sip-trunk-provider-integration | (none) | (none) | ⚠️ Missing status |
+| 015-auto-tls-certificate-rotation | (none) | (none) | ⚠️ Missing status |
+| 016-ocp-audit-log-compliance | Specified (Ready for Implementation) | (none) | ⚠️ Missing status |
+| 017-sip-trunk-provider-integration | (none) | (none) | ⚠️ Missing status |
 
 **Note**: Early specs (001–003, 010) and 008 use `spec.md` as the source-of-truth for status. Later specs (011–014) lack explicit status lines. This is not a sync conflict but a documentation gap.
 

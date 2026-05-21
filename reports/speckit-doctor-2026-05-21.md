@@ -24,7 +24,7 @@
 | **File** | `specs/orchestrated-014c-008sg-plan.md` |
 | **Issue** | File exists directly under `specs/`, not inside a numbered feature directory. |
 | **Impact** | Breaks the `specs/{NNN-feature-name}/` convention. Confuses automated tooling that expects directories. |
-| **Recommendation** | Move to `specs/014-sip-trunk-provider-integration/plan.md` or archive to `specs/_archive/` if superseded. |
+| **Recommendation** | Move to `specs/017-sip-trunk-provider-integration/plan.md` or archive to `specs/_archive/` if superseded. |
 
 ---
 
