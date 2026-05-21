@@ -92,3 +92,8 @@
 - **P1 drift** (e.g., config template inconsistency, missing index) → near-term refactor tasks.
 - **P2 drift** (e.g., documentation gaps, non-canonical naming) → tracked as scheduled technical debt.
 - **P3 cleanup** (e.g., comment formatting, log message consistency) → opportunistic, must not block feature delivery.
+
+## Cross-References
+
+- Governance principles: `.specify/memory/constitution.md`
+- Security standards and incident response: `.specify/memory/security_constitution.md`

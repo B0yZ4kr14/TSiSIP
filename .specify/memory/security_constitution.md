@@ -24,6 +24,7 @@
 ## 2. Authentication & Authorization Standards
 
 ### SIP Digest Authentication
+> Principle: See `constitution.md` Engineering Philosophy #4 (Precomputed HA1).
 - **Hash algorithm**: HA1 precomputed (`calculate_ha1 = 0`).
 - **Columns**: `ha1`, `ha1_sha256`, `ha1_sha512t256` only. Plaintext passwords are forbidden.
 - **Scope**: All non-OPTIONS untrusted requests must pass `www_authorize()` or `proxy_authorize()`.
@@ -85,6 +86,7 @@ Remove or strip the following before forwarding or processing routing metadata:
 - `Authorization`, `Proxy-Authorization` (before forwarding to backend)
 
 ### Topology Hiding
+> Principle: See `constitution.md` Engineering Philosophy #5 (Topology hiding).
 - Canonical baseline: `topology_hiding("C")`.
 - Backend PBX IP addresses must never appear in SIP headers exposed to the public internet.
 
@@ -145,7 +147,7 @@ Remove or strip the following before forwarding or processing routing metadata:
 
 ### P0 Incidents (Immediate Response)
 - Unauthorized access to PostgreSQL or Asterisk containers.
-- Detection of `sanity` module or `db_mysql` in OpenSIPS config.
+- Architecture P0 violations detected (e.g., `sanity` module, `db_mysql`, exposed private ports) — see `architecture_constitution.md` Blocking Architecture Violations.
 - Plaintext password found in committed files or runtime logs.
 - TLS certificate expiry without valid replacement.
 - SIP trunk credential decryption failure or unauthorized trunk registration.

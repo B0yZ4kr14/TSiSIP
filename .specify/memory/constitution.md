@@ -119,7 +119,7 @@ Re-check after Phase 1 design if the plan introduces new services, networks, or 
 
 - This Constitution is versioned alongside the codebase.
 - Update it through a Constitution Update Proposal when patterns evolve.
-- Architecture Guard uses this document for governance and architecture_constitution.md for architecture enforcement.
+- Architecture Guard uses this document for governance, `architecture_constitution.md` for architecture enforcement, and `security_constitution.md` for security standards.
 
 ---
 
