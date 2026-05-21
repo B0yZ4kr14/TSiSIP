@@ -133,6 +133,6 @@ None.
 docker compose up -d --build ocp
 docker compose exec ocp sh -c 'curl ... | grep "Dispatcher Targets"'
 
-# VPS
-ssh root@100.111.74.69 "docker compose ... exec ocp sh -c 'curl ... | grep ...'"
+# VPS (via Tailscale or public IP)
+ssh tsia-root-tail "docker compose ... exec ocp sh -c 'curl ... | grep ...'"
 ```

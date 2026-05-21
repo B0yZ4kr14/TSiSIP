@@ -58,10 +58,14 @@ Cada stage é implementado como uma função shell documentada no próprio scrip
 
 ```bash
 # 1. Copiar o script para a VPS
-scp deploy/scripts/vps-bootstrap.sh tsi@100.111.74.69:/tmp/
+scp deploy/scripts/vps-bootstrap.sh tsi@179.190.15.116:/tmp/
 
 # 2. Executar na VPS (como root)
-ssh -t tsi@100.111.74.69 "sudo bash /tmp/vps-bootstrap.sh"
+ssh -t tsi@179.190.15.116 "sudo bash /tmp/vps-bootstrap.sh"
+
+# Alternativa via Tailscale (requer tailscaled no cliente)
+# scp deploy/scripts/vps-bootstrap.sh tsi@100.111.74.69:/tmp/
+# ssh -t tsi@100.111.74.69 "sudo bash /tmp/vps-bootstrap.sh"
 ```
 
 O bootstrap faz automaticamente:

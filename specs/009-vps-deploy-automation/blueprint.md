@@ -159,7 +159,7 @@ on:
       target_host:
         description: 'VPS target host'
         required: true
-        default: '100.111.74.69'
+        default: '179.190.15.116'
 
 jobs:
   deploy:

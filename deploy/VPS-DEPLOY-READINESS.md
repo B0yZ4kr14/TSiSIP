@@ -10,7 +10,8 @@
 
 ## Pre-Deploy (validado em 2026-05-19)
 
-- [x] VPS online e acessivel via SSH (Tailscale 100.111.74.69 e publico)
+- [x] VPS online e acessivel via SSH (publico 179.190.15.116 e Tailscale 100.111.74.69)
+- [x] Chave TSiHomeLab distribuida para usuarios `root` e `tsi`
 - [x] Docker 24.0+ instalado e daemon rodando (Docker 29.5.0)
 - [x] Docker Compose plugin instalado (v5.1.3)
 - [x] Git instalado
