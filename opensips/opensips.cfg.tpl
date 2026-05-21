@@ -147,7 +147,7 @@ modparam("tls_mgm", "ca_list", "[default]/certs/live/ca.crt")
 modparam("tls_mgm", "verify_cert", "[default]1")
 modparam("tls_mgm", "require_cert", "[default]0")
 modparam("tls_mgm", "ciphers_list", "[default]ECDHE-ECDSA-AES128-GCM-SHA256:ECDHE-RSA-AES128-GCM-SHA256:ECDHE-ECDSA-AES256-GCM-SHA384:ECDHE-RSA-AES256-GCM-SHA384:TLS_AES_128_GCM_SHA256:TLS_AES_256_GCM_SHA384:!CBC:!aNULL:!MD5:!DSS")
-modparam("tls_mgm", "tls_method", "[default]TLSv1_2+")
+modparam("tls_mgm", "tls_method", "[default]SSLv23")
 # --- END TLS ROTATION WAVE 3 ---
 
 # tm
