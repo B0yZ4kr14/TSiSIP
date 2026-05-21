@@ -93,3 +93,4 @@ Este projeto usa Spec Kit como camada de governanca para especificacoes, planos,
 ### Architecture Guard Drift Detection
 - Scans de constituicao devem incluir: SHA pinning em Dockerfiles, ausencia de `db_mysql`/`sanity`, portas publicadas apenas em servicos de edge, `calculate_ha1 = 0`, `topology_hiding("C")`, `rtpengine_offer/answer/delete` explicitos.
 - Falha detectada em `docker/certbot/Dockerfile` e `docker/tailscale-cert/Dockerfile` durante o scan pos-008-SG; corrigido no commit `21d982e`.
+- Constituicao de seguranca (`security_constitution.md`) criada em 2026-05-21 (commit `88ba1e2`); complementa `constitution.md` e `architecture_constitution.md` com trust boundaries, auth standards, incident response triggers e LGPD mapping.
