@@ -176,3 +176,25 @@ CREATE TABLE IF NOT EXISTS trunk_ips (
 CREATE INDEX IF NOT EXISTS idx_trunk_ips_lookup
     ON trunk_ips(ip_address, enabled)
     WHERE enabled = true;
+
+-- ocp_password_changes: dedicated audit table for password change events
+-- Required by security_constitution.md section 7 (Audit & Logging)
+CREATE TABLE IF NOT EXISTS ocp_password_changes (
+    id              SERIAL PRIMARY KEY,
+    event_time      TIMESTAMP WITH TIME ZONE DEFAULT NOW() NOT NULL,
+    user_id         INTEGER NOT NULL,
+    username        VARCHAR(64) NOT NULL,
+    changed_by      INTEGER NOT NULL,
+    changed_by_name VARCHAR(64) NOT NULL,
+    source_ip       INET NOT NULL,
+    user_agent      VARCHAR(512),
+    success         BOOLEAN NOT NULL DEFAULT TRUE,
+    failure_reason  VARCHAR(255)
+);
+
+CREATE INDEX IF NOT EXISTS idx_ocp_password_changes_time
+    ON ocp_password_changes(event_time);
+CREATE INDEX IF NOT EXISTS idx_ocp_password_changes_user
+    ON ocp_password_changes(user_id, event_time);
+CREATE INDEX IF NOT EXISTS idx_ocp_password_changes_username
+    ON ocp_password_changes(username, event_time);

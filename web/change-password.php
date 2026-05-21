@@ -4,6 +4,7 @@
  */
 
 require_once __DIR__ . '/common/config.php';
+require_once __DIR__ . '/common/csrf.php';
 requireAuth();
 
 $mustChange = !empty($_SESSION['ocp_force_password_change']);
@@ -12,6 +13,9 @@ $error = '';
 $success = '';
 
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+    if (!validateCsrfToken($_POST['csrf_token'] ?? null)) {
+        $error = _('Invalid or missing CSRF token.');
+    } else {
     $current = $_POST['current_password'] ?? '';
     $new     = $_POST['new_password']     ?? '';
     $confirm = $_POST['confirm_password'] ?? '';
@@ -50,6 +54,31 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
             logAuditEvent('PASSWORD_CHANGE', 'ocp_user', $_SESSION['ocp_username'] ?? 'unknown', true);
 
+            // Dedicated password-change audit (security_constitution.md section 7)
+            $ip = '0.0.0.0';
+            if (!empty($_SERVER['HTTP_X_FORWARDED_FOR'])) {
+                $first = explode(',', $_SERVER['HTTP_X_FORWARDED_FOR'])[0];
+                $first = trim($first);
+                if (filter_var($first, FILTER_VALIDATE_IP)) {
+                    $ip = $first;
+                }
+            } elseif (!empty($_SERVER['REMOTE_ADDR']) && filter_var($_SERVER['REMOTE_ADDR'], FILTER_VALIDATE_IP)) {
+                $ip = $_SERVER['REMOTE_ADDR'];
+            }
+            $auditStmt = $pdo->prepare(
+                "INSERT INTO ocp_password_changes
+                 (user_id, username, changed_by, changed_by_name, source_ip, user_agent, success)
+                 VALUES (:uid, :uname, :cbid, :cbname, :ip, :ua, true)"
+            );
+            $auditStmt->execute([
+                ':uid'    => $_SESSION['ocp_user_id'],
+                ':uname'  => $_SESSION['ocp_username'] ?? 'unknown',
+                ':cbid'   => $_SESSION['ocp_user_id'],
+                ':cbname' => $_SESSION['ocp_username'] ?? 'unknown',
+                ':ip'     => $ip,
+                ':ua'     => substr($_SERVER['HTTP_USER_AGENT'] ?? '', 0, 512),
+            ]);
+
             unset($_SESSION['ocp_force_password_change']);
             $success = _('Passphrase updated successfully.');
             header('Location: dashboard.php');
@@ -59,6 +88,33 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
     if ($error !== '') {
         logAuditEvent('PASSWORD_CHANGE', 'ocp_user', $_SESSION['ocp_username'] ?? 'unknown', false, ['reason' => $error]);
+
+        // Dedicated password-change audit for failures
+        $failIp = '0.0.0.0';
+        if (!empty($_SERVER['HTTP_X_FORWARDED_FOR'])) {
+            $ff = explode(',', $_SERVER['HTTP_X_FORWARDED_FOR'])[0];
+            $ff = trim($ff);
+            if (filter_var($ff, FILTER_VALIDATE_IP)) {
+                $failIp = $ff;
+            }
+        } elseif (!empty($_SERVER['REMOTE_ADDR']) && filter_var($_SERVER['REMOTE_ADDR'], FILTER_VALIDATE_IP)) {
+            $failIp = $_SERVER['REMOTE_ADDR'];
+        }
+        $failAudit = $pdo->prepare(
+            "INSERT INTO ocp_password_changes
+             (user_id, username, changed_by, changed_by_name, source_ip, user_agent, success, failure_reason)
+             VALUES (:uid, :uname, :cbid, :cbname, :ip, :ua, false, :reason)"
+        );
+        $failAudit->execute([
+            ':uid'     => $_SESSION['ocp_user_id'] ?? 0,
+            ':uname'   => $_SESSION['ocp_username'] ?? 'unknown',
+            ':cbid'    => $_SESSION['ocp_user_id'] ?? 0,
+            ':cbname'  => $_SESSION['ocp_username'] ?? 'unknown',
+            ':ip'      => $failIp,
+            ':ua'      => substr($_SERVER['HTTP_USER_AGENT'] ?? '', 0, 512),
+            ':reason'  => substr($error, 0, 255),
+        ]);
+    }
     }
 }
 
@@ -88,6 +144,7 @@ require_once __DIR__ . '/common/header.php';
         <?php endif; ?>
 
         <form method="POST" action="" class="tsisip-form" style="max-width:480px">
+            <?php echo csrfInput(); ?>
             <div class="tsisip-form-group">
                 <label for="current_password"><?php echo _('Current Passphrase'); ?></label>
                 <input type="password"
