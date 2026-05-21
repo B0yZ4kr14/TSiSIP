@@ -11,13 +11,13 @@
 
 | Evidence ID | Description | Location | Produced By | Date | Expires | Next Review |
 |---|---|---|---|---|---|---|
-| EV-001 | SSL Labs TLS grade report | `docs/security/evidence/008-ssl-labs-grade-*.html` | SG3.1 | — | 90 days | — |
-| EV-002 | Container image CVE scan (latest) | `docs/security/evidence/008-trivy-scan-latest.json` | SG3.2 | — | Per release | — |
+| EV-001 | SSL Labs TLS grade report | `docs/security/evidence/008-ssl-labs-grade-*.html` | SG3.1 | Pending real cert | 90 days | After cert deploy |
+| EV-002 | Container image CVE scan (latest) | `docs/security/evidence/008-trivy-scan-latest.json` | SG3.2 | 2026-05-19 | Per release | Per CI run |
 | EV-003 | Network isolation verification | `docs/security/evidence/008-network-isolation-*.txt` | SG3.3 | 2026-05-19 | 90 days | 2026-08-17 |
 | EV-004 | Secret management audit | `docs/security/evidence/008-secrets-audit-*.txt` | SG3.4 | 2026-05-19 | 90 days | 2026-08-17 |
 | EV-005 | Nginx TLS configuration audit | `docs/security/evidence/008-nginx-tls-*.txt` | SG3.5 | 2026-05-19 | 90 days | 2026-08-17 |
 | EV-006 | Health check validation | `docs/security/evidence/008-health-checks-*.txt` | SG3.6 | 2026-05-19 | 90 days | 2026-08-17 |
-| EV-007 | MSL applicability justification | `docs/security/008-MSL-applicability-justification.md` | SG1.1 | 2026-05-19 | 90 days | 2026-08-17 |
+| EV-007 | MSL applicability justification | [`docs/security/008-MSL-applicability-justification.md`](008-MSL-applicability-justification.md) | SG1.1 | 2026-05-19 | 90 days | 2026-08-17 |
 | EV-008 | Residual risk register | `docs/security/008-MSL-applicability-justification.md` | SG1.2 | 2026-05-19 | 90 days | 2026-08-17 |
 | EV-009 | Secret rotation procedures | `docs/security/008-secret-rotation-procedures.md` | SG4.1 | 2026-05-19 | 90 days | 2026-08-17 |
 | EV-010 | Image pinning policy | `docs/security/008-image-pinning-policy.md` | SG4.2 | 2026-05-19 | 90 days | 2026-08-17 |

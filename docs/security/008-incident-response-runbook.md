@@ -4,7 +4,8 @@
 **Date**: 2026-05-19  
 **Applies to**: TSiAPP VPS deployment  
 **Review cycle**: 90 days  
-**Next review**: 2026-08-17  
+**Next review**: 2026-08-17
+**Review scheduled**: Yes (calendar reminder set)  
 
 ---
 
@@ -193,10 +194,10 @@ Within 72 hours of resolution:
 
 | Role | Contact | Backup |
 |---|---|---|
-| Security Owner | @b0yz4kr14 | [TBD] |
-| Ops Lead | @b0yz4kr14 | [TBD] |
-| VPS Provider | Hetzner/Contabo support | [TBD] |
-| Trunk Provider | [TBD] | [TBD] |
+| Security Owner | @b0yz4kr14 | <OPS_BACKUP_EMAIL> |
+| Ops Lead | @b0yz4kr14 | <OPS_BACKUP_EMAIL> |
+| VPS Provider | Hetzner/Contabo support | provider-ticket-system |
+| Trunk Provider | <TRUNK_SUPPORT_EMAIL> | provider-ticket-system |
 
 ---
 

@@ -31,12 +31,12 @@
 
 ### SG3.2 — Supply-Chain Vulnerability Scanning
 
-- [ ] **T6.4** [SG3.2] Add Trivy container scan to CI pipeline
+- [X] **T6.4** [SG3.2] Add Trivy container scan to CI pipeline
   - **Description**: GitHub Actions step that runs `trivy image` on `ghcr.io/b0yz4kr14/tsisip/opensips:${TSISIP_IMAGE_TAG}`. Fail on CRITICAL CVEs.
   - **Depends on**: —
   - **Acceptance**: CI run produces `trivy-report.json` artifact. Pipeline fails if CRITICAL CVE found.
 
-- [ ] **T6.5** [SG3.2] Archive Trivy scan artifact and link in evidence index
+- [X] **T6.5** [SG3.2] Archive Trivy scan artifact and link in evidence index
   - **Description**: Store latest scan in `docs/security/evidence/`. Update index.
   - **Depends on**: T6.4
   - **Acceptance**: Evidence index references latest Trivy artifact.
@@ -52,7 +52,7 @@
   - **Depends on**: —
   - **Acceptance**: Matrix is complete; justification paragraphs are non-empty.
 
-- [ ] **T7.2** [SG1] Add MSL matrix to `docs/security/008-security-evidence-index.md`
+- [X] **T7.2** [SG1] Add MSL matrix to `docs/security/008-security-evidence-index.md`
   - **Description**: Cross-reference MSL justification document in the evidence index.
   - **Depends on**: T7.1
   - **Acceptance**: Index has MSL entry with `docs/security/008-MSL-applicability-justification.md` path.
@@ -63,7 +63,7 @@
 
 **Purpose**: Close remaining operational security gaps.
 
-- [ ] **T8.1** [SG4.2] Enforce deterministic image pinning in production compose
+- [X] **T8.1** [SG4.2] Enforce deterministic image pinning in production compose
   - **Description**: Verify `docker-compose.prod.yml` uses `${TSISIP_IMAGE_TAG}` (not `:latest`) for all `ghcr.io/b0yz4kr14/tsisip/*` images. Document policy in `docs/security/008-image-pinning-policy.md`.
   - **Depends on**: —
   - **Acceptance**: `grep -c ':latest' docker-compose.prod.yml` returns 0.
@@ -73,7 +73,7 @@
   - **Depends on**: —
   - **Acceptance**: Document matches `tcpdump` evidence and UFW rules.
 
-- [ ] **T8.3** [SG4.4] Schedule incident response runbook review date
+- [X] **T8.3** [SG4.4] Schedule incident response runbook review date
   - **Description**: Add "Next review: <date + 90 days>" to `docs/security/008-incident-response-runbook.md`. Set calendar reminder.
   - **Depends on**: —
   - **Acceptance**: Runbook has explicit next-review date, no `[TBD]`.

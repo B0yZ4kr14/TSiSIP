@@ -383,7 +383,7 @@ services:
         reservations:
           memory: 256M
   certbot:
-    image: tsisip/certbot:${TSISIP_IMAGE_TAG:-latest}
+    image: tsisip/certbot:${TSISIP_IMAGE_TAG:?must be set}
     networks:
     - sip_internal
     restart: unless-stopped
@@ -415,7 +415,7 @@ services:
           memory: 256M
 
   tailscale-cert:
-    image: tsisip/tailscale-cert:${TSISIP_IMAGE_TAG:-latest}
+    image: tsisip/tailscale-cert:${TSISIP_IMAGE_TAG:?must be set}
     networks:
     - sip_internal
     restart: unless-stopped
