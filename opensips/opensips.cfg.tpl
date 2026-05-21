@@ -81,7 +81,7 @@ loadmodule "uac_registrant.so"
 modparam("httpd", "ip", "${OPENSIPS_LISTEN_IP}")
 modparam("httpd", "port", 8888)
 # mi_http root path for MI commands
-modparam("mi_http", "root", "/mi")
+modparam("mi_http", "root", "mi")
 # --- END TLS ROTATION WAVE 3 ---
 
 # auth
@@ -436,7 +436,7 @@ route[AUTH] {
             $var(audit_result) = "failure";
             route(AUTH_AUDIT);
             # T2.1: Increment auth failure counter (60s TTL)
-            cache_add("local", "auth_failures_$var(auth_key)", "1", "60");
+            cache_add("local", "auth_failures_$var(auth_key)", 1, 60);
             # T2.2 / T4.1: Ban source IP after 3 auth failures
             if (cache_fetch("local", "auth_failures_$var(auth_key)", $avp(auth_fail_count)) && $avp(auth_fail_count) >= 3) {
                 xlog("L_WARN", "Auth failure threshold reached for $var(auth_key) from $si - adding to ban_list\n");
@@ -459,7 +459,7 @@ route[AUTH] {
         $var(audit_result) = "failure";
         route(AUTH_AUDIT);
         # T2.1: Increment auth failure counter (60s TTL)
-        cache_add("local", "auth_failures_$var(auth_key)", "1", "60");
+        cache_add("local", "auth_failures_$var(auth_key)", 1, 60);
         # T2.2 / T4.1: Ban source IP after 3 auth failures
         if (cache_fetch("local", "auth_failures_$var(auth_key)", $avp(auth_fail_count)) && $avp(auth_fail_count) >= 3) {
             xlog("L_WARN", "Auth failure threshold reached for $var(auth_key) from $si - adding to ban_list\n");
