@@ -172,6 +172,15 @@ jobs:
       - name: Run CI Scan (brownfield + version-guard + memorylint)
         run: bash scripts/ci-scan.sh
 
+  fr-id-validation:
+    name: FR-ID Validation
+    runs-on: ubuntu-latest
+    needs: validate
+    steps:
+      - uses: actions/checkout@v4
+      - name: Validate feature-scoped requirement IDs
+        run: python3 scripts/validate-fr-ids.py
+
   security-scan:
     name: Security Scan
     runs-on: ubuntu-latest

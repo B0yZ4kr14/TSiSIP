@@ -45,7 +45,7 @@ Phase 9 (Finalization & Sign-off)
 
 **File**: Operational procedure (no repository file change)
 
-**Requirements**: FR-004, SC-004b
+**Requirements**: FR-008-004, SC-004b
 
 **Dependencies**: External — ACME validation must succeed
 
@@ -77,7 +77,7 @@ Phase 9 (Finalization & Sign-off)
 
 **File**: External evidence artifact (produced on operator workstation)
 
-**Requirements**: FR-004, SC-004b
+**Requirements**: FR-008-004, SC-004b
 
 **Dependencies**: T6.1
 
@@ -106,7 +106,7 @@ Phase 9 (Finalization & Sign-off)
 
 **File**: `docs/security/008-security-evidence-index.md` (modify)
 
-**Requirements**: FR-004, SC-004b
+**Requirements**: FR-008-004, SC-004b
 
 **Dependencies**: T6.2
 
@@ -148,7 +148,7 @@ Phase 9 (Finalization & Sign-off)
 
 **File**: `.github/workflows/deploy.yml` (modify)
 
-**Requirements**: FR-004, SC-004b
+**Requirements**: FR-008-004, SC-004b
 
 **Dependencies**: —
 
@@ -222,7 +222,7 @@ Phase 9 (Finalization & Sign-off)
 
 **File**: `docs/security/008-security-evidence-index.md` (modify)
 
-**Requirements**: FR-004
+**Requirements**: FR-008-004
 
 **Dependencies**: T6.4
 
@@ -254,7 +254,7 @@ cp docs/security/evidence/opensips.json docs/security/evidence/008-trivy-scan-la
 
 **File**: `docs/security/008-security-evidence-index.md` (modify)
 
-**Requirements**: FR-005
+**Requirements**: FR-008-005
 
 **Dependencies**: T7.1 (pre-completed)
 
@@ -310,7 +310,7 @@ cp docs/security/evidence/opensips.json docs/security/evidence/008-trivy-scan-la
 
 **File**: Verification procedure (no file change required if current)
 
-**Requirements**: FR-004
+**Requirements**: FR-008-004
 
 **Dependencies**: —
 
@@ -337,7 +337,7 @@ cp docs/security/evidence/opensips.json docs/security/evidence/008-trivy-scan-la
 
 **File**: `docs/security/008-incident-response-runbook.md` (modify)
 
-**Requirements**: FR-005
+**Requirements**: FR-008-005
 
 **Dependencies**: —
 

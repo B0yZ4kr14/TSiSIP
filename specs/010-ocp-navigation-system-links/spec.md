@@ -47,28 +47,28 @@ Restructure the TSiSIP Control Panel dashboard and sidebar navigation so that au
 
 ## Functional Requirements
 
-### FR-001: Dashboard System Management Section
+### FR-010-001: Dashboard System Management Section
 **Description**: The dashboard must display system management links for privileged roles.
 **Acceptance Criteria**:
 - Admin and DevOps roles see links to `dispatcher.php` and `rtpengine.php`
 - Section title is "System Management"
 - Links render as primary buttons (`tsisip-btn-primary`)
 
-### FR-002: Dashboard Documentation Section
+### FR-010-002: Dashboard Documentation Section
 **Description**: The dashboard must continue showing wiki/documentation links for all roles.
 **Acceptance Criteria**:
 - All authenticated roles see their role-appropriate wiki quick links
 - Section title is "Documentation & Wiki"
 - Links render as secondary buttons (`tsisip-btn-secondary`)
 
-### FR-003: Sidebar System Pages
+### FR-010-003: Sidebar System Pages
 **Description**: The sidebar navigation must include system pages for privileged roles.
 **Acceptance Criteria**:
 - Admin and DevOps see "System" heading with Dispatcher and RTPengine links
 - Sidebar separates "System" and "Wiki" sections visually
 - Active page highlighting works for both system and wiki pages
 
-### FR-004: System Status Indicators
+### FR-010-004: System Status Indicators
 **Description**: The dashboard shows operational status of core services.
 **Acceptance Criteria**:
 - Status list shows: OpenSIPS, RTPengine, PostgreSQL, OCP

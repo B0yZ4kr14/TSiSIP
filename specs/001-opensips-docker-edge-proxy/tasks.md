@@ -37,14 +37,14 @@
 ## Phase 2 — PostgreSQL Schema and Initialization
 
 ### [completed] T2.1: Generate stock OpenSIPS 3.6 PostgreSQL schema
-**Description**: Use official OpenSIPS 3.6 database schema tooling to generate the stock PostgreSQL schema. Save as `db/init/01-stock-opensips-schema.sql`. Ensure `subscriber` includes `username`, `domain`, `ha1`, `ha1_sha256`, `ha1_sha512t256`. Ensure `dispatcher` includes `id`, `setid`, `destination`, `state`, `weight`, `priority`, `attrs`. Ensure `address` table is included for `permissions` module (FR-008).
+**Description**: Use official OpenSIPS 3.6 database schema tooling to generate the stock PostgreSQL schema. Save as `db/init/01-stock-opensips-schema.sql`. Ensure `subscriber` includes `username`, `domain`, `ha1`, `ha1_sha256`, `ha1_sha512t256`. Ensure `dispatcher` includes `id`, `setid`, `destination`, `state`, `weight`, `priority`, `attrs`. Ensure `address` table is included for `permissions` module (FR-001-008).
 **Phase**: 2
 **Depends on**: T1.4
 **Parallel**: [P] with T2.2
 **Acceptance**: Schema file is present and contains required tables and columns.
 
 ### [completed] T2.2: Create TSiSIP custom schema extensions
-**Description**: Create `db/init/02-tsisip-extensions.sql` with: `CREATE EXTENSION IF NOT EXISTS pgcrypto;`, `tenants` table, `ALTER TABLE subscriber` for tenant_id and routing_group, `header_routing_rules` table with index, `pbx_backends` table with index, and `auth_audit_log` table with 90-day retention support (FR-009). Use `IF NOT EXISTS` for idempotent initialization.
+**Description**: Create `db/init/02-tsisip-extensions.sql` with: `CREATE EXTENSION IF NOT EXISTS pgcrypto;`, `tenants` table, `ALTER TABLE subscriber` for tenant_id and routing_group, `header_routing_rules` table with index, `pbx_backends` table with index, and `auth_audit_log` table with 90-day retention support (FR-001-009). Use `IF NOT EXISTS` for idempotent initialization.
 **Phase**: 2
 **Depends on**: T1.4
 **Parallel**: [P] with T2.1
@@ -146,7 +146,7 @@
 **Result**: Resolved on VPS TSiAPP. `scripts/sip-auth-probe.py` observed `401 Unauthorized`, then `100 Giving it a try`, then `200 OK`; Asterisk logged execution of `1000@from-opensips`.
 
 ### [completed] T4.6: Final documentation update and sign-off
-**Description**: Update `AGENTS.md` with any new build/test commands discovered during implementation. Ensure the feature directory contains a completed `README.md` or equivalent operator guide for this foundation feature. Validate that FR-008 (permissions/address), FR-009 (audit log), and FR-010 (health probe) are documented in spec and plan.
+**Description**: Update `AGENTS.md` with any new build/test commands discovered during implementation. Ensure the feature directory contains a completed `README.md` or equivalent operator guide for this foundation feature. Validate that FR-001-008 (permissions/address), FR-001-009 (audit log), and FR-001-010 (health probe) are documented in spec and plan.
 **Phase**: 4
 **Depends on**: T4.1, T4.2, T4.3
 **Parallel**: No
@@ -156,14 +156,14 @@
 
 ## Phase 5 — Post-Foundation Implementation (Pending)
 
-### [completed] T5.1: Implement trusted gateway bypass (FR-008)
+### [completed] T5.1: Implement trusted gateway bypass (FR-001-008)
 **Description**: Add `permissions` module configuration to `opensips/opensips.cfg.tpl`: load `permissions.so`, configure `modparam("permissions", "db_url", ...)`, add `check_address()` call in route(SANITIZE) or early in main route for trusted gateway IPs. Populate `address` table with trusted gateway CIDRs. Verify that requests from trusted gateways bypass authentication while still being sanitized and routed.
 **Phase**: 5
 **Depends on**: T4.3
 **Parallel**: No
 **Acceptance**: SIP request from trusted IP reaches Asterisk without 401/407 challenge; request from untrusted IP still requires auth.
 
-### [completed] T5.2: Implement auth audit logging (FR-009)
+### [completed] T5.2: Implement auth audit logging (FR-001-009)
 **Description**: Add auth audit logging route to `opensips/opensips.cfg.tpl` that inserts into `auth_audit_log` table on every auth attempt (success and failure). Include: event_time, username, domain, source_ip, sip_method, result, call_id. Ensure 90-day retention via PostgreSQL scheduled job or partition management. Add index on event_time for query performance.
 **Phase**: 5
 **Depends on**: T4.3

@@ -116,7 +116,7 @@
 | `rollback_safe` | BOOLEAN | Whether removing the injection restores original OCP behavior |
 
 **Constraints**:
-- Only `web/css/main.css` and `web/common/header.php` may be modified (FR-007).
+- Only `web/css/main.css` and `web/common/header.php` may be modified (FR-002-007).
 - All injections must be `rollback_safe = true`.
 
 ---

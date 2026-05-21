@@ -47,7 +47,7 @@
 
 ## Functional Requirements
 
-### FR-001: SIP Trunk Provider Schema
+### FR-017-001: SIP Trunk Provider Schema
 **Description**: PostgreSQL stores trunk provider configuration and DID mappings.
 **Schema**:
 ```sql
@@ -98,7 +98,7 @@ CREATE INDEX idx_sip_trunk_did_lookup
 - Schema initialization script is idempotent and placed in db/init/04-trunk-schema.sql.
 - Foreign keys enforce referential integrity between DID mappings, tenants, and trunk providers.
 
-### FR-002: Outbound Trunk Routing Logic
+### FR-017-002: Outbound Trunk Routing Logic
 **Description**: OpenSIPS routes internal subscriber calls to non-local destinations via trunk providers with priority-based selection and failover.
 **Route Logic**:
 ```cfg
@@ -174,7 +174,7 @@ route[TRUNK_ROUTING] {
 - Calls to non-local domains route through the highest-priority enabled trunk.
 - Failover retries the next priority trunk on transport/failure codes.
 
-### FR-003: Trunk Registration via uac_registrant
+### FR-017-003: Trunk Registration via uac_registrant
 **Description**: OpenSIPS registers to trunk providers that require it, using per-trunk credentials from PostgreSQL.
 **Module Configuration**:
 ```cfg
@@ -213,7 +213,7 @@ CREATE TABLE sip_trunk_registrations (
 - OpenSIPS uac_registrant sends REGISTER at timer_interval and tracks last_register_succ.
 - OCP displays registration state (registered, pending, failed) per trunk.
 
-### FR-004: Inbound DID Routing
+### FR-017-004: Inbound DID Routing
 **Description**: Calls arriving from trunk provider IPs are routed to the correct tenant/backend using the called DID.
 **Route Logic**:
 ```cfg
@@ -257,7 +257,7 @@ route[INBOUND_DID_ROUTING] {
 - Correct X-Tenant-ID header is appended before forwarding to Asterisk.
 - Unknown DIDs return 404 DID Not Found.
 
-### FR-005: Trunk Healthcheck (OPTIONS Probe)
+### FR-017-005: Trunk Healthcheck (OPTIONS Probe)
 **Description**: OpenSIPS sends periodic SIP OPTIONS to each trunk provider and tracks health.
 **Implementation**:
 - Use OpenSIPS dispatcher module with trunk providers loaded into a dedicated dispatcher set (e.g., setid 100).
@@ -270,7 +270,7 @@ route[INBOUND_DID_ROUTING] {
 - Healthy trunk resumes selection within 30 seconds of successful probe.
 - Health status is queryable via MI and visible in OCP.
 
-### FR-006: Per-Trunk Rate Limiting and QoS Metrics
+### FR-017-006: Per-Trunk Rate Limiting and QoS Metrics
 **Description**: Enforce CPS and concurrent call limits per trunk; emit Prometheus-compatible metrics.
 **Rate Limiting**:
 - rl_check("trunk_<uuid>", max_cps, "TAILDROP") before relay.
@@ -289,7 +289,7 @@ route[INBOUND_DID_ROUTING] {
 - Concurrent counter never goes negative.
 - Metrics endpoint returns trunk metrics when Feature 003 Prometheus scrape is enabled.
 
-### FR-007: Trunk Encryption Profiles
+### FR-017-007: Trunk Encryption Profiles
 **Description**: Each trunk specifies its transport and media encryption requirements.
 **Mapping**:
 | transport | OpenSIPS Socket | RTPengine Flags |
@@ -304,7 +304,7 @@ route[INBOUND_DID_ROUTING] {
 - SRTP mode triggers correct RTPengine offer flags.
 - Packet capture confirms no plaintext RTP on SRTP-enabled trunks.
 
-### FR-008: OCP Admin Page for Trunk Management
+### FR-017-008: OCP Admin Page for Trunk Management
 **Description**: The TSiSIP Control Panel provides a CRUD interface for trunk providers and DID mappings.
 **Pages**:
 - /admin/trunk_providers.php — list, add, edit, disable, delete trunk providers.

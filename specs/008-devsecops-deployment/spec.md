@@ -83,20 +83,20 @@ Deliver a repeatable, auditable deployment pipeline that:
 
 ## Functional Requirements
 
-### FR-001: Secure Secret Discovery
+### FR-008-001: Secure Secret Discovery
 **Description**: Script discovers VPS host, user, SSH key, GitHub token, and vault key without logging values. Missing secrets are reported individually with clear instructions. Temp secrets file uses `chmod 600` and explicit deletion reminder.
 **Acceptance Criteria**:
 - `--check-only` mode returns 0 when all secrets are present and non-zero with per-secret diagnostics when any are missing.
 - No secret value appears in stdout, stderr, or log files.
 - Temporary files are created with mode `600` and a deletion reminder is printed.
 
-### FR-002: GitHub Repository Automation
+### FR-008-002: GitHub Repository Automation
 **Description**: Repository created under correct owner with description, privacy, and templates. Script is idempotent (handles existing repo gracefully).
 **Acceptance Criteria**:
 - `--dry-run` validates token permissions without mutating GitHub state.
 - Re-running the script against an existing repo updates settings to canonical values without error.
 
-### FR-003: Ansible Docker Orchestration
+### FR-008-003: Ansible Docker Orchestration
 **Description**: Playbook installs Docker and docker-compose-plugin. Creates dedicated app directory with proper permissions. Deploys docker-compose file and web assets. Pulls latest image and starts stack. Health check verifies OCP responds with `"TSiSIP"` string.
 **Acceptance Criteria**:
 - Pre-flight checks (disk space > 1 GB, Docker daemon reachable, registry reachable) fail fast with actionable messages.
@@ -104,7 +104,7 @@ Deliver a repeatable, auditable deployment pipeline that:
 - Sensitive tasks use `no_log: true`.
 - OCP health check passes within 60 seconds of stack start.
 
-### FR-004: Reverse Proxy Security
+### FR-008-004: Reverse Proxy Security
 **Description**: Nginx listens on 443 with TLS 1.2/1.3. Security headers present. Rate limiting active. Path-based routing working. WebSocket support present. HTTP → HTTPS redirect active.
 **Acceptance Criteria**:
 - `securityheaders.com` scan returns A+ grade.
@@ -112,13 +112,13 @@ Deliver a repeatable, auditable deployment pipeline that:
 - Rate limit of `30r/m` with `burst=10` enforced per IP.
 - Port 80 returns 301 to HTTPS for all paths except ACME challenge.
 
-### FR-005: Socratic Architecture Justification
+### FR-008-005: Socratic Architecture Justification
 **Description**: Document why subdirectory vs. subdomain, privilege minimization gaps and mitigations, and secret scope separation (deploy vs. operational).
 **Acceptance Criteria**:
 - Audit document contains a Socratic Q&A for each architectural decision.
 - Each answer includes a counter-argument and a falsifiable conclusion.
 
-### FR-006: Popper Falsification Tests
+### FR-008-006: Popper Falsification Tests
 **Description**: Executable test scripts for each SPoF scenario. Each test must verify both failure and fallback.
 **Acceptance Criteria**:
 - All 5 SPoF test scripts in `deploy/audit/tests/` exit 0 when run.

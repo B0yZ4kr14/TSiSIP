@@ -36,7 +36,7 @@ OpenSIPS-native target selection table.
 | attrs | VARCHAR(128) | | Additional attributes |
 
 ### address
-Trusted IP whitelist for permissions module (FR-008).
+Trusted IP whitelist for permissions module (FR-001-008).
 
 | Column | Type | Constraints | Description |
 |--------|------|-------------|-------------|
@@ -140,4 +140,4 @@ address }o--|| permissions : "feeds whitelist"
 - calculate_ha1 = 0 — OpenSIPS reads precomputed HA1 columns only; never stores plaintext passwords.
 - All PostgreSQL DDL uses db_postgres-compatible types and snake_case identifiers.
 - version table entries required for db_postgres schema compatibility checks.
-- address table initialized empty; populated via migration or operational scripts per FR-008.
+- address table initialized empty; populated via migration or operational scripts per FR-001-008.

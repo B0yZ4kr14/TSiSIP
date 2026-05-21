@@ -40,30 +40,30 @@ Requests originate from thousands of IPs, each under the individual threshold. T
 
 ## Functional Requirements
 
-### FR-001: Per-Source IP Request Throttling
+### FR-006-001: Per-Source IP Request Throttling
 - OpenSIPS `pike` module monitors request rate per source IP across all SIP methods.
 - Default threshold: 100 requests per 10-second window per IP; 200 requests per 60-second window.
 - Exceeding the threshold results in silent drop for UDP and `429` for TCP/TLS.
 - **Acceptance Criteria**: Container-based flood test at 200 rps from one IP shows ≥95% dropped after threshold; no impact on traffic from other IPs.
 
-### FR-002: Subscriber Authentication Rate Limits
+### FR-006-002: Subscriber Authentication Rate Limits
 - OpenSIPS `auth_db` module tracks failed auth attempts per `auth_username` using `htable` counters.
 - Threshold: 10 failures per 60 seconds per subscriber; ban duration: 300 seconds.
 - After threshold, subsequent REGISTER/INVITE for that subscriber returns `403 Forbidden`.
 - **Acceptance Criteria**: 15 consecutive wrong passwords result in `403` on attempts 11-15; legitimate auth succeeds after the 300s ban expires.
 
-### FR-003: Dispatcher Failover Under Load
+### FR-006-003: Dispatcher Failover Under Load
 - OpenSIPS `dispatcher` module uses `ds_ping_method=OPTIONS` and load-based routing (`ds_select_dst` with priority/weight).
 - If a target exceeds a configurable load threshold (e.g., 80% active calls), new traffic is routed to alternate targets.
 - **Acceptance Criteria**: Load test with 2 backends shows traffic redistribution when one backend reaches 80% capacity; zero dropped calls during redistribution.
 
-### FR-004: Ban Lists with Automatic Expiration
+### FR-006-004: Ban Lists with Automatic Expiration
 - OpenSIPS `htable` stores banned IPs and subscriber URIs with TTL.
 - Ban sources: `pike` overload, auth failure threshold, manual admin block.
 - A management MI command (`ban_list`, `ban_del`) allows operator inspection and early unban.
 - **Acceptance Criteria**: Banned entry disappears from `htable` exactly at TTL expiry; MI query reflects current ban state.
 
-### FR-005: Traffic Anomaly Detection
+### FR-006-005: Traffic Anomaly Detection
 - A sidecar or OpenSIPS `event_route` aggregates `E_PIKE_BLOCKED`, `E_AUTH_FAILURE`, and `E_DISPATCHER_STATUS` events.
 - If global request volume exceeds 3 standard deviations from a 24-hour rolling baseline, an alert is raised and a global throttle is optionally applied.
 - **Acceptance Criteria**: Synthetic distributed flood (1000 IPs at 50 rps each) triggers anomaly alert within 60 seconds.

@@ -47,21 +47,21 @@ Establish an automated deploy pipeline that validates every deploy against quali
 
 ## Functional Requirements
 
-### FR-001: Pre-Deploy Validation Gate
+### FR-009-001: Pre-Deploy Validation Gate
 **Description**: Every deploy must pass automated validation before execution.
 **Acceptance Criteria**:
 - CI scan passes (no hardcoded latest tags, no forbidden modules, images pinned, memory limits present, no committed secrets)
 - Quality gates report shows PASS or PASS_WITH_WARNINGS with zero blocking issues
 - OpenSIPS config syntax validates successfully inside container
 
-### FR-002: Impact Analysis Before Deploy
+### FR-009-002: Impact Analysis Before Deploy
 **Description**: Modified files must be analyzed for blast radius before deploy.
 **Acceptance Criteria**:
 - Change detection maps pending diff to affected symbols and execution flows
 - Impact analysis reports risk level for each modified component
 - Deploy halts if HIGH or CRITICAL risk is detected on core config or compose files
 
-### FR-003: Multi-Agent Build and Push
+### FR-009-003: Multi-Agent Build and Push
 **Description**: Container images must be built and pushed to the registry by isolated agents.
 **Acceptance Criteria**:
 - Builder agent builds only images with modified Dockerfiles or dependent configs
@@ -70,7 +70,7 @@ Establish an automated deploy pipeline that validates every deploy against quali
 
 > **Architecture Note**: The "agents" referenced above are local shell scripts or CI job stages (not long-running containerized services). They execute on the operator's workstation or CI runner and invoke standard Docker CLI commands. This aligns with Constitution §1 (Docker-first delivery of runtime components) by ensuring only the resulting container images are deployed, not the build tools themselves.
 
-### FR-004: Coordinated Deploy to VPS
+### FR-009-004: Coordinated Deploy to VPS
 **Description**: The target VPS must receive updated code and containers with zero-downtime where possible.
 **Acceptance Criteria**:
 - Deployer agent syncs code to target host
@@ -78,7 +78,7 @@ Establish an automated deploy pipeline that validates every deploy against quali
 - Database data and secrets are preserved across deploys
 - Core services restart in correct dependency order
 
-### FR-005: Post-Deploy Verification
+### FR-009-005: Post-Deploy Verification
 **Description**: After deploy, the system must validate that all services are healthy and functional.
 **Acceptance Criteria**:
 - All containers report healthy status
@@ -87,7 +87,7 @@ Establish an automated deploy pipeline that validates every deploy against quali
 - SIP OPTIONS probe receives 200 OK from proxy
 - Backup metrics endpoint responds on loopback
 
-### FR-006: Audit Trail and Observability
+### FR-009-006: Audit Trail and Observability
 **Description**: Every deploy must produce auditable artifacts.
 **Acceptance Criteria**:
 - Deploy is documented in a checklist with pass/fail status for each gate

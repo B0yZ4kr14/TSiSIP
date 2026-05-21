@@ -34,7 +34,7 @@
 **Validation performed**: 2026-05-17
 **Result**: PASS
 
-- Spec contains 7 Functional Requirements (FR-001 through FR-007), each with explicit acceptance criteria.
+- Spec contains 7 Functional Requirements (FR-002-001 through FR-002-007), each with explicit acceptance criteria.
 - 3 primary user scenarios cover administrator, NOC operator, and DevOps engineer personas.
 - 3 edge cases address air-gapped assets, inline style conflicts, and chart data degradation.
 - 7 Success Criteria are all measurable and user-facing (no framework or technology names).

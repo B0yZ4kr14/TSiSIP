@@ -34,7 +34,7 @@
 **Validation performed**: 2026-05-17
 **Result**: PASS
 
-- Spec contains 6 Functional Requirements (FR-001 through FR-006), each with explicit acceptance criteria.
+- Spec contains 6 Functional Requirements (FR-003-001 through FR-003-006), each with explicit acceptance criteria.
 - 3 primary user scenarios cover NOC operator, administrator, and DevOps engineer personas.
 - 3 edge cases address MI overload, Grafana unavailability, and cardinality explosion.
 - 6 Success Criteria are all measurable and user-facing (no framework or technology names).

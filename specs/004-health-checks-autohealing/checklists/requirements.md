@@ -2,12 +2,12 @@
 
 ## Functional Requirements
 
-- [x] FR-001: Multi-Layer Health Probes — Docker HEALTHCHECK and application-level probes defined for all containers.
-- [x] FR-002: Auto-Restart Policies with Exponential Backoff — Compose restart_policy configured with on-failure and capped delay.
-- [x] FR-003: Circuit Breaker for Dispatcher Targets — OpenSIPS dispatcher OPTIONS probing with inactive state and half-open retry.
-- [x] FR-004: Graceful Degradation — Valid SIP responses (488/480) returned when RTPengine or PostgreSQL is unreachable.
-- [x] FR-005: Health Status Dashboard Integration — Prometheus/Grafana scraping of OpenSIPS MI statistics.
-- [x] FR-006: Alerting on Health State Transitions — Alerts fired on unhealthy, circuit-open, and restart-threshold events.
+- [x] FR-004-001: Multi-Layer Health Probes — Docker HEALTHCHECK and application-level probes defined for all containers.
+- [x] FR-004-002: Auto-Restart Policies with Exponential Backoff — Compose restart_policy configured with on-failure and capped delay.
+- [x] FR-004-003: Circuit Breaker for Dispatcher Targets — OpenSIPS dispatcher OPTIONS probing with inactive state and half-open retry.
+- [x] FR-004-004: Graceful Degradation — Valid SIP responses (488/480) returned when RTPengine or PostgreSQL is unreachable.
+- [x] FR-004-005: Health Status Dashboard Integration — Prometheus/Grafana scraping of OpenSIPS MI statistics.
+- [x] FR-004-006: Alerting on Health State Transitions — Alerts fired on unhealthy, circuit-open, and restart-threshold events.
 
 ## Success Criteria
 

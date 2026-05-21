@@ -2,20 +2,20 @@
 
 ## Functional Requirements
 
-### FR-001: Secure Secret Discovery
+### FR-008-001: Secure Secret Discovery
 - [x] Acceptance criteria defined
 - [x] Script discovers VPS host, user, SSH key, GitHub token, and vault key without logging values
 - [x] Missing secrets are reported individually with clear instructions
 - [x] Temp secrets file uses `chmod 600` and explicit deletion reminder
 - [x] `--check-only` mode validates presence without deploying
 
-### FR-002: GitHub Repository Automation
+### FR-008-002: GitHub Repository Automation
 - [x] Acceptance criteria defined
 - [x] Repository created under correct owner with proper settings
 - [x] Script is idempotent (handles existing repo gracefully)
 - [x] `--dry-run` mode validates token permissions without creating
 
-### FR-003: Ansible Docker Orchestration
+### FR-008-003: Ansible Docker Orchestration
 - [x] Acceptance criteria defined
 - [x] Playbook installs Docker and docker-compose-plugin
 - [x] Creates dedicated app directory with proper permissions
@@ -24,7 +24,7 @@
 - [x] Health check verifies OCP responds with `"TSiSIP"` string
 - [x] Pre-flight checks (disk space, Docker daemon, registry reachability) implemented
 
-### FR-004: Reverse Proxy Security
+### FR-008-004: Reverse Proxy Security
 - [x] Acceptance criteria defined
 - [x] Nginx listens on 443 with TLS 1.2/1.3
 - [x] Security headers configured (`X-Frame-Options`, `X-Content-Type-Options`, `X-XSS-Protection`, `Referrer-Policy`)
@@ -33,13 +33,13 @@
 - [x] WebSocket support present for future real-time features
 - [x] HTTP → HTTPS redirect active
 
-### FR-005: Socratic Architecture Justification
+### FR-008-005: Socratic Architecture Justification
 - [x] Acceptance criteria defined
 - [x] Subdirectory vs. subdomain decision documented
 - [x] Privilege minimization gaps and mitigations documented
 - [x] Secret scope separation (deploy vs. operational) documented
 
-### FR-006: Popper Falsification Tests
+### FR-008-006: Popper Falsification Tests
 - [x] Acceptance criteria defined
 - [x] SPoF 1: `~/.env` missing → script exits with clear message
 - [x] SPoF 2: Container crash → Docker restart policy handles it

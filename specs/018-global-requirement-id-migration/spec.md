@@ -10,7 +10,7 @@
 
 ### Context
 
-Cross-project analysis (report `speckit-analyze-cross-project-2026-05-21.md`) identified that `FR-001` through `FR-010` are reused across 11+ feature specifications with different meanings. This breaks requirement traceability, compliance mapping, and impact analysis.
+Cross-project analysis (report `speckit-analyze-cross-project-2026-05-21.md`) identified that flat IDs (e.g., `FR-001-001` in Feature 001 vs `FR-002-001` in Feature 002) were previously ambiguous because the old scheme reused the same requirement numbers (e.g., requirement 001 in Feature 001, Feature 002, and Feature 003) across features with different meanings. This breaks requirement traceability, compliance mapping, and impact analysis.
 
 ### Objective
 

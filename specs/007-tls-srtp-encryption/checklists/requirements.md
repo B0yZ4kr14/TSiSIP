@@ -2,11 +2,11 @@
 
 ## Functional Requirements
 
-- [x] FR-001: Mutual TLS Authentication for SIP Trunks — OpenSIPS tls_mgm with verify_client=1 on 5061/tcp and CRL checking.
-- [x] FR-002: Self-Signed CA Infrastructure — RSA 4096/ECDSA P-256 CA, server, and client certificates with SHA-256.
-- [x] FR-003: Certificate Rotation Without Downtime — Docker secrets staging and MI tls_reload with <1s execution.
-- [x] FR-004: SRTP Key Exchange via SDP — RTPengine RTP/SAVP and DTLS-SRTP negotiation with a=crypto lines.
-- [x] FR-005: Cipher Suite Hardening — TLS 1.2 minimum, TLS 1.3 preferred, AES-256-GCM cipher allowlists.
+- [x] FR-007-001: Mutual TLS Authentication for SIP Trunks — OpenSIPS tls_mgm with verify_client=1 on 5061/tcp and CRL checking.
+- [x] FR-007-002: Self-Signed CA Infrastructure — RSA 4096/ECDSA P-256 CA, server, and client certificates with SHA-256.
+- [x] FR-007-003: Certificate Rotation Without Downtime — Docker secrets staging and MI tls_reload with <1s execution.
+- [x] FR-007-004: SRTP Key Exchange via SDP — RTPengine RTP/SAVP and DTLS-SRTP negotiation with a=crypto lines.
+- [x] FR-007-005: Cipher Suite Hardening — TLS 1.2 minimum, TLS 1.3 preferred, AES-256-GCM cipher allowlists.
 
 ## Success Criteria
 

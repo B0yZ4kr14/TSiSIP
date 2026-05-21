@@ -2,12 +2,12 @@
 
 > **Status**: Proposed  
 > **Created**: 2026-05-21  
-> **Context**: Cross-project analysis A4 identified that `FR-001` through `FR-010` are reused across 11+ feature specifications with different meanings, breaking traceability.
+> **Context**: Cross-project analysis A4 identified that flat requirement IDs (e.g., requirement numbers 001 through 010) were reused across 11+ feature specifications with different meanings, breaking traceability. This has been remediated by migrating all specs to the `FR-NNN-XXX` scheme.
 
 ## Problem
 
 The current flat `FR-XXX` numbering scheme causes identifier collisions:
-- `FR-001` means "Docker Image" in Feature 001, "Theme System" in Feature 002, "Prometheus Scrape Config" in Feature 003, etc.
+- Requirement 001 in Feature 001 means "Docker Image" in Feature 001, "Theme System" in Feature 002, "Prometheus Scrape Config" in Feature 003, etc.
 - This makes cross-feature impact analysis, compliance mapping, and test traceability impossible.
 
 ## Proposed Scheme
@@ -24,7 +24,7 @@ FR-NNN-XXX
 | `XXX` | Requirement sequence within the feature | `001`–`999` |
 
 ### Examples
-| Old ID | New ID | Meaning |
+| Old ID (pre-migration) | New ID | Meaning |
 |---|---|---|
 | `FR-001` (in 001) | `FR-001-001` | OpenSIPS Docker image |
 | `FR-001` (in 002) | `FR-002-001` | TSiSIP theme system |

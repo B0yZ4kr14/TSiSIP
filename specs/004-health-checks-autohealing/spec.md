@@ -40,33 +40,33 @@ If the health status dashboard (e.g., Prometheus/Grafana) is down, health probes
 
 ## Functional Requirements
 
-### FR-001: Multi-Layer Health Probes
+### FR-004-001: Multi-Layer Health Probes
 - Each container (OpenSIPS, PostgreSQL, RTPengine) must expose Docker-native `HEALTHCHECK` instructions. Asterisk health checks are deferred to a future Asterisk containerization feature (Feature 010).
 - Layers: (a) TCP socket probe, (b) HTTP/JSON management API probe (OpenSIPS MI), (c) application-level SIP OPTIONS probe via `dispatcher` module.
 - **Acceptance Criteria**: `docker ps` shows `healthy` for OpenSIPS, PostgreSQL, and RTPengine within 60 seconds of startup; `unhealthy` is reported within 10 seconds of failure. Asterisk health checks are out of scope for this feature.
 
-### FR-002: Auto-Restart Policies with Exponential Backoff
+### FR-004-002: Auto-Restart Policies with Exponential Backoff
 - Docker Compose `restart_policy` must use `on-failure` with `delay` starting at 5s, max 60s, and `max_attempts: 10`.
 - Critical path containers (OpenSIPS, PostgreSQL) use `restart: unless-stopped`; supporting services use `restart: on-failure`.
 - **Acceptance Criteria**: Simulated `kill -9` on OpenSIPS process results in container restart within 15 seconds; backoff increases monotonically up to the cap.
 
-### FR-003: Circuit Breaker for Dispatcher Targets
+### FR-004-003: Circuit Breaker for Dispatcher Targets
 - OpenSIPS `dispatcher` module must use `ds_ping_method=OPTIONS` and `ds_ping_interval=10` with `ds_probing_mode=1`.
 - After dispatcher probing threshold (5 consecutive failures) exceeds the configured limit (`ds_probing_threshold=5`), the target is set to inactive (`ds_set_state`).
 - A half-open retry is attempted every 60 seconds.
 - **Acceptance Criteria**: Packet capture shows no new INVITEs routed to the failed target; `opensips-cli -x mi ds_list` reports `state=inactive`.
 
-### FR-004: Graceful Degradation
+### FR-004-004: Graceful Degradation
 - If RTPengine is unreachable, OpenSIPS must skip `rtpengine_offer()` / `rtpengine_answer()` and reply `488 Not Acceptable Here` for calls requiring relay.
 - If PostgreSQL is unreachable, OpenSIPS must return `480 Temporarily Unavailable` for registration-dependent requests.
 - **Acceptance Criteria**: 100% of failure scenarios result in a valid SIP response code; no process crashes or segfaults.
 
-### FR-005: Health Status Dashboard Integration
+### FR-004-005: Health Status Dashboard Integration
 - OpenSIPS MI `get_statistics` output is scraped by a Prometheus exporter (or `statsd`) and visualized in Grafana.
 - Key metrics: `dispatched_targets_active`, `healthcheck_failures_total`, `container_restarts_total`.
 - **Acceptance Criteria**: Dashboard displays real-time health for all 4 core services with <5s latency.
 
-### FR-006: Alerting on Health State Transitions
+### FR-004-006: Alerting on Health State Transitions
 - Alerts are fired on transitions: healthy -> unhealthy, circuit open, container restart threshold exceeded.
 - Alert channels: webhook to external incident system.
 - **Acceptance Criteria**: All 3 transition types trigger an alert within 10 seconds.

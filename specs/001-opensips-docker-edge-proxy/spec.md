@@ -35,10 +35,10 @@ Enable a platform operator to build, configure, and start the containerized TSiS
 - Q: Should secret rotation strategy be defined in this foundation spec? → A: Defer to future operational documentation; no secret rotation requirements in foundation spec.
 - Q: Is multi-instance horizontal scaling supported in the foundation? → A: Single instance per deployment; multi-instance/HA deferred to future feature requiring shared dialog state or session affinity.
 - Q: What fallback behavior should apply when RTPengine is unavailable during INVITE processing? → A: Foundation validation requires RTPengine reachability for SIP runtime tests; graceful runtime fallback is specified in Feature 004 as `488 Not Acceptable Here` for calls requiring relay.
-- Q: What functional requirement justifies the presence of the permissions module in the OpenSIPS configuration? → A: FR-008 defines IP-based trusted gateway bypass using the permissions module and OpenSIPS address table.
+- Q: What functional requirement justifies the presence of the permissions module in the OpenSIPS configuration? → A: FR-001-008 defines IP-based trusted gateway bypass using the permissions module and OpenSIPS address table.
 - Q: What behavior should apply when concurrent SIP sessions exceed the foundation limit? → A: Limit raised to 1000 concurrent sessions; overload degradation behavior deferred to future performance feature.
-- Q: What logging requirements should apply to the auth_audit_log table? → A: FR-009 requires all authentication events (success, failure, challenge) to be persisted in auth_audit_log with minimum 90-day retention.
-- Q: Should the health check mechanism be classified as a formal functional requirement? → A: Promoted to FR-010 "Container health probe via SIP OPTIONS".
+- Q: What logging requirements should apply to the auth_audit_log table? → A: FR-001-009 requires all authentication events (success, failure, challenge) to be persisted in auth_audit_log with minimum 90-day retention.
+- Q: Should the health check mechanism be classified as a formal functional requirement? → A: Promoted to FR-001-010 "Container health probe via SIP OPTIONS".
 
 ---
 
@@ -78,21 +78,21 @@ Enable a platform operator to build, configure, and start the containerized TSiS
 
 ## Functional Requirements
 
-### FR-001: Project-owned container image for OpenSIPS
+### FR-001-001: Project-owned container image for OpenSIPS
 **Description**: The TSiSIP SIP edge service must be built from a committed project Dockerfile, producing a reproducible container image.
 **Acceptance Criteria**:
 - Image build completes without external image substitution for the core proxy.
 - Image contains OpenSIPS 3.6 LTS and required database connectivity modules.
 - Image includes a templated configuration file rendered at startup from runtime-supplied values.
 
-### FR-002: Runtime secret injection
+### FR-001-002: Runtime secret injection
 **Description**: Secrets such as database credentials, authentication secrets, and topology hiding keys must be injected at runtime without being committed to source control.
 **Acceptance Criteria**:
 - Configuration template references secrets through environment variables or container secret mounts.
 - Secrets are never present in committed source files.
 - Missing secrets cause a clear startup failure rather than silent unsafe defaults.
 
-### FR-002A: Digest credential hash policy
+### FR-001-002A: Digest credential hash policy
 **Description**: SIP Digest credentials must use precomputed HA1-compatible hashes. Plaintext subscriber passwords are not operational credentials.
 **Acceptance Criteria**:
 - `ha1` is the mandatory compatibility baseline for legacy MD5 SIP Digest clients.
@@ -100,33 +100,33 @@ Enable a platform operator to build, configure, and start the containerized TSiS
 - `calculate_ha1` remains disabled; OpenSIPS reads precomputed hashes only.
 - The stock `subscriber.password` column remains empty or non-authoritative and is never used as a plaintext credential source.
 
-### FR-003: Private PostgreSQL persistence
+### FR-001-003: Private PostgreSQL persistence
 **Description**: A PostgreSQL database service must be available exclusively on an internal Docker network for subscriber credentials, tenant metadata, and routing rules.
 **Acceptance Criteria**:
 - PostgreSQL service has no host-published ports.
 - OpenSIPS can connect to PostgreSQL using a standard DSN.
 - Database initialization scripts create the required stock tables and project-specific extensions.
 
-### FR-004: Network isolation by function
+### FR-001-004: Network isolation by function
 **Description**: Docker networks must enforce separation between public signaling, internal SIP forwarding, and database access.
 **Acceptance Criteria**:
 - Public SIP ingress is confined to a dedicated network attaching only to edge-facing services.
 - Internal SIP forwarding occurs on a separate network that does not allow external host access.
 - Database traffic is restricted to a dedicated internal network.
 
-### FR-005: Edge authentication enforcement
+### FR-001-005: Edge authentication enforcement
 **Description**: Every SIP request from untrusted sources—except health-check OPTIONS—must be challenged for Digest authentication before any backend routing decision.
 **Acceptance Criteria**:
 - Unauthenticated REGISTER, INVITE, and other authenticated requests receive a `401 Unauthorized` digest challenge from `www_challenge`.
 - OPTIONS requests are answered locally without backend routing and without exposing topology.
 
-### FR-006: Configuration syntax validation
+### FR-001-006: Configuration syntax validation
 **Description**: The OpenSIPS configuration must be validated for syntax correctness inside the built image before the proxy process starts.
 **Acceptance Criteria**:
 - A syntax check command runs successfully inside the container.
 - Syntax errors prevent container startup with a descriptive exit status.
 
-### FR-007: Canonical routing logic skeleton
+### FR-001-007: Canonical routing logic skeleton
 **Description**: The configuration must implement the canonical route flow: loop/size protection, in-dialog handling, CANCEL handling, unauthenticated OPTIONS, header sanitization, authentication, backend routing, dialog creation, topology hiding, and stateful relay.
 **Acceptance Criteria**:
 - Route blocks are named and sequenced according to the canonical contract.
@@ -134,21 +134,21 @@ Enable a platform operator to build, configure, and start the containerized TSiS
 - Credentials are consumed before forwarding.
 - Topology hiding uses mode `"C"` to conceal backend Contact/Record-Route/Via-derived routing details and prevent public clients from learning private PBX addresses.
 
-### FR-008: Trusted gateway IP bypass
+### FR-001-008: Trusted gateway IP bypass
 **Description**: The `permissions` module must allow authentication bypass for SIP requests originating from pre-configured trusted gateway IP addresses, using the OpenSIPS `address` table for IP-based whitelist lookups.
 **Acceptance Criteria**:
 - Requests from IPs listed in the `address` table bypass Digest authentication.
-- Non-trusted IPs continue to receive 401/407 challenges per FR-005.
+- Non-trusted IPs continue to receive 401/407 challenges per FR-001-005.
 - The `address` table is initialized empty in the foundation; gateway IPs are populated via migration or operational scripts.
 
-### FR-009: Authentication event audit logging
+### FR-001-009: Authentication event audit logging
 **Description**: All authentication attempts (success, failure, challenge) must be persisted to the `auth_audit_log` table for operational debugging and security audit. Records must be retained for a minimum of 90 days.
 **Acceptance Criteria**:
 - Every Digest challenge, successful authentication, and failed authentication attempt generates an `auth_audit_log` record.
 - Records include event_time, username, domain, source_ip, sip_method, result, and call_id.
 - The table design supports 90-day retention without performance degradation.
 
-### FR-010: Container health probe via SIP OPTIONS
+### FR-001-010: Container health probe via SIP OPTIONS
 **Description**: The OpenSIPS container must expose a health probe mechanism using SIP OPTIONS requests to `localhost:5060`. A successful probe returns `200 OK`; three consecutive failures mark the container as unhealthy. Canonical container timing is interval 15s, timeout 5s, retries 3, start period 30s.
 **Acceptance Criteria**:
 - SIP OPTIONS to `localhost:5060` returns `200 OK` when the proxy is operational.

@@ -2,12 +2,12 @@
 
 ## Functional Requirements
 
-- [x] FR-001: Scheduled Logical Backups — Daily pg_dump with custom format and gzip compression via backup sidecar.
-- [x] FR-002: WAL Archiving for PITR — PostgreSQL archive_mode enabled with archive_command and archive_timeout.
-- [x] FR-003: Backup Encryption at Rest — AES-256-CBC + PBKDF2 encryption using Docker secret-derived keys.
-- [x] FR-004: Retention Policies — 30-day logical backup retention; 7-day WAL retention beyond oldest backup.
-- [x] FR-005: Restore Validation Tests — Daily ephemeral restore with row-count and checksum assertions.
-- [x] FR-006: Offsite Backup Replication — S3-compatible replication with bandwidth throttling and checksum verification.
+- [x] FR-005-001: Scheduled Logical Backups — Daily pg_dump with custom format and gzip compression via backup sidecar.
+- [x] FR-005-002: WAL Archiving for PITR — PostgreSQL archive_mode enabled with archive_command and archive_timeout.
+- [x] FR-005-003: Backup Encryption at Rest — AES-256-CBC + PBKDF2 encryption using Docker secret-derived keys.
+- [x] FR-005-004: Retention Policies — 30-day logical backup retention; 7-day WAL retention beyond oldest backup.
+- [x] FR-005-005: Restore Validation Tests — Daily ephemeral restore with row-count and checksum assertions.
+- [x] FR-005-006: Offsite Backup Replication — S3-compatible replication with bandwidth throttling and checksum verification.
 
 ## Success Criteria
 

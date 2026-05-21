@@ -136,7 +136,7 @@ See `data-model.md` for full entity definitions. Key entities:
    - `tsisip-i18n.js` — Helper to resolve translated strings from OCP's gettext domain at runtime.
 
 **Technical Constraints**:
-- No PHP view files other than `header.php` and `main.css` may be modified (FR-007).
+- No PHP view files other than `header.php` and `main.css` may be modified (FR-002-007).
 - All injections must be rollback-safe: removing `web/tsisip/` directory and reverting `header.php`/`main.css` restores original OCP.
 - jQuery event handlers must not be detached or overridden by TSiSIP scripts.
 - D3.js chart containers must use `#tsisip-chart--*` IDs only.

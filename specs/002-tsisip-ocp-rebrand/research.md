@@ -13,7 +13,7 @@
 **Rationale**: The rebranding must work within this constraint. We cannot introduce React, Vue, or Angular without rewriting views. The theme must be a CSS/SVG/JS injection layer.
 
 **Alternatives considered**:
-- Rewrite OCP frontend in a modern SPA framework → Rejected: violates FR-007 (non-breaking), too risky, fragments plugin ecosystem.
+- Rewrite OCP frontend in a modern SPA framework → Rejected: violates FR-002-007 (non-breaking), too risky, fragments plugin ecosystem.
 - Use a CSS-only approach with zero JavaScript → Rejected: D3.js charts require JS; responsive sidebar toggle requires JS.
 
 ---
@@ -94,7 +94,7 @@
 
 **Decision**: Use CSS `overflow-x: auto` with `position: sticky` on the first column for horizontal scroll on mobile. Action columns are suppressed for read-only users via CSS attribute selectors (`[data-role="readonly"] td.actions { display: none; }`).
 
-**Rationale**: Horizontal scroll preserves all columns without hiding data. Sticky first column maintains row context. CSS-only suppression satisfies FR-007 (no PHP modification). The falsification test (card-sorting) confirmed this approach.
+**Rationale**: Horizontal scroll preserves all columns without hiding data. Sticky first column maintains row context. CSS-only suppression satisfies FR-002-007 (no PHP modification). The falsification test (card-sorting) confirmed this approach.
 
 **Alternatives considered**:
 - Column hiding via JS breakpoints → Rejected: requires PHP modification to mark columns as hideable.

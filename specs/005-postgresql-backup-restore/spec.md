@@ -49,30 +49,30 @@ If a restore is already in progress on a given target (e.g., the ephemeral valid
 
 ## Functional Requirements
 
-### FR-001: Scheduled Logical Backups
+### FR-005-001: Scheduled Logical Backups
 - A dedicated backup container or sidecar runs `pg_dump` against the `db_internal` network target.
 - Schedule: daily at 02:00 UTC; configurable via environment variable.
 - Output: custom-format (`-Fc`) with `gzip` compression.
 - **Acceptance Criteria**: Backup completes within 30 minutes for a 10GB database; zero lock-timeout errors in PostgreSQL logs.
 
-### FR-002: WAL Archiving for PITR
+### FR-005-002: WAL Archiving for PITR
 - PostgreSQL `archive_mode = on` and `archive_command` copies completed WAL segments to the backup store.
 - `archive_timeout = 300` to ensure WAL rotation even during low activity.
 - **Acceptance Criteria**: `pg_switch_wal()` results in a new archived segment visible in the backup store within 60 seconds.
 
-### FR-003: Backup Encryption at Rest
+### FR-005-003: Backup Encryption at Rest
 - All logical backups and WAL segments are encrypted using **AES-256-CBC with PBKDF2** (OpenSSL `-aes-256-cbc -pbkdf2 -iter 10000`) using a key derived from a Docker secret.
 - A separate HMAC-SHA256 integrity check is applied post-encryption to detect tampering.
 - Key rotation is supported by re-encrypting the last N backups with the new key.
 - **Acceptance Criteria**: Encrypted file header does not match plaintext PostgreSQL custom format (`pg_restore -l` fails on encrypted file); decryption with the correct key restores identical byte-for-byte content (verified by SHA-256 checksum).
 
-### FR-004: Retention Policies
+### FR-005-004: Retention Policies
 - Logical backups retained for 30 days; WAL segments retained for 7 days beyond the oldest logical backup.
 - Automated purge job runs daily at 03:00 UTC.
 - **Acceptance Criteria**: No backup or WAL segment older than the retention window exists in the store; at least one backup per day is retained.
 - **Storage Quota**: When backup volume usage exceeds 80% of allocated quota (`BACKUP_QUOTA_GB`, default 100GB), oldest segments beyond retention are purged immediately.
 
-### FR-005: Restore Validation Tests
+### FR-005-005: Restore Validation Tests
 - An ephemeral PostgreSQL container (`docker run --rm postgres:16`) is spawned from the latest logical backup daily.
 - Validation queries verify:
   - `subscriber`: row count > 0
@@ -81,7 +81,7 @@ If a restore is already in progress on a given target (e.g., the ephemeral valid
 - **Acceptance Criteria**: All validation queries pass within 10 minutes; failures trigger a critical alert.
 - **RTO Benchmark**: Restore from latest logical backup to SIP-ready state must complete within 15 minutes (measured by `validate.sh` timer).
 
-### FR-006: Offsite Backup Replication
+### FR-005-006: Offsite Backup Replication
 - Encrypted backups and WAL segments are replicated to an offsite object store (e.g., S3-compatible) using `rclone` or `s3cmd`.
 - Replication bandwidth is throttled to 50 Mbps to avoid saturating `sip_edge` or `sip_internal` networks.
 - **Acceptance Criteria**: Offsite copy exists within 1 hour of local backup completion; MD5 checksums match.

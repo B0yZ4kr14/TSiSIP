@@ -6,7 +6,7 @@
 ## Wave 1: Database Schema
 
 ### T1.1: Create trunk provider schema file
-**Description**: Create `db/init/04-trunk-schema.sql` containing `sip_trunk_providers` (with pgcrypto-encrypted credentials), `sip_trunk_did_mappings`, and `sip_trunk_registrations` tables. Include all indexes, check constraints, and foreign keys as specified in the feature spec (FR-001, FR-003).
+**Description**: Create `db/init/04-trunk-schema.sql` containing `sip_trunk_providers` (with pgcrypto-encrypted credentials), `sip_trunk_did_mappings`, and `sip_trunk_registrations` tables. Include all indexes, check constraints, and foreign keys as specified in the feature spec (FR-017-001, FR-017-003).
 **Files affected**: `db/init/04-trunk-schema.sql`
 **Depends on**: —
 **Status**: [x]

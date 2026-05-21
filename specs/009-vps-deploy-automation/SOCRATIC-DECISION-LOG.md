@@ -107,7 +107,7 @@
 **Falsification attempt**: Not creating the YAML files means T2.1 is not completed per its literal acceptance criteria.
 
 **Surviving rationale**:
-1. The acceptance criteria was written before the architecture note in the spec (Section FR-003) clarified that agents are "local shell scripts or CI job stages."
+1. The acceptance criteria was written before the architecture note in the spec (Section FR-009-003) clarified that agents are "local shell scripts or CI job stages."
 2. Creating 4 YAML files that wrap shell functions would be cargo-culting OMK patterns without adding value. The shell functions are the actual implementation.
 3. The decision is documented in this log and in the tasks.md as an explicit deviation with justification.
 4. If future OMK integration requires YAML wrappers, they can be generated from the shell function headers in <5 minutes.

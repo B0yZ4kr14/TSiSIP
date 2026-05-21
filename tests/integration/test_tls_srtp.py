@@ -49,7 +49,7 @@ class TestTLSEncryption:
                 pytest.skip(f"Secret {secret} not mounted")
 
     def test_certificate_valid(self):
-        """FR-002: Server certificate chain validates."""
+        """FR-007-002: Server certificate chain validates."""
         result = subprocess.run(
             ["docker", "compose", "-f", COMPOSE_FILE, "exec", "-T", "opensips",
              "bash", "-c",

@@ -2,11 +2,11 @@
 
 ## Functional Requirements
 
-- [x] FR-001: Per-Source IP Request Throttling — OpenSIPS pike module configured with 100/10s and 200/60s thresholds.
-- [x] FR-002: Subscriber Authentication Rate Limits — htable counters track 10 failures per 60s per subscriber with 300s ban.
-- [x] FR-003: Dispatcher Failover Under Load — Load-based routing redistributes traffic at 80% capacity threshold.
-- [x] FR-004: Ban Lists with Automatic Expiration — htable entries with TTL and MI management commands.
-- [x] FR-005: Traffic Anomaly Detection — Event sidecar aggregates pike, auth, and dispatcher events with statistical baseline.
+- [x] FR-006-001: Per-Source IP Request Throttling — OpenSIPS pike module configured with 100/10s and 200/60s thresholds.
+- [x] FR-006-002: Subscriber Authentication Rate Limits — htable counters track 10 failures per 60s per subscriber with 300s ban.
+- [x] FR-006-003: Dispatcher Failover Under Load — Load-based routing redistributes traffic at 80% capacity threshold.
+- [x] FR-006-004: Ban Lists with Automatic Expiration — htable entries with TTL and MI management commands.
+- [x] FR-006-005: Traffic Anomaly Detection — Event sidecar aggregates pike, auth, and dispatcher events with statistical baseline.
 
 ## Success Criteria
 

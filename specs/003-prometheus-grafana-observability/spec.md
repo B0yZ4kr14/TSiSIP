@@ -47,42 +47,42 @@ Deliver a real-time observability platform that exposes TSiSIP infrastructure me
 
 ## Functional Requirements
 
-### FR-001: OpenSIPS Metric Exposure
+### FR-003-001: OpenSIPS Metric Exposure
 **Description**: OpenSIPS must expose critical metrics via a Prometheus-compatible scraping endpoint. Metrics must include: active dialogs, registered subscribers, dispatcher target state, authentication failures, and SIP message counters.
 **Acceptance Criteria**:
 - Metrics endpoint responds to HTTP GET at `/metrics` with `Content-Type: text/plain; version=0.0.4`
 - All listed metric families are present and update within 15 seconds of state change
 - Metric names follow Prometheus naming conventions (`opensips_active_dialogs_total`)
 
-### FR-002: Prometheus Time-Series Collection
+### FR-003-002: Prometheus Time-Series Collection
 **Description**: Prometheus must scrape OpenSIPS, RTPengine, PostgreSQL, and host-level metrics at configurable intervals. Data retention supports 30 days of high-resolution (15s) data. Long-term retention (1 year downsampled) is planned for future implementation.
 **Acceptance Criteria**:
 - Prometheus configuration file defines scrape jobs for all TSiSIP services
 - Scrapes succeed with HTTP 200 and valid metric format
 - Storage usage does not exceed 10GB for 30 days of collected data
 
-### FR-003: Grafana Dashboard Suite
+### FR-003-003: Grafana Dashboard Suite
 **Description**: Grafana must provide pre-configured dashboards for: SIP signaling overview, dispatcher health, RTPengine sessions, PostgreSQL performance, and system resource utilization.
 **Acceptance Criteria**:
 - Each dashboard loads in under 3 seconds
 - Dashboards are role-aware (admin sees all panels; readonly sees non-actionable views)
 - All panels have human-readable titles and descriptions in EN/ES/PT
 
-### FR-004: Alerting Rules and Notifications
+### FR-003-004: Alerting Rules and Notifications
 **Description**: Prometheus Alertmanager must evaluate rules and send notifications for critical conditions: dispatcher target down, authentication spike, RTP port exhaustion, and disk space critical.
 **Acceptance Criteria**:
 - Alert rules trigger within 60 seconds of condition breach
 - Notifications are delivered via webhook (configurable endpoint)
 - Alerts include context: metric value, threshold, affected service, and runbook link
 
-### FR-005: Health Check Integration
+### FR-003-005: Health Check Integration
 **Description**: The existing Docker health checks must be enhanced to include metric-based validation. Container orchestration must use these health checks for auto-restart decisions.
 **Acceptance Criteria**:
 - OpenSIPS health check fails if `/metrics` endpoint is unreachable for 30 seconds
 - Container is marked unhealthy after 3 consecutive failed health checks
 - Prometheus records health check state as a metric (`container_health_status`)
 
-### FR-006: Metric Cardinality Control
+### FR-003-006: Metric Cardinality Control
 **Description**: The system must prevent cardinality explosion by enforcing limits on label combinations. Per-subscriber or per-call metrics must be aggregated or sampled.
 **Acceptance Criteria**:
 - No single metric family exceeds 10,000 unique time series

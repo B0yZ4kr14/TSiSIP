@@ -10,17 +10,17 @@
 
 ## Security & Hardening
 
-- [x] CHK001 — PASS. FR-005 quantifies authenticated methods as `401 Unauthorized` digest challenge and OPTIONS as local `200 OK` without backend routing.
-- [x] CHK002 — PASS. FR-002A documents MD5 HA1 as compatibility baseline, SHA-256/SHA-512/256 as stronger provisioning paths, and plaintext `subscriber.password` as non-authoritative.
-- [x] CHK003 — PASS. FR-008 and plan Data Model specify `permissions` with the OpenSIPS `address` table for trusted gateway IP bypass.
-- [x] CHK004 — PASS. FR-007 now ties topology hiding mode `"C"` to concealing backend routing details and private PBX addresses.
-- [x] CHK005 — PASS. FR-002, plan Secrets Strategy, `.gitignore`, and entrypoint constraints agree on runtime secret injection and fail-fast behavior.
+- [x] CHK001 — PASS. FR-001-005 quantifies authenticated methods as `401 Unauthorized` digest challenge and OPTIONS as local `200 OK` without backend routing.
+- [x] CHK002 — PASS. FR-001-002A documents MD5 HA1 as compatibility baseline, SHA-256/SHA-512/256 as stronger provisioning paths, and plaintext `subscriber.password` as non-authoritative.
+- [x] CHK003 — PASS. FR-001-008 and plan Data Model specify `permissions` with the OpenSIPS `address` table for trusted gateway IP bypass.
+- [x] CHK004 — PASS. FR-001-007 now ties topology hiding mode `"C"` to concealing backend routing details and private PBX addresses.
+- [x] CHK005 — PASS. FR-001-002, plan Secrets Strategy, `.gitignore`, and entrypoint constraints agree on runtime secret injection and fail-fast behavior.
 
 ## Operability & Observability
 
-- [x] CHK006 — PASS. FR-010 quantifies interval 15s, timeout 5s, retries 3, start period 30s.
+- [x] CHK006 — PASS. FR-001-010 quantifies interval 15s, timeout 5s, retries 3, start period 30s.
 - [x] CHK007 — PASS. Clarifications and plan Health Checks assign restart policy responsibility to Docker Compose/operator.
-- [x] CHK008 — PASS. FR-009 specifies authentication audit events, minimum fields, and 90-day retention.
+- [x] CHK008 — PASS. FR-001-009 specifies authentication audit events, minimum fields, and 90-day retention.
 - [x] CHK009 — PASS. Operator workflow is documented by AGENTS.md, README.md, deploy runbooks, `.env.example`, and the secrets directory contract.
 
 ## Performance & Scalability
@@ -39,10 +39,10 @@
 
 ## Clarification Audit
 
-- [x] CHK018 — PASS. Clarifications map into FR-005, FR-008, FR-009, FR-010, Success Criteria, Assumptions, Risks, and Active Issues.
+- [x] CHK018 — PASS. Clarifications map into FR-001-005, FR-001-008, FR-001-009, FR-001-010, Success Criteria, Assumptions, Risks, and Active Issues.
 - [x] CHK019 — PASS. Performance-track validation is now captured in Dependencies and Risks.
-- [x] CHK020 — PASS. Health checking is formalized as FR-010.
-- [x] CHK021 — PASS. FR-004 covers network isolation; Assumptions explicitly limit the foundation to a single OpenSIPS instance.
+- [x] CHK020 — PASS. Health checking is formalized as FR-001-010.
+- [x] CHK021 — PASS. FR-001-004 covers network isolation; Assumptions explicitly limit the foundation to a single OpenSIPS instance.
 - [x] CHK022 — PASS. RTPengine validation is resolved and graceful fallback moved to Feature 004; Asterisk production routing was validated on VPS TSiAPP in 2026-05-19.
 
 ## Cross-Cutting Quality

@@ -58,7 +58,7 @@ This plan translates the feature specification into an executable implementation
 ### Stock OpenSIPS Tables (from official OpenSIPS 3.6 schema tooling)
 - `subscriber`: username, domain, ha1, ha1_sha256, ha1_sha512t256, plus TSiSIP extensions.
 - `dispatcher`: id, setid, destination, state, weight, priority, attrs.
-- `address`: id, ip, grp, port, mask, context, tag — used by `permissions` module for trusted gateway IP whitelist (FR-008).
+- `address`: id, ip, grp, port, mask, context, tag — used by `permissions` module for trusted gateway IP whitelist (FR-001-008).
 - `version`: table_name, table_version — schema compatibility tracking for `db_postgres`.
 
 ### TSiSIP Custom Extensions
@@ -66,7 +66,7 @@ This plan translates the feature specification into an executable implementation
 - `subscriber` extensions: tenant_id (FK → tenants), routing_group, enabled.
 - `header_routing_rules`: UUID primary key, tenant_id (FK), header_name, match_value, match_type, dispatcher_setid, priority, enabled.
 - `pbx_backends`: UUID primary key, tenant_id (FK), dispatcher_setid, label, enabled.
-- `auth_audit_log`: BIGSERIAL primary key, event_time, username, domain, source_ip, sip_method, result, call_id. Supports 90-day retention per FR-009.
+- `auth_audit_log`: BIGSERIAL primary key, event_time, username, domain, source_ip, sip_method, result, call_id. Supports 90-day retention per FR-001-009.
 
 ### Indexes
 - `uq_subscriber_tenant_username_domain` unique index on subscriber(tenant_id, username, domain).
@@ -150,9 +150,9 @@ This plan translates the feature specification into an executable implementation
 4. Validate port isolation: inspect that only OpenSIPS and RTPengine publish host ports.
 5. Validate network isolation: confirm Asterisk and PostgreSQL are on internal networks only.
 6. Validate OpenSIPS syntax check passes inside the built image.
-7. Validate container health check mechanism (SIP OPTIONS → 200 OK) per FR-010.
-8. Validate trusted gateway bypass via `permissions` module and `address` table per FR-008.
-9. Validate auth audit logging populates `auth_audit_log` per FR-009.
+7. Validate container health check mechanism (SIP OPTIONS → 200 OK) per FR-001-010.
+8. Validate trusted gateway bypass via `permissions` module and `address` table per FR-001-008.
+9. Validate auth audit logging populates `auth_audit_log` per FR-001-009.
 10. Validate that unauthenticated OPTIONS receives 200 OK locally (T4.4 — completed after RTPengine container build was fixed).
 11. Validate that authenticated INVITE reaches production Asterisk backends through dispatcher set 1 (T4.7 — completed on VPS TSiAPP with `scripts/sip-auth-probe.py`).
 

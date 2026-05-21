@@ -63,7 +63,7 @@ Transform the OCP v9 user interface into a TSiSIP-branded, high-quality operatio
 
 ## Functional Requirements
 
-### FR-001: TSiSIP Corporate Identity System
+### FR-002-001: TSiSIP Corporate Identity System
 **Description**: Establish and enforce a unified visual identity system that replaces all generic OCP branding with TSiSIP corporate assets.
 **Acceptance Criteria**:
 - The corporate name "TSiSIP" appears in exact casing (all uppercase except the central lowercase "i") in all branded touchpoints: header title, login page, browser tab, and email templates
@@ -71,7 +71,7 @@ Transform the OCP v9 user interface into a TSiSIP-branded, high-quality operatio
 - Logo behavior is responsive: full horizontal lockup on desktop, compact icon-only variant on mobile viewports below 768px
 - No generic upstream "OpenSIPS Control Panel" strings remain visible to authenticated users
 
-### FR-002: Color Palette & Theming
+### FR-002-002: Color Palette & Theming
 **Description**: Define and apply a cold-tone color system that conveys metallic blue authority, technical precision, and enterprise trust.
 **Acceptance Criteria**:
 - A primary palette is specified with a metallic blue anchor, supported by slate, gunmetal, and ice gradients
@@ -79,7 +79,7 @@ Transform the OCP v9 user interface into a TSiSIP-branded, high-quality operatio
 - All color definitions are centralized in a theme configuration that cascades to tables, forms, buttons, navigation, badges, and charts
 - Sufficient contrast ratios are maintained for WCAG 2.1 AA compliance across all text-background combinations
 
-### FR-003: Typography & Visual Hierarchy
+### FR-002-003: Typography & Visual Hierarchy
 **Description**: Implement a typographic system that improves readability of dense SIP data while reinforcing brand character.
 **Acceptance Criteria**:
 - A primary typeface is specified for headings and navigation, conveying technical authority
@@ -87,7 +87,7 @@ Transform the OCP v9 user interface into a TSiSIP-branded, high-quality operatio
 - Font loading must not block initial paint; fallback system fonts must display instantly
 - Typography scale is enforced consistently across headers, body, captions, and monospaced data fields
 
-### FR-004: Asset Optimization & Delivery
+### FR-002-004: Asset Optimization & Delivery
 **Description**: Ensure all rebranding assets (CSS, SVG icons, fonts) are optimized for fast delivery and minimal render-blocking in telecom operational environments.
 **Acceptance Criteria**:
 - SVG icons replace raster PNGs wherever feasible, with inline SVG preferred for critical UI chrome to eliminate HTTP requests
@@ -95,7 +95,7 @@ Transform the OCP v9 user interface into a TSiSIP-branded, high-quality operatio
 - Total added weight of the rebranding asset layer must not exceed 150KB uncompressed (excluding optional font files)
 - All assets are served from local project paths; no external CDN or tracking dependencies are introduced
 
-### FR-005: Interactive Visualization Integration
+### FR-002-005: Interactive Visualization Integration
 **Description**: Enable D3.js-based interactive charts within OCP v9 views for SIP metrics, trunk load, and session analytics without breaking legacy PHP view rendering.
 **Acceptance Criteria**:
 - Chart containers are injected into designated OCP module views through non-invasive DOM insertion points
@@ -104,7 +104,7 @@ Transform the OCP v9 user interface into a TSiSIP-branded, high-quality operatio
 - Charts are responsive: they reflow within their container on window resize without page reload
 - Chart initialization fails gracefully if the D3.js library or metric endpoint is unavailable, leaving the surrounding PHP view fully functional
 
-### FR-006: Responsive Behavior Across Viewports
+### FR-002-006: Responsive Behavior Across Viewports
 **Description**: Ensure the rebranded OCP remains fully operable across the device spectrum used in telecom operations.
 **Acceptance Criteria**:
 - Navigation sidebar collapses to a hamburger menu on viewports below 1024px
@@ -113,7 +113,7 @@ Transform the OCP v9 user interface into a TSiSIP-branded, high-quality operatio
 - The header logo switches to the compact icon variant below 768px without layout shift
 - Touch targets (buttons, nav items) maintain a minimum 44x44px active area on tablet and mobile
 
-### FR-007: Legacy Compatibility & Non-Breaking Override
+### FR-002-007: Legacy Compatibility & Non-Breaking Override
 **Description**: The rebranding must be a cosmetic layer that does not alter PHP business logic, SQL queries, or module controllers.
 **Acceptance Criteria**:
 - No existing OCP PHP view files are modified except for `web/css/main.css` and `web/common/header.php` as designated injection points
@@ -121,7 +121,7 @@ Transform the OCP v9 user interface into a TSiSIP-branded, high-quality operatio
 - The original OCP theme can be restored by removing or disabling the TSiSIP theme layer
 - All jQuery-based interactions (sortable tables, modal dialogs, date pickers) continue to function identically
 
-### FR-008: Multi-Language Localization (i18n)
+### FR-002-008: Multi-Language Localization (i18n)
 **Description**: All TSiSIP-branded text and labels must be localized into English, Spanish, and Portuguese from day one, integrating with OCP v9's existing gettext/i18n infrastructure.
 **Acceptance Criteria**:
 - All new branding strings (logo alt text, page titles, chart labels, empty-state messages, button labels, aria-labels) are externalized into `.po` source files, not hard-coded in CSS or JavaScript
@@ -130,7 +130,7 @@ Transform the OCP v9 user interface into a TSiSIP-branded, high-quality operatio
 - SVG icons containing text (if any) use `<text>` elements with `data-i18n` attributes or equivalent hooks for runtime translation
 - No fallback to English occurs for supported languages when translations are present
 
-### FR-009: Role-Aware Information Density
+### FR-002-009: Role-Aware Information Density
 **Description**: The TSiSIP-branded interface must adapt information density based on the authenticated user's OCP role, presenting simplified views for read-only operators while preserving full density for administrators.
 **Acceptance Criteria**:
 - Read-only users see a condensed navigation sidebar with non-actionable modules hidden or collapsed
@@ -139,7 +139,7 @@ Transform the OCP v9 user interface into a TSiSIP-branded, high-quality operatio
 - The visual identity (colors, logo, typography) remains identical across all roles; only information density and navigational scope differ
 - Role detection leverages existing OCP session role variables; no new role-management backend is introduced
 
-### FR-010: Asset Versioning and Cache Strategy
+### FR-002-010: Asset Versioning and Cache Strategy
 **Description**: All TSiSIP rebranding assets must be delivered with aggressive HTTP caching and versioned filenames to minimize repeat-download overhead across OCP page navigations while enabling instant cache invalidation on theme updates.
 **Acceptance Criteria**:
 - CSS, SVG, and font files are served with `Cache-Control: public, max-age=31536000, immutable` headers
