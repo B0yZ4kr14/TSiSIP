@@ -50,12 +50,17 @@ VPS_USER=""
 if [ -f "$ENV_FILE" ]; then
     while IFS='=' read -r key value; do
         case "$key" in
-            GITHUB_TOKEN) GITHUB_TOKEN="$value" ;;
-            TSiAPP_HOST)  VPS_HOST="$value" ;;
-            TSiAPP_USER)  VPS_USER="$value" ;;
+            GITHUB_TOKEN)    GITHUB_TOKEN="$value" ;;
+            TSiAPP_HOST)     VPS_HOST="$value" ;;
+            TSiAPP_USER)     VPS_USER="$value" ;;
+            TSiAPP_SSH_KEY)  VPS_SSH_KEY="$value" ;;
         esac
-    done < <(grep -E '^(GITHUB_TOKEN|TSiAPP_HOST|TSiAPP_USER)=' "$ENV_FILE" 2>/dev/null || true)
-    
+    done < <(grep -E '^(GITHUB_TOKEN|TSiAPP_HOST|TSiAPP_USER|TSiAPP_SSH_KEY)=' "$ENV_FILE" 2>/dev/null || true)
+
+    # Apply canonical defaults
+    [ -z "$VPS_HOST" ] && VPS_HOST="179.190.15.116"
+    [ -z "$VPS_USER" ] && VPS_USER="tsi"
+
     if [ -n "$GITHUB_TOKEN" ]; then
         info "GitHub token found (redacted)"
     fi
@@ -70,7 +75,7 @@ fi
 info "Checking SSH keys..."
 SSH_KEY_FOUND=""
 SSH_KEY_TYPE=""
-for keyfile in "$SSH_DIR"/id_ed25519 "$SSH_DIR"/id_rsa "$SSH_DIR"/tsiapp_key; do
+for keyfile in "$SSH_DIR"/TSiHomeLab "$SSH_DIR"/id_ed25519 "$SSH_DIR"/id_rsa "$SSH_DIR"/tsiapp_key; do
     if [ -f "$keyfile" ]; then
         SSH_KEY_FOUND="$keyfile"
         if head -1 "$keyfile" | grep -q "OPENSSH PRIVATE KEY"; then
