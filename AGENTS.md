@@ -969,6 +969,56 @@ Last scan: 2026-05-20. Report: `reports/memorylint-audit-2026-05-20.md`.
 
 > All critical and high memorylint findings resolved. See `reports/remediation-summary.md` for historical M1-M10 resolution.
 
+## 15. Spec Kit Memory Hub
+
+TSiSIP uses the **Spec Kit Memory Hub** (`memory-md` extension v0.8.5) to maintain durable, queryable agent memory across sessions.
+
+### Memory Files
+
+| File | Purpose | Access Level |
+|---|---|---|
+| `docs/memory/INDEX.md` | Navigation hub for all memory files | Public |
+| `docs/memory/PROJECT_CONTEXT.md` | Product identity, domain language, constraints | Public |
+| `docs/memory/ARCHITECTURE.md` | System shape, module boundaries, integrations | Public |
+| `docs/memory/DECISIONS.md` | Architecture Decision Records (ADRs) | Public |
+| `docs/memory/BUGS.md` | Known bugs, root causes, resolutions | Public |
+| `docs/memory/WORKLOG.md` | Session history and completed work | Public |
+| `docs/memory/memory-synthesis.md` | Condensed context for agent planning | Public |
+
+### Commands
+
+```bash
+# Index all durable memory files into SQLite cache
+node .specify/extensions/memory-md/dist/bin/speckit-memory.js index-memory
+
+# Search indexed memory
+node .specify/extensions/memory-md/dist/bin/speckit-memory.js search-memory "<query>"
+
+# Generate synthesis for a feature
+node .specify/extensions/memory-md/dist/bin/speckit-memory.js synthesize --feature specs/<feature-dir>
+
+# Audit cache integrity
+node .specify/extensions/memory-md/dist/bin/speckit-memory.js audit-memory
+
+# Compare token usage
+node .specify/extensions/memory-md/dist/bin/speckit-memory.js token-report --feature specs/<feature-dir>
+```
+
+### Security Rules
+
+- **Never** commit secrets, API keys, or PII to memory files.
+- `secrets/`, `.env*`, and `db/init/03-seed-data.sql` are excluded from indexing.
+- All memory captures require explicit human approval.
+- See `docs/security/019-agent-memory-governance.md` for full governance framework.
+
+### Configuration
+
+- Config: `.specify/extensions/memory-md/config.yml`
+- Optimizer: Disabled (local-only, no remote embedding API)
+- SQLite cache: `.spec-kit-memory/memory.sqlite` (gitignored)
+
+---
+
 <!-- gitnexus:start -->
 # GitNexus — Code Intelligence
 

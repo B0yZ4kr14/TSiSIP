@@ -55,3 +55,7 @@ __pycache__/
 ca-offline/
 .env.local
 .env.production
+
+# Spec Kit Memory Hub
+.spec-kit-memory/
+docs/memory/INDEX.md.lock

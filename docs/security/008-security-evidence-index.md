@@ -29,6 +29,22 @@
 
 ---
 
+## 5. Feature 019 — Memory Hub Integration Evidence
+
+Produced during `speckit-implement` with Security Governance preset:
+
+| Evidence ID | Description | Location | Produced By | Date |
+|---|---|---|---|---|
+| EV-019-001 | Memory Hub Security Assessment | `docs/security/019-memory-hub-security-assessment.md` | speckit-implement | 2026-05-19 |
+| EV-019-002 | Agent Memory Governance Framework | `docs/security/019-agent-memory-governance.md` | speckit-implement | 2026-05-19 |
+| EV-019-003 | MSL Applicability Justification | §6 of 019-memory-hub-security-assessment.md | speckit-implement | 2026-05-19 |
+
+**Open Actions from Feature 019**:
+- SEC-ACTION-019-001: Complete memory-md bootstrap and validation (T2.1–T3.5)
+- SEC-ACTION-019-002: Integrate memory capture into Feature 020+ workflow
+
+---
+
 ## 2. Evidence Production Status
 
 | Phase | Tasks | Total | Complete | Pending |

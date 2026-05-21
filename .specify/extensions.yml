@@ -30,6 +30,13 @@ hooks:
     prompt: Execute speckit.memory-loader.load?
     description: Load project memory files before planning
     condition: null
+  - extension: memory-md
+    command: speckit.memory-md.plan-with-memory
+    enabled: true
+    optional: true
+    prompt: Would you like to synthesize project memory before planning?
+    description: ''
+    condition: null
   after_plan:
   - extension: agent-governance
     command: speckit.agent-governance.refresh
@@ -115,6 +122,14 @@ hooks:
     prompt: Would you like to run a post-implementation architecture review?
     description: ''
     condition: null
+  - extension: memory-md
+    command: speckit.memory-md.capture-from-diff
+    enabled: true
+    optional: true
+    prompt: Would you like to capture durable lessons from this implementation to
+      project memory?
+    description: ''
+    condition: null
   before_implement:
   - extension: spec-validate
     command: speckit.spec-validate.gate
@@ -151,6 +166,7 @@ installed:
 - architecture-guard
 - blueprint
 - memory-loader
+- memory-md
 - spec-validate
 - speckit-utils
 settings:

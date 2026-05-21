@@ -294,6 +294,71 @@
       },
       "registered_skills": [],
       "installed_at": "2026-05-19T22:50:58.204578+00:00"
+    },
+    "memory-md": {
+      "version": "0.8.5",
+      "source": "local",
+      "manifest_hash": "sha256:b0368e6d1d4d3eb0e2662d68fed547210f0647466b0162ff1f78d6fa39d281af",
+      "enabled": true,
+      "priority": 10,
+      "registered_commands": {
+        "agy": [
+          "speckit.memory-md.init",
+          "speckit.memory-md.plan-with-memory",
+          "speckit.memory-md.capture",
+          "speckit.memory-md.capture-from-diff",
+          "speckit.memory-md.audit",
+          "speckit.memory-md.log-finding",
+          "speckit.memory-md.token-report"
+        ],
+        "claude": [
+          "speckit.memory-md.init",
+          "speckit.memory-md.plan-with-memory",
+          "speckit.memory-md.capture",
+          "speckit.memory-md.capture-from-diff",
+          "speckit.memory-md.audit",
+          "speckit.memory-md.log-finding",
+          "speckit.memory-md.token-report"
+        ],
+        "codex": [
+          "speckit.memory-md.init",
+          "speckit.memory-md.plan-with-memory",
+          "speckit.memory-md.capture",
+          "speckit.memory-md.capture-from-diff",
+          "speckit.memory-md.audit",
+          "speckit.memory-md.log-finding",
+          "speckit.memory-md.token-report"
+        ],
+        "copilot": [
+          "speckit.memory-md.init",
+          "speckit.memory-md.plan-with-memory",
+          "speckit.memory-md.capture",
+          "speckit.memory-md.capture-from-diff",
+          "speckit.memory-md.audit",
+          "speckit.memory-md.log-finding",
+          "speckit.memory-md.token-report"
+        ],
+        "kimi": [
+          "speckit.memory-md.init",
+          "speckit.memory-md.plan-with-memory",
+          "speckit.memory-md.capture",
+          "speckit.memory-md.capture-from-diff",
+          "speckit.memory-md.audit",
+          "speckit.memory-md.log-finding",
+          "speckit.memory-md.token-report"
+        ],
+        "opencode": [
+          "speckit.memory-md.init",
+          "speckit.memory-md.plan-with-memory",
+          "speckit.memory-md.capture",
+          "speckit.memory-md.capture-from-diff",
+          "speckit.memory-md.audit",
+          "speckit.memory-md.log-finding",
+          "speckit.memory-md.token-report"
+        ]
+      },
+      "registered_skills": [],
+      "installed_at": "2026-05-21T22:21:09.736131+00:00"
     }
   }
 }
