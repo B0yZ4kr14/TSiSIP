@@ -78,6 +78,7 @@ TSiSIP edge
 - [Canonical Architecture Spec](docs/TSiSIP-CANONICAL-SPEC.md)
 - [Agent Orchestration Playbook](docs/TSiSIP-AGENT-ORCHESTRATION-PLAYBOOK.md)
 - [Operator Runbook](docs/TSiSIP-OPERATOR-RUNBOOK.md)
+- [VPS TSiAPP Access Guide](docs/VPS-TSiAPP-ACCESS.md) — SSH, Ansible, and pipeline config
 - [DESIGN.md](DESIGN.md) — Visual design system
 - [CHANGELOG.md](CHANGELOG.md)
 - [AGENTS.md](AGENTS.md) — Agent onboarding guide

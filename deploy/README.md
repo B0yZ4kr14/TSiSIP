@@ -2,7 +2,18 @@
 
 ## Overview
 
-This directory contains the complete DevSecOps automation for deploying TSiSIP OCP v9 to VPS 'TSiAPP'.
+This directory contains the complete DevSecOps automation for deploying TSiSIP OCP v9 to VPS **TSiAPP**.
+
+| Parameter | Value |
+|-----------|-------|
+| Hostname | `TSiAPP` |
+| Public IP | `179.190.15.116` |
+| Tailscale IP | `100.111.74.69` |
+| SSH Port | `22` |
+| Default User | `tsi` |
+| SSH Key | `TSiHomeLab` (Ed25519) |
+
+See [`docs/VPS-TSiAPP-ACCESS.md`](../docs/VPS-TSiAPP-ACCESS.md) for full access instructions.
 
 ## Architecture
 
@@ -52,8 +63,9 @@ Developer Workstation
 Create `~/.env`:
 ```bash
 GITHUB_TOKEN=ghp_xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx
-TSiAPP_HOST=tsiapp.io
+TSiAPP_HOST=179.190.15.116
 TSiAPP_USER=tsi
+TSiAPP_SSH_KEY=/home/YOURUSER/.ssh/TSiHomeLab
 ```
 
 Ensure SSH key exists:
@@ -123,7 +135,7 @@ make validate
 
 ### Ansible connection fails
 - Verify SSH key is added to agent: `ssh-add -l`
-- Test direct SSH: `ssh -i ~/.ssh/id_ed25519 tsi@tsiapp.io`
+- Test direct SSH: `ssh -i ~/.ssh/TSiHomeLab tsi@179.190.15.116`
 - Check inventory.yml has correct host/user
 
 ### Nginx returns 502

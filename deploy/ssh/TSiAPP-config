@@ -1,0 +1,71 @@
+# TSiAPP VPS — Canonical SSH Configuration
+# File: deploy/ssh/TSiAPP-config
+# Purpose: Password-less SSH access for root and tsi users via TSiHomeLab key
+#
+# Installation:
+#   1. Copy this file to ~/.ssh/config (or include it via Include directive)
+#   2. Ensure TSiHomeLab private key exists at ~/.ssh/TSiHomeLab (chmod 600)
+#   3. Ensure TSiHomeLab public key is installed on TSiAPP for both users:
+#        ssh-copy-id -i ~/.ssh/TSiHomeLab.pub root@179.190.15.116
+#        ssh-copy-id -i ~/.ssh/TSiHomeLab.pub tsi@179.190.15.116
+#
+# Usage:
+#   ssh tsia-root        # connect as root via public IP
+#   ssh tsia-tsi         # connect as tsi via public IP
+#   ssh tsia-root-tail   # connect as root via Tailscale
+#   ssh tsia-tsi-tail    # connect as tsi via Tailscale
+#
+# Canonical VPS Parameters:
+#   Hostname:     TSiAPP
+#   Public IP:    179.190.15.116
+#   Tailscale IP: 100.111.74.69
+#   SSH Port:     22
+#   Default User: tsi
+#   Root User:    root
+#   SSH Key:      TSiHomeLab (Ed25519 recommended)
+#
+# Bootstrap passwords are stored in the operator vault — see docs/VPS-TSiAPP-ACCESS.md
+
+Host tsia-root
+    HostName 179.190.15.116
+    User root
+    Port 22
+    IdentityFile ~/.ssh/TSiHomeLab
+    IdentitiesOnly yes
+    StrictHostKeyChecking accept-new
+    UserKnownHostsFile __PROJECT_ROOT__/deploy/ssh/known_hosts
+    ServerAliveInterval 60
+    ServerAliveCountMax 3
+
+Host tsia-tsi
+    HostName 179.190.15.116
+    User tsi
+    Port 22
+    IdentityFile ~/.ssh/TSiHomeLab
+    IdentitiesOnly yes
+    StrictHostKeyChecking accept-new
+    UserKnownHostsFile __PROJECT_ROOT__/deploy/ssh/known_hosts
+    ServerAliveInterval 60
+    ServerAliveCountMax 3
+
+Host tsia-root-tail
+    HostName 100.111.74.69
+    User root
+    Port 22
+    IdentityFile ~/.ssh/TSiHomeLab
+    IdentitiesOnly yes
+    StrictHostKeyChecking accept-new
+    UserKnownHostsFile __PROJECT_ROOT__/deploy/ssh/known_hosts
+    ServerAliveInterval 60
+    ServerAliveCountMax 3
+
+Host tsia-tsi-tail
+    HostName 100.111.74.69
+    User tsi
+    Port 22
+    IdentityFile ~/.ssh/TSiHomeLab
+    IdentitiesOnly yes
+    StrictHostKeyChecking accept-new
+    UserKnownHostsFile __PROJECT_ROOT__/deploy/ssh/known_hosts
+    ServerAliveInterval 60
+    ServerAliveCountMax 3

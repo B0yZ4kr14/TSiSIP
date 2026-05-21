@@ -55,23 +55,26 @@ gate_fail() { echo -e "${RED}[FAIL]${NC} Gate $1: $2"; }
 GITHUB_TOKEN=""
 TSiAPP_HOST=""
 TSiAPP_USER=""
-SSH_KEY="${HOME}/.ssh/id_ed25519_b0yz4kr14"
+TSiAPP_SSH_KEY=""
+SSH_KEY="${HOME}/.ssh/TSiHomeLab"
 SSH_KNOWN_HOSTS="${PROJECT_ROOT}/deploy/ssh/known_hosts"
 SSH_OPTS="-o StrictHostKeyChecking=accept-new -o UserKnownHostsFile=${SSH_KNOWN_HOSTS}"
 
 if [ -f "$ENV_FILE" ]; then
     while IFS='=' read -r key value; do
         case "$key" in
-            GITHUB_TOKEN) value="${value#\"}"; value="${value%\"}"; GITHUB_TOKEN="$value" ;;
-            TSiAPP_HOST)  value="${value#\"}"; value="${value%\"}"; TSiAPP_HOST="$value" ;;
-            TSiAPP_USER)  value="${value#\"}"; value="${value%\"}"; TSiAPP_USER="$value" ;;
+            GITHUB_TOKEN)    value="${value#\"}"; value="${value%\"}"; GITHUB_TOKEN="$value" ;;
+            TSiAPP_HOST)     value="${value#\"}"; value="${value%\"}"; TSiAPP_HOST="$value" ;;
+            TSiAPP_USER)     value="${value#\"}"; value="${value%\"}"; TSiAPP_USER="$value" ;;
+            TSiAPP_SSH_KEY)  value="${value#\"}"; value="${value%\"}"; TSiAPP_SSH_KEY="$value" ;;
         esac
     done < <(grep -E '^(GITHUB_TOKEN|TSiAPP_HOST|TSiAPP_USER)=' "$ENV_FILE" 2>/dev/null || true)
 fi
 
 if [ -z "$GITHUB_TOKEN" ]; then error "GITHUB_TOKEN not found in $ENV_FILE"; exit 1; fi
-if [ -z "$TSiAPP_HOST" ];  then TSiAPP_HOST="100.111.74.69"; fi
-if [ -z "$TSiAPP_USER" ];  then TSiAPP_USER="tsi"; fi
+if [ -z "$TSiAPP_HOST" ];     then TSiAPP_HOST="179.190.15.116"; fi
+if [ -z "$TSiAPP_USER" ];     then TSiAPP_USER="tsi"; fi
+if [ -n "$TSiAPP_SSH_KEY" ];  then SSH_KEY="$TSiAPP_SSH_KEY"; fi
 
 info "Run ID: $RUN_ID"
 info "Target: $TSiAPP_USER@$TSiAPP_HOST"
@@ -399,6 +402,7 @@ step "GATE 4/5: Deploy — OMK Deployer Agent"
 deployer() {
     local target="${TSiAPP_USER}@${TSiAPP_HOST}"
     local remote_dir="/opt/tsisip"
+    info "Deployer: target=${target} key=${SSH_KEY}"
 
     if [ "$DRY_RUN" = true ]; then
         info "[DRY-RUN] Would SSH to ${target} and deploy"
