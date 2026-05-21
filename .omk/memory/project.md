@@ -84,6 +84,31 @@ Strip before forwarding: Authorization, Proxy-Authorization.
 | 007-tls-srtp-encryption | Partial | 14 | 5 |
 | 008-devsecops-deployment | Live/Pending | 13 | 0 |
 
+## VPS TSiAPP Canonical Parameters (2026-05-19)
+
+| Parameter | Value | File |
+|-----------|-------|------|
+| Hostname | `TSiAPP` | docs/VPS-TSiAPP-ACCESS.md |
+| Public IP | `179.190.15.116` | docs/VPS-TSiAPP-ACCESS.md |
+| Tailscale IP | `100.111.74.69` | docs/VPS-TSiAPP-ACCESS.md |
+| SSH Port | `22` | docs/VPS-TSiAPP-ACCESS.md |
+| Default User | `tsi` | docs/VPS-TSiAPP-ACCESS.md |
+| Root User | `root` | docs/VPS-TSiAPP-ACCESS.md |
+| SSH Key | `TSiHomeLab` (Ed25519) | deploy/ssh/TSiAPP-config |
+| Deploy Dir | `/opt/tsisip` | deploy/ansible/inventory.yml |
+| Registry | `ghcr.io/b0yz4kr14/tsisip/*` | deploy/scripts/orchestrate-deploy.sh |
+
+### SSH Aliases
+- `tsia-root` — root@179.190.15.116
+- `tsia-tsi` — tsi@179.190.15.116
+- `tsia-root-tail` — root@100.111.74.69
+- `tsia-tsi-tail` — tsi@100.111.74.69
+
+### Bootstrap Security
+- Password auth disabled after key install
+- Root login: `prohibit-password`
+- Bootstrap passwords stored in operator vault (`~/.tsi-vault`), never in repo
+
 ## Quality Gates (2026-05-19)
 
 - Consolidated report: reports/CONSOLIDATED-QUALITY-GATE-2026-05-19.md

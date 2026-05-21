@@ -50,7 +50,11 @@
     {"id": "cpt_env", "type": "Concept", "label": "Envsubst Whitelist"},
     {"id": "cpt_auth", "type": "Concept", "label": "HA1 Digest Auth"},
     {"id": "cpt_topo", "type": "Concept", "label": "Topology Hiding C"},
-    {"id": "cpt_net", "type": "Concept", "label": "Three-Network Model"}
+    {"id": "cpt_net", "type": "Concept", "label": "Three-Network Model"},
+    {"id": "vps_tsiapp", "type": "Infrastructure", "label": "TSiAPP VPS"},
+    {"id": "file_ssh_cfg", "type": "File", "label": "TSiAPP-config"},
+    {"id": "file_vps_doc", "type": "File", "label": "VPS-TSiAPP-ACCESS.md"},
+    {"id": "file_ssh_tpl", "type": "File", "label": "config.template"}
   ],
   "edges": [
     {"source": "project_tsisip", "target": "goal_001", "relation": "HAS_GOAL"},
@@ -99,6 +103,10 @@
     {"source": "file_cfg", "target": "cpt_topo", "relation": "HAS_CONCEPT"},
     {"source": "file_dc", "target": "cpt_net", "relation": "HAS_CONCEPT"},
     {"source": "file_agents", "target": "project_tsisip", "relation": "PART_OF"},
-    {"source": "file_canonical", "target": "project_tsisip", "relation": "PART_OF"}
+    {"source": "file_canonical", "target": "project_tsisip", "relation": "PART_OF"},
+    {"source": "vps_tsiapp", "target": "project_tsisip", "relation": "HOSTS"},
+    {"source": "file_ssh_cfg", "target": "vps_tsiapp", "relation": "CONFIGURES"},
+    {"source": "file_vps_doc", "target": "vps_tsiapp", "relation": "DOCUMENTS"},
+    {"source": "file_ssh_tpl", "target": "file_ssh_cfg", "relation": "TEMPLATE_FOR"}
   ]
 }
