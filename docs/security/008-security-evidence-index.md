@@ -11,7 +11,7 @@
 
 | Evidence ID | Description | Location | Produced By | Date | Expires | Next Review |
 |---|---|---|---|---|---|---|
-| EV-001 | SSL Labs TLS grade report | `docs/security/evidence/008-ssl-labs-grade-*.html` | SG3.1 | Pending real cert | 90 days | After cert deploy |
+| EV-001 | SSL Labs TLS grade report | [`008-ssl-labs-grade-20260521.json`](evidence/008-ssl-labs-grade-20260521.json) | SG3.1 | 2026-05-21 | 90 days | 2026-05-22 (remediation) |
 | EV-002 | Container image CVE scan (latest) | `docs/security/evidence/008-trivy-scan-latest.json` | SG3.2 | 2026-05-19 | Per release | Per CI run |
 | EV-003 | Network isolation verification | `docs/security/evidence/008-network-isolation-*.txt` | SG3.3 | 2026-05-19 | 90 days | 2026-08-17 |
 | EV-004 | Secret management audit | `docs/security/evidence/008-secrets-audit-*.txt` | SG3.4 | 2026-05-19 | 90 days | 2026-08-17 |

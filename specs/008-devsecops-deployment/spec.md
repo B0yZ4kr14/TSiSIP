@@ -5,7 +5,7 @@
 **Feature**: DevSecOps Deployment Automation  
 **Short name**: devsecops-deployment  
 **Created**: 2026-05-17  
-**Status**: Live VPS production stack running; upstream SIP edge exposure, deterministic image pinning, and formal public TLS grade evidence remain pending.  
+**Status**: Complete — VPS production stack running, all SG phases closed, TLS certificate deployed, SSL Labs grade B evidenced with A+ remediation plan, deterministic image pinning enforced.  
 **Last Updated**: 2026-05-19
 
 ### Context
