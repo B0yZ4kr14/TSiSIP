@@ -1,7 +1,7 @@
 # Memoria Persistente Spec Kit - TSiSIP
 
 Gerado em: 20260518-141826
-Atualizado em: 2026-05-19
+Atualizado em: 2026-05-21
 Origem inicial: /home/b0yz4kr14/Projects/Tunning/SpecKit/scripts/bootstrap-spec-kit-projects.sh
 Atualizacao atual: auditoria local TSiSIP + GitNexus analyze + validacao live VPS TSiAPP em /home/b0yz4kr14/Projects/TSiSIP
 
@@ -68,3 +68,28 @@ Este projeto usa Spec Kit como camada de governanca para especificacoes, planos,
 - Agentes: preferir os agentes Speckit em `.github/agents/` para fluxo spec/plan/tasks/analyze/implement; tratar `.claude-flow/`, `.swarm/` e `.sisyphus/` como estado/config de orquestracao, nao como runtime da aplicacao.
 - Validacao local barata: `npx gitnexus status`, `bash scripts/ci-scan.sh`, `cd deploy && bash validate.sh`, `docker compose config`.
 - Segredos runtime podem existir localmente em `secrets/` desde que continuem ignorados pelo Git; scans devem falhar por arquivos rastreados, nao pela simples presenca local.
+
+## Licoes Aprendidas — Feature 008-SG (Security Governance Closure)
+
+**Data**: 2026-05-21 | **Commit final**: `686ca4b` | **Arquitetura fix**: `21d982e`
+
+### SSL/TLS Observability
+- SSL Labs escaneia a borda Cloudflare, nao a origem Let's Encrypt. Grade B nao indica falha na aplicacao, mas sim configuracao de edge (TLS 1.0/1.1 habilitados, HSTS nao preloaded).
+- Documentar a arquitetura de TLS em 3 camadas (origin → Cloudflare → cliente) previne falsos positivos de auditoria.
+- Remediacao: ajustar Minimum TLS Version para 1.2 no dashboard Cloudflare; habilitar HSTS preload.
+
+### Container Image Pinning
+- `:latest` e `:stable` sao tags mutaveis que violam o contrato Docker da constituicao (P0). `docker-compose.prod.yml` foi corrigido com `:?must be set`; Dockerfiles restantes foram SHA-pinned.
+- Verificacao automatizada: `grep -rn 'FROM.*:latest\|FROM.*:stable' --include="Dockerfile" .` deve ser zero.
+
+### Evidence Management
+- Artifacts CI (Trivy JSON) com retencao de 90 dias e uploads via `actions/upload-artifact@v4` criam trilha de auditoria duravel.
+- Indice centralizado (`008-security-evidence-index.md`) com datas de expiracao e links clicaveis permite revisao semiautomatica.
+
+### Runbook Hygiene
+- Datas de revisao e contatos de escalacao nao podem permanecer como `[TBD]` em runbooks de producao. Substituidos por placeholders de variaveis de ambiente (`<OPS_BACKUP_EMAIL>`).
+- MSL (Minimum Security Level) precisa de justificativa documentada e linkavel, nao apenas de uma lista de itens.
+
+### Architecture Guard Drift Detection
+- Scans de constituicao devem incluir: SHA pinning em Dockerfiles, ausencia de `db_mysql`/`sanity`, portas publicadas apenas em servicos de edge, `calculate_ha1 = 0`, `topology_hiding("C")`, `rtpengine_offer/answer/delete` explicitos.
+- Falha detectada em `docker/certbot/Dockerfile` e `docker/tailscale-cert/Dockerfile` durante o scan pos-008-SG; corrigido no commit `21d982e`.
