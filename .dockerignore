@@ -21,3 +21,6 @@ docs/*
 # Speckit specs
 specs/
 .specify/
+
+# Spec Kit Memory Hub
+.spec-kit-memory/

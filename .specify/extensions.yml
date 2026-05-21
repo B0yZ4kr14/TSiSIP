@@ -130,6 +130,13 @@ hooks:
       project memory?
     description: ''
     condition: null
+  - extension: ripple
+    command: speckit.ripple.scan
+    enabled: true
+    optional: true
+    prompt: Scan for untested side effects?
+    description: Auto-scan for ripple effects after implementation
+    condition: null
   before_implement:
   - extension: spec-validate
     command: speckit.spec-validate.gate
@@ -167,6 +174,7 @@ installed:
 - blueprint
 - memory-loader
 - memory-md
+- ripple
 - spec-validate
 - speckit-utils
 settings:

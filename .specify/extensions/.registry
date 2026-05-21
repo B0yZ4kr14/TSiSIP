@@ -359,6 +359,47 @@
       },
       "registered_skills": [],
       "installed_at": "2026-05-21T22:21:09.736131+00:00"
+    },
+    "ripple": {
+      "version": "1.0.0",
+      "source": "local",
+      "manifest_hash": "sha256:bc161d2c68a251113c7664ac606ef943891330dfce97d52a32fb87e1cd87db2d",
+      "enabled": true,
+      "priority": 10,
+      "registered_commands": {
+        "agy": [
+          "speckit.ripple.scan",
+          "speckit.ripple.resolve",
+          "speckit.ripple.check"
+        ],
+        "claude": [
+          "speckit.ripple.scan",
+          "speckit.ripple.resolve",
+          "speckit.ripple.check"
+        ],
+        "codex": [
+          "speckit.ripple.scan",
+          "speckit.ripple.resolve",
+          "speckit.ripple.check"
+        ],
+        "copilot": [
+          "speckit.ripple.scan",
+          "speckit.ripple.resolve",
+          "speckit.ripple.check"
+        ],
+        "kimi": [
+          "speckit.ripple.scan",
+          "speckit.ripple.resolve",
+          "speckit.ripple.check"
+        ],
+        "opencode": [
+          "speckit.ripple.scan",
+          "speckit.ripple.resolve",
+          "speckit.ripple.check"
+        ]
+      },
+      "registered_skills": [],
+      "installed_at": "2026-05-21T22:56:15.839602+00:00"
     }
   }
 }
