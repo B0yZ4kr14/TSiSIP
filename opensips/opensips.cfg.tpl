@@ -440,7 +440,7 @@ route[AUTH] {
             # T2.2 / T4.1: Ban source IP after 3 auth failures
             if (cache_fetch("local", "auth_failures_$var(auth_key)", $avp(auth_fail_count)) && $avp(auth_fail_count) >= 3) {
                 xlog("L_WARN", "Auth failure threshold reached for $var(auth_key) from $si - adding to ban_list\n");
-                cache_store("local", "ban_list_$si", "auth_exceeded", "3600");
+                cache_store("local", "ban_list_$si", "auth_exceeded", 3600);
             }
             www_challenge("$td", "auth");
             exit;
@@ -463,7 +463,7 @@ route[AUTH] {
         # T2.2 / T4.1: Ban source IP after 3 auth failures
         if (cache_fetch("local", "auth_failures_$var(auth_key)", $avp(auth_fail_count)) && $avp(auth_fail_count) >= 3) {
             xlog("L_WARN", "Auth failure threshold reached for $var(auth_key) from $si - adding to ban_list\n");
-            cache_store("local", "ban_list_$si", "auth_exceeded", "3600");
+            cache_store("local", "ban_list_$si", "auth_exceeded", 3600);
         }
         proxy_challenge("$fd", "auth");
         exit;
@@ -917,7 +917,7 @@ route[RELAY] {
 event_route[E_PIKE_BLOCKED] {
     xlog("L_WARN", "E_PIKE_BLOCKED: source=$param(src_ip) limit=$param(limit)\n");
     # T4.1: Auto-ban pike-blocked sources for extended protection (1h TTL)
-    cache_store("local", "ban_list_$param(src_ip)", "pike_blocked", "3600");
+    cache_store("local", "ban_list_$param(src_ip)", "pike_blocked", 3600);
 }
 
 event_route[E_AUTH_FAILURE] {
@@ -937,10 +937,10 @@ event_route[E_DISPATCHER_STATUS] {
         } else {
             if ($var(trunk_provider_id) != NULL && $var(trunk_provider_id) != 0) {
                 if ($param(status) == "0") {
-                    cache_store("local", "trunk_health_$var(trunk_provider_id)", "healthy", "3600");
+                    cache_store("local", "trunk_health_$var(trunk_provider_id)", "healthy", 3600);
                     xlog("L_INFO", "E_DISPATCHER_STATUS: trunk $var(trunk_provider_id) marked healthy\n");
                 } else if ($param(status) == "1") {
-                    cache_store("local", "trunk_health_$var(trunk_provider_id)", "unhealthy", "3600");
+                    cache_store("local", "trunk_health_$var(trunk_provider_id)", "unhealthy", 3600);
                     xlog("L_WARN", "E_DISPATCHER_STATUS: trunk $var(trunk_provider_id) marked unhealthy\n");
                 }
             }
