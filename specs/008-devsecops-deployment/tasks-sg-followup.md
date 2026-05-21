@@ -94,7 +94,7 @@
   - **Depends on**: T9.1
   - **Acceptance**: Spec header shows `Status: Complete`.
 
-- [ ] **T9.3** [SG5.3] Final security governance sign-off
+- [X] **T9.3** [SG5.3] Final security governance sign-off — OMK goal verified 6/6 criteria, quality gate passed
   - **Description**: Socratic review: challenge each evidence claim with falsification test. Document any residual risks.
   - **Depends on**: T9.2
   - **Acceptance**: Zero unresolved blocking claims. Residual risks documented with mitigations.
