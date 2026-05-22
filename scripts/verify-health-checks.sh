@@ -21,7 +21,7 @@ for compose in docker-compose.yml docker-compose.prod.yml docker-compose.vps.yml
     
     # Use docker compose config if available for accurate service list
     if command -v docker >/dev/null 2>&1 && docker compose version >/dev/null 2>&1; then
-        SERVICES=$(docker compose -f "$f" config 2>/dev/null | grep -E '^  [a-zA-Z0-9_-]+:' | sed 's/^  //;s/://' | grep -v '^networks$' | grep -v '^volumes$' | grep -v '^secrets$' | grep -v '^configs$' || true)
+        SERVICES=$(docker compose -f "$f" config --services 2>/dev/null || true)
     else
         # Fallback: parse services block only (stop at networks/volumes/secrets)
         SERVICES=$(awk '/^services:/{in_services=1; next} /^[a-zA-Z]/{in_services=0} in_services && /^  [a-zA-Z0-9_-]+:/{print substr($0, 3); next}' "$f" | sed 's/://' || true)

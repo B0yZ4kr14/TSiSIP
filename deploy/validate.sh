@@ -125,17 +125,33 @@ elif [ -n "${CI:-}" ] || [ -n "${GITHUB_ACTIONS:-}" ]; then
         -keyout "$TEMP_CERTS/tsiapp.io.key" \
         -out "$TEMP_CERTS/tsiapp.io.crt" \
         -subj "/CN=tsiapp.io" 2>/dev/null || true
+    # Create a temporary nginx.conf that wraps the config in an http block
+    TEMP_NGINX=$(mktemp -d)
+    cat > "$TEMP_NGINX/nginx.conf" << 'EOF'
+user nginx;
+worker_processes auto;
+error_log /var/log/nginx/error.log warn;
+pid /var/run/nginx.pid;
+events { worker_connections 1024; }
+http {
+    include /etc/nginx/mime.types;
+    default_type application/octet-stream;
+    access_log /var/log/nginx/access.log;
+    include /etc/nginx/tsisip-reverse-proxy.conf;
+}
+EOF
     if docker run --rm \
         -v "$SCRIPT_DIR/nginx:/etc/nginx:ro" \
         -v "$TEMP_CERTS:/etc/ssl/certs:ro" \
         -v "$TEMP_CERTS:/etc/ssl/private:ro" \
+        -v "$TEMP_NGINX/nginx.conf:/etc/nginx/nginx.conf:ro" \
         nginx:alpine \
-        nginx -t -c /etc/nginx/tsisip-reverse-proxy.conf >/dev/null 2>&1; then
+        nginx -t >/dev/null 2>&1; then
         pass "nginx config syntax valid (container CI)"
     else
         fail "nginx config syntax error (container CI)"
     fi
-    rm -rf "$TEMP_CERTS"
+    rm -rf "$TEMP_CERTS" "$TEMP_NGINX"
 else
     info "nginx not available and not in CI, skipping syntax check"
 fi
