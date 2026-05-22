@@ -16,4 +16,5 @@ HEALTHCHECK --interval=15s --timeout=5s --start-period=25s --start-interval=5s -
 
 EXPOSE 22222/udp 10000-20000/udp
 
-CMD ["rtpengine", "--foreground", "--log-stderr"]
+ENTRYPOINT ["rtpengine"]
+CMD ["--foreground", "--log-stderr"]

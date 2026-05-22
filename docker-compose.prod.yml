@@ -64,6 +64,7 @@ services:
     - --port-max=20000
     - --log-stderr
     - --foreground
+    - --foreground
     - --dtls-cert-file=/certs/live/server.crt
     - --dtls-key-file=/certs/live/server.key
     - --dtls-passive
