@@ -77,6 +77,12 @@ if [ -z "$TSiAPP_HOST" ];     then TSiAPP_HOST="179.190.15.116"; fi
 if [ -z "$TSiAPP_USER" ];     then TSiAPP_USER="tsi"; fi
 if [ -n "$TSiAPP_SSH_KEY" ];  then SSH_KEY="$TSiAPP_SSH_KEY"; fi
 
+# When ssh-agent is active (CI with webfactory/ssh-agent), skip explicit -i
+if [ -n "${SSH_AUTH_SOCK:-}" ] && [ ! -f "$SSH_KEY" ]; then
+    SSH_OPTS="$SSH_OPTS -o IdentitiesOnly=no"
+    SSH_KEY=""
+fi
+
 info "Run ID: $RUN_ID"
 info "Target: $TSiAPP_USER@$TSiAPP_HOST"
 info "Git SHA: $GIT_SHA"
@@ -415,10 +421,10 @@ deployer() {
     local snapshot_file="${ROLLBACK_STATE_DIR}/${RUN_ID}-digests.txt"
 
     info "Deployer: capturing pre-deploy digests on target..."
-    ssh $SSH_OPTS -i "$SSH_KEY" "$target" \
+    ssh $SSH_OPTS ${SSH_KEY:+-i "$SSH_KEY"} "$target" \
         "cd ${remote_dir} && docker compose ps --format '{{.Name}} {{.Image}}' 2>/dev/null || true" > "${snapshot_file}.names" 2>/dev/null || true
 
-    ssh $SSH_OPTS -i "$SSH_KEY" "$target" \
+    ssh $SSH_OPTS ${SSH_KEY:+-i "$SSH_KEY"} "$target" \
         "cd ${remote_dir} && docker images --format '{{.Repository}}:{{.Tag}} {{.ID}}' | grep '^tsisip/' || true" > "${snapshot_file}" 2>/dev/null || true
 
     if [ -s "${snapshot_file}" ]; then
@@ -429,22 +435,39 @@ deployer() {
 
     # ── 4b: Sync code ──
     info "Deployer: syncing code to target..."
-    ssh $SSH_OPTS -i "$SSH_KEY" "$target" \
+    ssh $SSH_OPTS ${SSH_KEY:+-i "$SSH_KEY"} "$target" \
         "cd ${remote_dir} && git pull origin master 2>/dev/null || echo 'git pull skipped or failed'" || true
 
-    # ── 4d: Pull/build and up ──
+    # ── 4d: Transfer pre-built images (artifact mode) or pull from registry ──
+    local artifact_dir="/tmp/tsisip-images"
+    local images_transferred=false
+    if [ -d "$artifact_dir" ] && [ "$(ls -A "$artifact_dir"/*.tar.gz 2>/dev/null)" ]; then
+        info "Deployer: transferring pre-built images from artifacts..."
+        for f in "$artifact_dir"/*.tar.gz; do
+            [ -f "$f" ] || continue
+            local img_name
+            img_name=$(basename "$f" .tar.gz)
+            info "Deployer: loading ${img_name} on target..."
+            gunzip -c "$f" | ssh $SSH_OPTS ${SSH_KEY:+-i "$SSH_KEY"} "$target" "docker load" || warn "Deployer: failed to transfer ${img_name}"
+            images_transferred=true
+        done
+        if [ "$images_transferred" = true ]; then
+            info "Deployer: images transferred successfully"
+        fi
+    fi
+
     if [ "${FALLBACK_BUILD_ON_TARGET:-0}" = "1" ]; then
         info "Deployer: FALLBACK mode — building images on target..."
-        ssh $SSH_OPTS -i "$SSH_KEY" "$target" \
+        ssh $SSH_OPTS ${SSH_KEY:+-i "$SSH_KEY"} "$target" \
             "cd ${remote_dir} && sudo docker compose -f docker-compose.prod.yml build 2>&1 | tail -20" || warn "Deployer: build had warnings"
-    else
+    elif [ "$images_transferred" = false ]; then
         info "Deployer: docker compose pull..."
-        ssh $SSH_OPTS -i "$SSH_KEY" "$target" \
+        ssh $SSH_OPTS ${SSH_KEY:+-i "$SSH_KEY"} "$target" \
             "cd ${remote_dir} && sudo docker compose -f docker-compose.prod.yml pull 2>&1 | tail -10" || warn "Deployer: pull had warnings"
     fi
 
     info "Deployer: docker compose up..."
-    ssh $SSH_OPTS -i "$SSH_KEY" "$target" \
+    ssh $SSH_OPTS ${SSH_KEY:+-i "$SSH_KEY"} "$target" \
         "cd ${remote_dir} && sudo docker compose -f docker-compose.prod.yml up -d" || { error "Deployer: compose up failed"; return 1; }
 
     # ── 4e: Wait for containers ──
@@ -490,7 +513,7 @@ verifier() {
     # ── 5a: Container health status ──
     info "Verifier: checking container health..."
     local unhealthy
-    unhealthy=$(ssh $SSH_OPTS -i "$SSH_KEY" "$target" \
+    unhealthy=$(ssh $SSH_OPTS ${SSH_KEY:+-i "$SSH_KEY"} "$target" \
         "cd ${remote_dir} && sudo docker compose -f docker-compose.prod.yml ps --format '{{.Name}} {{.Status}}' | grep -v 'healthy\|running' || true" 2>/dev/null)
     if [ -n "$unhealthy" ]; then
         warn "Verifier: unhealthy containers detected:"
@@ -503,7 +526,7 @@ verifier() {
     # ── 5b: OCP HTTP probe ──
     info "Verifier: probing OCP login page..."
     local ocp_code
-    ocp_code=$(ssh $SSH_OPTS -i "$SSH_KEY" "$target" \
+    ocp_code=$(ssh $SSH_OPTS ${SSH_KEY:+-i "$SSH_KEY"} "$target" \
         "curl -s -o /dev/null -w '%{http_code}' http://localhost:8084/login.php" 2>/dev/null || echo "000")
     if [ "$ocp_code" = "200" ]; then
         info "Verifier: OCP login → HTTP 200"
@@ -515,7 +538,7 @@ verifier() {
     # ── 5c: Nginx /TSiSIP/ health ──
     info "Verifier: probing Nginx /TSiSIP/..."
     local nginx_code
-    nginx_code=$(ssh $SSH_OPTS -i "$SSH_KEY" "$target" \
+    nginx_code=$(ssh $SSH_OPTS ${SSH_KEY:+-i "$SSH_KEY"} "$target" \
         "curl -s -o /dev/null -w '%{http_code}' http://localhost/TSiSIP/health" 2>/dev/null || echo "000")
     if [ "$nginx_code" = "200" ] || [ "$nginx_code" = "404" ]; then
         info "Verifier: Nginx /TSiSIP/ → HTTP ${nginx_code}"
@@ -526,7 +549,7 @@ verifier() {
     # ── 5d: SIP OPTIONS probe ──
     info "Verifier: SIP OPTIONS probe..."
     local sip_response
-    sip_response=$(ssh $SSH_OPTS -i "$SSH_KEY" "$target" \
+    sip_response=$(ssh $SSH_OPTS ${SSH_KEY:+-i "$SSH_KEY"} "$target" \
         "python3 -c '
 import socket
 msg = b\"OPTIONS sip:opensips@localhost:5060 SIP/2.0\r\n\" \\
@@ -556,7 +579,7 @@ except:
     # ── 5e: Backup metrics loopback ──
     info "Verifier: backup metrics endpoint..."
     local backup_code
-    backup_code=$(ssh $SSH_OPTS -i "$SSH_KEY" "$target" \
+    backup_code=$(ssh $SSH_OPTS ${SSH_KEY:+-i "$SSH_KEY"} "$target" \
         "curl -s -o /dev/null -w '%{http_code}' http://127.0.0.1:9101/metrics || echo '000'" 2>/dev/null)
     if [ "$backup_code" = "200" ] || [ "$backup_code" = "000" ]; then
         info "Verifier: backup metrics → HTTP ${backup_code} (best-effort)"
@@ -595,13 +618,13 @@ if [ "$ROLLBACK_NEEDED" = true ] && [ "$DRY_RUN" = false ] && [ "$LIVE_TEST" = f
             img=$(echo "$line" | awk '{print $1}')
             digest=$(echo "$line" | awk '{print $2}')
             if [ -n "$img" ] && [ -n "$digest" ]; then
-                ssh $SSH_OPTS -i "$SSH_KEY" "${TSiAPP_USER}@${TSiAPP_HOST}" \
+                ssh $SSH_OPTS ${SSH_KEY:+-i "$SSH_KEY"} "${TSiAPP_USER}@${TSiAPP_HOST}" \
                     "docker tag ${digest} ${img} 2>/dev/null || true" || true
             fi
         done < "$snapshot_file"
 
         info "Rollback: restarting containers with previous images..."
-        ssh $SSH_OPTS -i "$SSH_KEY" "${TSiAPP_USER}@${TSiAPP_HOST}" \
+        ssh $SSH_OPTS ${SSH_KEY:+-i "$SSH_KEY"} "${TSiAPP_USER}@${TSiAPP_HOST}" \
             "cd /opt/tsisip && sudo docker compose -f docker-compose.prod.yml up -d" || true
 
         info "Rollback: complete"
