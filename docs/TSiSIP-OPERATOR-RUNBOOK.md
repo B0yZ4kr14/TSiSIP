@@ -164,6 +164,117 @@ Full CRUD on the OpenSIPS `dispatcher` table. Replaces the previous hard-coded H
 
 Changes take effect on the next OpenSIPS reload or restart.
 
+### Dialplan Manager
+
+**URL**: `https://tsiapp.io/TSiSIP/dialplan.php`
+
+Full CRUD on the OpenSIPS `dialplan` table. Supports database-driven dialplan rules without editing `opensips.cfg.tpl`.
+
+| Field | Description |
+|---|---|
+| `pr` | Priority (integer, lower = first match) |
+| `match_op` | Match operator (`0` = equal, `1` = regexp, `2` = fnmatch) |
+| `match_exp` | Expression to match against input |
+| `match_flags` | Flags modifier |
+| `subst_exp` | Substitution expression (regexp) |
+| `repl_exp` | Replacement expression |
+| `attrs` | Optional attributes passed to script |
+
+**Security notes**:
+- All mutating actions require a valid CSRF token.
+- PDO prepared statements are used for all queries.
+
+### Domains Manager
+
+**URL**: `https://tsiapp.io/TSiSIP/domains.php`
+
+Full CRUD on the OpenSIPS `domain` table. Manages SIP domains recognized by OpenSIPS.
+
+| Field | Description |
+|---|---|
+| `domain` | SIP domain name (e.g., `tsiapp.io`) |
+| `did` | Domain ID (optional) |
+| `last_modified` | Automatically set by PostgreSQL on changes |
+
+**Security notes**:
+- All mutating actions require a valid CSRF token.
+- PDO prepared statements are used for all queries.
+
+### Dialog Viewer
+
+**URL**: `https://tsiapp.io/TSiSIP/dialog.php`
+
+Read-only view of active SIP dialogs (ongoing calls). Queries the OpenSIPS `dialog` module via MI `dlg_list` or the PostgreSQL `dialog` table.
+
+| Column | Description |
+|---|---|
+| `callid` | SIP Call-ID |
+| `from_uri` / `to_uri` | Caller and callee URIs |
+| `state` | `Early`, `Confirmed`, `Terminated`, `Deleted` |
+| `duration` | Call duration in HH:MM:SS |
+| `start_time` | UNIX timestamp of dialog creation |
+
+**Security notes**:
+- Read-only — no mutation of active calls is permitted.
+- Requires `devops` role.
+
+### MI Commands Runner
+
+**URL**: `https://tsiapp.io/TSiSIP/mi-commands.php`
+
+Execute whitelisted OpenSIPS Management Interface (MI) commands via the web UI.
+
+| Command | Role | Description |
+|---|---|---|
+| `dlg_list` | devops+ | List active dialogs |
+| `get_statistics` | devops+ | Retrieve module statistics |
+| `ds_reload` | devops+ | Reload dispatcher sets from DB |
+| `domain_reload` | devops+ | Reload domain table from DB |
+| `dlg_end_dlg` | admin only | Terminate a specific dialog (requires hash_entry + hash_id) |
+| `tls_reload` | admin only | Reload TLS certificates without restart |
+
+**Security notes**:
+- Only whitelisted commands may be executed; non-whitelisted commands are rejected with HTTP 403.
+- `dlg_end_dlg` and `tls_reload` require `admin` role.
+- All executions are logged to `auth_audit_log`.
+- MI output is sanitized with `htmlspecialchars()` before display.
+
+### Statistics Monitor
+
+**URL**: `https://tsiapp.io/TSiSIP/statistics.php`
+
+Real-time dashboard of key OpenSIPS metrics using D3.js charts. Auto-refreshes every 30 seconds.
+
+| Metric | Source |
+|---|---|
+| UAS Transactions | `tm:UAS_transactions` |
+| UAC Transactions | `tm:UAC_transactions` |
+| 1xx Replies | `sl:1xx_replies` |
+| 2xx Replies | `sl:2xx_replies` |
+| 3xx Replies | `sl:3xx_replies` |
+| 4xx Replies | `sl:4xx_replies` |
+| 5xx Replies | `sl:5xx_replies` |
+
+**Operational notes**:
+- The `?ajax=1` endpoint returns JSON for programmatic consumption.
+- Requires `devops` role.
+
+### TLS Management
+
+**URL**: `https://tsiapp.io/TSiSIP/tls-management.php`
+
+View loaded TLS certificates and trigger hot reload.
+
+| Action | Role | Effect |
+|---|---|---|
+| View certificates | devops+ | Display domain, cert file, key file, CA file, verify settings |
+| Reload certificates | admin only | Execute `tls_reload` MI command; no container restart required |
+
+**Operational notes**:
+- Update certificate files in `secrets/` (mounted into the OpenSIPS container), then trigger reload.
+- Reload is logged to `auth_audit_log`.
+- Requires `admin` role for reload; `devops` can view only.
+
 ## Wiki Navigation
 
 The TSiSIP Professional Premium Wiki is available at `https://tsiapp.io/TSiSIP/Wiki`.

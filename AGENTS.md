@@ -1017,6 +1017,38 @@ node .specify/extensions/memory-md/dist/bin/speckit-memory.js token-report --fea
 - Optimizer: Disabled (local-only, no remote embedding API)
 - SQLite cache: `.spec-kit-memory/memory.sqlite` (gitignored)
 
+## 16. OCP Administrative Tools
+
+The TSiSIP Operator Control Panel (OCP) provides web-based administrative tools for OpenSIPS runtime management. Feature 020 closed six critical tool gaps identified in `docs/OCP-CROSS-ANALYSIS.md`.
+
+### Available Tools
+
+| Tool | File | Role | Operations |
+|---|---|---|---|
+| Dialog Viewer | `web/dialog.php` | devops+ | Read-only view of active SIP dialogs (call-id, from/to, duration, state) |
+| MI Commands | `web/mi-commands.php` | devops+ / admin | Execute whitelisted MI commands via OpenSIPS MI HTTP interface |
+| Statistics Monitor | `web/statistics.php` | devops+ | D3.js dashboard with 6+ key metrics; 30-second auto-refresh |
+| Dialplan Manager | `web/dialplan.php` | devops+ | Full CRUD on PostgreSQL `dialplan` table |
+| Domains Manager | `web/domains.php` | devops+ | Full CRUD on PostgreSQL `domain` table |
+| TLS Management | `web/tls-management.php` | devops view / admin reload | View TLS certificates; trigger `tls_reload` (admin only) |
+
+### Security Patterns
+
+All OCP tools follow the same security baseline:
+- `requireAuth()` → `checkPasswordChange()` → `requireRole('devops')` minimum
+- CSRF token validation on every mutating POST (`validateCsrfToken()`)
+- PDO prepared statements for all database queries
+- `htmlspecialchars()` on all rendered output
+- Audit logging via `logAuditEvent()` to `auth_audit_log` table
+- MI command whitelist hardcoded in PHP — non-whitelisted commands rejected with HTTP 403
+
+### References
+
+- Security assessment: `docs/security/020-ocp-gap-closure-security-assessment.md`
+- Threat model: `docs/security/020-ocp-gap-closure-threat-model.md`
+- Database schema: `db/init/04-ocp-tools-schema.sql`
+- Feature specification: `specs/020-ocp-critical-tool-gap-closure/spec.md`
+
 ---
 
 <!-- gitnexus:start -->

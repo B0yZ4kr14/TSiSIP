@@ -74,16 +74,16 @@ Without these tools, operators must:
 
 ## Acceptance Criteria
 
-- [ ] AC1: `web/dialog.php` lists active dialogs with call-id, from/to, duration, state
-- [ ] AC2: `web/mi-commands.php` executes whitelisted MI commands and displays output
-- [ ] AC3: `web/statistics.php` displays at least 6 key metrics with D3.js charts
-- [ ] AC4: `web/dialplan.php` provides full CRUD on `dialplan` table
-- [ ] AC5: `web/domains.php` provides full CRUD on `domain` table
-- [ ] AC6: `web/tls-management.php` shows certificate status and triggers `tls_reload` MI command
-- [ ] AC7: All pages enforce `requireRole('devops')` minimum
-- [ ] AC8: All mutating forms include `validateCsrfToken()`
-- [ ] AC9: Security assessment document exists and is approved
-- [ ] AC10: Threat model document exists and covers MI command injection risks
+- [x] AC1: `web/dialog.php` lists active dialogs with call-id, from/to, duration, state
+- [x] AC2: `web/mi-commands.php` executes whitelisted MI commands and displays output
+- [x] AC3: `web/statistics.php` displays at least 6 key metrics with D3.js charts
+- [x] AC4: `web/dialplan.php` provides full CRUD on `dialplan` table
+- [x] AC5: `web/domains.php` provides full CRUD on `domain` table
+- [x] AC6: `web/tls-management.php` shows certificate status and triggers `tls_reload` MI command
+- [x] AC7: All pages enforce `requireRole('devops')` minimum
+- [x] AC8: All mutating forms include `validateCsrfToken()`
+- [x] AC9: Security assessment document exists and is approved
+- [x] AC10: Threat model document exists and covers MI command injection risks
 
 ## Architecture Decisions
 
