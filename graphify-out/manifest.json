@@ -1,0 +1,1847 @@
+{
+  "/home/b0yz4kr14/Projects/TSiSIP/.mcp.json": {
+    "mtime": 1778930816.261457,
+    "ast_hash": "018446612ff833258054e51f1429c307",
+    "semantic_hash": "018446612ff833258054e51f1429c307"
+  },
+  "/home/b0yz4kr14/Projects/TSiSIP/.claude/settings.json": {
+    "mtime": 1778930864.783704,
+    "ast_hash": "5ab359af5090dc117b565a78325ea0e4",
+    "semantic_hash": "5ab359af5090dc117b565a78325ea0e4"
+  },
+  "/home/b0yz4kr14/Projects/TSiSIP/.claude/helpers/adr-compliance.sh": {
+    "mtime": 1778930816.2678998,
+    "ast_hash": "cc078b435ac77457a2319a96175a3695",
+    "semantic_hash": "cc078b435ac77457a2319a96175a3695"
+  },
+  "/home/b0yz4kr14/Projects/TSiSIP/.claude/helpers/auto-commit.sh": {
+    "mtime": 1778930816.2679608,
+    "ast_hash": "73d111164adc0063591135f103aa31a5",
+    "semantic_hash": "73d111164adc0063591135f103aa31a5"
+  },
+  "/home/b0yz4kr14/Projects/TSiSIP/.claude/helpers/auto-memory-hook.mjs": {
+    "mtime": 1778931171.6582954,
+    "ast_hash": "9993b5b5e5fe3a7349ab2ea48daeda38",
+    "semantic_hash": "9993b5b5e5fe3a7349ab2ea48daeda38"
+  },
+  "/home/b0yz4kr14/Projects/TSiSIP/.claude/helpers/checkpoint-manager.sh": {
+    "mtime": 1778930816.2680297,
+    "ast_hash": "01a2b878cfdee2ce145d5ef1c51ef42c",
+    "semantic_hash": "01a2b878cfdee2ce145d5ef1c51ef42c"
+  },
+  "/home/b0yz4kr14/Projects/TSiSIP/.claude/helpers/daemon-manager.sh": {
+    "mtime": 1778930816.268054,
+    "ast_hash": "b482aca36ac2ffccc086d94b51afc63e",
+    "semantic_hash": "b482aca36ac2ffccc086d94b51afc63e"
+  },
+  "/home/b0yz4kr14/Projects/TSiSIP/.claude/helpers/ddd-tracker.sh": {
+    "mtime": 1778930816.268083,
+    "ast_hash": "3f8ea7fbf016e13acd19e99608ec024d",
+    "semantic_hash": "3f8ea7fbf016e13acd19e99608ec024d"
+  },
+  "/home/b0yz4kr14/Projects/TSiSIP/.claude/helpers/github-safe.js": {
+    "mtime": 1778930816.268107,
+    "ast_hash": "d2807f2d96582812fb80e5bbdb293b46",
+    "semantic_hash": "d2807f2d96582812fb80e5bbdb293b46"
+  },
+  "/home/b0yz4kr14/Projects/TSiSIP/.claude/helpers/github-setup.sh": {
+    "mtime": 1778930816.2681327,
+    "ast_hash": "d62e10347185700667db95ae3460ef0c",
+    "semantic_hash": "d62e10347185700667db95ae3460ef0c"
+  },
+  "/home/b0yz4kr14/Projects/TSiSIP/.claude/helpers/guidance-hook.sh": {
+    "mtime": 1778930816.2681623,
+    "ast_hash": "1914c82242278a0f109b50a0fb443286",
+    "semantic_hash": "1914c82242278a0f109b50a0fb443286"
+  },
+  "/home/b0yz4kr14/Projects/TSiSIP/.claude/helpers/guidance-hooks.sh": {
+    "mtime": 1778930816.268186,
+    "ast_hash": "52685adf0dd2e228defc56973c856419",
+    "semantic_hash": "52685adf0dd2e228defc56973c856419"
+  },
+  "/home/b0yz4kr14/Projects/TSiSIP/.claude/helpers/health-monitor.sh": {
+    "mtime": 1778930816.2682106,
+    "ast_hash": "6e06ddf80036ba8e210fe84063552d02",
+    "semantic_hash": "6e06ddf80036ba8e210fe84063552d02"
+  },
+  "/home/b0yz4kr14/Projects/TSiSIP/.claude/helpers/learning-hooks.sh": {
+    "mtime": 1778930816.2682831,
+    "ast_hash": "aadca2238656e124fe0980abb1df587b",
+    "semantic_hash": "aadca2238656e124fe0980abb1df587b"
+  },
+  "/home/b0yz4kr14/Projects/TSiSIP/.claude/helpers/learning-optimizer.sh": {
+    "mtime": 1778930816.2683067,
+    "ast_hash": "15aea203ab2afa6bf7a592031e81dc1d",
+    "semantic_hash": "15aea203ab2afa6bf7a592031e81dc1d"
+  },
+  "/home/b0yz4kr14/Projects/TSiSIP/.claude/helpers/learning-service.mjs": {
+    "mtime": 1778930816.2683313,
+    "ast_hash": "c12b13035c2c58b54ff5a9c810c353c1",
+    "semantic_hash": "c12b13035c2c58b54ff5a9c810c353c1"
+  },
+  "/home/b0yz4kr14/Projects/TSiSIP/.claude/helpers/memory.js": {
+    "mtime": 1778930816.268355,
+    "ast_hash": "8b809066a9c616dc0e32d7431050c96c",
+    "semantic_hash": "8b809066a9c616dc0e32d7431050c96c"
+  },
+  "/home/b0yz4kr14/Projects/TSiSIP/.claude/helpers/metrics-db.mjs": {
+    "mtime": 1778930816.2683775,
+    "ast_hash": "16b9ed124c199758d7d1a42e611fcf7f",
+    "semantic_hash": "16b9ed124c199758d7d1a42e611fcf7f"
+  },
+  "/home/b0yz4kr14/Projects/TSiSIP/.claude/helpers/pattern-consolidator.sh": {
+    "mtime": 1778930816.268399,
+    "ast_hash": "427c9fd1d7b8cd47e921b548a8911f99",
+    "semantic_hash": "427c9fd1d7b8cd47e921b548a8911f99"
+  },
+  "/home/b0yz4kr14/Projects/TSiSIP/.claude/helpers/perf-worker.sh": {
+    "mtime": 1778930816.268431,
+    "ast_hash": "c1cb73aa19605cbc902035cc9a7e26da",
+    "semantic_hash": "c1cb73aa19605cbc902035cc9a7e26da"
+  },
+  "/home/b0yz4kr14/Projects/TSiSIP/.claude/helpers/post-commit": {
+    "mtime": 1778930816.2684515,
+    "ast_hash": "5f7c9f9f0d3529e348adceca85fc0475",
+    "semantic_hash": "5f7c9f9f0d3529e348adceca85fc0475"
+  },
+  "/home/b0yz4kr14/Projects/TSiSIP/.claude/helpers/pre-commit": {
+    "mtime": 1778930816.2684736,
+    "ast_hash": "f1ddac74525b96a3e0d2fa4f6b2a25dd",
+    "semantic_hash": "f1ddac74525b96a3e0d2fa4f6b2a25dd"
+  },
+  "/home/b0yz4kr14/Projects/TSiSIP/.claude/helpers/quick-start.sh": {
+    "mtime": 1778930816.2685142,
+    "ast_hash": "1e12f44d21e84ff55b049db69b63653f",
+    "semantic_hash": "1e12f44d21e84ff55b049db69b63653f"
+  },
+  "/home/b0yz4kr14/Projects/TSiSIP/.claude/helpers/router.js": {
+    "mtime": 1778930816.2685497,
+    "ast_hash": "fa27b356a9de0a287a891951d9ce1a60",
+    "semantic_hash": "fa27b356a9de0a287a891951d9ce1a60"
+  },
+  "/home/b0yz4kr14/Projects/TSiSIP/.claude/helpers/security-scanner.sh": {
+    "mtime": 1778930816.2685747,
+    "ast_hash": "0a2a236ac65c3820d83371d793889c09",
+    "semantic_hash": "0a2a236ac65c3820d83371d793889c09"
+  },
+  "/home/b0yz4kr14/Projects/TSiSIP/.claude/helpers/session.js": {
+    "mtime": 1778930816.2685966,
+    "ast_hash": "50ea3195b9b0db3dd3df1c7484465fdb",
+    "semantic_hash": "50ea3195b9b0db3dd3df1c7484465fdb"
+  },
+  "/home/b0yz4kr14/Projects/TSiSIP/.claude/helpers/setup-mcp.sh": {
+    "mtime": 1778930816.2686164,
+    "ast_hash": "f055545527a011dcd4121d16cd8315fe",
+    "semantic_hash": "f055545527a011dcd4121d16cd8315fe"
+  },
+  "/home/b0yz4kr14/Projects/TSiSIP/.claude/helpers/standard-checkpoint-hooks.sh": {
+    "mtime": 1778930816.2686408,
+    "ast_hash": "e01a72ccc3dea1c02e47b21049c55736",
+    "semantic_hash": "e01a72ccc3dea1c02e47b21049c55736"
+  },
+  "/home/b0yz4kr14/Projects/TSiSIP/.claude/helpers/statusline-hook.sh": {
+    "mtime": 1778930816.2686603,
+    "ast_hash": "bb1a99d42dfb256adb87b4516db27440",
+    "semantic_hash": "bb1a99d42dfb256adb87b4516db27440"
+  },
+  "/home/b0yz4kr14/Projects/TSiSIP/.claude/helpers/statusline.js": {
+    "mtime": 1778930816.2687032,
+    "ast_hash": "42954cf29ea36af77568a7c16e61862e",
+    "semantic_hash": "42954cf29ea36af77568a7c16e61862e"
+  },
+  "/home/b0yz4kr14/Projects/TSiSIP/.claude/helpers/swarm-comms.sh": {
+    "mtime": 1778930816.2687259,
+    "ast_hash": "058ada90e90e577d57cb749e79ccddcb",
+    "semantic_hash": "058ada90e90e577d57cb749e79ccddcb"
+  },
+  "/home/b0yz4kr14/Projects/TSiSIP/.claude/helpers/swarm-hooks.sh": {
+    "mtime": 1778930816.2687533,
+    "ast_hash": "426ed0c562e8d11428e2c9d1a587e955",
+    "semantic_hash": "426ed0c562e8d11428e2c9d1a587e955"
+  },
+  "/home/b0yz4kr14/Projects/TSiSIP/.claude/helpers/swarm-monitor.sh": {
+    "mtime": 1778930816.2687802,
+    "ast_hash": "218156c4203e3bc2eeb5ce0b65551530",
+    "semantic_hash": "218156c4203e3bc2eeb5ce0b65551530"
+  },
+  "/home/b0yz4kr14/Projects/TSiSIP/.claude/helpers/sync-v3-metrics.sh": {
+    "mtime": 1778930816.268807,
+    "ast_hash": "6ba4c963679733b427dc4c3e6b1f77f7",
+    "semantic_hash": "6ba4c963679733b427dc4c3e6b1f77f7"
+  },
+  "/home/b0yz4kr14/Projects/TSiSIP/.claude/helpers/update-v3-progress.sh": {
+    "mtime": 1778930816.268826,
+    "ast_hash": "740976403d12aeb54d3c51158155abf4",
+    "semantic_hash": "740976403d12aeb54d3c51158155abf4"
+  },
+  "/home/b0yz4kr14/Projects/TSiSIP/.claude/helpers/v3-quick-status.sh": {
+    "mtime": 1778930816.26885,
+    "ast_hash": "4c69691d17288f86792d95df5020d416",
+    "semantic_hash": "4c69691d17288f86792d95df5020d416"
+  },
+  "/home/b0yz4kr14/Projects/TSiSIP/.claude/helpers/v3.sh": {
+    "mtime": 1778930816.2688725,
+    "ast_hash": "295ab3fdc1368dc30f138ed134f6d6bc",
+    "semantic_hash": "295ab3fdc1368dc30f138ed134f6d6bc"
+  },
+  "/home/b0yz4kr14/Projects/TSiSIP/.claude/helpers/validate-v3-config.sh": {
+    "mtime": 1778930816.268915,
+    "ast_hash": "02a54392565e2d97901e13de7c4fcc6d",
+    "semantic_hash": "02a54392565e2d97901e13de7c4fcc6d"
+  },
+  "/home/b0yz4kr14/Projects/TSiSIP/.claude/helpers/worker-manager.sh": {
+    "mtime": 1778930816.268935,
+    "ast_hash": "bd355d51171e383cebc6eeb094e78d6c",
+    "semantic_hash": "bd355d51171e383cebc6eeb094e78d6c"
+  },
+  "/home/b0yz4kr14/Projects/TSiSIP/.claude-flow/daemon-state.json": {
+    "mtime": 1778959247.6837597,
+    "ast_hash": "794a1be8f58df257e3013bf3b4e4aeae",
+    "semantic_hash": "794a1be8f58df257e3013bf3b4e4aeae"
+  },
+  "/home/b0yz4kr14/Projects/TSiSIP/.claude-flow/agents/store.json": {
+    "mtime": 1778931736.4160924,
+    "ast_hash": "7c186f67ede6465d75857de6eb2b3acf",
+    "semantic_hash": "7c186f67ede6465d75857de6eb2b3acf"
+  },
+  "/home/b0yz4kr14/Projects/TSiSIP/.claude-flow/metrics/v3-progress.json": {
+    "mtime": 1778930816.2692463,
+    "ast_hash": "ed230967a22338b9f68c26dee1e62205",
+    "semantic_hash": "ed230967a22338b9f68c26dee1e62205"
+  },
+  "/home/b0yz4kr14/Projects/TSiSIP/.claude-flow/metrics/swarm-activity.json": {
+    "mtime": 1778931736.4220924,
+    "ast_hash": "2f6acb723557866dec3f66df80c7f028",
+    "semantic_hash": "2f6acb723557866dec3f66df80c7f028"
+  },
+  "/home/b0yz4kr14/Projects/TSiSIP/.claude-flow/metrics/learning.json": {
+    "mtime": 1778930816.2692463,
+    "ast_hash": "0225d695541d043188b0ad4508c9c806",
+    "semantic_hash": "0225d695541d043188b0ad4508c9c806"
+  },
+  "/home/b0yz4kr14/Projects/TSiSIP/.claude-flow/metrics/codebase-map.json": {
+    "mtime": 1778958827.6353214,
+    "ast_hash": "287d49fbcb82b215910abc3a4f175793",
+    "semantic_hash": "287d49fbcb82b215910abc3a4f175793"
+  },
+  "/home/b0yz4kr14/Projects/TSiSIP/.claude-flow/metrics/security-audit.json": {
+    "mtime": 1778959247.6837597,
+    "ast_hash": "8cadf089355d43a734c7007dfd09e08f",
+    "semantic_hash": "8cadf089355d43a734c7007dfd09e08f"
+  },
+  "/home/b0yz4kr14/Projects/TSiSIP/.claude-flow/metrics/performance.json": {
+    "mtime": 1778959067.6357138,
+    "ast_hash": "79fe604a6ad4712a50a1bbda3cc5969e",
+    "semantic_hash": "79fe604a6ad4712a50a1bbda3cc5969e"
+  },
+  "/home/b0yz4kr14/Projects/TSiSIP/.claude-flow/metrics/consolidation.json": {
+    "mtime": 1778958287.5982113,
+    "ast_hash": "88e2a7781cbe625c6566a299e6cce707",
+    "semantic_hash": "88e2a7781cbe625c6566a299e6cce707"
+  },
+  "/home/b0yz4kr14/Projects/TSiSIP/.claude-flow/metrics/test-gaps.json": {
+    "mtime": 1778959007.6193655,
+    "ast_hash": "b758c8480ee4d8167df396262d13ec55",
+    "semantic_hash": "b758c8480ee4d8167df396262d13ec55"
+  },
+  "/home/b0yz4kr14/Projects/TSiSIP/.claude-flow/security/audit-status.json": {
+    "mtime": 1778930816.2692463,
+    "ast_hash": "bec036b26a8d24df7ade266aeaa251df",
+    "semantic_hash": "bec036b26a8d24df7ade266aeaa251df"
+  },
+  "/home/b0yz4kr14/Projects/TSiSIP/.claude-flow/swarm/swarm-state.json": {
+    "mtime": 1778931618.2623916,
+    "ast_hash": "532b340c4dc82f906368b6ac031c8801",
+    "semantic_hash": "532b340c4dc82f906368b6ac031c8801"
+  },
+  "/home/b0yz4kr14/Projects/TSiSIP/.swarm/state.json": {
+    "mtime": 1778930932.2849507,
+    "ast_hash": "d69e739926fe9149eb76daca7d8fd058",
+    "semantic_hash": "d69e739926fe9149eb76daca7d8fd058"
+  },
+  "/home/b0yz4kr14/Projects/TSiSIP/.sisyphus/run-continuation/ses_1ce87b424ffe728cSye1qhuNeq.json": {
+    "mtime": 1778946564.3649747,
+    "ast_hash": "27e74437a739c79c5eebbdd1269560b5",
+    "semantic_hash": "27e74437a739c79c5eebbdd1269560b5"
+  },
+  "/home/b0yz4kr14/Projects/TSiSIP/.specify/init-options.json": {
+    "mtime": 1778973858.4810758,
+    "ast_hash": "88df7b96170b47080f78d5375341284a",
+    "semantic_hash": "88df7b96170b47080f78d5375341284a"
+  },
+  "/home/b0yz4kr14/Projects/TSiSIP/.specify/feature.json": {
+    "mtime": 1778973978.6656578,
+    "ast_hash": "d85f282ae6d10fff3ef0372ad58d8e60",
+    "semantic_hash": "d85f282ae6d10fff3ef0372ad58d8e60"
+  },
+  "/home/b0yz4kr14/Projects/TSiSIP/.specify/scripts/bash/check-prerequisites.sh": {
+    "mtime": 1778973868.3639612,
+    "ast_hash": "da9a115fab0661ec4436151a2136b588",
+    "semantic_hash": "da9a115fab0661ec4436151a2136b588"
+  },
+  "/home/b0yz4kr14/Projects/TSiSIP/docker/entrypoint.sh": {
+    "mtime": 1778977475.4128864,
+    "ast_hash": "163978722afc9210e239f8ed5732339a",
+    "semantic_hash": "163978722afc9210e239f8ed5732339a"
+  },
+  "/home/b0yz4kr14/Projects/TSiSIP/db/init/01-stock-opensips-schema.sql": {
+    "mtime": 1778975976.808183,
+    "ast_hash": "3ec7f2ec6510f910f8417e56ca75678e",
+    "semantic_hash": "3ec7f2ec6510f910f8417e56ca75678e"
+  },
+  "/home/b0yz4kr14/Projects/TSiSIP/db/init/02-tsisip-extensions.sql": {
+    "mtime": 1778977494.5084174,
+    "ast_hash": "ef32f7311f575a4d6425dd8b9d6eefb3",
+    "semantic_hash": "ef32f7311f575a4d6425dd8b9d6eefb3"
+  },
+  "/home/b0yz4kr14/Projects/TSiSIP/db/init/03-seed-data.sql": {
+    "mtime": 1778975963.8939857,
+    "ast_hash": "63b5906c8bd66a4df4fc7cd3e579018e",
+    "semantic_hash": "63b5906c8bd66a4df4fc7cd3e579018e"
+  },
+  "/home/b0yz4kr14/Projects/TSiSIP/.omk/mcp.json": {
+    "mtime": 1778978943.059931,
+    "ast_hash": "49ead20c1a2fa2762257b43bf69e820e",
+    "semantic_hash": "49ead20c1a2fa2762257b43bf69e820e"
+  },
+  "/home/b0yz4kr14/Projects/TSiSIP/.omk/lsp.json": {
+    "mtime": 1778978943.059931,
+    "ast_hash": "782feff54577a03f64f107a3354630a2",
+    "semantic_hash": "782feff54577a03f64f107a3354630a2"
+  },
+  "/home/b0yz4kr14/Projects/TSiSIP/.omk/memory/graph-state.json": {
+    "mtime": 1778979055.7107735,
+    "ast_hash": "743ff66c573ae42a4641c36a1a5ebf6f",
+    "semantic_hash": "743ff66c573ae42a4641c36a1a5ebf6f"
+  },
+  "/home/b0yz4kr14/Projects/TSiSIP/.omk/hooks/session-context.sh": {
+    "mtime": 1778978943.059931,
+    "ast_hash": "3a70dd2f0feb9b74c9c036b0eab72a60",
+    "semantic_hash": "3a70dd2f0feb9b74c9c036b0eab72a60"
+  },
+  "/home/b0yz4kr14/Projects/TSiSIP/.omk/hooks/awesome-agent-skills-router.sh": {
+    "mtime": 1778978943.059931,
+    "ast_hash": "07bb7f717db758ca177b93e7411ffcbf",
+    "semantic_hash": "07bb7f717db758ca177b93e7411ffcbf"
+  },
+  "/home/b0yz4kr14/Projects/TSiSIP/.omk/hooks/precompact-checkpoint.sh": {
+    "mtime": 1778978943.059931,
+    "ast_hash": "e5d30145f889096971d831e92b6a8ad6",
+    "semantic_hash": "e5d30145f889096971d831e92b6a8ad6"
+  },
+  "/home/b0yz4kr14/Projects/TSiSIP/.omk/hooks/subagent-stop-audit.sh": {
+    "mtime": 1778978943.059931,
+    "ast_hash": "b1f5870cf325c656b1feef423bcee45c",
+    "semantic_hash": "b1f5870cf325c656b1feef423bcee45c"
+  },
+  "/home/b0yz4kr14/Projects/TSiSIP/.omk/hooks/pre-shell-guard.sh": {
+    "mtime": 1778978943.059931,
+    "ast_hash": "559a75a9301b9cabfb8ca1fb5711592c",
+    "semantic_hash": "559a75a9301b9cabfb8ca1fb5711592c"
+  },
+  "/home/b0yz4kr14/Projects/TSiSIP/.omk/hooks/post-format.sh": {
+    "mtime": 1778978943.059931,
+    "ast_hash": "01b79b6070a26a39a43c6e1d4ed2affd",
+    "semantic_hash": "01b79b6070a26a39a43c6e1d4ed2affd"
+  },
+  "/home/b0yz4kr14/Projects/TSiSIP/.omk/hooks/stop-verify.sh": {
+    "mtime": 1778978943.059931,
+    "ast_hash": "0a113cb834300d123a444b327b202a2d",
+    "semantic_hash": "0a113cb834300d123a444b327b202a2d"
+  },
+  "/home/b0yz4kr14/Projects/TSiSIP/.kimi/mcp.json": {
+    "mtime": 1778978943.059931,
+    "ast_hash": "684bc646d927a907db38acf644f35a13",
+    "semantic_hash": "684bc646d927a907db38acf644f35a13"
+  },
+  "/home/b0yz4kr14/Projects/TSiSIP/CLAUDE.md": {
+    "mtime": 1778930816.2692463,
+    "ast_hash": "80aa5615d34c5ccee259e227652df1a3",
+    "semantic_hash": "80aa5615d34c5ccee259e227652df1a3"
+  },
+  "/home/b0yz4kr14/Projects/TSiSIP/AGENTS.md": {
+    "mtime": 1778976590.3195481,
+    "ast_hash": "0f066df6cd6fb2c81b92a73df626862e",
+    "semantic_hash": "0f066df6cd6fb2c81b92a73df626862e"
+  },
+  "/home/b0yz4kr14/Projects/TSiSIP/docker-compose.yml": {
+    "mtime": 1778977629.8337917,
+    "ast_hash": "e6aa8cfe53aad1dddef322528d429da1",
+    "semantic_hash": "e6aa8cfe53aad1dddef322528d429da1"
+  },
+  "/home/b0yz4kr14/Projects/TSiSIP/DESIGN.md": {
+    "mtime": 1778978943.0619671,
+    "ast_hash": "7fe1c26881efc3314604946c3505b64a",
+    "semantic_hash": "7fe1c26881efc3314604946c3505b64a"
+  },
+  "/home/b0yz4kr14/Projects/TSiSIP/GEMINI.md": {
+    "mtime": 1778978943.0619671,
+    "ast_hash": "a1013f73596fc6d6dc6f957d091cc0f5",
+    "semantic_hash": "a1013f73596fc6d6dc6f957d091cc0f5"
+  },
+  "/home/b0yz4kr14/Projects/TSiSIP/ROADMAP.md": {
+    "mtime": 1778978943.0619671,
+    "ast_hash": "c5715b29c2dc89e0a0989b96c889706a",
+    "semantic_hash": "c5715b29c2dc89e0a0989b96c889706a"
+  },
+  "/home/b0yz4kr14/Projects/TSiSIP/SECURITY.md": {
+    "mtime": 1778978943.0619671,
+    "ast_hash": "6d44f2aa05828919ccac8f64b48fa800",
+    "semantic_hash": "6d44f2aa05828919ccac8f64b48fa800"
+  },
+  "/home/b0yz4kr14/Projects/TSiSIP/.github/copilot-instructions.md": {
+    "mtime": 1778928855.9241893,
+    "ast_hash": "e76fc1bed12c34ac9b7e81a21f5a04a9",
+    "semantic_hash": "e76fc1bed12c34ac9b7e81a21f5a04a9"
+  },
+  "/home/b0yz4kr14/Projects/TSiSIP/docs/TSiSIP-CANONICAL-SPEC.md": {
+    "mtime": 1778928860.8891377,
+    "ast_hash": "7034aec4977a6a58ecf9be8e4f154792",
+    "semantic_hash": "7034aec4977a6a58ecf9be8e4f154792"
+  },
+  "/home/b0yz4kr14/Projects/TSiSIP/docs/TSiSIP-AGENT-ORCHESTRATION-PLAYBOOK.md": {
+    "mtime": 1778927025.8106687,
+    "ast_hash": "40e49d129d799fe3ade1b41f276c3169",
+    "semantic_hash": "40e49d129d799fe3ade1b41f276c3169"
+  },
+  "/home/b0yz4kr14/Projects/TSiSIP/.claude/commands/claude-flow-help.md": {
+    "mtime": 1778930816.2626925,
+    "ast_hash": "8422bcecffa1526a1ef84cd5bfee8f06",
+    "semantic_hash": "8422bcecffa1526a1ef84cd5bfee8f06"
+  },
+  "/home/b0yz4kr14/Projects/TSiSIP/.claude/commands/claude-flow-swarm.md": {
+    "mtime": 1778930816.2627368,
+    "ast_hash": "5ee66f411d2ce9e10d41f47138c65684",
+    "semantic_hash": "5ee66f411d2ce9e10d41f47138c65684"
+  },
+  "/home/b0yz4kr14/Projects/TSiSIP/.claude/commands/claude-flow-memory.md": {
+    "mtime": 1778930816.2627654,
+    "ast_hash": "9b61de2d08b793d943833a77363adf21",
+    "semantic_hash": "9b61de2d08b793d943833a77363adf21"
+  },
+  "/home/b0yz4kr14/Projects/TSiSIP/.claude/commands/analysis/COMMAND_COMPLIANCE_REPORT.md": {
+    "mtime": 1778930816.262868,
+    "ast_hash": "259c2db5f07e9ab8099667e80019da03",
+    "semantic_hash": "259c2db5f07e9ab8099667e80019da03"
+  },
+  "/home/b0yz4kr14/Projects/TSiSIP/.claude/commands/analysis/README.md": {
+    "mtime": 1778930816.2628992,
+    "ast_hash": "c04ca0005d3801255051c33e9a1bea4e",
+    "semantic_hash": "c04ca0005d3801255051c33e9a1bea4e"
+  },
+  "/home/b0yz4kr14/Projects/TSiSIP/.claude/commands/analysis/bottleneck-detect.md": {
+    "mtime": 1778930816.2629182,
+    "ast_hash": "32f5a036b29ac127fd7bb5662c373ae8",
+    "semantic_hash": "32f5a036b29ac127fd7bb5662c373ae8"
+  },
+  "/home/b0yz4kr14/Projects/TSiSIP/.claude/commands/analysis/performance-bottlenecks.md": {
+    "mtime": 1778930816.2629359,
+    "ast_hash": "0b61ca28dad061f98695cd25de71ea8a",
+    "semantic_hash": "0b61ca28dad061f98695cd25de71ea8a"
+  },
+  "/home/b0yz4kr14/Projects/TSiSIP/.claude/commands/analysis/performance-report.md": {
+    "mtime": 1778930816.2629545,
+    "ast_hash": "1ebf28bc0c03cadcf5350ca97bd63489",
+    "semantic_hash": "1ebf28bc0c03cadcf5350ca97bd63489"
+  },
+  "/home/b0yz4kr14/Projects/TSiSIP/.claude/commands/automation/README.md": {
+    "mtime": 1778930816.2630491,
+    "ast_hash": "7b4e61cce3f0295ed75c8536c46b9175",
+    "semantic_hash": "7b4e61cce3f0295ed75c8536c46b9175"
+  },
+  "/home/b0yz4kr14/Projects/TSiSIP/.claude/commands/automation/auto-agent.md": {
+    "mtime": 1778930816.2630672,
+    "ast_hash": "3a68404e9195b56c76f01be1c8598918",
+    "semantic_hash": "3a68404e9195b56c76f01be1c8598918"
+  },
+  "/home/b0yz4kr14/Projects/TSiSIP/.claude/commands/automation/self-healing.md": {
+    "mtime": 1778930816.2630987,
+    "ast_hash": "8e2024207ac7ae5c8f526b738378cff4",
+    "semantic_hash": "8e2024207ac7ae5c8f526b738378cff4"
+  },
+  "/home/b0yz4kr14/Projects/TSiSIP/.claude/commands/automation/session-memory.md": {
+    "mtime": 1778930816.2631185,
+    "ast_hash": "1c9b44099a3edf541d0b77704e15f3bf",
+    "semantic_hash": "1c9b44099a3edf541d0b77704e15f3bf"
+  },
+  "/home/b0yz4kr14/Projects/TSiSIP/.claude/commands/automation/smart-agents.md": {
+    "mtime": 1778930816.263136,
+    "ast_hash": "3dc6bee5b9be04c4d6d627cb69bd4f47",
+    "semantic_hash": "3dc6bee5b9be04c4d6d627cb69bd4f47"
+  },
+  "/home/b0yz4kr14/Projects/TSiSIP/.claude/commands/automation/smart-spawn.md": {
+    "mtime": 1778930816.2631538,
+    "ast_hash": "af2cf4240be45644236ee5e80c59dd1e",
+    "semantic_hash": "af2cf4240be45644236ee5e80c59dd1e"
+  },
+  "/home/b0yz4kr14/Projects/TSiSIP/.claude/commands/automation/workflow-select.md": {
+    "mtime": 1778930816.263171,
+    "ast_hash": "bd40d2b2fc154f511610964461dd1e87",
+    "semantic_hash": "bd40d2b2fc154f511610964461dd1e87"
+  },
+  "/home/b0yz4kr14/Projects/TSiSIP/.claude/commands/github/README.md": {
+    "mtime": 1778930816.2632313,
+    "ast_hash": "6a932bba9dc604921bb8b16901cdaf0e",
+    "semantic_hash": "6a932bba9dc604921bb8b16901cdaf0e"
+  },
+  "/home/b0yz4kr14/Projects/TSiSIP/.claude/commands/github/code-review-swarm.md": {
+    "mtime": 1778930816.2632496,
+    "ast_hash": "622a9c6fbb54a0fe359a17f42b514b5b",
+    "semantic_hash": "622a9c6fbb54a0fe359a17f42b514b5b"
+  },
+  "/home/b0yz4kr14/Projects/TSiSIP/.claude/commands/github/code-review.md": {
+    "mtime": 1778930816.2632668,
+    "ast_hash": "b6ec3e03279d6e536cd260e0cf8c7784",
+    "semantic_hash": "b6ec3e03279d6e536cd260e0cf8c7784"
+  },
+  "/home/b0yz4kr14/Projects/TSiSIP/.claude/commands/github/github-modes.md": {
+    "mtime": 1778930816.2632856,
+    "ast_hash": "56ba033458b47ef3d15dcad3f392ea7e",
+    "semantic_hash": "56ba033458b47ef3d15dcad3f392ea7e"
+  },
+  "/home/b0yz4kr14/Projects/TSiSIP/.claude/commands/github/github-swarm.md": {
+    "mtime": 1778930816.2633033,
+    "ast_hash": "21b80825ce45e803832c1ec071d46dff",
+    "semantic_hash": "21b80825ce45e803832c1ec071d46dff"
+  },
+  "/home/b0yz4kr14/Projects/TSiSIP/.claude/commands/github/issue-tracker.md": {
+    "mtime": 1778930816.2633207,
+    "ast_hash": "8600f8799dc163505df89b7655d6aa26",
+    "semantic_hash": "8600f8799dc163505df89b7655d6aa26"
+  },
+  "/home/b0yz4kr14/Projects/TSiSIP/.claude/commands/github/issue-triage.md": {
+    "mtime": 1778930816.2633379,
+    "ast_hash": "10e88593fe6455232cfff63b86548e6d",
+    "semantic_hash": "10e88593fe6455232cfff63b86548e6d"
+  },
+  "/home/b0yz4kr14/Projects/TSiSIP/.claude/commands/github/multi-repo-swarm.md": {
+    "mtime": 1778930816.2633553,
+    "ast_hash": "1557b2637d70bd7147ce844b406a2c44",
+    "semantic_hash": "1557b2637d70bd7147ce844b406a2c44"
+  },
+  "/home/b0yz4kr14/Projects/TSiSIP/.claude/commands/github/pr-enhance.md": {
+    "mtime": 1778930816.263376,
+    "ast_hash": "84127051c229072fa696e6a5e09eb025",
+    "semantic_hash": "84127051c229072fa696e6a5e09eb025"
+  },
+  "/home/b0yz4kr14/Projects/TSiSIP/.claude/commands/github/pr-manager.md": {
+    "mtime": 1778930816.2634022,
+    "ast_hash": "4c15f74d4449dfdc853d84c715c8d195",
+    "semantic_hash": "4c15f74d4449dfdc853d84c715c8d195"
+  },
+  "/home/b0yz4kr14/Projects/TSiSIP/.claude/commands/github/project-board-sync.md": {
+    "mtime": 1778930816.2634203,
+    "ast_hash": "3d1c954fdb0333958c13c4204bd4e067",
+    "semantic_hash": "3d1c954fdb0333958c13c4204bd4e067"
+  },
+  "/home/b0yz4kr14/Projects/TSiSIP/.claude/commands/github/release-manager.md": {
+    "mtime": 1778930816.2634377,
+    "ast_hash": "72df13536cac760ae781b183c74de9a4",
+    "semantic_hash": "72df13536cac760ae781b183c74de9a4"
+  },
+  "/home/b0yz4kr14/Projects/TSiSIP/.claude/commands/github/release-swarm.md": {
+    "mtime": 1778930816.2634628,
+    "ast_hash": "0be95acc3c97de056d157a9aa7706d2b",
+    "semantic_hash": "0be95acc3c97de056d157a9aa7706d2b"
+  },
+  "/home/b0yz4kr14/Projects/TSiSIP/.claude/commands/github/repo-analyze.md": {
+    "mtime": 1778930816.2634807,
+    "ast_hash": "dcb9a0612f0925c7a315ec1477ad7cd3",
+    "semantic_hash": "dcb9a0612f0925c7a315ec1477ad7cd3"
+  },
+  "/home/b0yz4kr14/Projects/TSiSIP/.claude/commands/github/repo-architect.md": {
+    "mtime": 1778930816.263498,
+    "ast_hash": "6a5ef02756f57f9f860d7340938c776a",
+    "semantic_hash": "6a5ef02756f57f9f860d7340938c776a"
+  },
+  "/home/b0yz4kr14/Projects/TSiSIP/.claude/commands/github/swarm-issue.md": {
+    "mtime": 1778930816.2635152,
+    "ast_hash": "0ac578a41d4b2307d971ae4757c784ac",
+    "semantic_hash": "0ac578a41d4b2307d971ae4757c784ac"
+  },
+  "/home/b0yz4kr14/Projects/TSiSIP/.claude/commands/github/swarm-pr.md": {
+    "mtime": 1778930816.2635357,
+    "ast_hash": "ac68fbb59c09e180e69bb350d3aa1167",
+    "semantic_hash": "ac68fbb59c09e180e69bb350d3aa1167"
+  },
+  "/home/b0yz4kr14/Projects/TSiSIP/.claude/commands/github/sync-coordinator.md": {
+    "mtime": 1778930816.2635536,
+    "ast_hash": "f24c3ebd7e002c2af07be2702aa062b7",
+    "semantic_hash": "f24c3ebd7e002c2af07be2702aa062b7"
+  },
+  "/home/b0yz4kr14/Projects/TSiSIP/.claude/commands/github/workflow-automation.md": {
+    "mtime": 1778930816.2635777,
+    "ast_hash": "25d76fb426fd8a9933f0a9f3e76f1779",
+    "semantic_hash": "25d76fb426fd8a9933f0a9f3e76f1779"
+  },
+  "/home/b0yz4kr14/Projects/TSiSIP/.claude/commands/hooks/README.md": {
+    "mtime": 1778930816.263639,
+    "ast_hash": "34a2bc7d37def2f5838d23068652ce86",
+    "semantic_hash": "34a2bc7d37def2f5838d23068652ce86"
+  },
+  "/home/b0yz4kr14/Projects/TSiSIP/.claude/commands/hooks/overview.md": {
+    "mtime": 1778930816.2636602,
+    "ast_hash": "c486bc0a7644b61d124abc30832e8021",
+    "semantic_hash": "c486bc0a7644b61d124abc30832e8021"
+  },
+  "/home/b0yz4kr14/Projects/TSiSIP/.claude/commands/hooks/post-edit.md": {
+    "mtime": 1778930816.26368,
+    "ast_hash": "3363ee2ccedae644f062516b80cecc5f",
+    "semantic_hash": "3363ee2ccedae644f062516b80cecc5f"
+  },
+  "/home/b0yz4kr14/Projects/TSiSIP/.claude/commands/hooks/post-task.md": {
+    "mtime": 1778930816.2636986,
+    "ast_hash": "65d37ea33fc301b89535299b438264bb",
+    "semantic_hash": "65d37ea33fc301b89535299b438264bb"
+  },
+  "/home/b0yz4kr14/Projects/TSiSIP/.claude/commands/hooks/pre-edit.md": {
+    "mtime": 1778930816.2637162,
+    "ast_hash": "8ee9c757fa48cce4c7a8842a09ac162b",
+    "semantic_hash": "8ee9c757fa48cce4c7a8842a09ac162b"
+  },
+  "/home/b0yz4kr14/Projects/TSiSIP/.claude/commands/hooks/pre-task.md": {
+    "mtime": 1778930816.263743,
+    "ast_hash": "2a57c82e680ab60bd018489956d32aaf",
+    "semantic_hash": "2a57c82e680ab60bd018489956d32aaf"
+  },
+  "/home/b0yz4kr14/Projects/TSiSIP/.claude/commands/hooks/session-end.md": {
+    "mtime": 1778930816.263774,
+    "ast_hash": "714b4ad8575d1eddf7bb7a9cdaa1e6aa",
+    "semantic_hash": "714b4ad8575d1eddf7bb7a9cdaa1e6aa"
+  },
+  "/home/b0yz4kr14/Projects/TSiSIP/.claude/commands/hooks/setup.md": {
+    "mtime": 1778930816.2638032,
+    "ast_hash": "8400a02c92e24bef653aca3e0d3d7754",
+    "semantic_hash": "8400a02c92e24bef653aca3e0d3d7754"
+  },
+  "/home/b0yz4kr14/Projects/TSiSIP/.claude/commands/monitoring/README.md": {
+    "mtime": 1778930816.2638738,
+    "ast_hash": "388887f82c9351e3793a3fa16c920402",
+    "semantic_hash": "388887f82c9351e3793a3fa16c920402"
+  },
+  "/home/b0yz4kr14/Projects/TSiSIP/.claude/commands/monitoring/agent-metrics.md": {
+    "mtime": 1778930816.2638981,
+    "ast_hash": "3dc73c61f62fd5cbe51cd80ac330438d",
+    "semantic_hash": "3dc73c61f62fd5cbe51cd80ac330438d"
+  },
+  "/home/b0yz4kr14/Projects/TSiSIP/.claude/commands/monitoring/agents.md": {
+    "mtime": 1778930816.2639232,
+    "ast_hash": "2e30105c4a902f9a42505118a0ddf22c",
+    "semantic_hash": "2e30105c4a902f9a42505118a0ddf22c"
+  },
+  "/home/b0yz4kr14/Projects/TSiSIP/.claude/commands/monitoring/real-time-view.md": {
+    "mtime": 1778930816.2639399,
+    "ast_hash": "0b0775fa0d8f967561b121834f3698ce",
+    "semantic_hash": "0b0775fa0d8f967561b121834f3698ce"
+  },
+  "/home/b0yz4kr14/Projects/TSiSIP/.claude/commands/monitoring/status.md": {
+    "mtime": 1778930816.2639563,
+    "ast_hash": "5e981fe7639e33a4cee5a7c3056c961d",
+    "semantic_hash": "5e981fe7639e33a4cee5a7c3056c961d"
+  },
+  "/home/b0yz4kr14/Projects/TSiSIP/.claude/commands/monitoring/swarm-monitor.md": {
+    "mtime": 1778930816.263973,
+    "ast_hash": "2f1fd188e0bd95627316db8ecd0c387b",
+    "semantic_hash": "2f1fd188e0bd95627316db8ecd0c387b"
+  },
+  "/home/b0yz4kr14/Projects/TSiSIP/.claude/commands/optimization/README.md": {
+    "mtime": 1778930816.2640193,
+    "ast_hash": "b51fec578fbb7c430071b2ae456379c6",
+    "semantic_hash": "b51fec578fbb7c430071b2ae456379c6"
+  },
+  "/home/b0yz4kr14/Projects/TSiSIP/.claude/commands/optimization/auto-topology.md": {
+    "mtime": 1778930816.2640352,
+    "ast_hash": "a805e03f09047d40308dd772e80c3b59",
+    "semantic_hash": "a805e03f09047d40308dd772e80c3b59"
+  },
+  "/home/b0yz4kr14/Projects/TSiSIP/.claude/commands/optimization/cache-manage.md": {
+    "mtime": 1778930816.264051,
+    "ast_hash": "44ee979fe4bb4529aaf4b5ca79c0db9c",
+    "semantic_hash": "44ee979fe4bb4529aaf4b5ca79c0db9c"
+  },
+  "/home/b0yz4kr14/Projects/TSiSIP/.claude/commands/optimization/parallel-execute.md": {
+    "mtime": 1778930816.2640676,
+    "ast_hash": "8d97b2b5420a98c4875d3381d51b68eb",
+    "semantic_hash": "8d97b2b5420a98c4875d3381d51b68eb"
+  },
+  "/home/b0yz4kr14/Projects/TSiSIP/.claude/commands/optimization/parallel-execution.md": {
+    "mtime": 1778930816.264087,
+    "ast_hash": "d419362a844150d1e315ea7e404910f5",
+    "semantic_hash": "d419362a844150d1e315ea7e404910f5"
+  },
+  "/home/b0yz4kr14/Projects/TSiSIP/.claude/commands/optimization/topology-optimize.md": {
+    "mtime": 1778930816.264105,
+    "ast_hash": "92b3189223e7eb9184c86bc126715fe7",
+    "semantic_hash": "92b3189223e7eb9184c86bc126715fe7"
+  },
+  "/home/b0yz4kr14/Projects/TSiSIP/.claude/commands/sparc/analyzer.md": {
+    "mtime": 1778930816.2641625,
+    "ast_hash": "78ce46e74f67b239b76d35128af29f81",
+    "semantic_hash": "78ce46e74f67b239b76d35128af29f81"
+  },
+  "/home/b0yz4kr14/Projects/TSiSIP/.claude/commands/sparc/architect.md": {
+    "mtime": 1778930816.2641785,
+    "ast_hash": "417106b768f50300c9130d174f0a4218",
+    "semantic_hash": "417106b768f50300c9130d174f0a4218"
+  },
+  "/home/b0yz4kr14/Projects/TSiSIP/.claude/commands/sparc/ask.md": {
+    "mtime": 1778930816.2641945,
+    "ast_hash": "1007e24d5be4185822b54d2e10133651",
+    "semantic_hash": "1007e24d5be4185822b54d2e10133651"
+  },
+  "/home/b0yz4kr14/Projects/TSiSIP/.claude/commands/sparc/batch-executor.md": {
+    "mtime": 1778930816.2642107,
+    "ast_hash": "5499e6bb687fabb48b4d98304be40ed7",
+    "semantic_hash": "5499e6bb687fabb48b4d98304be40ed7"
+  },
+  "/home/b0yz4kr14/Projects/TSiSIP/.claude/commands/sparc/code.md": {
+    "mtime": 1778930816.2642272,
+    "ast_hash": "71fadb0dd2b95e07f8d4b9baad536bcc",
+    "semantic_hash": "71fadb0dd2b95e07f8d4b9baad536bcc"
+  },
+  "/home/b0yz4kr14/Projects/TSiSIP/.claude/commands/sparc/coder.md": {
+    "mtime": 1778930816.2642443,
+    "ast_hash": "062d310452a1f8bc97f2bfebbb7622e5",
+    "semantic_hash": "062d310452a1f8bc97f2bfebbb7622e5"
+  },
+  "/home/b0yz4kr14/Projects/TSiSIP/.claude/commands/sparc/debug.md": {
+    "mtime": 1778930816.2642612,
+    "ast_hash": "86c0bdbed0f389a9ed160d90a7683fcc",
+    "semantic_hash": "86c0bdbed0f389a9ed160d90a7683fcc"
+  },
+  "/home/b0yz4kr14/Projects/TSiSIP/.claude/commands/sparc/debugger.md": {
+    "mtime": 1778930816.2642837,
+    "ast_hash": "44a54e7f95de15cda1f1c405745f3ad0",
+    "semantic_hash": "44a54e7f95de15cda1f1c405745f3ad0"
+  },
+  "/home/b0yz4kr14/Projects/TSiSIP/.claude/commands/sparc/designer.md": {
+    "mtime": 1778930816.2643058,
+    "ast_hash": "b2bd25b4f1361b0ca2a5460cf1bb38f8",
+    "semantic_hash": "b2bd25b4f1361b0ca2a5460cf1bb38f8"
+  },
+  "/home/b0yz4kr14/Projects/TSiSIP/.claude/commands/sparc/devops.md": {
+    "mtime": 1778930816.2643213,
+    "ast_hash": "e3155ceed72ec76259c5ac4eeb253388",
+    "semantic_hash": "e3155ceed72ec76259c5ac4eeb253388"
+  },
+  "/home/b0yz4kr14/Projects/TSiSIP/.claude/commands/sparc/docs-writer.md": {
+    "mtime": 1778930816.2643383,
+    "ast_hash": "e1d8ebda2d7acdb37fdda71c09101923",
+    "semantic_hash": "e1d8ebda2d7acdb37fdda71c09101923"
+  },
+  "/home/b0yz4kr14/Projects/TSiSIP/.claude/commands/sparc/documenter.md": {
+    "mtime": 1778930816.2643628,
+    "ast_hash": "a04946ca082a64858c87b0986d4e26f8",
+    "semantic_hash": "a04946ca082a64858c87b0986d4e26f8"
+  },
+  "/home/b0yz4kr14/Projects/TSiSIP/.claude/commands/sparc/innovator.md": {
+    "mtime": 1778930816.2643788,
+    "ast_hash": "143a669c0f797519144650fd90958c06",
+    "semantic_hash": "143a669c0f797519144650fd90958c06"
+  },
+  "/home/b0yz4kr14/Projects/TSiSIP/.claude/commands/sparc/integration.md": {
+    "mtime": 1778930816.264395,
+    "ast_hash": "c5344812e28f6fcabb299aa4724895d1",
+    "semantic_hash": "c5344812e28f6fcabb299aa4724895d1"
+  },
+  "/home/b0yz4kr14/Projects/TSiSIP/.claude/commands/sparc/mcp.md": {
+    "mtime": 1778930816.264416,
+    "ast_hash": "b029207b3dd29afb9cf0edc7116ef7a0",
+    "semantic_hash": "b029207b3dd29afb9cf0edc7116ef7a0"
+  },
+  "/home/b0yz4kr14/Projects/TSiSIP/.claude/commands/sparc/memory-manager.md": {
+    "mtime": 1778930816.2644339,
+    "ast_hash": "ce5b25cd5eedac4fa78fdb1bb1fe7f7f",
+    "semantic_hash": "ce5b25cd5eedac4fa78fdb1bb1fe7f7f"
+  },
+  "/home/b0yz4kr14/Projects/TSiSIP/.claude/commands/sparc/optimizer.md": {
+    "mtime": 1778930816.2644577,
+    "ast_hash": "c1bab4195adfb5fc5a674b9302693512",
+    "semantic_hash": "c1bab4195adfb5fc5a674b9302693512"
+  },
+  "/home/b0yz4kr14/Projects/TSiSIP/.claude/commands/sparc/orchestrator.md": {
+    "mtime": 1778930816.264477,
+    "ast_hash": "ac5c092665d2a9a45ee20f64835c9faf",
+    "semantic_hash": "ac5c092665d2a9a45ee20f64835c9faf"
+  },
+  "/home/b0yz4kr14/Projects/TSiSIP/.claude/commands/sparc/post-deployment-monitoring-mode.md": {
+    "mtime": 1778930816.2644992,
+    "ast_hash": "9327e92fdd26863f055b353daee1fbca",
+    "semantic_hash": "9327e92fdd26863f055b353daee1fbca"
+  },
+  "/home/b0yz4kr14/Projects/TSiSIP/.claude/commands/sparc/refinement-optimization-mode.md": {
+    "mtime": 1778930816.26453,
+    "ast_hash": "eb3acab5e5e00db3d675fad75848e521",
+    "semantic_hash": "eb3acab5e5e00db3d675fad75848e521"
+  },
+  "/home/b0yz4kr14/Projects/TSiSIP/.claude/commands/sparc/researcher.md": {
+    "mtime": 1778930816.264556,
+    "ast_hash": "65de40bda51ff86d7ea801587204e031",
+    "semantic_hash": "65de40bda51ff86d7ea801587204e031"
+  },
+  "/home/b0yz4kr14/Projects/TSiSIP/.claude/commands/sparc/reviewer.md": {
+    "mtime": 1778930816.264573,
+    "ast_hash": "cbcfc8474e79f2d27c26c0ccc5a4dcba",
+    "semantic_hash": "cbcfc8474e79f2d27c26c0ccc5a4dcba"
+  },
+  "/home/b0yz4kr14/Projects/TSiSIP/.claude/commands/sparc/security-review.md": {
+    "mtime": 1778930816.2645895,
+    "ast_hash": "f773f473d164321cef5f9c3f2015686e",
+    "semantic_hash": "f773f473d164321cef5f9c3f2015686e"
+  },
+  "/home/b0yz4kr14/Projects/TSiSIP/.claude/commands/sparc/sparc-modes.md": {
+    "mtime": 1778930816.2646062,
+    "ast_hash": "9e685e99613f084685ab9fcf2a616f7b",
+    "semantic_hash": "9e685e99613f084685ab9fcf2a616f7b"
+  },
+  "/home/b0yz4kr14/Projects/TSiSIP/.claude/commands/sparc/sparc.md": {
+    "mtime": 1778930816.2646227,
+    "ast_hash": "33ff6443cd9108dd70ac6699c2d57c1a",
+    "semantic_hash": "33ff6443cd9108dd70ac6699c2d57c1a"
+  },
+  "/home/b0yz4kr14/Projects/TSiSIP/.claude/commands/sparc/spec-pseudocode.md": {
+    "mtime": 1778930816.2646394,
+    "ast_hash": "ba2764fc0e1fe5c73af8e6ff5920dc4a",
+    "semantic_hash": "ba2764fc0e1fe5c73af8e6ff5920dc4a"
+  },
+  "/home/b0yz4kr14/Projects/TSiSIP/.claude/commands/sparc/supabase-admin.md": {
+    "mtime": 1778930816.2646563,
+    "ast_hash": "852efe6f8c7db356bfe9dcec03279c92",
+    "semantic_hash": "852efe6f8c7db356bfe9dcec03279c92"
+  },
+  "/home/b0yz4kr14/Projects/TSiSIP/.claude/commands/sparc/swarm-coordinator.md": {
+    "mtime": 1778930816.2646732,
+    "ast_hash": "2db99fe71c125a30e19941704cf6eadf",
+    "semantic_hash": "2db99fe71c125a30e19941704cf6eadf"
+  },
+  "/home/b0yz4kr14/Projects/TSiSIP/.claude/commands/sparc/tdd.md": {
+    "mtime": 1778930816.26469,
+    "ast_hash": "e6319cf1e442061d24253f86ca148ea2",
+    "semantic_hash": "e6319cf1e442061d24253f86ca148ea2"
+  },
+  "/home/b0yz4kr14/Projects/TSiSIP/.claude/commands/sparc/tester.md": {
+    "mtime": 1778930816.264712,
+    "ast_hash": "044a9baee81e83be6054a85927400111",
+    "semantic_hash": "044a9baee81e83be6054a85927400111"
+  },
+  "/home/b0yz4kr14/Projects/TSiSIP/.claude/commands/sparc/tutorial.md": {
+    "mtime": 1778930816.2647288,
+    "ast_hash": "5965d3d947c5675e0dd31a0312fff559",
+    "semantic_hash": "5965d3d947c5675e0dd31a0312fff559"
+  },
+  "/home/b0yz4kr14/Projects/TSiSIP/.claude/commands/sparc/workflow-manager.md": {
+    "mtime": 1778930816.26475,
+    "ast_hash": "6df5781fd9ef769e293e6ebbc8f3dd7b",
+    "semantic_hash": "6df5781fd9ef769e293e6ebbc8f3dd7b"
+  },
+  "/home/b0yz4kr14/Projects/TSiSIP/.claude/agents/core/coder.md": {
+    "mtime": 1778930816.2649608,
+    "ast_hash": "1e908cc846730bb40ba7d62a31aaf6c8",
+    "semantic_hash": "1e908cc846730bb40ba7d62a31aaf6c8"
+  },
+  "/home/b0yz4kr14/Projects/TSiSIP/.claude/agents/core/planner.md": {
+    "mtime": 1778930816.26498,
+    "ast_hash": "5f037212896d72c0a513bb6420b26f71",
+    "semantic_hash": "5f037212896d72c0a513bb6420b26f71"
+  },
+  "/home/b0yz4kr14/Projects/TSiSIP/.claude/agents/core/researcher.md": {
+    "mtime": 1778930816.2649982,
+    "ast_hash": "429e3e02acfae8ff010944f3d924b6aa",
+    "semantic_hash": "429e3e02acfae8ff010944f3d924b6aa"
+  },
+  "/home/b0yz4kr14/Projects/TSiSIP/.claude/agents/core/reviewer.md": {
+    "mtime": 1778930816.2650158,
+    "ast_hash": "459f54f4392d1632a30418b4c59ea5ac",
+    "semantic_hash": "459f54f4392d1632a30418b4c59ea5ac"
+  },
+  "/home/b0yz4kr14/Projects/TSiSIP/.claude/agents/core/tester.md": {
+    "mtime": 1778930816.2650313,
+    "ast_hash": "3146abbd75d1f50c86278f2e52be391d",
+    "semantic_hash": "3146abbd75d1f50c86278f2e52be391d"
+  },
+  "/home/b0yz4kr14/Projects/TSiSIP/.claude/agents/consensus/byzantine-coordinator.md": {
+    "mtime": 1778930816.265123,
+    "ast_hash": "f46d6e3b734fe9fd2bc6ec323ee9b084",
+    "semantic_hash": "f46d6e3b734fe9fd2bc6ec323ee9b084"
+  },
+  "/home/b0yz4kr14/Projects/TSiSIP/.claude/agents/consensus/crdt-synchronizer.md": {
+    "mtime": 1778930816.2651412,
+    "ast_hash": "10155f7a417d9538e3863d3eed85c5c9",
+    "semantic_hash": "10155f7a417d9538e3863d3eed85c5c9"
+  },
+  "/home/b0yz4kr14/Projects/TSiSIP/.claude/agents/consensus/gossip-coordinator.md": {
+    "mtime": 1778930816.2651587,
+    "ast_hash": "b03e7659757ead6c4b74b7fbeab6c660",
+    "semantic_hash": "b03e7659757ead6c4b74b7fbeab6c660"
+  },
+  "/home/b0yz4kr14/Projects/TSiSIP/.claude/agents/consensus/performance-benchmarker.md": {
+    "mtime": 1778930816.265176,
+    "ast_hash": "ee0f5a6f7d88c2d37cb065afc15a0264",
+    "semantic_hash": "ee0f5a6f7d88c2d37cb065afc15a0264"
+  },
+  "/home/b0yz4kr14/Projects/TSiSIP/.claude/agents/consensus/quorum-manager.md": {
+    "mtime": 1778930816.265194,
+    "ast_hash": "6cbfaaae212a79a3e77f01c5e20adc5c",
+    "semantic_hash": "6cbfaaae212a79a3e77f01c5e20adc5c"
+  },
+  "/home/b0yz4kr14/Projects/TSiSIP/.claude/agents/consensus/raft-manager.md": {
+    "mtime": 1778930816.265212,
+    "ast_hash": "c56af651335979c179d5b57f384e8900",
+    "semantic_hash": "c56af651335979c179d5b57f384e8900"
+  },
+  "/home/b0yz4kr14/Projects/TSiSIP/.claude/agents/consensus/security-manager.md": {
+    "mtime": 1778930816.2652295,
+    "ast_hash": "701e776cc9d66f243e7d24908c244572",
+    "semantic_hash": "701e776cc9d66f243e7d24908c244572"
+  },
+  "/home/b0yz4kr14/Projects/TSiSIP/.claude/agents/github/code-review-swarm.md": {
+    "mtime": 1778930816.2652864,
+    "ast_hash": "92d6d70fad38a78b3c4bc733d992882c",
+    "semantic_hash": "92d6d70fad38a78b3c4bc733d992882c"
+  },
+  "/home/b0yz4kr14/Projects/TSiSIP/.claude/agents/github/github-modes.md": {
+    "mtime": 1778930816.265303,
+    "ast_hash": "80568df0cb5ce25a5ef534f1bdab5524",
+    "semantic_hash": "80568df0cb5ce25a5ef534f1bdab5524"
+  },
+  "/home/b0yz4kr14/Projects/TSiSIP/.claude/agents/github/issue-tracker.md": {
+    "mtime": 1778930816.2653193,
+    "ast_hash": "af83484026c812d00edc61a107dbc069",
+    "semantic_hash": "af83484026c812d00edc61a107dbc069"
+  },
+  "/home/b0yz4kr14/Projects/TSiSIP/.claude/agents/github/multi-repo-swarm.md": {
+    "mtime": 1778930816.2653346,
+    "ast_hash": "350db19ed51710877c89725b0663dc8d",
+    "semantic_hash": "350db19ed51710877c89725b0663dc8d"
+  },
+  "/home/b0yz4kr14/Projects/TSiSIP/.claude/agents/github/pr-manager.md": {
+    "mtime": 1778930816.265352,
+    "ast_hash": "c8f04ddd03d019dea46b0db513e5b059",
+    "semantic_hash": "c8f04ddd03d019dea46b0db513e5b059"
+  },
+  "/home/b0yz4kr14/Projects/TSiSIP/.claude/agents/github/project-board-sync.md": {
+    "mtime": 1778930816.265382,
+    "ast_hash": "e7d6d24780dbf7428f53d66153aaaa40",
+    "semantic_hash": "e7d6d24780dbf7428f53d66153aaaa40"
+  },
+  "/home/b0yz4kr14/Projects/TSiSIP/.claude/agents/github/release-manager.md": {
+    "mtime": 1778930816.2654026,
+    "ast_hash": "e77a6e139894cf2e629ae47cb376707f",
+    "semantic_hash": "e77a6e139894cf2e629ae47cb376707f"
+  },
+  "/home/b0yz4kr14/Projects/TSiSIP/.claude/agents/github/release-swarm.md": {
+    "mtime": 1778930816.2654223,
+    "ast_hash": "ca122e6029236de292ce0ed874c6f1ce",
+    "semantic_hash": "ca122e6029236de292ce0ed874c6f1ce"
+  },
+  "/home/b0yz4kr14/Projects/TSiSIP/.claude/agents/github/repo-architect.md": {
+    "mtime": 1778930816.2654424,
+    "ast_hash": "217d92690348886d6cb35c2c953ceba5",
+    "semantic_hash": "217d92690348886d6cb35c2c953ceba5"
+  },
+  "/home/b0yz4kr14/Projects/TSiSIP/.claude/agents/github/swarm-issue.md": {
+    "mtime": 1778930816.2654676,
+    "ast_hash": "fbded1af9b806040e53c8221cb266945",
+    "semantic_hash": "fbded1af9b806040e53c8221cb266945"
+  },
+  "/home/b0yz4kr14/Projects/TSiSIP/.claude/agents/github/swarm-pr.md": {
+    "mtime": 1778930816.2654855,
+    "ast_hash": "0d6f5c1813d203c032288f874b29152e",
+    "semantic_hash": "0d6f5c1813d203c032288f874b29152e"
+  },
+  "/home/b0yz4kr14/Projects/TSiSIP/.claude/agents/github/sync-coordinator.md": {
+    "mtime": 1778930816.2655015,
+    "ast_hash": "33a7ed5b1db35528327e877e0832428d",
+    "semantic_hash": "33a7ed5b1db35528327e877e0832428d"
+  },
+  "/home/b0yz4kr14/Projects/TSiSIP/.claude/agents/github/workflow-automation.md": {
+    "mtime": 1778930816.2655172,
+    "ast_hash": "6993a5b1e4e587a43fb3c66c34c1ceb1",
+    "semantic_hash": "6993a5b1e4e587a43fb3c66c34c1ceb1"
+  },
+  "/home/b0yz4kr14/Projects/TSiSIP/.claude/agents/sparc/architecture.md": {
+    "mtime": 1778930816.265579,
+    "ast_hash": "eab976515246612e37ec7672d71bd7ec",
+    "semantic_hash": "eab976515246612e37ec7672d71bd7ec"
+  },
+  "/home/b0yz4kr14/Projects/TSiSIP/.claude/agents/sparc/pseudocode.md": {
+    "mtime": 1778930816.2655952,
+    "ast_hash": "36c1affce4ddf135f6a306a4a9141c59",
+    "semantic_hash": "36c1affce4ddf135f6a306a4a9141c59"
+  },
+  "/home/b0yz4kr14/Projects/TSiSIP/.claude/agents/sparc/refinement.md": {
+    "mtime": 1778930816.2656121,
+    "ast_hash": "b89d30d58925ca34c8860de3a4221199",
+    "semantic_hash": "b89d30d58925ca34c8860de3a4221199"
+  },
+  "/home/b0yz4kr14/Projects/TSiSIP/.claude/agents/sparc/specification.md": {
+    "mtime": 1778930816.2656348,
+    "ast_hash": "91889e6402084651a5cfc3f30b030060",
+    "semantic_hash": "91889e6402084651a5cfc3f30b030060"
+  },
+  "/home/b0yz4kr14/Projects/TSiSIP/.claude/agents/swarm/adaptive-coordinator.md": {
+    "mtime": 1778930816.265679,
+    "ast_hash": "0f7fbd93f9347c5113130b8cf8552483",
+    "semantic_hash": "0f7fbd93f9347c5113130b8cf8552483"
+  },
+  "/home/b0yz4kr14/Projects/TSiSIP/.claude/agents/swarm/hierarchical-coordinator.md": {
+    "mtime": 1778930816.2656949,
+    "ast_hash": "0101ea80d665dd4fb33d0ab91ded625d",
+    "semantic_hash": "0101ea80d665dd4fb33d0ab91ded625d"
+  },
+  "/home/b0yz4kr14/Projects/TSiSIP/.claude/agents/swarm/mesh-coordinator.md": {
+    "mtime": 1778930816.2657108,
+    "ast_hash": "7f1a1a5c91da262cb3c467d2cad73e7c",
+    "semantic_hash": "7f1a1a5c91da262cb3c467d2cad73e7c"
+  },
+  "/home/b0yz4kr14/Projects/TSiSIP/.claude/agents/browser/browser-agent.yaml": {
+    "mtime": 1778930816.2657552,
+    "ast_hash": "5da4ab156f955c81774e58378b59049b",
+    "semantic_hash": "5da4ab156f955c81774e58378b59049b"
+  },
+  "/home/b0yz4kr14/Projects/TSiSIP/.claude/agents/v3/adr-architect.md": {
+    "mtime": 1778930816.2658014,
+    "ast_hash": "3282d4d042ac77a5a6bb6ffba3fe16ba",
+    "semantic_hash": "3282d4d042ac77a5a6bb6ffba3fe16ba"
+  },
+  "/home/b0yz4kr14/Projects/TSiSIP/.claude/agents/v3/aidefence-guardian.md": {
+    "mtime": 1778930816.2658172,
+    "ast_hash": "80f8971697e540918a6f05bfe0876d97",
+    "semantic_hash": "80f8971697e540918a6f05bfe0876d97"
+  },
+  "/home/b0yz4kr14/Projects/TSiSIP/.claude/agents/v3/claims-authorizer.md": {
+    "mtime": 1778930816.2658339,
+    "ast_hash": "26833d8fd7289558afbf9084b644186d",
+    "semantic_hash": "26833d8fd7289558afbf9084b644186d"
+  },
+  "/home/b0yz4kr14/Projects/TSiSIP/.claude/agents/v3/collective-intelligence-coordinator.md": {
+    "mtime": 1778930816.2658494,
+    "ast_hash": "41aa34f1ac1b05f728cd84598398ce98",
+    "semantic_hash": "41aa34f1ac1b05f728cd84598398ce98"
+  },
+  "/home/b0yz4kr14/Projects/TSiSIP/.claude/agents/v3/ddd-domain-expert.md": {
+    "mtime": 1778930816.2658656,
+    "ast_hash": "5bd01528034348c3a30f84d7baf8536a",
+    "semantic_hash": "5bd01528034348c3a30f84d7baf8536a"
+  },
+  "/home/b0yz4kr14/Projects/TSiSIP/.claude/agents/v3/injection-analyst.md": {
+    "mtime": 1778930816.2658863,
+    "ast_hash": "f8799c55f53017d579b2bc1850788214",
+    "semantic_hash": "f8799c55f53017d579b2bc1850788214"
+  },
+  "/home/b0yz4kr14/Projects/TSiSIP/.claude/agents/v3/memory-specialist.md": {
+    "mtime": 1778930816.2659035,
+    "ast_hash": "2fb7f06e29de0ea65f9d20f38cc390a7",
+    "semantic_hash": "2fb7f06e29de0ea65f9d20f38cc390a7"
+  },
+  "/home/b0yz4kr14/Projects/TSiSIP/.claude/agents/v3/performance-engineer.md": {
+    "mtime": 1778930816.2659192,
+    "ast_hash": "8382b27a7bbc625516454b39f783a6ab",
+    "semantic_hash": "8382b27a7bbc625516454b39f783a6ab"
+  },
+  "/home/b0yz4kr14/Projects/TSiSIP/.claude/agents/v3/pii-detector.md": {
+    "mtime": 1778930816.265935,
+    "ast_hash": "5037429601da7090ba23717ba795a338",
+    "semantic_hash": "5037429601da7090ba23717ba795a338"
+  },
+  "/home/b0yz4kr14/Projects/TSiSIP/.claude/agents/v3/reasoningbank-learner.md": {
+    "mtime": 1778930816.2659519,
+    "ast_hash": "0e40e17d2b6ec3f6c03164f65ad08854",
+    "semantic_hash": "0e40e17d2b6ec3f6c03164f65ad08854"
+  },
+  "/home/b0yz4kr14/Projects/TSiSIP/.claude/agents/v3/security-architect-aidefence.md": {
+    "mtime": 1778930816.2659678,
+    "ast_hash": "1ce82885b93495b7abb849989efa2abd",
+    "semantic_hash": "1ce82885b93495b7abb849989efa2abd"
+  },
+  "/home/b0yz4kr14/Projects/TSiSIP/.claude/agents/v3/security-architect.md": {
+    "mtime": 1778930816.2659843,
+    "ast_hash": "99cd882f9161ae715f2dbd4fa44780b7",
+    "semantic_hash": "99cd882f9161ae715f2dbd4fa44780b7"
+  },
+  "/home/b0yz4kr14/Projects/TSiSIP/.claude/agents/v3/security-auditor.md": {
+    "mtime": 1778930816.2660005,
+    "ast_hash": "bf57a3dd54d86245859f547b3cf375eb",
+    "semantic_hash": "bf57a3dd54d86245859f547b3cf375eb"
+  },
+  "/home/b0yz4kr14/Projects/TSiSIP/.claude/agents/v3/sparc-orchestrator.md": {
+    "mtime": 1778930816.2660162,
+    "ast_hash": "97328e5cd7a1f0996de64e09dbd2e359",
+    "semantic_hash": "97328e5cd7a1f0996de64e09dbd2e359"
+  },
+  "/home/b0yz4kr14/Projects/TSiSIP/.claude/agents/v3/swarm-memory-manager.md": {
+    "mtime": 1778930816.2660325,
+    "ast_hash": "08873bd70c4d2b52e05e7c82640b3d89",
+    "semantic_hash": "08873bd70c4d2b52e05e7c82640b3d89"
+  },
+  "/home/b0yz4kr14/Projects/TSiSIP/.claude/agents/v3/v3-integration-architect.md": {
+    "mtime": 1778930816.266049,
+    "ast_hash": "006cbd848fe110efa279a801a5bad77b",
+    "semantic_hash": "006cbd848fe110efa279a801a5bad77b"
+  },
+  "/home/b0yz4kr14/Projects/TSiSIP/.claude/agents/optimization/benchmark-suite.md": {
+    "mtime": 1778930816.266104,
+    "ast_hash": "b0499ac36e4edad8a0c81de19d754a00",
+    "semantic_hash": "b0499ac36e4edad8a0c81de19d754a00"
+  },
+  "/home/b0yz4kr14/Projects/TSiSIP/.claude/agents/optimization/load-balancer.md": {
+    "mtime": 1778930816.2661197,
+    "ast_hash": "13440b902207e75ea397bc536c68f248",
+    "semantic_hash": "13440b902207e75ea397bc536c68f248"
+  },
+  "/home/b0yz4kr14/Projects/TSiSIP/.claude/agents/optimization/performance-monitor.md": {
+    "mtime": 1778930816.2661424,
+    "ast_hash": "a0f2a4e8282426fda02c3fcb51a74f72",
+    "semantic_hash": "a0f2a4e8282426fda02c3fcb51a74f72"
+  },
+  "/home/b0yz4kr14/Projects/TSiSIP/.claude/agents/optimization/resource-allocator.md": {
+    "mtime": 1778930816.2661576,
+    "ast_hash": "33b7b22cf47b1991a78902772162ad59",
+    "semantic_hash": "33b7b22cf47b1991a78902772162ad59"
+  },
+  "/home/b0yz4kr14/Projects/TSiSIP/.claude/agents/optimization/topology-optimizer.md": {
+    "mtime": 1778930816.266173,
+    "ast_hash": "5b49cf2376096f6d34e1f45449023c8a",
+    "semantic_hash": "5b49cf2376096f6d34e1f45449023c8a"
+  },
+  "/home/b0yz4kr14/Projects/TSiSIP/.claude/agents/templates/automation-smart-agent.md": {
+    "mtime": 1778930816.266215,
+    "ast_hash": "0baf3ee63c2306b15ac4f9039e422326",
+    "semantic_hash": "0baf3ee63c2306b15ac4f9039e422326"
+  },
+  "/home/b0yz4kr14/Projects/TSiSIP/.claude/agents/templates/base-template-generator.md": {
+    "mtime": 1778930816.2662466,
+    "ast_hash": "751d34779a182218d14f0eb333d15f1b",
+    "semantic_hash": "751d34779a182218d14f0eb333d15f1b"
+  },
+  "/home/b0yz4kr14/Projects/TSiSIP/.claude/agents/templates/coordinator-swarm-init.md": {
+    "mtime": 1778930816.2662778,
+    "ast_hash": "2ea3fdc4f715f850401db5f427e74746",
+    "semantic_hash": "2ea3fdc4f715f850401db5f427e74746"
+  },
+  "/home/b0yz4kr14/Projects/TSiSIP/.claude/agents/templates/github-pr-manager.md": {
+    "mtime": 1778930816.2663195,
+    "ast_hash": "b30e0139976b81e0739fedf4a25b5a05",
+    "semantic_hash": "b30e0139976b81e0739fedf4a25b5a05"
+  },
+  "/home/b0yz4kr14/Projects/TSiSIP/.claude/agents/templates/implementer-sparc-coder.md": {
+    "mtime": 1778930816.2663465,
+    "ast_hash": "935ed028620a1da1790f591636314d1b",
+    "semantic_hash": "935ed028620a1da1790f591636314d1b"
+  },
+  "/home/b0yz4kr14/Projects/TSiSIP/.claude/agents/templates/memory-coordinator.md": {
+    "mtime": 1778930816.2663858,
+    "ast_hash": "e4b4f1ff6cc9d8eaf26d6653b4b96b9d",
+    "semantic_hash": "e4b4f1ff6cc9d8eaf26d6653b4b96b9d"
+  },
+  "/home/b0yz4kr14/Projects/TSiSIP/.claude/agents/templates/orchestrator-task.md": {
+    "mtime": 1778930816.266404,
+    "ast_hash": "10412ac2f550abc63a389318a81557ed",
+    "semantic_hash": "10412ac2f550abc63a389318a81557ed"
+  },
+  "/home/b0yz4kr14/Projects/TSiSIP/.claude/agents/templates/performance-analyzer.md": {
+    "mtime": 1778930816.2664213,
+    "ast_hash": "319d659942a458269cdf75b45a7a176c",
+    "semantic_hash": "319d659942a458269cdf75b45a7a176c"
+  },
+  "/home/b0yz4kr14/Projects/TSiSIP/.claude/agents/templates/sparc-coordinator.md": {
+    "mtime": 1778930816.2664375,
+    "ast_hash": "3b05ca75be773f2af1c1c6c713af4176",
+    "semantic_hash": "3b05ca75be773f2af1c1c6c713af4176"
+  },
+  "/home/b0yz4kr14/Projects/TSiSIP/.claude/agents/testing/production-validator.md": {
+    "mtime": 1778930816.2664816,
+    "ast_hash": "787e5ce9043268e3e467382bf3714f29",
+    "semantic_hash": "787e5ce9043268e3e467382bf3714f29"
+  },
+  "/home/b0yz4kr14/Projects/TSiSIP/.claude/agents/testing/tdd-london-swarm.md": {
+    "mtime": 1778930816.2664974,
+    "ast_hash": "56027f5b5d0d00afc52f19cbbc056d26",
+    "semantic_hash": "56027f5b5d0d00afc52f19cbbc056d26"
+  },
+  "/home/b0yz4kr14/Projects/TSiSIP/.claude/agents/sublinear/consensus-coordinator.md": {
+    "mtime": 1778930816.2665339,
+    "ast_hash": "40516f79f80a4405023f14084f640d07",
+    "semantic_hash": "40516f79f80a4405023f14084f640d07"
+  },
+  "/home/b0yz4kr14/Projects/TSiSIP/.claude/agents/sublinear/matrix-optimizer.md": {
+    "mtime": 1778930816.2665496,
+    "ast_hash": "876a3f5196e70d7ab1871f91f4ec1bda",
+    "semantic_hash": "876a3f5196e70d7ab1871f91f4ec1bda"
+  },
+  "/home/b0yz4kr14/Projects/TSiSIP/.claude/agents/sublinear/pagerank-analyzer.md": {
+    "mtime": 1778930816.2665648,
+    "ast_hash": "a5adb50a8d58ad6e688b716882217afc",
+    "semantic_hash": "a5adb50a8d58ad6e688b716882217afc"
+  },
+  "/home/b0yz4kr14/Projects/TSiSIP/.claude/agents/sublinear/performance-optimizer.md": {
+    "mtime": 1778930816.2665799,
+    "ast_hash": "3170fac7c40d9adc9dbf9fd7bdc271da",
+    "semantic_hash": "3170fac7c40d9adc9dbf9fd7bdc271da"
+  },
+  "/home/b0yz4kr14/Projects/TSiSIP/.claude/agents/sublinear/trading-predictor.md": {
+    "mtime": 1778930816.266595,
+    "ast_hash": "374a00c914202b63c945436af2a406fd",
+    "semantic_hash": "374a00c914202b63c945436af2a406fd"
+  },
+  "/home/b0yz4kr14/Projects/TSiSIP/.claude/agents/flow-nexus/app-store.md": {
+    "mtime": 1778930816.2666364,
+    "ast_hash": "4aba2109705487c00985ef3300872ebb",
+    "semantic_hash": "4aba2109705487c00985ef3300872ebb"
+  },
+  "/home/b0yz4kr14/Projects/TSiSIP/.claude/agents/flow-nexus/authentication.md": {
+    "mtime": 1778930816.2666597,
+    "ast_hash": "1ea55b6a325ad54011d17c637016adcf",
+    "semantic_hash": "1ea55b6a325ad54011d17c637016adcf"
+  },
+  "/home/b0yz4kr14/Projects/TSiSIP/.claude/agents/flow-nexus/challenges.md": {
+    "mtime": 1778930816.2666767,
+    "ast_hash": "35af43d67267f2bf24e12cceca9b2c17",
+    "semantic_hash": "35af43d67267f2bf24e12cceca9b2c17"
+  },
+  "/home/b0yz4kr14/Projects/TSiSIP/.claude/agents/flow-nexus/neural-network.md": {
+    "mtime": 1778930816.2666936,
+    "ast_hash": "b519cefd1f2730b9b94b65a368acc2fa",
+    "semantic_hash": "b519cefd1f2730b9b94b65a368acc2fa"
+  },
+  "/home/b0yz4kr14/Projects/TSiSIP/.claude/agents/flow-nexus/payments.md": {
+    "mtime": 1778930816.266711,
+    "ast_hash": "24e43e8b6b4a202623b5e95aade9fafa",
+    "semantic_hash": "24e43e8b6b4a202623b5e95aade9fafa"
+  },
+  "/home/b0yz4kr14/Projects/TSiSIP/.claude/agents/flow-nexus/sandbox.md": {
+    "mtime": 1778930816.2667294,
+    "ast_hash": "056018263c51337e426e1bf6a07529c3",
+    "semantic_hash": "056018263c51337e426e1bf6a07529c3"
+  },
+  "/home/b0yz4kr14/Projects/TSiSIP/.claude/agents/flow-nexus/swarm.md": {
+    "mtime": 1778930816.266745,
+    "ast_hash": "28d62407f09e4a8c96f09d52eebcc410",
+    "semantic_hash": "28d62407f09e4a8c96f09d52eebcc410"
+  },
+  "/home/b0yz4kr14/Projects/TSiSIP/.claude/agents/flow-nexus/user-tools.md": {
+    "mtime": 1778930816.2667603,
+    "ast_hash": "ac0baa0f91ed9666d36e21ea71b4a4a9",
+    "semantic_hash": "ac0baa0f91ed9666d36e21ea71b4a4a9"
+  },
+  "/home/b0yz4kr14/Projects/TSiSIP/.claude/agents/flow-nexus/workflow.md": {
+    "mtime": 1778930816.2667758,
+    "ast_hash": "d706c3a56bc75d1b596229548c328ad7",
+    "semantic_hash": "d706c3a56bc75d1b596229548c328ad7"
+  },
+  "/home/b0yz4kr14/Projects/TSiSIP/.claude/agents/analysis/analyze-code-quality.md": {
+    "mtime": 1778930816.2668214,
+    "ast_hash": "8583fdc62fa2e41e1eee30f9c6787631",
+    "semantic_hash": "8583fdc62fa2e41e1eee30f9c6787631"
+  },
+  "/home/b0yz4kr14/Projects/TSiSIP/.claude/agents/analysis/code-analyzer.md": {
+    "mtime": 1778930816.2668412,
+    "ast_hash": "0e08b1f69a656f65beb6727304a968f8",
+    "semantic_hash": "0e08b1f69a656f65beb6727304a968f8"
+  },
+  "/home/b0yz4kr14/Projects/TSiSIP/.claude/agents/analysis/code-review/analyze-code-quality.md": {
+    "mtime": 1778930816.2668707,
+    "ast_hash": "8583fdc62fa2e41e1eee30f9c6787631",
+    "semantic_hash": "8583fdc62fa2e41e1eee30f9c6787631"
+  },
+  "/home/b0yz4kr14/Projects/TSiSIP/.claude/agents/architecture/arch-system-design.md": {
+    "mtime": 1778930816.2669249,
+    "ast_hash": "9c076415b478378742b71e8dda679130",
+    "semantic_hash": "9c076415b478378742b71e8dda679130"
+  },
+  "/home/b0yz4kr14/Projects/TSiSIP/.claude/agents/architecture/system-design/arch-system-design.md": {
+    "mtime": 1778930816.2669547,
+    "ast_hash": "6b03aab9df02f707df4c74a314a59ac5",
+    "semantic_hash": "6b03aab9df02f707df4c74a314a59ac5"
+  },
+  "/home/b0yz4kr14/Projects/TSiSIP/.claude/agents/development/dev-backend-api.md": {
+    "mtime": 1778930816.2670362,
+    "ast_hash": "ced9a8cd41e17acb107a375c269cbd19",
+    "semantic_hash": "ced9a8cd41e17acb107a375c269cbd19"
+  },
+  "/home/b0yz4kr14/Projects/TSiSIP/.claude/agents/development/backend/dev-backend-api.md": {
+    "mtime": 1778930816.2670171,
+    "ast_hash": "cc0dbf840ee2c31e3458b422eeb19b25",
+    "semantic_hash": "cc0dbf840ee2c31e3458b422eeb19b25"
+  },
+  "/home/b0yz4kr14/Projects/TSiSIP/.claude/agents/devops/ops-cicd-github.md": {
+    "mtime": 1778930816.2671068,
+    "ast_hash": "f3760d1b7ea0003c5df0082aef629216",
+    "semantic_hash": "f3760d1b7ea0003c5df0082aef629216"
+  },
+  "/home/b0yz4kr14/Projects/TSiSIP/.claude/agents/devops/ci-cd/ops-cicd-github.md": {
+    "mtime": 1778930816.2670906,
+    "ast_hash": "5849348d542f062fd3b06f9c3b549939",
+    "semantic_hash": "5849348d542f062fd3b06f9c3b549939"
+  },
+  "/home/b0yz4kr14/Projects/TSiSIP/.claude/agents/documentation/docs-api-openapi.md": {
+    "mtime": 1778930816.2671747,
+    "ast_hash": "852d9260abc6b3410ceb02d63c839141",
+    "semantic_hash": "852d9260abc6b3410ceb02d63c839141"
+  },
+  "/home/b0yz4kr14/Projects/TSiSIP/.claude/agents/documentation/api-docs/docs-api-openapi.md": {
+    "mtime": 1778930816.267159,
+    "ast_hash": "9c89675660c6b476091ea1d32367e13d",
+    "semantic_hash": "9c89675660c6b476091ea1d32367e13d"
+  },
+  "/home/b0yz4kr14/Projects/TSiSIP/.claude/agents/specialized/spec-mobile-react-native.md": {
+    "mtime": 1778930816.267246,
+    "ast_hash": "d6f275338b59a6e6a0dc9916b996fac1",
+    "semantic_hash": "d6f275338b59a6e6a0dc9916b996fac1"
+  },
+  "/home/b0yz4kr14/Projects/TSiSIP/.claude/agents/specialized/mobile/spec-mobile-react-native.md": {
+    "mtime": 1778930816.2672284,
+    "ast_hash": "58ba74e778af40fa901055a6ac66a66f",
+    "semantic_hash": "58ba74e778af40fa901055a6ac66a66f"
+  },
+  "/home/b0yz4kr14/Projects/TSiSIP/.claude/agents/goal/agent.md": {
+    "mtime": 1778930816.2672884,
+    "ast_hash": "454dd644093ea3b426dff7313aa84969",
+    "semantic_hash": "454dd644093ea3b426dff7313aa84969"
+  },
+  "/home/b0yz4kr14/Projects/TSiSIP/.claude/agents/goal/goal-planner.md": {
+    "mtime": 1778930816.267316,
+    "ast_hash": "8ed93e9fba0811c89215c0dfd844c4a1",
+    "semantic_hash": "8ed93e9fba0811c89215c0dfd844c4a1"
+  },
+  "/home/b0yz4kr14/Projects/TSiSIP/.claude/agents/sona/sona-learning-optimizer.md": {
+    "mtime": 1778930816.2673666,
+    "ast_hash": "6393dddf158beb0e75757f8aab16e58c",
+    "semantic_hash": "6393dddf158beb0e75757f8aab16e58c"
+  },
+  "/home/b0yz4kr14/Projects/TSiSIP/.claude/agents/payments/agentic-payments.md": {
+    "mtime": 1778930816.2674036,
+    "ast_hash": "7964f1043550dd6dfa89d34cbd782df0",
+    "semantic_hash": "7964f1043550dd6dfa89d34cbd782df0"
+  },
+  "/home/b0yz4kr14/Projects/TSiSIP/.claude/agents/data/data-ml-model.md": {
+    "mtime": 1778930816.2674427,
+    "ast_hash": "e5acf97628ce359c78b177b19fbf06c6",
+    "semantic_hash": "e5acf97628ce359c78b177b19fbf06c6"
+  },
+  "/home/b0yz4kr14/Projects/TSiSIP/.claude/agents/data/ml/data-ml-model.md": {
+    "mtime": 1778930816.2674787,
+    "ast_hash": "a91fc08edf5b9a061edfa2bed2d32a38",
+    "semantic_hash": "a91fc08edf5b9a061edfa2bed2d32a38"
+  },
+  "/home/b0yz4kr14/Projects/TSiSIP/.claude/agents/custom/test-long-runner.md": {
+    "mtime": 1778930816.2675202,
+    "ast_hash": "ab193e88c015bec89f3988cf07e7f514",
+    "semantic_hash": "ab193e88c015bec89f3988cf07e7f514"
+  },
+  "/home/b0yz4kr14/Projects/TSiSIP/.claude/helpers/README.md": {
+    "mtime": 1778930816.267863,
+    "ast_hash": "8234495992effd85ddabb306494c8d7d",
+    "semantic_hash": "8234495992effd85ddabb306494c8d7d"
+  },
+  "/home/b0yz4kr14/Projects/TSiSIP/.claude-flow/config.yaml": {
+    "mtime": 1778930816.268935,
+    "ast_hash": "3ef90a88c9e070285985adc5b430f149",
+    "semantic_hash": "3ef90a88c9e070285985adc5b430f149"
+  },
+  "/home/b0yz4kr14/Projects/TSiSIP/.claude-flow/CAPABILITIES.md": {
+    "mtime": 1778930816.2692463,
+    "ast_hash": "ae2895c40a915f888cfff3de2ed0703b",
+    "semantic_hash": "ae2895c40a915f888cfff3de2ed0703b"
+  },
+  "/home/b0yz4kr14/Projects/TSiSIP/.specify/extensions.yml": {
+    "mtime": 1778973860.0618002,
+    "ast_hash": "2140efa468f3d73e90790521156a786f",
+    "semantic_hash": "2140efa468f3d73e90790521156a786f"
+  },
+  "/home/b0yz4kr14/Projects/TSiSIP/.specify/templates/spec-template.md": {
+    "mtime": 1778973885.1536236,
+    "ast_hash": "28f6a27fa31945bf33ebc98bab72ec82",
+    "semantic_hash": "28f6a27fa31945bf33ebc98bab72ec82"
+  },
+  "/home/b0yz4kr14/Projects/TSiSIP/.specify/memory/constitution.md": {
+    "mtime": 1778973914.3269956,
+    "ast_hash": "fee665708631427dd40e8cdc7b8bd5af",
+    "semantic_hash": "fee665708631427dd40e8cdc7b8bd5af"
+  },
+  "/home/b0yz4kr14/Projects/TSiSIP/specs/001-opensips-docker-edge-proxy/spec.md": {
+    "mtime": 1778978567.006758,
+    "ast_hash": "e682aeac5721a228e92502b4f5ca3440",
+    "semantic_hash": "e682aeac5721a228e92502b4f5ca3440"
+  },
+  "/home/b0yz4kr14/Projects/TSiSIP/specs/001-opensips-docker-edge-proxy/plan.md": {
+    "mtime": 1778978400.1314437,
+    "ast_hash": "36fc1db86e6629ddf3c64233131751ef",
+    "semantic_hash": "36fc1db86e6629ddf3c64233131751ef"
+  },
+  "/home/b0yz4kr14/Projects/TSiSIP/specs/001-opensips-docker-edge-proxy/tasks.md": {
+    "mtime": 1778978551.2018492,
+    "ast_hash": "ae5e6eb2812e001f83d4fc09468319d9",
+    "semantic_hash": "ae5e6eb2812e001f83d4fc09468319d9"
+  },
+  "/home/b0yz4kr14/Projects/TSiSIP/specs/001-opensips-docker-edge-proxy/README.md": {
+    "mtime": 1778977703.0024018,
+    "ast_hash": "a07d5552d3f757091bfee4cdb04b48e3",
+    "semantic_hash": "a07d5552d3f757091bfee4cdb04b48e3"
+  },
+  "/home/b0yz4kr14/Projects/TSiSIP/specs/001-opensips-docker-edge-proxy/checklists/requirements.md": {
+    "mtime": 1778974029.0218725,
+    "ast_hash": "a32a0b368991061ee6a165fcf67ed4a1",
+    "semantic_hash": "a32a0b368991061ee6a165fcf67ed4a1"
+  },
+  "/home/b0yz4kr14/Projects/TSiSIP/.omk/memory/project.md": {
+    "mtime": 1778978943.059931,
+    "ast_hash": "a53e75b6bee4ac1891470b52b5943a9e",
+    "semantic_hash": "a53e75b6bee4ac1891470b52b5943a9e"
+  },
+  "/home/b0yz4kr14/Projects/TSiSIP/.omk/memory/decisions.md": {
+    "mtime": 1778978943.059931,
+    "ast_hash": "bdbfd5332785464624169c36d626af80",
+    "semantic_hash": "bdbfd5332785464624169c36d626af80"
+  },
+  "/home/b0yz4kr14/Projects/TSiSIP/.omk/memory/commands.md": {
+    "mtime": 1778978943.059931,
+    "ast_hash": "3e36e293fb0a07c184bd5ff3ed4a4647",
+    "semantic_hash": "3e36e293fb0a07c184bd5ff3ed4a4647"
+  },
+  "/home/b0yz4kr14/Projects/TSiSIP/.omk/memory/risks.md": {
+    "mtime": 1778978943.059931,
+    "ast_hash": "9a88a414c499c32b7893f0bce2eeae68",
+    "semantic_hash": "9a88a414c499c32b7893f0bce2eeae68"
+  },
+  "/home/b0yz4kr14/Projects/TSiSIP/.omk/memory/graph-view.html": {
+    "mtime": 1778979060.751741,
+    "ast_hash": "41eb70dfa8264374b42d85ba1d1b4953",
+    "semantic_hash": "41eb70dfa8264374b42d85ba1d1b4953"
+  },
+  "/home/b0yz4kr14/Projects/TSiSIP/.omk/prompts/root.md": {
+    "mtime": 1778978943.0419056,
+    "ast_hash": "eec6da6d5e86975163ec336eebcff44a",
+    "semantic_hash": "eec6da6d5e86975163ec336eebcff44a"
+  },
+  "/home/b0yz4kr14/Projects/TSiSIP/.omk/agents/okabe.yaml": {
+    "mtime": 1778978943.0409057,
+    "ast_hash": "bb44a013431d17700986ee412587cb66",
+    "semantic_hash": "bb44a013431d17700986ee412587cb66"
+  },
+  "/home/b0yz4kr14/Projects/TSiSIP/.omk/agents/root.yaml": {
+    "mtime": 1778978943.0409057,
+    "ast_hash": "ed346cea20039ede8a8552ca01f04bbb",
+    "semantic_hash": "ed346cea20039ede8a8552ca01f04bbb"
+  },
+  "/home/b0yz4kr14/Projects/TSiSIP/.omk/agents/roles/interviewer.yaml": {
+    "mtime": 1778978943.0419056,
+    "ast_hash": "31268da070096ce3005498a4680309fc",
+    "semantic_hash": "31268da070096ce3005498a4680309fc"
+  },
+  "/home/b0yz4kr14/Projects/TSiSIP/.omk/agents/roles/architect.yaml": {
+    "mtime": 1778978943.0419056,
+    "ast_hash": "0c790164f91aface13ed309aaf0312b6",
+    "semantic_hash": "0c790164f91aface13ed309aaf0312b6"
+  },
+  "/home/b0yz4kr14/Projects/TSiSIP/.omk/agents/roles/planner.yaml": {
+    "mtime": 1778978943.0419056,
+    "ast_hash": "44adf9c3263d17af1253aca5bd29ce36",
+    "semantic_hash": "44adf9c3263d17af1253aca5bd29ce36"
+  },
+  "/home/b0yz4kr14/Projects/TSiSIP/.omk/agents/roles/explorer.yaml": {
+    "mtime": 1778978943.0419056,
+    "ast_hash": "505cb3edb06ef365356cfb52f06a972e",
+    "semantic_hash": "505cb3edb06ef365356cfb52f06a972e"
+  },
+  "/home/b0yz4kr14/Projects/TSiSIP/.omk/agents/roles/coder.yaml": {
+    "mtime": 1778978943.0419056,
+    "ast_hash": "8efdd6a761b18220d081de8540d992c1",
+    "semantic_hash": "8efdd6a761b18220d081de8540d992c1"
+  },
+  "/home/b0yz4kr14/Projects/TSiSIP/.omk/agents/roles/reviewer.yaml": {
+    "mtime": 1778978943.0419056,
+    "ast_hash": "8700cc81e3bde910acc870a3861c4485",
+    "semantic_hash": "8700cc81e3bde910acc870a3861c4485"
+  },
+  "/home/b0yz4kr14/Projects/TSiSIP/.omk/agents/roles/qa.yaml": {
+    "mtime": 1778978943.0419056,
+    "ast_hash": "a79b3aee84479dfddc45e6bbd895e688",
+    "semantic_hash": "a79b3aee84479dfddc45e6bbd895e688"
+  },
+  "/home/b0yz4kr14/Projects/TSiSIP/.omk/agents/roles/integrator.yaml": {
+    "mtime": 1778978943.0419056,
+    "ast_hash": "306e35263013f1bed2a88da4a4e71c64",
+    "semantic_hash": "306e35263013f1bed2a88da4a4e71c64"
+  },
+  "/home/b0yz4kr14/Projects/TSiSIP/.omk/agents/roles/researcher.yaml": {
+    "mtime": 1778978943.0419056,
+    "ast_hash": "490e72d4a842f4f4f9467d1bdec962c5",
+    "semantic_hash": "490e72d4a842f4f4f9467d1bdec962c5"
+  },
+  "/home/b0yz4kr14/Projects/TSiSIP/.omk/agents/roles/ontology.yaml": {
+    "mtime": 1778978943.0419056,
+    "ast_hash": "5211cccfb1d7d985db1ef0297ad3db36",
+    "semantic_hash": "5211cccfb1d7d985db1ef0297ad3db36"
+  },
+  "/home/b0yz4kr14/Projects/TSiSIP/.omk/agents/roles/vision-debugger.yaml": {
+    "mtime": 1778978943.0419056,
+    "ast_hash": "07bdfc8e3175955fff9030a28b52fc69",
+    "semantic_hash": "07bdfc8e3175955fff9030a28b52fc69"
+  },
+  "/home/b0yz4kr14/Projects/TSiSIP/.omk/templates/spec-kit-omk-preset/preset.yml": {
+    "mtime": 1778978943.0617356,
+    "ast_hash": "2da7b65855385d4b9fe03c3735bc186c",
+    "semantic_hash": "2da7b65855385d4b9fe03c3735bc186c"
+  },
+  "/home/b0yz4kr14/Projects/TSiSIP/.omk/templates/spec-kit-omk-preset/commands/plan.md": {
+    "mtime": 1778978943.0613503,
+    "ast_hash": "22990c00c1ea6b0e2e724fba9cbecec1",
+    "semantic_hash": "22990c00c1ea6b0e2e724fba9cbecec1"
+  },
+  "/home/b0yz4kr14/Projects/TSiSIP/.omk/templates/spec-kit-omk-preset/commands/tasks.md": {
+    "mtime": 1778978943.061423,
+    "ast_hash": "1a62663a80f79d0e0ad956a793e7aae1",
+    "semantic_hash": "1a62663a80f79d0e0ad956a793e7aae1"
+  },
+  "/home/b0yz4kr14/Projects/TSiSIP/.omk/templates/spec-kit-omk-preset/templates/plan-template.md": {
+    "mtime": 1778978943.0618398,
+    "ast_hash": "81cf86f5e572a76696891f0fa3957d02",
+    "semantic_hash": "81cf86f5e572a76696891f0fa3957d02"
+  },
+  "/home/b0yz4kr14/Projects/TSiSIP/.omk/templates/spec-kit-omk-preset/templates/spec-template.md": {
+    "mtime": 1778978943.061904,
+    "ast_hash": "1cdcefddc64f090039ab33b36bb2a92b",
+    "semantic_hash": "1cdcefddc64f090039ab33b36bb2a92b"
+  },
+  "/home/b0yz4kr14/Projects/TSiSIP/.omk/templates/spec-kit-omk-preset/templates/tasks-template.md": {
+    "mtime": 1778978943.0619671,
+    "ast_hash": "cb1d305def748a50e0b5373d619f5ed3",
+    "semantic_hash": "cb1d305def748a50e0b5373d619f5ed3"
+  },
+  "/home/b0yz4kr14/Projects/TSiSIP/.kimi/AGENTS.md": {
+    "mtime": 1778978943.0409057,
+    "ast_hash": "8d5ce3cdb4e5edff201fd46f42cdb469",
+    "semantic_hash": "8d5ce3cdb4e5edff201fd46f42cdb469"
+  },
+  "/home/b0yz4kr14/Projects/TSiSIP/.kimi/skills/agentmemory/SKILL.md": {
+    "mtime": 1778978943.0456839,
+    "ast_hash": "c574625997ac66fe12867d67e3d173d1",
+    "semantic_hash": "c574625997ac66fe12867d67e3d173d1"
+  },
+  "/home/b0yz4kr14/Projects/TSiSIP/.kimi/skills/andrej-karpathy-skills/SKILL.md": {
+    "mtime": 1778978943.0461736,
+    "ast_hash": "7bec9c7accb27bc0e675ac89e2144ff9",
+    "semantic_hash": "7bec9c7accb27bc0e675ac89e2144ff9"
+  },
+  "/home/b0yz4kr14/Projects/TSiSIP/.kimi/skills/awesome-design-md/SKILL.md": {
+    "mtime": 1778978943.0465636,
+    "ast_hash": "60af1dcff24503e533008e10e077b05d",
+    "semantic_hash": "60af1dcff24503e533008e10e077b05d"
+  },
+  "/home/b0yz4kr14/Projects/TSiSIP/.kimi/skills/claude-for-legal/SKILL.md": {
+    "mtime": 1778978943.0481715,
+    "ast_hash": "aa21a4b639d2b8d33eab1dcb30fda853",
+    "semantic_hash": "aa21a4b639d2b8d33eab1dcb30fda853"
+  },
+  "/home/b0yz4kr14/Projects/TSiSIP/.kimi/skills/claude-for-legal/references/workflow-catalog.md": {
+    "mtime": 1778978943.0484076,
+    "ast_hash": "2d5050320eb96330bd251c039f337322",
+    "semantic_hash": "2d5050320eb96330bd251c039f337322"
+  },
+  "/home/b0yz4kr14/Projects/TSiSIP/.kimi/skills/deepseek-api/SKILL.md": {
+    "mtime": 1778978943.0488136,
+    "ast_hash": "e038f431eb1c044596988a5346df62a5",
+    "semantic_hash": "e038f431eb1c044596988a5346df62a5"
+  },
+  "/home/b0yz4kr14/Projects/TSiSIP/.kimi/skills/deepseek-disable/SKILL.md": {
+    "mtime": 1778978943.0491915,
+    "ast_hash": "f57c8540e5276d9e05958e60703a8522",
+    "semantic_hash": "f57c8540e5276d9e05958e60703a8522"
+  },
+  "/home/b0yz4kr14/Projects/TSiSIP/.kimi/skills/deepseek-enable/SKILL.md": {
+    "mtime": 1778978943.0495079,
+    "ast_hash": "dc76d3f1f6b0bf96b6f40f27ae7bdc48",
+    "semantic_hash": "dc76d3f1f6b0bf96b6f40f27ae7bdc48"
+  },
+  "/home/b0yz4kr14/Projects/TSiSIP/.kimi/skills/deepseekset/SKILL.md": {
+    "mtime": 1778978943.049931,
+    "ast_hash": "01f39e7067978e1bc595f84c8208268d",
+    "semantic_hash": "01f39e7067978e1bc595f84c8208268d"
+  },
+  "/home/b0yz4kr14/Projects/TSiSIP/.kimi/skills/graph-view/SKILL.md": {
+    "mtime": 1778978943.0502532,
+    "ast_hash": "8dc8d6e6e81cffaecd1725a87237dba3",
+    "semantic_hash": "8dc8d6e6e81cffaecd1725a87237dba3"
+  },
+  "/home/b0yz4kr14/Projects/TSiSIP/.kimi/skills/matt-pocock-skills/SKILL.md": {
+    "mtime": 1778978943.0507078,
+    "ast_hash": "7b0f6aba18e1a74fe61876048f4d95a9",
+    "semantic_hash": "7b0f6aba18e1a74fe61876048f4d95a9"
+  },
+  "/home/b0yz4kr14/Projects/TSiSIP/.kimi/skills/multica/SKILL.md": {
+    "mtime": 1778978943.051057,
+    "ast_hash": "77533af96290fe6d491b144ad85bb8db",
+    "semantic_hash": "77533af96290fe6d491b144ad85bb8db"
+  },
+  "/home/b0yz4kr14/Projects/TSiSIP/.kimi/skills/omk-code-review/SKILL.md": {
+    "mtime": 1778978943.0514224,
+    "ast_hash": "0734c449f1b64f434f989f87f77acdbc",
+    "semantic_hash": "0734c449f1b64f434f989f87f77acdbc"
+  },
+  "/home/b0yz4kr14/Projects/TSiSIP/.kimi/skills/omk-design-md/SKILL.md": {
+    "mtime": 1778978943.0517879,
+    "ast_hash": "814a13652660336a8d4297be3b26af66",
+    "semantic_hash": "814a13652660336a8d4297be3b26af66"
+  },
+  "/home/b0yz4kr14/Projects/TSiSIP/.kimi/skills/omk-flow-bugfix/SKILL.md": {
+    "mtime": 1778978943.0521111,
+    "ast_hash": "1c624c7b7b2c13d28cb536e274700cf1",
+    "semantic_hash": "1c624c7b7b2c13d28cb536e274700cf1"
+  },
+  "/home/b0yz4kr14/Projects/TSiSIP/.kimi/skills/omk-flow-design-to-code/SKILL.md": {
+    "mtime": 1778978943.052456,
+    "ast_hash": "3d19cda5f9a5fb65108e030709a38129",
+    "semantic_hash": "3d19cda5f9a5fb65108e030709a38129"
+  },
+  "/home/b0yz4kr14/Projects/TSiSIP/.kimi/skills/omk-flow-feature-dev/SKILL.md": {
+    "mtime": 1778978943.0528142,
+    "ast_hash": "4b0d7fbb8042792b258ae112d5763eff",
+    "semantic_hash": "4b0d7fbb8042792b258ae112d5763eff"
+  },
+  "/home/b0yz4kr14/Projects/TSiSIP/.kimi/skills/omk-flow-pr-review/SKILL.md": {
+    "mtime": 1778978943.0531983,
+    "ast_hash": "491aeeee418679bd568a24013e0c2973",
+    "semantic_hash": "491aeeee418679bd568a24013e0c2973"
+  },
+  "/home/b0yz4kr14/Projects/TSiSIP/.kimi/skills/omk-flow-refactor/SKILL.md": {
+    "mtime": 1778978943.0535676,
+    "ast_hash": "912545a653b017ca8c273bef94782ed5",
+    "semantic_hash": "912545a653b017ca8c273bef94782ed5"
+  },
+  "/home/b0yz4kr14/Projects/TSiSIP/.kimi/skills/omk-flow-release/SKILL.md": {
+    "mtime": 1778978943.0542443,
+    "ast_hash": "ace52c4ff2236a701de0dd65e5b6d6cf",
+    "semantic_hash": "ace52c4ff2236a701de0dd65e5b6d6cf"
+  },
+  "/home/b0yz4kr14/Projects/TSiSIP/.kimi/skills/omk-flow-team-run/SKILL.md": {
+    "mtime": 1778978943.0544567,
+    "ast_hash": "70fda823bfb6e59305c04eba29d21d68",
+    "semantic_hash": "70fda823bfb6e59305c04eba29d21d68"
+  },
+  "/home/b0yz4kr14/Projects/TSiSIP/.kimi/skills/omk-global-rules/SKILL.md": {
+    "mtime": 1778978943.0546818,
+    "ast_hash": "25773308f7ce7570cfa4fbfdf9e00042",
+    "semantic_hash": "25773308f7ce7570cfa4fbfdf9e00042"
+  },
+  "/home/b0yz4kr14/Projects/TSiSIP/.kimi/skills/omk-kimi-runtime/SKILL.md": {
+    "mtime": 1778978943.0549116,
+    "ast_hash": "5b9d85e6546409b98684e269e5ba8697",
+    "semantic_hash": "5b9d85e6546409b98684e269e5ba8697"
+  },
+  "/home/b0yz4kr14/Projects/TSiSIP/.kimi/skills/omk-multimodal-ui-review/SKILL.md": {
+    "mtime": 1778978943.0551836,
+    "ast_hash": "d9aa83d23479dfd53ad53a42f8ae9923",
+    "semantic_hash": "d9aa83d23479dfd53ad53a42f8ae9923"
+  },
+  "/home/b0yz4kr14/Projects/TSiSIP/.kimi/skills/omk-plan-first/SKILL.md": {
+    "mtime": 1778978943.0553994,
+    "ast_hash": "3ae4bcd73b1917a9547dd7b95c3e90d4",
+    "semantic_hash": "3ae4bcd73b1917a9547dd7b95c3e90d4"
+  },
+  "/home/b0yz4kr14/Projects/TSiSIP/.kimi/skills/omk-project-rules/SKILL.md": {
+    "mtime": 1778978943.055577,
+    "ast_hash": "8f462e58a37511534de538c5b399b41f",
+    "semantic_hash": "8f462e58a37511534de538c5b399b41f"
+  },
+  "/home/b0yz4kr14/Projects/TSiSIP/.kimi/skills/omk-quality-gate/SKILL.md": {
+    "mtime": 1778978943.0558124,
+    "ast_hash": "c21ec0616ea73f8dcc551515e081a716",
+    "semantic_hash": "c21ec0616ea73f8dcc551515e081a716"
+  },
+  "/home/b0yz4kr14/Projects/TSiSIP/.kimi/skills/omk-task-router/SKILL.md": {
+    "mtime": 1778978943.0560057,
+    "ast_hash": "b021b50f595eb9afb2c2d07b0ad46124",
+    "semantic_hash": "b021b50f595eb9afb2c2d07b0ad46124"
+  },
+  "/home/b0yz4kr14/Projects/TSiSIP/.kimi/skills/open-design/SKILL.md": {
+    "mtime": 1778978943.0561748,
+    "ast_hash": "3c23cc299bd9e02025cae3c58fbdaf8f",
+    "semantic_hash": "3c23cc299bd9e02025cae3c58fbdaf8f"
+  },
+  "/home/b0yz4kr14/Projects/TSiSIP/.kimi/skills/react-doctor/SKILL.md": {
+    "mtime": 1778978943.0564277,
+    "ast_hash": "e6b000294e70c2aa6651ba5c6300858e",
+    "semantic_hash": "e6b000294e70c2aa6651ba5c6300858e"
+  },
+  "/home/b0yz4kr14/Projects/TSiSIP/.kimi/skills/speckit-analyze/SKILL.md": {
+    "mtime": 1778978943.0569031,
+    "ast_hash": "e7831d3205c64871ac867cdb8563d004",
+    "semantic_hash": "e7831d3205c64871ac867cdb8563d004"
+  },
+  "/home/b0yz4kr14/Projects/TSiSIP/.kimi/skills/speckit-checklist/SKILL.md": {
+    "mtime": 1778978943.057469,
+    "ast_hash": "a2aa202b02f88783e8976686a80089e5",
+    "semantic_hash": "a2aa202b02f88783e8976686a80089e5"
+  },
+  "/home/b0yz4kr14/Projects/TSiSIP/.kimi/skills/speckit-clarify/SKILL.md": {
+    "mtime": 1778978943.0578556,
+    "ast_hash": "c8be286204fed1c4e27dd12b0ed2fd7e",
+    "semantic_hash": "c8be286204fed1c4e27dd12b0ed2fd7e"
+  },
+  "/home/b0yz4kr14/Projects/TSiSIP/.kimi/skills/speckit-constitution/SKILL.md": {
+    "mtime": 1778978943.0582418,
+    "ast_hash": "21f2d5adc2c9458ef3c84ff58b0939a6",
+    "semantic_hash": "21f2d5adc2c9458ef3c84ff58b0939a6"
+  },
+  "/home/b0yz4kr14/Projects/TSiSIP/.kimi/skills/speckit-implement/SKILL.md": {
+    "mtime": 1778978943.058601,
+    "ast_hash": "b7bbb10aac06a3d307e0a15f4f35dae8",
+    "semantic_hash": "b7bbb10aac06a3d307e0a15f4f35dae8"
+  },
+  "/home/b0yz4kr14/Projects/TSiSIP/.kimi/skills/speckit-plan/SKILL.md": {
+    "mtime": 1778978943.0589194,
+    "ast_hash": "8fdc161ded41e4e2084f9b7e582adc24",
+    "semantic_hash": "8fdc161ded41e4e2084f9b7e582adc24"
+  },
+  "/home/b0yz4kr14/Projects/TSiSIP/.kimi/skills/speckit-specify/SKILL.md": {
+    "mtime": 1778978943.0594037,
+    "ast_hash": "0715db0318d1b39ef5a8d7349108f9e7",
+    "semantic_hash": "0715db0318d1b39ef5a8d7349108f9e7"
+  },
+  "/home/b0yz4kr14/Projects/TSiSIP/.kimi/skills/speckit-tasks/SKILL.md": {
+    "mtime": 1778978943.059712,
+    "ast_hash": "b15e7a6759fef1a02174e806962d2973",
+    "semantic_hash": "b15e7a6759fef1a02174e806962d2973"
+  },
+  "/home/b0yz4kr14/Projects/TSiSIP/.kimi/skills/speckit-taskstoissues/SKILL.md": {
+    "mtime": 1778978943.059931,
+    "ast_hash": "8408142da6dee51e8bc29d43d754b7a3",
+    "semantic_hash": "8408142da6dee51e8bc29d43d754b7a3"
+  },
+  "/home/b0yz4kr14/Projects/TSiSIP/.agents/skills/agentmemory/SKILL.md": {
+    "mtime": 1778978943.045793,
+    "ast_hash": "c574625997ac66fe12867d67e3d173d1",
+    "semantic_hash": "c574625997ac66fe12867d67e3d173d1"
+  },
+  "/home/b0yz4kr14/Projects/TSiSIP/.agents/skills/andrej-karpathy-skills/SKILL.md": {
+    "mtime": 1778978943.0462403,
+    "ast_hash": "7bec9c7accb27bc0e675ac89e2144ff9",
+    "semantic_hash": "7bec9c7accb27bc0e675ac89e2144ff9"
+  },
+  "/home/b0yz4kr14/Projects/TSiSIP/.agents/skills/claude-for-legal/SKILL.md": {
+    "mtime": 1778978943.0477931,
+    "ast_hash": "aa21a4b639d2b8d33eab1dcb30fda853",
+    "semantic_hash": "aa21a4b639d2b8d33eab1dcb30fda853"
+  },
+  "/home/b0yz4kr14/Projects/TSiSIP/.agents/skills/claude-for-legal/references/workflow-catalog.md": {
+    "mtime": 1778978943.0479424,
+    "ast_hash": "2d5050320eb96330bd251c039f337322",
+    "semantic_hash": "2d5050320eb96330bd251c039f337322"
+  },
+  "/home/b0yz4kr14/Projects/TSiSIP/.agents/skills/matt-pocock-skills/SKILL.md": {
+    "mtime": 1778978943.0484278,
+    "ast_hash": "7b0f6aba18e1a74fe61876048f4d95a9",
+    "semantic_hash": "7b0f6aba18e1a74fe61876048f4d95a9"
+  },
+  "/home/b0yz4kr14/Projects/TSiSIP/.agents/skills/multica/SKILL.md": {
+    "mtime": 1778978943.0488875,
+    "ast_hash": "77533af96290fe6d491b144ad85bb8db",
+    "semantic_hash": "77533af96290fe6d491b144ad85bb8db"
+  },
+  "/home/b0yz4kr14/Projects/TSiSIP/.agents/skills/omk-backend-api-review/SKILL.md": {
+    "mtime": 1778978943.0492525,
+    "ast_hash": "1f538e078de5d44fab9cc4c43de290ed",
+    "semantic_hash": "1f538e078de5d44fab9cc4c43de290ed"
+  },
+  "/home/b0yz4kr14/Projects/TSiSIP/.agents/skills/omk-code-review/SKILL.md": {
+    "mtime": 1778978943.0495908,
+    "ast_hash": "0f5fad0bd7bc8e1106bbe9ff142e9a27",
+    "semantic_hash": "0f5fad0bd7bc8e1106bbe9ff142e9a27"
+  },
+  "/home/b0yz4kr14/Projects/TSiSIP/.agents/skills/omk-context-broker/SKILL.md": {
+    "mtime": 1778978943.0499818,
+    "ast_hash": "c5cde96d532f596a385fce91d7de30ca",
+    "semantic_hash": "c5cde96d532f596a385fce91d7de30ca"
+  },
+  "/home/b0yz4kr14/Projects/TSiSIP/.agents/skills/omk-design-system/SKILL.md": {
+    "mtime": 1778978943.0503721,
+    "ast_hash": "25ea054a6906eaf323b2f5bb890e2d9a",
+    "semantic_hash": "25ea054a6906eaf323b2f5bb890e2d9a"
+  },
+  "/home/b0yz4kr14/Projects/TSiSIP/.agents/skills/omk-docs-release/SKILL.md": {
+    "mtime": 1778978943.0507212,
+    "ast_hash": "71bb0a75cb8e1aaec251dd65d168e815",
+    "semantic_hash": "71bb0a75cb8e1aaec251dd65d168e815"
+  },
+  "/home/b0yz4kr14/Projects/TSiSIP/.agents/skills/omk-frontend-implementation/SKILL.md": {
+    "mtime": 1778978943.0510697,
+    "ast_hash": "6f908c43822526e5aab499023f935b9b",
+    "semantic_hash": "6f908c43822526e5aab499023f935b9b"
+  },
+  "/home/b0yz4kr14/Projects/TSiSIP/.agents/skills/omk-frontend-ui-review/SKILL.md": {
+    "mtime": 1778978943.0514224,
+    "ast_hash": "554774a615bffb77b721e61f53664bb4",
+    "semantic_hash": "554774a615bffb77b721e61f53664bb4"
+  },
+  "/home/b0yz4kr14/Projects/TSiSIP/.agents/skills/omk-git-commit-pr/SKILL.md": {
+    "mtime": 1778978943.0517879,
+    "ast_hash": "04756312837b10764af0d01da91e05cb",
+    "semantic_hash": "04756312837b10764af0d01da91e05cb"
+  },
+  "/home/b0yz4kr14/Projects/TSiSIP/.agents/skills/omk-industrial-control-loop/SKILL.md": {
+    "mtime": 1778978943.0521111,
+    "ast_hash": "fc34bd52fa826467d765b95741e401d7",
+    "semantic_hash": "fc34bd52fa826467d765b95741e401d7"
+  },
+  "/home/b0yz4kr14/Projects/TSiSIP/.agents/skills/omk-project-rules/SKILL.md": {
+    "mtime": 1778978943.0524406,
+    "ast_hash": "03354b0b77515cd5ddcfb1c96281b06d",
+    "semantic_hash": "03354b0b77515cd5ddcfb1c96281b06d"
+  },
+  "/home/b0yz4kr14/Projects/TSiSIP/.agents/skills/omk-python-typing/SKILL.md": {
+    "mtime": 1778978943.0528142,
+    "ast_hash": "b8b96037ac341250a93cd6b913a65e60",
+    "semantic_hash": "b8b96037ac341250a93cd6b913a65e60"
+  },
+  "/home/b0yz4kr14/Projects/TSiSIP/.agents/skills/omk-quality-gate/SKILL.md": {
+    "mtime": 1778978943.0531745,
+    "ast_hash": "6eecc5f14947cea1b8949cd30c057a48",
+    "semantic_hash": "6eecc5f14947cea1b8949cd30c057a48"
+  },
+  "/home/b0yz4kr14/Projects/TSiSIP/.agents/skills/omk-repo-explorer/SKILL.md": {
+    "mtime": 1778978943.0535104,
+    "ast_hash": "e9f0571d10e7cf55ddc285baa7202b49",
+    "semantic_hash": "e9f0571d10e7cf55ddc285baa7202b49"
+  },
+  "/home/b0yz4kr14/Projects/TSiSIP/.agents/skills/omk-research-verify/SKILL.md": {
+    "mtime": 1778978943.054228,
+    "ast_hash": "42e58133fcfe6b6a71a3b03a21cbb631",
+    "semantic_hash": "42e58133fcfe6b6a71a3b03a21cbb631"
+  },
+  "/home/b0yz4kr14/Projects/TSiSIP/.agents/skills/omk-secret-guard/SKILL.md": {
+    "mtime": 1778978943.0544567,
+    "ast_hash": "7f3c62f14e83fd975c5b43977e670258",
+    "semantic_hash": "7f3c62f14e83fd975c5b43977e670258"
+  },
+  "/home/b0yz4kr14/Projects/TSiSIP/.agents/skills/omk-security-review/SKILL.md": {
+    "mtime": 1778978943.054713,
+    "ast_hash": "24b51c3113e881f0a63ef4e0bb1bc472",
+    "semantic_hash": "24b51c3113e881f0a63ef4e0bb1bc472"
+  },
+  "/home/b0yz4kr14/Projects/TSiSIP/.agents/skills/omk-test-debug-loop/SKILL.md": {
+    "mtime": 1778978943.0549278,
+    "ast_hash": "08aa592747d075a28465b76b8633dc19",
+    "semantic_hash": "08aa592747d075a28465b76b8633dc19"
+  },
+  "/home/b0yz4kr14/Projects/TSiSIP/.agents/skills/omk-troubleshooting/SKILL.md": {
+    "mtime": 1778978943.055157,
+    "ast_hash": "de47c6ac9b58f661305a9a1319b2adf2",
+    "semantic_hash": "de47c6ac9b58f661305a9a1319b2adf2"
+  },
+  "/home/b0yz4kr14/Projects/TSiSIP/.agents/skills/omk-typescript-strict/SKILL.md": {
+    "mtime": 1778978943.0553825,
+    "ast_hash": "cb06962c02e8737f7dae7d21592f7aff",
+    "semantic_hash": "cb06962c02e8737f7dae7d21592f7aff"
+  },
+  "/home/b0yz4kr14/Projects/TSiSIP/.agents/skills/omk-worktree-team/SKILL.md": {
+    "mtime": 1778978943.055577,
+    "ast_hash": "1a25ba6dc5a76d79373aa85ee0267779",
+    "semantic_hash": "1a25ba6dc5a76d79373aa85ee0267779"
+  },
+  "/home/b0yz4kr14/Projects/TSiSIP/.agents/skills/react-doctor/SKILL.md": {
+    "mtime": 1778978943.0558124,
+    "ast_hash": "e6b000294e70c2aa6651ba5c6300858e",
+    "semantic_hash": "e6b000294e70c2aa6651ba5c6300858e"
+  }
+}

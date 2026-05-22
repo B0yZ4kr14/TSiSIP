@@ -1,0 +1,135 @@
+---
+- name: TSiAPP Server Hardening
+  hosts: tsisip_vps
+  gather_facts: true
+  become: true
+
+  tasks:
+    - name: Update package lists
+      ansible.builtin.apt:
+        update_cache: true
+        cache_valid_time: 3600
+
+    - name: Install security packages
+      ansible.builtin.apt:
+        name:
+          - ufw
+          - fail2ban
+          - unattended-upgrades
+          - apt-listchanges
+        state: present
+
+    - name: Configure UFW defaults
+      community.general.ufw:
+        direction: incoming
+        policy: deny
+      notify: Reload UFW
+
+    - name: Allow SSH
+      community.general.ufw:
+        rule: allow
+        port: 22
+        proto: tcp
+      notify: Reload UFW
+
+    - name: Allow HTTPS
+      community.general.ufw:
+        rule: allow
+        port: 443
+        proto: tcp
+      notify: Reload UFW
+
+    - name: Allow SIP UDP
+      community.general.ufw:
+        rule: allow
+        port: 5060
+        proto: udp
+      notify: Reload UFW
+
+    - name: Allow SIP TCP
+      community.general.ufw:
+        rule: allow
+        port: 5060
+        proto: tcp
+      notify: Reload UFW
+
+    - name: Allow RTP range
+      community.general.ufw:
+        rule: allow
+        port: 10000:20000
+        proto: udp
+      notify: Reload UFW
+
+    - name: Enable UFW
+      community.general.ufw:
+        state: enabled
+
+    - name: Configure fail2ban for SSH
+      ansible.builtin.copy:
+        dest: /etc/fail2ban/jail.local
+        content: |
+          [DEFAULT]
+          bantime = 3600
+          findtime = 600
+          maxretry = 5
+
+          [sshd]
+          enabled = true
+          port = ssh
+          filter = sshd
+          logpath = /var/log/auth.log
+          maxretry = 3
+        mode: '0644'
+      notify: Restart fail2ban
+
+    - name: Enable fail2ban
+      ansible.builtin.systemd:
+        name: fail2ban
+        state: started
+        enabled: true
+
+    - name: Configure unattended-upgrades
+      ansible.builtin.copy:
+        dest: /etc/apt/apt.conf.d/50unattended-upgrades
+        content: |
+          Unattended-Upgrade::Allowed-Origins {
+              "${distro_id}:${distro_codename}-security";
+          };
+          Unattended-Upgrade::AutoFixInterruptedDpkg "true";
+          Unattended-Upgrade::MinimalSteps "true";
+          Unattended-Upgrade::InstallOnShutdown "false";
+          Unattended-Upgrade::Remove-Unused-Dependencies "true";
+          Unattended-Upgrade::Remove-New-Unused-Dependencies "true";
+          Unattended-Upgrade::Automatic-Reboot "false";
+        mode: '0644'
+
+    - name: Enable unattended-upgrades
+      ansible.builtin.systemd:
+        name: unattended-upgrades
+        state: started
+        enabled: true
+
+    - name: Create tsisip-deploy user
+      ansible.builtin.user:
+        name: tsisip-deploy
+        groups: docker
+        append: true
+        shell: /bin/bash
+        create_home: true
+
+    - name: Lock down tsisip-deploy sudo access
+      ansible.builtin.copy:
+        dest: /etc/sudoers.d/tsisip-deploy
+        content: "tsisip-deploy ALL=(ALL) NOPASSWD: /usr/bin/docker, /usr/bin/docker-compose, /usr/local/bin/docker-compose\n"
+        mode: '0440'
+        validate: 'visudo -cf %s'
+
+  handlers:
+    - name: Reload UFW
+      community.general.ufw:
+        state: reloaded
+
+    - name: Restart fail2ban
+      ansible.builtin.systemd:
+        name: fail2ban
+        state: restarted

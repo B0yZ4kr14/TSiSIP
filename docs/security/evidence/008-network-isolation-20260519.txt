@@ -1,0 +1,15 @@
+[INFO] === Network Isolation Verification ===
+[PASS] docker-compose.yml: sip_internal is internal
+[PASS] docker-compose.yml: db_internal is internal
+[PASS] docker-compose.prod.yml: sip_internal is internal
+[PASS] docker-compose.prod.yml: db_internal is internal
+[PASS] docker-compose.vps.yml: sip_internal is internal
+[PASS] docker-compose.vps.yml: db_internal is internal
+[PASS] asterisk-pbx-1: no host ports
+[PASS] asterisk-pbx-2: no host ports
+[PASS] postgres: no host ports
+[PASS] RTPengine control socket: internal IP variable
+[PASS] backup: no wildcard metrics address
+
+Network Isolation: 11 passed, 0 failed
+All checks passed

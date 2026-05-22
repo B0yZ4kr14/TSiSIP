@@ -1,0 +1,23 @@
+[INFO] === Nginx TLS Configuration Audit ===
+[INFO] Checking TLS protocol versions...
+[PASS] TLSv1.0 disabled
+[PASS] TLSv1.1 disabled
+[PASS] TLSv1.2 enabled
+[PASS] TLSv1.3 enabled
+[INFO] Checking cipher configuration...
+[PASS] Strong cipher suite configured
+[INFO] Checking HSTS configuration...
+[PASS] HSTS max-age is 63072000
+[PASS] HSTS includes includeSubDomains
+[PASS] HSTS includes preload
+[INFO] Checking OCSP stapling...
+[PASS] OCSP stapling enabled
+[PASS] OCSP stapling verification enabled
+[INFO] Checking rate limiting configuration...
+[PASS] Rate limiting configured (generic)
+[INFO] Checking SSL certificate configuration...
+[PASS] ssl_certificate directive present
+[PASS] ssl_certificate_key directive present
+
+Nginx TLS: 13 passed, 0 failed
+All checks passed

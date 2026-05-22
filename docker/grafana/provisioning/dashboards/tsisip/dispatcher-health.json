@@ -1,0 +1,82 @@
+{
+  "dashboard": {
+    "id": null,
+    "title": "TSiSIP - Dispatcher Health",
+    "tags": ["tsisip", "opensips", "dispatcher", "noc"],
+    "timezone": "browser",
+    "schemaVersion": 38,
+    "refresh": "10s",
+    "time": {"from": "now-1h", "to": "now"},
+    "templating": {
+      "list": [
+        {
+          "name": "target",
+          "type": "query",
+          "datasource": "Prometheus",
+          "query": "label_values(opensips_dispatcher_target_state, target)",
+          "multi": true,
+          "includeAll": true
+        },
+        {
+          "name": "time_range",
+          "type": "interval",
+          "query": "1m,5m,10m,30m,1h,6h,12h,1d",
+          "current": {"text": "1h", "value": "1h"}
+        }
+      ]
+    },
+    "panels": [
+      {
+        "id": 1,
+        "title": "${i18n:active_dialogs}",
+        "type": "stat",
+        "targets": [
+          {
+            "expr": "opensips_active_dialogs_total",
+            "legendFormat": "Active Dialogs"
+          }
+        ],
+        "gridPos": {"h": 4, "w": 6, "x": 0, "y": 0}
+      },
+      {
+        "id": 2,
+        "title": "${i18n:dispatcher_targets}",
+        "type": "table",
+        "targets": [
+          {
+            "expr": "opensips_dispatcher_target_state{target=~\"$target\"}",
+            "format": "table",
+            "instant": true
+          }
+        ],
+        "gridPos": {"h": 8, "w": 12, "x": 6, "y": 0}
+      },
+      {
+        "id": 3,
+        "title": "${i18n:response_time}",
+        "type": "graph",
+        "targets": [
+          {
+            "expr": "opensips_dispatcher_target_response_ms{target=~\"$target\"}",
+            "legendFormat": "{{target}}"
+          }
+        ],
+        "gridPos": {"h": 8, "w": 12, "x": 0, "y": 4}
+      },
+      {
+        "id": 4,
+        "title": "${i18n:active_alerts}",
+        "type": "table",
+        "targets": [
+          {
+            "expr": "ALERTS{alertstate=\"firing\"}",
+            "format": "table",
+            "instant": true
+          }
+        ],
+        "gridPos": {"h": 4, "w": 6, "x": 18, "y": 0}
+      }
+    ]
+  },
+  "overwrite": true
+}

@@ -1,0 +1,45 @@
+{
+  "theme_id": "tsisip-default",
+  "asset_version": "dev",
+  "colors": {
+    "primary_blue": "#1A3A5C",
+    "primary_blue_light": "#2E5E8C",
+    "primary_blue_dark": "#0D1F33",
+    "surface_base": "#F4F6F8",
+    "surface_card": "#FFFFFF",
+    "surface_header": "#0A1628",
+    "text_primary": "#1A1A2E",
+    "text_secondary": "#5A6573",
+    "text_on_dark": "#E8ECF0",
+    "accent_success": "#0D8A6E",
+    "accent_warning": "#C4860C",
+    "accent_error": "#B83232",
+    "accent_info": "#2563A8",
+    "border_subtle": "#D1D5DB"
+  },
+  "typography": {
+    "font_heading": "'Inter', 'Segoe UI', system-ui, -apple-system, sans-serif",
+    "font_body": "'Inter', 'Segoe UI', system-ui, -apple-system, sans-serif",
+    "font_mono": "'JetBrains Mono', 'Fira Code', 'Consolas', monospace",
+    "scale": {
+      "xs": "0.75rem",
+      "sm": "0.875rem",
+      "base": "1rem",
+      "lg": "1.125rem",
+      "xl": "1.25rem",
+      "2xl": "1.5rem",
+      "3xl": "1.875rem",
+      "4xl": "2.25rem"
+    }
+  },
+  "breakpoints": {
+    "tablet": "1024px",
+    "mobile": "768px"
+  },
+  "assets": {
+    "logo_full": "design/logo/tsisip-logo-full.svg",
+    "logo_compact": "design/logo/tsisip-logo-compact.svg",
+    "logo_full_mono": "design/logo/tsisip-logo-full-mono.svg",
+    "logo_compact_mono": "design/logo/tsisip-logo-compact-mono.svg"
+  }
+}

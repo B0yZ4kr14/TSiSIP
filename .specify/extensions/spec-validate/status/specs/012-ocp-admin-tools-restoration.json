@@ -1,0 +1,10 @@
+{
+  "feature": "specs/012-ocp-admin-tools-restoration",
+  "spec_hash": "sha256:61912841f34b73b2bf07e74ebe69f7954a28b761032ce2c73ba7162c3fe9a48e",
+  "spec_self_validation": "passed",
+  "spec_validated_at": "2026-05-19T15:30:00-03:00",
+  "spec_critical_count": 10,
+  "spec_missed_items": [],
+  "review_status": "not-required",
+  "approval_status": "allowed"
+}

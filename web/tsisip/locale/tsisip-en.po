@@ -1,0 +1,85 @@
+# TSiSIP English (Master) PO File
+# Copyright (C) 2026 TSiSIP Project
+msgid ""
+msgstr ""
+"Project-Id-Version: TSiSIP 1.0\n"
+"Report-Msgid-Bugs-To: dev@tsisip.local\n"
+"POT-Creation-Date: 2026-05-17 00:00+0000\n"
+"PO-Revision-Date: 2026-05-17 00:00+0000\n"
+"Last-Translator: TSiSIP Team\n"
+"Language: en_US\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+
+msgid "TSiSIP -- TSiSIP Control Panel"
+msgstr "TSiSIP -- TSiSIP Control Panel"
+
+msgid "TSiSIP -- Login"
+msgstr "TSiSIP -- Login"
+
+msgid "TSiSIP Home"
+msgstr "TSiSIP Home"
+
+msgid "TSiSIP Logo"
+msgstr "TSiSIP Logo"
+
+msgid "Toggle navigation"
+msgstr "Toggle navigation"
+
+msgid "Sign In"
+msgstr "Sign In"
+
+msgid "Username"
+msgstr "Username"
+
+msgid "Passphrase"
+msgstr "Passphrase"
+
+msgid "Invalid credentials"
+msgstr "Invalid credentials"
+
+msgid "Dispatcher Targets"
+msgstr "Dispatcher Targets"
+
+msgid "Set ID"
+msgstr "Set ID"
+
+msgid "Destination"
+msgstr "Destination"
+
+msgid "State"
+msgstr "State"
+
+msgid "Weight"
+msgstr "Weight"
+
+msgid "Actions"
+msgstr "Actions"
+
+msgid "Active"
+msgstr "Active"
+
+msgid "Edit"
+msgstr "Edit"
+
+msgid "Delete"
+msgstr "Delete"
+
+msgid "RTPengine Sessions"
+msgstr "RTPengine Sessions"
+
+msgid "Instance"
+msgstr "Instance"
+
+msgid "Max"
+msgstr "Max"
+
+msgid "No data available"
+msgstr "No data available"
+
+msgid "Error loading chart data"
+msgstr "Error loading chart data"
+
+msgid "D3.js library not loaded"
+msgstr "D3.js library not loaded"

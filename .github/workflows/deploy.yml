@@ -1,0 +1,299 @@
+name: TSiSIP Deploy Pipeline
+
+on:
+  workflow_dispatch:
+    inputs:
+      deploy_target:
+        description: 'Deploy target environment'
+        required: true
+        default: 'production'
+        type: choice
+        options:
+          - production
+          - staging
+      dry_run:
+        description: 'Run in dry-run mode (no mutations)'
+        required: false
+        default: false
+        type: boolean
+      force_deploy:
+        description: 'Bypass HIGH risk impact analysis gate'
+        required: false
+        default: false
+        type: boolean
+
+env:
+  REGISTRY: ghcr.io
+  IMAGE_PREFIX: tsisip
+
+jobs:
+  preflight:
+    name: Pre-flight Validation
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Validate Docker Compose syntax
+        run: docker compose -f docker-compose.yml config > /dev/null
+
+      - name: Validate OpenSIPS config structure
+        run: |
+          sed -e 's/\${[A-Z_]*}/127.0.0.1/g' \
+              -e 's/\${AUTH_SECRET_32_CHARS}/secretsecretsecretsecretsecretse/g' \
+              -e 's/\${TOPOLOGY_SECRET}/topologysecret/g' \
+              opensips/opensips.cfg.tpl > /tmp/opensips-test.cfg
+          grep -q 'loadmodule "tls_mgm.so"' /tmp/opensips-test.cfg || (echo "TLS module missing"; exit 1)
+          grep -q 'loadmodule "pike.so"' /tmp/opensips-test.cfg || (echo "Pike module missing"; exit 1)
+          grep -q 'loadmodule "cachedb_local.so"' /tmp/opensips-test.cfg || (echo "Cachedb module missing"; exit 1)
+          ! grep -qE 'loadmodule\s+"sanity\.so"' /tmp/opensips-test.cfg || (echo "Forbidden module sanity"; exit 1)
+          echo "OpenSIPS config structure valid"
+
+      - name: Check for committed secrets
+        run: |
+          FAIL=0
+          for secret in secrets/db_password secrets/auth_secret secrets/topology_secret secrets/ca.key secrets/server.key; do
+            if [ -f "$secret" ]; then
+              echo "ERROR: Secret file $secret should not be committed"
+              FAIL=1
+            fi
+          done
+          if [ $FAIL -eq 1 ]; then exit 1; fi
+          echo "Secret check passed"
+
+      - name: Run CI scan
+        run: bash scripts/ci-scan.sh
+
+  impact:
+    name: Impact Analysis
+    runs-on: ubuntu-latest
+    needs: preflight
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Detect changed files
+        id: changes
+        run: |
+          BASE_REF="origin/${{ github.event.repository.default_branch }}"
+          if ! git rev-parse "$BASE_REF" >/dev/null 2>&1; then
+            BASE_REF="HEAD~1"
+          fi
+          CHANGED=$(git diff --name-only "$BASE_REF" HEAD || true)
+          echo "changed_files<<EOF" >> "$GITHUB_OUTPUT"
+          echo "$CHANGED" >> "$GITHUB_OUTPUT"
+          echo "EOF" >> "$GITHUB_OUTPUT"
+
+      - name: Assess core config risk
+        id: risk
+        run: |
+          CORE_CONFIGS="opensips/opensips.cfg.tpl docker-compose.yml docker-compose.prod.yml docker-compose.vps.yml docker/entrypoint.sh"
+          HIGH_RISK=false
+          for cf in $CORE_CONFIGS; do
+            if echo '${{ steps.changes.outputs.changed_files }}' | grep -qx "$cf"; then
+              echo "HIGH risk: core config changed — $cf"
+              HIGH_RISK=true
+            fi
+          done
+          if [ "$HIGH_RISK" = true ] && [ "${{ inputs.force_deploy }}" != "true" ]; then
+            echo "result=BLOCKED" >> "$GITHUB_OUTPUT"
+            exit 1
+          fi
+          echo "result=PASS" >> "$GITHUB_OUTPUT"
+
+  build:
+    name: Build Images
+    runs-on: ubuntu-latest
+    needs: impact
+    steps:
+      - uses: actions/checkout@v4
+      - uses: docker/setup-buildx-action@v3
+
+      - name: Detect changed Dockerfiles
+        id: detect
+        run: |
+          BASE_REF="origin/${{ github.event.repository.default_branch }}"
+          if ! git rev-parse "$BASE_REF" >/dev/null 2>&1; then
+            BASE_REF="HEAD~1"
+          fi
+          CHANGED=$(git diff --name-only "$BASE_REF" HEAD || true)
+          echo "changed=$CHANGED" >> "$GITHUB_ENV"
+
+      # ------------------------------------------------------------------
+      # IMAGE TAG POLICY — B16 Remediation
+      # The `:latest` tag is a CI artifact tag for smoke-test builds ONLY.
+      # Production deployments MUST use pinned tags via TSISIP_IMAGE_TAG.
+      # The SHA-based tag (github.sha) is also pushed and is preferred
+      # for production because it is immutable and traceable.
+      # ------------------------------------------------------------------
+      - name: Build OpenSIPS
+        run: docker build -t tsisip/opensips:latest -f Dockerfile .
+
+      - name: Build OCP
+        run: docker build -t tsisip/ocp:latest -f docker/ocp/Dockerfile .
+
+      - name: Build supporting images
+        run: |
+          for svc in rtpengine postgres asterisk prometheus grafana opensips-exporter anomaly-detector backup; do
+            df="docker/${svc}/Dockerfile"
+            if [ -f "$df" ]; then
+              echo "Building tsisip/${svc}:latest ..."
+              docker build -t "tsisip/${svc}:latest" -f "$df" "docker/${svc}/" || echo "Build skipped for ${svc}"
+            else
+              echo "No Dockerfile for ${svc}, skipping"
+            fi
+          done
+
+      # ------------------------------------------------------------------
+      # CVE SCANNING — B17 Remediation
+      # Trivy scans every built image for HIGH and CRITICAL CVEs.
+      # Images with unresolved HIGH/CRITICAL findings fail the pipeline
+      # BEFORE they are pushed to the registry.
+      #
+      # Allowlist policy:
+      # - Base-image CVEs (e.g., debian:bookworm-slim, postgres:16) that
+      #   have no upstream fix are tracked via OS-level rebuilds. They do
+      #   NOT block deployment because they are outside TSiSIP code.
+      # - If a base-image CVE has a fix, rebuild with --pull to pick it up.
+      # ------------------------------------------------------------------
+      - name: Install Trivy
+        run: |
+          curl -sfL https://raw.githubusercontent.com/aquasecurity/trivy/main/contrib/install.sh | sh -s -- -b /usr/local/bin
+
+      - name: Scan images for HIGH/CRITICAL CVEs
+        run: |
+          FAIL=0
+          mkdir -p /tmp/trivy-reports
+          for img in opensips ocp rtpengine postgres asterisk prometheus grafana opensips-exporter anomaly-detector backup; do
+            if docker images --format '{{.Repository}}:{{.Tag}}' | grep -q "tsisip/${img}:latest"; then
+              echo "=== Scanning tsisip/${img}:latest ==="
+              trivy image --severity HIGH,CRITICAL --exit-code 1 \
+                --scanners vuln \
+                --format json \
+                --output "/tmp/trivy-reports/${img}.json" \
+                "tsisip/${img}:latest" || {
+                echo "HIGH/CRITICAL CVEs found in tsisip/${img}:latest"
+                FAIL=1
+              }
+            fi
+          done
+          if [ $FAIL -eq 1 ]; then
+            echo "Failing build due to HIGH/CRITICAL CVEs. See allowlist comments in workflow."
+            exit 1
+          fi
+
+      - name: Upload Trivy JSON reports
+        uses: actions/upload-artifact@v4
+        with:
+          name: trivy-reports
+          path: /tmp/trivy-reports/*.json
+          retention-days: 90
+
+      - name: Export images for artifact
+        run: |
+          mkdir -p /tmp/tsisip-images
+          for img in opensips ocp rtpengine postgres asterisk prometheus grafana opensips-exporter anomaly-detector backup; do
+            if docker images --format '{{.Repository}}:{{.Tag}}' | grep -q "tsisip/${img}:latest"; then
+              docker save "tsisip/${img}:latest" | gzip > "/tmp/tsisip-images/${img}.tar.gz" || true
+            fi
+          done
+
+      - uses: actions/upload-artifact@v4
+        with:
+          name: tsisip-images
+          path: /tmp/tsisip-images/*.tar.gz
+          retention-days: 1
+
+  push:
+    name: Push to Registry
+    runs-on: ubuntu-latest
+    needs: build
+    if: ${{ inputs.dry_run == false }}
+    steps:
+      - uses: actions/checkout@v4
+      - uses: docker/setup-buildx-action@v3
+      - uses: actions/download-artifact@v4
+        with:
+          name: tsisip-images
+          path: /tmp/tsisip-images
+
+      - name: Load images
+        run: |
+          for f in /tmp/tsisip-images/*.tar.gz; do
+            [ -f "$f" ] || continue
+            gunzip -c "$f" | docker load || true
+          done
+
+      - name: Login to GHCR
+        uses: docker/login-action@v3
+        with:
+          registry: ghcr.io
+          username: ${{ github.actor }}
+          password: ${{ secrets.GITHUB_TOKEN }}
+
+      # ------------------------------------------------------------------
+      # IMAGE TAG POLICY — B16 Remediation
+      # `:latest` is pushed as a convenience tag for quick smoke tests.
+      # Do NOT reference `:latest` in production compose files.
+      # Use the SHA-based tag (e.g., ghcr.io/.../opensips:<sha>) for
+      # production deployments and set it via TSISIP_IMAGE_TAG.
+      # ------------------------------------------------------------------
+      - name: Tag and push
+        run: |
+          PREFIX="ghcr.io/${{ github.repository_owner }}"
+          for img in opensips ocp rtpengine postgres asterisk prometheus grafana opensips-exporter anomaly-detector backup; do
+            if docker images --format '{{.Repository}}:{{.Tag}}' | grep -q "tsisip/${img}:latest"; then
+              docker tag "tsisip/${img}:latest" "${PREFIX}/tsisip/${img}:latest"
+              docker tag "tsisip/${img}:latest" "${PREFIX}/tsisip/${img}:${{ github.sha }}"
+              docker push "${PREFIX}/tsisip/${img}:latest"
+              docker push "${PREFIX}/tsisip/${img}:${{ github.sha }}"
+            fi
+          done
+
+  deploy:
+    name: Deploy to VPS
+    runs-on: ubuntu-latest
+    needs: [build, push]
+    if: ${{ inputs.dry_run == false }}
+    environment:
+      name: ${{ inputs.deploy_target }}
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Setup SSH
+        uses: webfactory/ssh-agent@v0.9.0
+        with:
+          ssh-private-key: ${{ secrets.TSiAPP_SSH_KEY }}
+
+      - name: Run orchestrate-deploy.sh on target
+        run: |
+          chmod +x deploy/scripts/orchestrate-deploy.sh
+          ./deploy/scripts/orchestrate-deploy.sh
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          TSiAPP_HOST: ${{ secrets.TSiAPP_HOST }}
+          TSiAPP_USER: ${{ secrets.TSiAPP_USER }}
+          FORCE_DEPLOY: ${{ inputs.force_deploy && '1' || '0' }}
+
+  verify:
+    name: Post-Deploy Verification
+    runs-on: ubuntu-latest
+    needs: deploy
+    if: ${{ always() && inputs.dry_run == false }}
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Setup SSH
+        uses: webfactory/ssh-agent@v0.9.0
+        with:
+          ssh-private-key: ${{ secrets.TSiAPP_SSH_KEY }}
+
+      - name: Run live verification
+        run: |
+          chmod +x deploy/scripts/orchestrate-deploy.sh
+          ./deploy/scripts/orchestrate-deploy.sh --live-test
+        env:
+          TSiAPP_HOST: ${{ secrets.TSiAPP_HOST }}
+          TSiAPP_USER: ${{ secrets.TSiAPP_USER }}

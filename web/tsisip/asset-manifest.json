@@ -1,0 +1,30 @@
+{
+  "version": "mpd7bip7",
+  "generated": "2026-05-19T22:25:23.563Z",
+  "assets": {
+    "css": {
+      "logo-effects.css": "logo-effects.06a31a10.css",
+      "tsisip-theme.css": "tsisip-theme.d6a715c0.css",
+      "tsisip-variables.css": "tsisip-variables.f31afc23.css"
+    },
+    "js": {
+      "d3.v7.min.js": "d3.v7.min.69faba9d.js",
+      "tsisip-charts.js": "tsisip-charts.7ec776ad.js",
+      "tsisip-i18n.js": "tsisip-i18n.082e5034.js",
+      "tsisip-nav.js": "tsisip-nav.dc0e238b.js",
+      "tsisip-wiki.js": "tsisip-wiki.9c2314d6.js"
+    },
+    "svg": {
+      "tsiapp-logo-compact.svg": "tsiapp-logo-compact.f714df5e.svg",
+      "tsiapp-logo-full.svg": "tsiapp-logo-full.368ad7e0.svg",
+      "tsisip-logo-compact-mono-v2.svg": "tsisip-logo-compact-mono-v2.db96d703.svg",
+      "tsisip-logo-compact-mono.svg": "tsisip-logo-compact-mono.1e5302a3.svg",
+      "tsisip-logo-compact-v2.svg": "tsisip-logo-compact-v2.2cecb771.svg",
+      "tsisip-logo-compact.svg": "tsisip-logo-compact.b76f2c3b.svg",
+      "tsisip-logo-full-mono-v2.svg": "tsisip-logo-full-mono-v2.0b3d8723.svg",
+      "tsisip-logo-full-mono.svg": "tsisip-logo-full-mono.a164db11.svg",
+      "tsisip-logo-full-v2.svg": "tsisip-logo-full-v2.a69a8538.svg",
+      "tsisip-logo-full.svg": "tsisip-logo-full.3e4dd3ad.svg"
+    }
+  }
+}

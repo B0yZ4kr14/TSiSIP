@@ -1,0 +1,92 @@
+{
+  "dashboard": {
+    "id": null,
+    "title": "TSiSIP Rate Limiting & DDoS Protection",
+    "tags": ["tsisip", "security", "rate-limiting"],
+    "timezone": "utc",
+    "schemaVersion": 36,
+    "refresh": "5s",
+    "panels": [
+      {
+        "id": 1,
+        "title": "Blocked IPs (Pike)",
+        "type": "table",
+        "targets": [
+          {
+            "expr": "opensips_pike_blocked_ips",
+            "legendFormat": "{{src_ip}}",
+            "refId": "A"
+          }
+        ],
+        "gridPos": {"h": 8, "w": 12, "x": 0, "y": 0}
+      },
+      {
+        "id": 2,
+        "title": "Auth Failures (per minute)",
+        "type": "timeseries",
+        "targets": [
+          {
+            "expr": "rate(opensips_auth_failures_total[1m])",
+            "legendFormat": "{{username}}",
+            "refId": "A"
+          }
+        ],
+        "gridPos": {"h": 8, "w": 12, "x": 12, "y": 0}
+      },
+      {
+        "id": 3,
+        "title": "Dispatcher Load",
+        "type": "gauge",
+        "targets": [
+          {
+            "expr": "opensips_dispatcher_target_load",
+            "legendFormat": "{{target}}",
+            "refId": "A"
+          }
+        ],
+        "fieldConfig": {
+          "defaults": {
+            "min": 0,
+            "max": 100,
+            "thresholds": {
+              "steps": [
+                {"color": "green", "value": null},
+                {"color": "yellow", "value": 70},
+                {"color": "red", "value": 85}
+              ]
+            },
+            "unit": "percent"
+          }
+        },
+        "gridPos": {"h": 8, "w": 8, "x": 0, "y": 8}
+      },
+      {
+        "id": 4,
+        "title": "Anomaly Score (Z-Score)",
+        "type": "timeseries",
+        "targets": [
+          {
+            "expr": "anomaly_detector_z_score",
+            "legendFormat": "z-score",
+            "refId": "A"
+          }
+        ],
+        "gridPos": {"h": 8, "w": 8, "x": 8, "y": 8}
+      },
+      {
+        "id": 5,
+        "title": "Ban List Size",
+        "type": "stat",
+        "targets": [
+          {
+            "expr": "opensips_userblacklist_size",
+            "legendFormat": "Banned entries",
+            "refId": "A"
+          }
+        ],
+        "gridPos": {"h": 8, "w": 8, "x": 16, "y": 8}
+      }
+    ]
+  },
+  "overwrite": true
+}

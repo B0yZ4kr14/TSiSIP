@@ -1,0 +1,22 @@
+[07:01:00] === T4.1: Infrastructure ===
+[07:01:01] ✅ PASS: OpenSIPS container
+[07:01:01] ✅ PASS: Postgres container
+[07:01:01] ✅ PASS: OCP container
+[07:01:02] ✅ PASS: Backup container
+[07:01:02] ✅ PASS: PostgreSQL not exposed publicly
+[07:01:02] ✅ PASS: Port 5060 exposed (OpenSIPS expected)
+[07:01:02] === T4.2: SIP Signaling ===
+[07:01:07] ✅ PASS: OPTIONS 200 OK
+[07:01:07] === T4.3: OCP E2E ===
+[07:01:07] ✅ PASS: OCP login
+[07:01:07] ✅ PASS: subscribers.php
+[07:01:07] ✅ PASS: cdr-viewer.php
+[07:01:07] ✅ PASS: dispatcher.php
+[07:01:07] === T4.4: Security ===
+[07:01:07] ✅ PASS: Auth redirect
+[07:01:08] ✅ PASS: CSRF protection
+[07:01:08] === T4.5: Backup ===
+[07:01:08] ✅ PASS: Backup files exist
+[07:01:08] === SUMMARY ===
+[07:01:08] PASS: 14 | FAIL: 0
+[07:01:08] 🎉 ALL TESTS PASSED

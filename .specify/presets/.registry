@@ -1,0 +1,105 @@
+{
+  "schema_version": "1.0",
+  "presets": {
+    "agent-parity-governance": {
+      "version": "0.1.0",
+      "source": "local",
+      "manifest_hash": "sha256:043c8875f717174f0fdf27f61c7e8fcdc8e658f5fddca9142d10e90ce52c060a",
+      "enabled": true,
+      "priority": 10,
+      "registered_commands": {
+        "agy": [
+          "speckit.specify",
+          "speckit.plan",
+          "speckit.tasks"
+        ],
+        "claude": [
+          "speckit.specify",
+          "speckit.plan",
+          "speckit.tasks"
+        ],
+        "codex": [
+          "speckit.specify",
+          "speckit.plan",
+          "speckit.tasks"
+        ],
+        "copilot": [
+          "speckit.specify",
+          "speckit.plan",
+          "speckit.tasks"
+        ],
+        "kimi": [
+          "speckit.specify",
+          "speckit.plan",
+          "speckit.tasks"
+        ],
+        "opencode": [
+          "speckit.specify",
+          "speckit.plan",
+          "speckit.tasks"
+        ]
+      },
+      "registered_skills": [
+        "speckit-specify",
+        "speckit-plan",
+        "speckit-tasks"
+      ],
+      "installed_at": "2026-05-19T22:51:04.548625+00:00"
+    },
+    "architecture-governance": {
+      "version": "0.2.0",
+      "source": "local",
+      "manifest_hash": "sha256:e3f142100588f477940de2259a0a256d087262d3f4376e76f78111e135f1553f",
+      "enabled": true,
+      "priority": 10,
+      "registered_commands": {},
+      "registered_skills": [],
+      "installed_at": "2026-05-19T22:51:05.412648+00:00"
+    },
+    "security-governance": {
+      "version": "0.2.0",
+      "source": "local",
+      "manifest_hash": "sha256:cf57afa48d09d1be50c5ebf4d3b3ac8f02bfac06ba875c99c4c5a02bdb9bbbd0",
+      "enabled": true,
+      "priority": 10,
+      "registered_commands": {
+        "agy": [
+          "speckit.specify",
+          "speckit.plan",
+          "speckit.tasks"
+        ],
+        "claude": [
+          "speckit.specify",
+          "speckit.plan",
+          "speckit.tasks"
+        ],
+        "codex": [
+          "speckit.specify",
+          "speckit.plan",
+          "speckit.tasks"
+        ],
+        "copilot": [
+          "speckit.specify",
+          "speckit.plan",
+          "speckit.tasks"
+        ],
+        "kimi": [
+          "speckit.specify",
+          "speckit.plan",
+          "speckit.tasks"
+        ],
+        "opencode": [
+          "speckit.specify",
+          "speckit.plan",
+          "speckit.tasks"
+        ]
+      },
+      "registered_skills": [
+        "speckit-specify",
+        "speckit-plan",
+        "speckit-tasks"
+      ],
+      "installed_at": "2026-05-19T22:51:05.993874+00:00"
+    }
+  }
+}

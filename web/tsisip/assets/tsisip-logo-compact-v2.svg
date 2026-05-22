@@ -1,0 +1,54 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 48 48" width="48" height="48" aria-label="TSiSIP Logo">
+  <defs>
+    <linearGradient id="g" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0%" stop-color="#1A3A5C"/>
+      <stop offset="55%" stop-color="#1A3A5C"/>
+      <stop offset="100%" stop-color="#0D8A6E"/>
+    </linearGradient>
+    <filter id="fg" x="-50%" y="-50%" width="200%" height="200%">
+      <feGaussianBlur stdDeviation="2.5" result="b"/>
+      <feMerge>
+        <feMergeNode in="b"/>
+        <feMergeNode in="SourceGraphic"/>
+      </feMerge>
+    </filter>
+    <filter id="fs" x="-30%" y="-30%" width="160%" height="160%">
+      <feDropShadow dx="0" dy="1" stdDeviation="1.5" flood-color="#0D1F33" flood-opacity="0.4"/>
+    </filter>
+    <filter id="fga">
+      <feGaussianBlur stdDeviation="0.6"/>
+    </filter>
+  </defs>
+
+  <!-- Ambient glow -->
+  <circle cx="24" cy="24" r="20" fill="#0D8A6E" opacity="0.15" filter="url(#fg)"/>
+
+  <!-- Shield -->
+  <path d="M24 2 C35 2, 42 10, 42 21 C42 33, 34 40, 24 44 C14 40, 6 33, 6 21 C6 10, 13 2, 24 2 Z"
+        fill="url(#g)"
+        stroke="#E8ECF0" stroke-width="0.5" stroke-opacity="0.25"
+        filter="url(#fs)"/>
+
+  <!-- Central proxy node -->
+  <circle cx="24" cy="21" r="5" fill="#E8ECF0" opacity="0.95"/>
+  <!-- Satellite nodes -->
+  <circle cx="24" cy="10" r="2.5" fill="#E8ECF0" opacity="0.85"/>
+  <circle cx="15" cy="31" r="2.5" fill="#E8ECF0" opacity="0.85"/>
+  <circle cx="33" cy="31" r="2.5" fill="#E8ECF0" opacity="0.85"/>
+
+  <!-- Connection traces -->
+  <line x1="24" y1="21" x2="24" y2="12.5" stroke="#E8ECF0" stroke-width="1.2" opacity="0.55" stroke-linecap="round"/>
+  <line x1="24" y1="21" x2="16.5" y2="29.5" stroke="#E8ECF0" stroke-width="1.2" opacity="0.55" stroke-linecap="round"/>
+  <line x1="24" y1="21" x2="31.5" y2="29.5" stroke="#E8ECF0" stroke-width="1.2" opacity="0.55" stroke-linecap="round"/>
+  <!-- Mesh lines -->
+  <line x1="24" y1="12.5" x2="16.5" y2="29.5" stroke="#E8ECF0" stroke-width="0.8" opacity="0.28" stroke-linecap="round"/>
+  <line x1="24" y1="12.5" x2="31.5" y2="29.5" stroke="#E8ECF0" stroke-width="0.8" opacity="0.28" stroke-linecap="round"/>
+  <line x1="16.5" y1="29.5" x2="31.5" y2="29.5" stroke="#E8ECF0" stroke-width="0.8" opacity="0.28" stroke-linecap="round"/>
+
+  <!-- Signal arc -->
+  <path d="M43 15 Q48 24, 43 33" stroke="#0D8A6E" stroke-width="1.5" fill="none" opacity="0.5" stroke-linecap="round"/>
+
+  <!-- Glass highlight -->
+  <path d="M24 2 C35 2, 42 10, 42 21 C42 23, 40 24, 38 23 C33 18, 29 16, 24 16 C19 16, 15 18, 10 23 C8 24, 6 23, 6 21 C6 10, 13 2, 24 2 Z"
+        fill="#FFFFFF" opacity="0.1" filter="url(#fga)"/>
+</svg>

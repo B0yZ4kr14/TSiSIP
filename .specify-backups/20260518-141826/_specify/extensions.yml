@@ -1,0 +1,11 @@
+# TSiSIP Speckit Extensions
+# Hooks are managed by the HookExecutor; condition evaluation is delegated.
+hooks:
+  before_specify: []
+  after_specify: []
+  before_plan: []
+  after_plan: []
+  before_tasks: []
+  after_tasks: []
+  before_analyze: []
+  after_analyze: []

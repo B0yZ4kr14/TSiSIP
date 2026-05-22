@@ -1,0 +1,42 @@
+[06:58:01] === T4.1: Infraestructure Tests ===
+[06:58:01] ✅ PASS: OpenSIPS container exists
+[06:58:02] ✅ PASS: Postgres container exists
+[06:58:02] ✅ PASS: OCP container exists
+[06:58:02] ✅ PASS: Required ports listening
+[06:58:03] ❌ FAIL: PostgreSQL exposed publicly
+[06:58:03] === T4.2: SIP Signaling Tests ===
+[06:58:08] ✅ PASS: SIP OPTIONS returns 200 OK
+[06:58:08] T4.2 INVITE 407: requires manual Python probe (see AGENTS.md)
+[06:58:08] === T4.3: OCP E2E Tests ===
+[06:58:08] ✅ PASS: OCP login successful
+[06:58:08] ❌ FAIL: OCP subscribers page failed
+[06:58:08] ✅ PASS: OCP CDR viewer accessible
+[06:58:08] ❌ FAIL: OCP dispatcher page failed
+[06:58:08] === T4.4: Security Tests ===
+[06:58:08] ✅ PASS: Auth redirect works
+[06:58:08] ❌ FAIL: CSRF protection failed
+[06:58:08] === T4.5: Backup Tests ===
+[06:58:08] ❌ FAIL: No backup files
+[06:58:08] === SUMMARY ===
+[06:58:09] PASS: 8 | FAIL: 5
+[06:58:09] ⚠️ SOME TESTS FAILED
+[06:59:32] === T4.1: Infrastructure ===
+[06:59:32] ✅ PASS: OpenSIPS container
+[06:59:32] ✅ PASS: Postgres container
+[06:59:32] ✅ PASS: OCP container
+[06:59:32] ❌ FAIL: PostgreSQL exposed on 0.0.0.0
+[06:59:32] === T4.2: SIP Signaling ===
+[06:59:38] ✅ PASS: OPTIONS 200 OK
+[06:59:38] === T4.3: OCP E2E ===
+[06:59:38] ✅ PASS: OCP login
+[06:59:38] ✅ PASS: subscribers.php
+[06:59:38] ✅ PASS: cdr-viewer.php
+[06:59:38] ✅ PASS: dispatcher.php
+[06:59:38] === T4.4: Security ===
+[06:59:38] ✅ PASS: Auth redirect
+[06:59:38] ✅ PASS: CSRF protection
+[06:59:38] === T4.5: Backup ===
+[06:59:38] ✅ PASS: Backup files exist
+[06:59:38] === SUMMARY ===
+[06:59:38] PASS: 11 | FAIL: 1
+[06:59:38] ⚠️ 1 TEST(S) FAILED

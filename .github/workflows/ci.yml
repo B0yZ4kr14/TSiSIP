@@ -1,0 +1,274 @@
+name: TSiSIP CI/CD
+
+on:
+  push:
+    branches: [main, master]
+  pull_request:
+    branches: [main, master]
+  workflow_dispatch:
+    inputs:
+      deploy_target:
+        description: 'Deploy target'
+        required: true
+        default: 'staging'
+        type: choice
+        options:
+          - staging
+          - production
+
+env:
+  REGISTRY: ghcr.io
+  IMAGE_PREFIX: tsisip
+
+jobs:
+  validate:
+    name: Validate Configs
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Validate Docker Compose
+        run: docker compose config > /dev/null
+
+      - name: Validate OpenSIPS config structure
+        run: |
+          sed -e 's/\${[A-Z_]*}/127.0.0.1/g' \
+              -e 's/\${AUTH_SECRET_32_CHARS}/secretsecretsecretsecretsecretse/g' \
+              -e 's/\${TOPOLOGY_SECRET}/topologysecret/g' \
+              opensips/opensips.cfg.tpl > /tmp/test.cfg
+          grep -q 'loadmodule "tls_mgm.so"' /tmp/test.cfg || (echo "TLS module missing"; exit 1)
+          grep -q 'loadmodule "pike.so"' /tmp/test.cfg || (echo "Pike module missing"; exit 1)
+          grep -q 'loadmodule "cachedb_local.so"' /tmp/test.cfg || (echo "Cachedb module missing"; exit 1)
+          grep -q 'loadmodule "proto_ws.so"' /tmp/test.cfg || (echo "proto_ws module missing"; exit 1)
+          grep -q 'loadmodule "proto_wss.so"' /tmp/test.cfg || (echo "proto_wss module missing"; exit 1)
+          grep -q 'loadmodule "acc.so"' /tmp/test.cfg || (echo "acc module missing"; exit 1)
+          grep -q 'header_routing_rules' /tmp/test.cfg || (echo "Feature 002 routing missing"; exit 1)
+          grep -q 'setflag(1)' /tmp/test.cfg || (echo "CDR flag missing"; exit 1)
+          echo "OpenSIPS config structure valid"
+
+      - name: Validate Nginx config
+        run: |
+          docker run --rm -v $(pwd)/deploy/nginx:/etc/nginx/conf.d:ro \
+            nginx:alpine nginx -t -c /etc/nginx/conf.d/tsisip-reverse-proxy.conf || true
+
+      - name: Validate Ansible playbooks
+        run: |
+          if command -v ansible-playbook >/dev/null 2>&1; then
+            ansible-playbook --syntax-check -i deploy/ansible/inventory.yml deploy/ansible/playbook-deploy.yml
+            ansible-playbook --syntax-check -i deploy/ansible/inventory.yml deploy/ansible/playbook-hardening.yml
+          else
+            echo "ansible-playbook not available, skipping"
+          fi
+
+      - name: Check for committed secrets
+        run: |
+          FAIL=0
+          if grep -rE 'password.*=.*["'\''"].{4,}["'\''"]' --include='*.php' --include='*.js' --include='*.json' . 2>/dev/null; then
+            echo "ERROR: Potential plaintext password committed"
+            FAIL=1
+          fi
+          for secret in secrets/db_password secrets/auth_secret secrets/topology_secret secrets/ca.key secrets/server.key; do
+            if [ -f "$secret" ]; then
+              echo "ERROR: Secret file $secret should not be committed"
+              FAIL=1
+            fi
+          done
+          if [ $FAIL -eq 1 ]; then exit 1; fi
+          echo "Secret check passed"
+
+      - name: Run deployment validation
+        run: cd deploy && bash validate.sh
+
+  build-opensips:
+    name: Build OpenSIPS Image
+    runs-on: ubuntu-latest
+    needs: validate
+    outputs:
+      digest: ${{ steps.build.outputs.digest }}
+    steps:
+      - uses: actions/checkout@v4
+      - uses: docker/setup-buildx-action@v3
+      - name: Build OpenSIPS
+        id: build
+        run: |
+          docker build -t tsisip/opensips:ci -f Dockerfile .
+          echo "digest=$(docker inspect --format='{{index .RepoDigests 0}}' tsisip/opensips:ci | cut -d'@' -f2)" >> "$GITHUB_OUTPUT"
+
+  build-ocp:
+    name: Build OCP Image
+    runs-on: ubuntu-latest
+    needs: validate
+    outputs:
+      digest: ${{ steps.build.outputs.digest }}
+    steps:
+      - uses: actions/checkout@v4
+      - name: Build OCP
+        id: build
+        run: |
+          docker build -t tsisip/ocp:ci -f docker/ocp/Dockerfile .
+          echo "digest=$(docker inspect --format='{{index .RepoDigests 0}}' tsisip/ocp:ci | cut -d'@' -f2)" >> "$GITHUB_OUTPUT"
+      - name: Test OCP container
+        run: |
+          docker run -d --name ocp-ci -p 8080:80 tsisip/ocp:ci
+          sleep 5
+          curl -fsSL http://localhost:8080/login.php | grep -q 'TSiSIP'
+          docker stop ocp-ci && docker rm ocp-ci
+
+  build-supporting:
+    name: Build Supporting Images
+    runs-on: ubuntu-latest
+    needs: validate
+    strategy:
+      matrix:
+        service: [prometheus, grafana, opensips-exporter, backup, ca-tool, anomaly-detector]
+    steps:
+      - uses: actions/checkout@v4
+      - name: Build ${{ matrix.service }}
+        run: |
+          if [ -f docker/${{ matrix.service }}/Dockerfile ]; then
+            docker build -t tsisip/${{ matrix.service }}:ci \
+              -f docker/${{ matrix.service }}/Dockerfile docker/${{ matrix.service }}/
+          else
+            echo "No Dockerfile for ${{ matrix.service }}, skipping"
+          fi
+
+  test-integration:
+    name: Integration Tests
+    runs-on: ubuntu-latest
+    needs: [build-opensips, build-ocp]
+    steps:
+      - uses: actions/checkout@v4
+      - name: Start stack
+        run: |
+          docker compose up -d postgres rtpengine opensips
+          sleep 30
+      - name: Test OpenSIPS health
+        run: docker compose exec -T opensips /usr/local/bin/healthcheck.sh
+      - name: Test PostgreSQL connectivity
+        run: docker compose exec -T postgres pg_isready -U opensips
+      - name: Validate OpenSIPS config in container
+        run: docker compose exec -T opensips opensips -c
+      - name: Run pytest integration tests
+        run: |
+          pip install pytest psycopg2-binary
+          pytest tests/integration/ -v --tb=short || true
+      - name: Run feature-specific tests
+        run: |
+          pytest tests/integration/test_multi_tenant_routing.py -v
+          pytest tests/integration/test_webrtc_support.py -v
+          pytest tests/integration/test_cdr_billing.py -v
+          pytest tests/integration/test_ddos_protection.py -v
+          pytest tests/integration/test_anomaly_detection.py -v
+      - name: Stop stack
+        if: always()
+        run: docker compose down -v
+
+  speckit-scan:
+    name: Speckit Scans
+    runs-on: ubuntu-latest
+    needs: validate
+    steps:
+      - uses: actions/checkout@v4
+      - name: Run CI Scan (brownfield + version-guard + memorylint)
+        run: bash scripts/ci-scan.sh
+
+  fr-id-validation:
+    name: FR-ID Validation
+    runs-on: ubuntu-latest
+    needs: validate
+    steps:
+      - uses: actions/checkout@v4
+      - name: Validate feature-scoped requirement IDs
+        run: python3 scripts/validate-fr-ids.py
+
+  security-scan:
+    name: Security Scan
+    runs-on: ubuntu-latest
+    needs: validate
+    steps:
+      - uses: actions/checkout@v4
+      - name: Run Trivy vulnerability scanner
+        uses: aquasecurity/trivy-action@0.28.0
+        with:
+          scan-type: 'fs'
+          scan-ref: '.'
+          format: 'sarif'
+          output: 'trivy-results.sarif'
+      - name: Upload Trivy scan results
+        uses: github/codeql-action/upload-sarif@v3
+        if: always()
+        with:
+          sarif_file: 'trivy-results.sarif'
+
+  sbom:
+    name: Generate SBOM
+    runs-on: ubuntu-latest
+    needs: [build-opensips, build-ocp]
+    permissions:
+      contents: write
+    steps:
+      - uses: actions/checkout@v4
+      - uses: anchore/sbom-action@v0
+        with:
+          image: ghcr.io/b0yz4kr14/tsisip/opensips:latest
+          format: spdx-json
+          output-file: sbom-opensips.spdx.json
+      - uses: anchore/sbom-action@v0
+        with:
+          image: ghcr.io/b0yz4kr14/tsisip/ocp:latest
+          format: spdx-json
+          output-file: sbom-ocp.spdx.json
+      - name: Upload SBOMs
+        uses: actions/upload-artifact@v4
+        with:
+          name: sboms
+          path: |
+            sbom-opensips.spdx.json
+            sbom-ocp.spdx.json
+
+  provenance:
+    name: SLSA Provenance
+    runs-on: ubuntu-latest
+    needs: [build-opensips, build-ocp]
+    permissions:
+      id-token: write
+      contents: write
+      attestations: write
+    steps:
+      - uses: actions/checkout@v4
+      - name: Attest OpenSIPS build provenance
+        uses: actions/attest-build-provenance@v1
+        with:
+          subject-name: tsisip-opensips
+          subject-digest: sha256:${{ needs.build-opensips.outputs.digest }}
+          push-to-registry: false
+      - name: Attest OCP build provenance
+        uses: actions/attest-build-provenance@v1
+        with:
+          subject-name: tsisip-ocp
+          subject-digest: sha256:${{ needs.build-ocp.outputs.digest }}
+          push-to-registry: false
+
+  deploy:
+    name: Deploy to Target
+    runs-on: ubuntu-latest
+    needs: [test-integration, security-scan]
+    if: github.event_name == 'workflow_dispatch'
+    environment:
+      name: ${{ github.event.inputs.deploy_target || 'staging' }}
+    steps:
+      - uses: actions/checkout@v4
+      - name: Setup SSH
+        uses: webfactory/ssh-agent@v0.9.0
+        with:
+          ssh-private-key: ${{ secrets.TSiAPP_SSH_KEY }}
+      - name: Deploy via Ansible
+        run: |
+          pip install ansible
+          cd deploy/ansible
+          ansible-playbook -i inventory.yml playbook-deploy.yml
+        env:
+          TSiAPP_HOST: ${{ secrets.TSiAPP_HOST }}
+          TSiAPP_USER: ${{ secrets.TSiAPP_USER }}
+      - name: Verify deployment
+        run: curl -fsSL https://tsiapp.io/TSiSIP/login.php | grep -q 'TSiSIP'

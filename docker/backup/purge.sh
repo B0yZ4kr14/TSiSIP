@@ -1,0 +1,52 @@
+#!/bin/bash
+set -euo pipefail
+
+# TSiSIP Backup Retention Policy Engine
+# Purges old backups and WAL segments
+
+BACKUP_DIR="${BACKUP_DIR:-/backup/daily}"
+WAL_DIR="${WAL_DIR:-/backup/wal}"
+BACKUP_RETENTION_DAYS="${BACKUP_RETENTION_DAYS:-30}"
+WAL_RETENTION_DAYS="${WAL_RETENTION_DAYS:-37}"
+
+log() {
+    echo "[$(date '+%Y-%m-%d %H:%M:%S')] $*"
+}
+
+log "Starting purge - Backup retention: ${BACKUP_RETENTION_DAYS}d, WAL retention: ${WAL_RETENTION_DAYS}d"
+
+# Find oldest backup to determine WAL retention cutoff
+OLDEST_BACKUP="$(find "$BACKUP_DIR" -name '*.gz*' -type f -printf '%T@ %p\n' 2>/dev/null | sort -n | head -1 | cut -d' ' -f2-)"
+if [ -n "$OLDEST_BACKUP" ]; then
+    OLDEST_BACKUP_DATE="$(stat -c %Y "$OLDEST_BACKUP" 2>/dev/null || echo 0)"
+    WAL_CUTOFF_DATE=$((OLDEST_BACKUP_DATE - 86400 * 7))
+else
+    WAL_CUTOFF_DATE="$(date -d "-${WAL_RETENTION_DAYS} days" +%s)"
+fi
+
+# Purge old backups
+BACKUP_DELETED=0
+while IFS= read -r file; do
+    [ -z "$file" ] && continue
+    log "Deleting old backup: $file"
+    rm -f "$file"
+    BACKUP_DELETED=$((BACKUP_DELETED + 1))
+done < <(find "$BACKUP_DIR" -name '*.gz*' -type f -mtime +"$BACKUP_RETENTION_DAYS" 2>/dev/null)
+
+# Purge old WAL segments
+WAL_DELETED=0
+while IFS= read -r file; do
+    [ -z "$file" ] && continue
+    FILE_MTIME="$(stat -c %Y "$file" 2>/dev/null || echo 0)"
+    if [ "$FILE_MTIME" -lt "$WAL_CUTOFF_DATE" ]; then
+        log "Deleting old WAL: $file"
+        rm -f "$file"
+        WAL_DELETED=$((WAL_DELETED + 1))
+    fi
+done < <(find "$WAL_DIR" -name '*.gz*' -type f 2>/dev/null)
+
+# Clean empty directories
+find "$WAL_DIR" -type d -empty -delete 2>/dev/null || true
+
+log "Purge completed - Backups deleted: $BACKUP_DELETED, WAL deleted: $WAL_DELETED"
+exit 0

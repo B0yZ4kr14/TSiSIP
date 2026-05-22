@@ -1,0 +1,320 @@
+/* TSiSIP Theme Override Layer */
+/* Generated from tsisip-theme.src.css */
+
+@import url('tsisip-variables.css');
+
+/* ===== Global Resets & Base ===== */
+html {
+  font-family: var(--tsisip-font-body);
+  color: var(--tsisip-text-primary);
+  background-color: var(--tsisip-surface-base);
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+body {
+  margin: 0;
+  min-height: 100vh;
+  background-color: var(--tsisip-surface-base);
+}
+
+/* ===== Header Chrome ===== */
+.tsisip-header,
+header.tsisip-header,
+#header.tsisip-header {
+  background-color: var(--tsisip-surface-header);
+  color: var(--tsisip-text-on-dark);
+  border-bottom: 1px solid var(--tsisip-border-subtle);
+  padding: 0.75rem 1.5rem;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  min-height: 56px;
+}
+
+.tsisip-header .logo-full {
+  display: block;
+}
+
+.tsisip-header .logo-compact {
+  display: none;
+}
+
+@media (max-width: 767px) {
+  .tsisip-header .logo-full {
+    display: none;
+  }
+  .tsisip-header .logo-compact {
+    display: block;
+  }
+}
+
+/* ===== Navigation Sidebar ===== */
+.tsisip-sidebar,
+#sidebar.tsisip-sidebar {
+  background-color: var(--tsisip-surface-card);
+  border-right: 1px solid var(--tsisip-border-subtle);
+  width: 240px;
+  min-height: calc(100vh - 56px);
+  transition: transform 0.25s ease;
+}
+
+.tsisip-sidebar.collapsed {
+  transform: translateX(-100%);
+}
+
+@media (max-width: 1023px) {
+  .tsisip-sidebar {
+    position: fixed;
+    left: 0;
+    top: 56px;
+    z-index: 1000;
+    transform: translateX(-100%);
+  }
+  .tsisip-sidebar.open {
+    transform: translateX(0);
+  }
+  .tsisip-sidebar-toggle {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 44px;
+    height: 44px;
+    background: transparent;
+    border: none;
+    color: var(--tsisip-text-on-dark);
+    cursor: pointer;
+  }
+}
+
+@media (min-width: 1024px) {
+  .tsisip-sidebar-toggle {
+    display: none;
+  }
+}
+
+/* ===== Buttons ===== */
+.tsisip-btn,
+button.tsisip-btn,
+.tsisip-btn-primary {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 44px;
+  min-width: 44px;
+  padding: 0.5rem 1rem;
+  border-radius: 6px;
+  font-family: var(--tsisip-font-body);
+  font-size: var(--tsisip-text-sm);
+  font-weight: 500;
+  cursor: pointer;
+  transition: background-color 0.15s ease, border-color 0.15s ease;
+  border: 1px solid transparent;
+}
+
+.tsisip-btn-primary {
+  background-color: var(--tsisip-primary-blue);
+  color: var(--tsisip-text-on-dark);
+  border-color: var(--tsisip-primary-blue);
+}
+
+.tsisip-btn-primary:hover {
+  background-color: var(--tsisip-primary-blue-light);
+  border-color: var(--tsisip-primary-blue-light);
+}
+
+.tsisip-btn-primary:active {
+  background-color: var(--tsisip-primary-blue-dark);
+  border-color: var(--tsisip-primary-blue-dark);
+}
+
+.tsisip-btn-secondary {
+  background-color: transparent;
+  color: var(--tsisip-primary-blue);
+  border-color: var(--tsisip-border-subtle);
+}
+
+.tsisip-btn-secondary:hover {
+  background-color: var(--tsisip-surface-base);
+  border-color: var(--tsisip-primary-blue-light);
+}
+
+/* ===== Forms ===== */
+.tsisip-form-group {
+  margin-bottom: 1rem;
+}
+
+.tsisip-input,
+input.tsisip-input,
+textarea.tsisip-input,
+select.tsisip-input {
+  display: block;
+  width: 100%;
+  min-height: 44px;
+  padding: 0.5rem 0.75rem;
+  font-family: var(--tsisip-font-body);
+  font-size: var(--tsisip-text-base);
+  color: var(--tsisip-text-primary);
+  background-color: var(--tsisip-surface-card);
+  border: 1px solid var(--tsisip-border-subtle);
+  border-radius: 6px;
+  transition: border-color 0.15s ease, box-shadow 0.15s ease;
+}
+
+.tsisip-input:focus {
+  outline: none;
+  border-color: var(--tsisip-primary-blue-light);
+  box-shadow: 0 0 0 3px rgba(26, 58, 92, 0.15);
+}
+
+.tsisip-input::placeholder {
+  color: var(--tsisip-text-secondary);
+}
+
+/* ===== Tables ===== */
+.tsisip-table,
+table.tsisip-table,
+.dataTable.tsisip-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: var(--tsisip-text-sm);
+  background-color: var(--tsisip-surface-card);
+}
+
+.tsisip-table thead {
+  background-color: var(--tsisip-surface-header);
+  color: var(--tsisip-text-on-dark);
+}
+
+.tsisip-table th,
+.tsisip-table td {
+  padding: 0.625rem 0.875rem;
+  text-align: left;
+  border-bottom: 1px solid var(--tsisip-border-subtle);
+}
+
+.tsisip-table tbody tr:nth-child(even) {
+  background-color: var(--tsisip-surface-base);
+}
+
+.tsisip-table tbody tr:hover {
+  background-color: rgba(26, 58, 92, 0.04);
+}
+
+.tsisip-table .mono-cell {
+  font-family: var(--tsisip-font-mono);
+  font-size: var(--tsisip-text-xs);
+}
+
+@media (max-width: 767px) {
+  .tsisip-table-container {
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+  }
+  .tsisip-table th:first-child,
+  .tsisip-table td:first-child {
+    position: sticky;
+    left: 0;
+    background-color: var(--tsisip-surface-card);
+    z-index: 1;
+  }
+}
+
+/* ===== Badges ===== */
+.tsisip-badge {
+  display: inline-flex;
+  align-items: center;
+  padding: 0.125rem 0.5rem;
+  border-radius: 9999px;
+  font-size: var(--tsisip-text-xs);
+  font-weight: 600;
+  line-height: 1.5;
+}
+
+.tsisip-badge-success {
+  background-color: rgba(13, 138, 110, 0.12);
+  color: var(--tsisip-accent-success);
+}
+
+.tsisip-badge-warning {
+  background-color: rgba(196, 134, 12, 0.12);
+  color: var(--tsisip-accent-warning);
+}
+
+.tsisip-badge-error {
+  background-color: rgba(184, 50, 50, 0.12);
+  color: var(--tsisip-accent-error);
+}
+
+.tsisip-badge-info {
+  background-color: rgba(37, 99, 168, 0.12);
+  color: var(--tsisip-accent-info);
+}
+
+/* ===== Login Page ===== */
+body.tsisip-login {
+  background-color: var(--tsisip-surface-header);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 100vh;
+}
+
+.tsisip-login-card {
+  background-color: var(--tsisip-surface-card);
+  border-radius: 12px;
+  padding: 2.5rem;
+  width: 100%;
+  max-width: 420px;
+  box-shadow: 0 10px 40px rgba(0, 0, 0, 0.2);
+}
+
+.tsisip-login-card .logo {
+  margin-bottom: 1.5rem;
+  text-align: center;
+}
+
+/* ===== Role Density ===== */
+[data-tsisip-role="readonly"] .tsisip-actions-column,
+[data-tsisip-role="readonly"] .actions-column,
+[data-tsisip-role="readonly"] .tsisip-btn-edit,
+[data-tsisip-role="readonly"] .tsisip-btn-delete {
+  display: none !important;
+}
+
+[data-tsisip-role="readonly"] .tsisip-nav-admin-only {
+  display: none !important;
+}
+
+/* ===== Utility ===== */
+.tsisip-sr-only {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+  border: 0;
+}
+
+.tsisip-text-center {
+  text-align: center;
+}
+
+.tsisip-mb-0 {
+  margin-bottom: 0;
+}
+
+.tsisip-mb-1 {
+  margin-bottom: 0.25rem;
+}
+
+.tsisip-mb-2 {
+  margin-bottom: 0.5rem;
+}
+
+.tsisip-mb-4 {
+  margin-bottom: 1rem;
+}

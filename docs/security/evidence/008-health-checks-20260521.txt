@@ -1,0 +1,13 @@
+[INFO] === Health Check Validation ===
+[INFO] Checking docker-compose.yml...
+[INFO] Checking docker-compose.prod.yml...
+[INFO] Checking docker-compose.vps.yml...
+[INFO] Checking custom healthcheck scripts...
+[PASS] docker/rtpengine/healthcheck.sh exists
+[PASS] healthcheck.sh found at docker/rtpengine/healthcheck.sh
+[PASS] docker/asterisk/healthcheck.sh exists
+[PASS] docker/backup/healthcheck.sh exists
+[PASS] docker/certbot/healthcheck.sh exists
+
+Health Checks: 5 passed, 0 failed
+All checks passed

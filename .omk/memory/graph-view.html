@@ -1,0 +1,63 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>OMK Ontology Graph — TSiSIP</title>
+  <script src="https://unpkg.com/cytoscape@3.30.2/dist/cytoscape.min.js"></script>
+  <style>
+    body { margin: 0; font-family: ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif; background: #0f172a; color: #e5e7eb; }
+    #top { min-height: 56px; display: flex; flex-wrap: wrap; align-items: center; gap: 12px; padding: 8px 16px; background: #111827; border-bottom: 1px solid #334155; box-sizing: border-box; }
+    #cy { width: 100vw; height: calc(100vh - 72px); display: block; }
+    input { background: #020617; color: #e5e7eb; border: 1px solid #475569; border-radius: 8px; padding: 8px 10px; width: min(420px, 70vw); }
+    .stat { color: #94a3b8; font-size: 13px; }
+    .pill { color: #c4b5fd; background: #312e81; border: 1px solid #4c1d95; border-radius: 999px; padding: 3px 8px; font-size: 12px; }
+  </style>
+</head>
+<body>
+  <div id="top">
+    <strong>OMK Ontology Graph — TSiSIP</strong>
+    <span class="pill">ontology: 1.0.0</span>
+    <input id="q" placeholder="filter: File, Risk, provider, schema.prisma..." />
+    <span class="stat">nodes: 39 / edges: 40</span>
+  </div>
+  <div id="cy"></div>
+
+  <script>
+    const allElements = [{"data":{"id":"project_tsisip","label":"TSiSIP","type":"Project","summary":"","path":"","tags":"","color":"#7c3aed"}},{"data":{"id":"mem_ext","label":"Extensions","type":"Memory","summary":"","path":"","tags":"","color":"#059669"}},{"data":{"id":"mem_seed","label":"Seed Data","type":"Memory","summary":"","path":"","tags":"","color":"#059669"}},{"data":{"id":"mem_schema","label":"Stock Schema","type":"Memory","summary":"","path":"","tags":"","color":"#059669"}},{"data":{"id":"risk_ast","label":"Asterisk Untested","type":"Risk","summary":"","path":"","tags":"","color":"#be123c"}},{"data":{"id":"decision_rtpe","label":"Explicit RTPengine","type":"Decision","summary":"","path":"","tags":"","color":"#dc2626"}},{"data":{"id":"decision_ha1","label":"HA1-Only Credentials","type":"Decision","summary":"","path":"","tags":"","color":"#dc2626"}},{"data":{"id":"goal_001","label":"OpenSIPS Docker Edge Proxy","type":"Goal","summary":"","path":"","tags":"","color":"#f59e0b"}},{"data":{"id":"decision_pg_only","label":"PostgreSQL Only","type":"Decision","summary":"","path":"","tags":"","color":"#dc2626"}},{"data":{"id":"risk_rtpe_bloat","label":"RTPengine Dependency Bloat","type":"Risk","summary":"","path":"","tags":"","color":"#be123c"}},{"data":{"id":"decision_src_build","label":"Source Build","type":"Decision","summary":"","path":"","tags":"","color":"#dc2626"}},{"data":{"id":"task_t11","label":"T1.1 Dockerfile","type":"Task","summary":"","path":"","tags":"","color":"#ea580c"}},{"data":{"id":"task_t12","label":"T1.2 Entrypoint","type":"Task","summary":"","path":"","tags":"","color":"#ea580c"}},{"data":{"id":"task_t13","label":"T1.3 Config Template","type":"Task","summary":"","path":"","tags":"","color":"#ea580c"}},{"data":{"id":"task_t14","label":"T1.4 Build Validation","type":"Task","summary":"","path":"","tags":"","color":"#ea580c"}},{"data":{"id":"task_t21","label":"T2.1 Stock Schema","type":"Task","summary":"","path":"","tags":"","color":"#ea580c"}},{"data":{"id":"task_t22","label":"T2.2 Extensions","type":"Task","summary":"","path":"","tags":"","color":"#ea580c"}},{"data":{"id":"task_t23","label":"T2.3 Seed Data","type":"Task","summary":"","path":"","tags":"","color":"#ea580c"}},{"data":{"id":"task_t24","label":"T2.4 PG Validation","type":"Task","summary":"","path":"","tags":"","color":"#ea580c"}},{"data":{"id":"task_t31","label":"T3.1 Compose Services","type":"Task","summary":"","path":"","tags":"","color":"#ea580c"}},{"data":{"id":"task_t32","label":"T3.2 Network Topology","type":"Task","summary":"","path":"","tags":"","color":"#ea580c"}},{"data":{"id":"task_t33","label":"T3.3 Secrets & Caps","type":"Task","summary":"","path":"","tags":"","color":"#ea580c"}},{"data":{"id":"task_t34","label":"T3.4 Port Isolation","type":"Task","summary":"","path":"","tags":"","color":"#ea580c"}},{"data":{"id":"task_t41","label":"T4.1 env.example","type":"Task","summary":"","path":"","tags":"","color":"#ea580c"}},{"data":{"id":"task_t42","label":"T4.2 Compose Config","type":"Task","summary":"","path":"","tags":"","color":"#ea580c"}},{"data":{"id":"task_t43","label":"T4.3 Syntax Check","type":"Task","summary":"","path":"","tags":"","color":"#ea580c"}},{"data":{"id":"task_t44","label":"T4.4 OPTIONS Validation","type":"Task","summary":"","path":"","tags":"","color":"#ea580c"}},{"data":{"id":"task_t45","label":"T4.5 INVITE Challenge","type":"Task","summary":"","path":"","tags":"","color":"#ea580c"}},{"data":{"id":"task_t46","label":"T4.6 Doc Sign-off","type":"Task","summary":"","path":"","tags":"","color":"#ea580c"}},{"data":{"id":"decision_topo","label":"Topology Hiding","type":"Decision","summary":"","path":"","tags":"","color":"#dc2626"}},{"data":{"id":"file_env","label":".env.example","type":"File","summary":"","path":"","tags":"","color":"#0891b2"}},{"data":{"id":"cpt_disp","label":"Dispatcher Failover","type":"Concept","summary":"","path":"","tags":"","color":"#4f46e5"}},{"data":{"id":"file_dc","label":"docker-compose.yml","type":"File","summary":"","path":"","tags":"","color":"#0891b2"}},{"data":{"id":"file_df","label":"Dockerfile","type":"File","summary":"","path":"","tags":"","color":"#0891b2"}},{"data":{"id":"file_ent","label":"entrypoint.sh","type":"File","summary":"","path":"","tags":"","color":"#0891b2"}},{"data":{"id":"cpt_env","label":"Envsubst Whitelist","type":"Concept","summary":"","path":"","tags":"","color":"#4f46e5"}},{"data":{"id":"cpt_san","label":"Header Sanitization","type":"Concept","summary":"","path":"","tags":"","color":"#4f46e5"}},{"data":{"id":"file_cfg","label":"opensips.cfg.tpl","type":"File","summary":"","path":"","tags":"","color":"#0891b2"}},{"data":{"id":"file_spec","label":"spec.md","type":"File","summary":"","path":"","tags":"","color":"#0891b2"}},{"data":{"id":"edge-0","source":"project_tsisip","target":"goal_001","label":"RELATED_TO"}},{"data":{"id":"edge-1","source":"goal_001","target":"task_t11","label":"RELATED_TO"}},{"data":{"id":"edge-2","source":"goal_001","target":"task_t12","label":"RELATED_TO"}},{"data":{"id":"edge-3","source":"goal_001","target":"task_t13","label":"RELATED_TO"}},{"data":{"id":"edge-4","source":"goal_001","target":"task_t14","label":"RELATED_TO"}},{"data":{"id":"edge-5","source":"goal_001","target":"task_t21","label":"RELATED_TO"}},{"data":{"id":"edge-6","source":"goal_001","target":"task_t22","label":"RELATED_TO"}},{"data":{"id":"edge-7","source":"goal_001","target":"task_t23","label":"RELATED_TO"}},{"data":{"id":"edge-8","source":"goal_001","target":"task_t24","label":"RELATED_TO"}},{"data":{"id":"edge-9","source":"goal_001","target":"task_t31","label":"RELATED_TO"}},{"data":{"id":"edge-10","source":"goal_001","target":"task_t32","label":"RELATED_TO"}},{"data":{"id":"edge-11","source":"goal_001","target":"task_t33","label":"RELATED_TO"}},{"data":{"id":"edge-12","source":"goal_001","target":"task_t34","label":"RELATED_TO"}},{"data":{"id":"edge-13","source":"goal_001","target":"task_t41","label":"RELATED_TO"}},{"data":{"id":"edge-14","source":"goal_001","target":"task_t42","label":"RELATED_TO"}},{"data":{"id":"edge-15","source":"goal_001","target":"task_t43","label":"RELATED_TO"}},{"data":{"id":"edge-16","source":"goal_001","target":"task_t44","label":"RELATED_TO"}},{"data":{"id":"edge-17","source":"goal_001","target":"task_t45","label":"RELATED_TO"}},{"data":{"id":"edge-18","source":"goal_001","target":"task_t46","label":"RELATED_TO"}},{"data":{"id":"edge-19","source":"task_t11","target":"file_df","label":"RELATED_TO"}},{"data":{"id":"edge-20","source":"task_t12","target":"file_ent","label":"RELATED_TO"}},{"data":{"id":"edge-21","source":"task_t13","target":"file_cfg","label":"RELATED_TO"}},{"data":{"id":"edge-22","source":"task_t31","target":"file_dc","label":"RELATED_TO"}},{"data":{"id":"edge-23","source":"task_t41","target":"file_env","label":"RELATED_TO"}},{"data":{"id":"edge-24","source":"task_t46","target":"file_spec","label":"RELATED_TO"}},{"data":{"id":"edge-25","source":"decision_src_build","target":"task_t11","label":"RELATED_TO"}},{"data":{"id":"edge-26","source":"decision_pg_only","target":"task_t21","label":"RELATED_TO"}},{"data":{"id":"edge-27","source":"decision_ha1","target":"task_t23","label":"RELATED_TO"}},{"data":{"id":"edge-28","source":"decision_topo","target":"task_t13","label":"RELATED_TO"}},{"data":{"id":"edge-29","source":"decision_rtpe","target":"task_t13","label":"RELATED_TO"}},{"data":{"id":"edge-30","source":"risk_rtpe_bloat","target":"task_t44","label":"RELATED_TO"}},{"data":{"id":"edge-31","source":"risk_rtpe_bloat","target":"task_t45","label":"RELATED_TO"}},{"data":{"id":"edge-32","source":"mem_schema","target":"mem_ext","label":"RELATED_TO"}},{"data":{"id":"edge-33","source":"mem_ext","target":"mem_seed","label":"RELATED_TO"}},{"data":{"id":"edge-34","source":"file_cfg","target":"cpt_san","label":"RELATED_TO"}},{"data":{"id":"edge-35","source":"file_cfg","target":"cpt_disp","label":"RELATED_TO"}},{"data":{"id":"edge-36","source":"file_cfg","target":"cpt_env","label":"RELATED_TO"}},{"data":{"id":"edge-37","source":"project_tsisip","target":"mem_ext","label":"HAS_MEMORY"}},{"data":{"id":"edge-38","source":"project_tsisip","target":"mem_seed","label":"HAS_MEMORY"}},{"data":{"id":"edge-39","source":"project_tsisip","target":"mem_schema","label":"HAS_MEMORY"}}];
+    const cy = cytoscape({
+      container: document.getElementById("cy"),
+      elements: allElements,
+      wheelSensitivity: 0.15,
+      style: [
+        { selector: "node", style: { "background-color": "data(color)", "label": "data(label)", "color": "#e5e7eb", "font-size": 9, "text-wrap": "wrap", "text-max-width": 130, "width": 24, "height": 24, "border-width": 1, "border-color": "#f8fafc" } },
+        { selector: "edge", style: { "width": 1, "line-color": "#64748b", "target-arrow-color": "#64748b", "target-arrow-shape": "triangle", "curve-style": "bezier", "label": "data(label)", "font-size": 7, "color": "#94a3b8", "text-rotation": "autorotate" } },
+        { selector: ":selected", style: { "border-width": 4, "border-color": "#facc15", "line-color": "#facc15", "target-arrow-color": "#facc15" } }
+      ],
+      layout: { name: "cose", animate: false, nodeRepulsion: 9000, idealEdgeLength: 90, edgeElasticity: 80, gravity: 0.18, numIter: 1600 }
+    });
+
+    cy.on("tap", "node", (evt) => {
+      const d = evt.target.data();
+      alert(["type: " + d.type, "label: " + d.label, "path: " + (d.path || ""), "tags: " + (d.tags || ""), "", d.summary || ""].join("\n"));
+    });
+
+    document.getElementById("q").addEventListener("input", (event) => {
+      const q = event.target.value.toLowerCase().trim();
+      if (!q) {
+        cy.elements().style("display", "element");
+        return;
+      }
+      cy.nodes().forEach((node) => {
+        const d = node.data();
+        const text = [d.label, d.type, d.summary, d.path, d.tags].join(" ").toLowerCase();
+        node.style("display", text.includes(q) ? "element" : "none");
+      });
+      cy.edges().forEach((edge) => {
+        const visible = edge.source().style("display") !== "none" && edge.target().style("display") !== "none";
+        edge.style("display", visible ? "element" : "none");
+      });
+    });
+  </script>
+</body>
+</html>

@@ -1,0 +1,647 @@
+services:
+  postgres:
+    image: ghcr.io/b0yz4kr14/tsisip/postgres:${TSISIP_IMAGE_TAG:?must be set}
+    networks:
+    - db_internal
+    restart: unless-stopped
+    command:
+    - postgres
+    - -c
+    - archive_mode=on
+    - -c
+    - archive_command=test ! -f /backup/wal/%f.gz && gzip < %p > /backup/wal/%f.gz
+    - -c
+    - archive_timeout=300
+    - -c
+    - wal_level=replica
+    - -c
+    - max_wal_senders=2
+    environment:
+      POSTGRES_DB: opensips
+      POSTGRES_USER: opensips
+      POSTGRES_PASSWORD_FILE: /run/secrets/db_password
+      PGDATA: /var/lib/postgresql/data
+    cap_drop:
+    - ALL
+    security_opt:
+    - no-new-privileges:true
+    secrets:
+    - db_password
+    volumes:
+    - postgres_data:/var/lib/postgresql/data
+    - ./db/init:/docker-entrypoint-initdb.d:ro
+    - backup_data:/backup
+    healthcheck:
+      test:
+      - CMD-SHELL
+      - pg_isready -U opensips -d opensips
+      interval: 5s
+      timeout: 3s
+      retries: 5
+      start_period: 20s
+      start_interval: 5s
+    labels:
+      tsisip.environment: production
+      tsisip.deployed-by: ansible
+    deploy:
+      resources:
+        limits:
+          memory: 8G
+        reservations:
+          memory: 4G
+  rtpengine:
+    image: ghcr.io/b0yz4kr14/tsisip/rtpengine:${TSISIP_IMAGE_TAG:?must be set}
+    networks:
+    - sip_edge
+    - sip_internal
+    restart: on-failure
+    ports:
+    - 10000-20000:10000-20000/udp
+    command:
+    - --interface=${RTPENGINE_PRIVATE_IP}/${HOST_PUBLIC_IP}
+    - --listen-ng=${RTPENGINE_INTERNAL_IP}:22222
+    - --port-min=10000
+    - --port-max=20000
+    - --log-stderr
+    - --foreground
+    - --dtls-cert-file=/certs/live/server.crt
+    - --dtls-key-file=/certs/live/server.key
+    - --dtls-passive
+    - --srtp-ciphers=AES_GCM_256:AES_256_CM_HMAC_SHA1_80
+    cap_drop:
+    - ALL
+    cap_add:
+    - NET_BIND_SERVICE
+    - NET_ADMIN
+    security_opt:
+    - no-new-privileges:true
+    volumes:
+    - tls_certs:/certs/live:ro
+    healthcheck:
+      test:
+      - CMD-SHELL
+      - /usr/local/bin/healthcheck.sh
+      interval: 15s
+      timeout: 5s
+      retries: 3
+      start_period: 25s
+      start_interval: 5s
+    labels:
+      tsisip.environment: production
+      tsisip.deployed-by: ansible
+    deploy:
+      resources:
+        limits:
+          memory: 2G
+        reservations:
+          memory: 1G
+  opensips:
+    image: ghcr.io/b0yz4kr14/tsisip/opensips:${TSISIP_IMAGE_TAG:?must be set}
+    networks:
+    - sip_edge
+    - sip_internal
+    - db_internal
+    restart: unless-stopped
+    ports:
+    - 5060:5060/udp
+    - 5060:5060/tcp
+    - 5061:5061/tcp
+    environment:
+      OPENSIPS_LISTEN_IP: ${OPENSIPS_LISTEN_IP}
+      HOST_PUBLIC_IP: ${HOST_PUBLIC_IP}
+      OPENSIPS_HOST: 127.0.0.1
+      DB_HOST: postgres
+      DB_NAME: opensips
+      DB_USER: opensips
+      RTPENGINE_HOST: rtpengine
+    secrets:
+    - db_password
+    - auth_secret
+    - topology_secret
+    - ca.crt
+    - server.crt
+    - server.key
+    - crl.pem
+    volumes:
+    - tls_certs:/certs/live:rw
+    depends_on:
+      postgres:
+        condition: service_healthy
+      rtpengine:
+        condition: service_started
+    cap_drop:
+    - ALL
+    cap_add:
+    - NET_BIND_SERVICE
+    - SETUID
+    - SETGID
+    security_opt:
+    - no-new-privileges:true
+    healthcheck:
+      test:
+      - CMD-SHELL
+      - /usr/local/bin/healthcheck.sh
+      interval: 15s
+      timeout: 5s
+      retries: 3
+      start_period: 30s
+      start_interval: 5s
+    labels:
+      tsisip.environment: production
+      tsisip.deployed-by: ansible
+    deploy:
+      resources:
+        limits:
+          memory: 2G
+        reservations:
+          memory: 1G
+  ocp:
+    image: ghcr.io/b0yz4kr14/tsisip/ocp:${TSISIP_IMAGE_TAG:?must be set}
+    networks:
+    - sip_internal
+    - db_internal
+    restart: on-failure
+    environment:
+      DB_HOST: postgres
+      DB_NAME: opensips
+      DB_USER: opensips
+      OCP_AUDIT_RETENTION_DAYS: ${OCP_AUDIT_RETENTION_DAYS:-90}
+    secrets:
+    - db_password
+    - trunk_cred_key
+    depends_on:
+      postgres:
+        condition: service_healthy
+    cap_drop:
+    - ALL
+    cap_add:
+    - SETUID
+    - SETGID
+    security_opt:
+    - no-new-privileges:true
+    healthcheck:
+      test:
+      - CMD-SHELL
+      - curl -fsSL http://localhost/login.php | grep -q 'TSiSIP' || exit 1
+      interval: 30s
+      timeout: 5s
+      retries: 3
+      start_period: 20s
+    labels:
+      tsisip.environment: production
+      tsisip.deployed-by: ansible
+    deploy:
+      resources:
+        limits:
+          memory: 1G
+        reservations:
+          memory: 512M
+  prometheus:
+    image: ghcr.io/b0yz4kr14/tsisip/prometheus:${TSISIP_IMAGE_TAG:?must be set}
+    networks:
+    - db_internal
+    restart: on-failure
+    environment:
+      ALERTMANAGER_WEBHOOK_URL: ${ALERTMANAGER_WEBHOOK_URL:-http://localhost:5000/alerts}
+      ALERTMANAGER_SMTP_HOST: ${ALERTMANAGER_SMTP_HOST:-localhost:25}
+      ALERTMANAGER_SMTP_FROM: ${ALERTMANAGER_SMTP_FROM:-alerts@tsiapp.io}
+    volumes:
+    - prometheus_data:/prometheus
+    # M4: Prometheus TSDB retention — prevents unbounded time-series growth
+    cap_drop:
+    - ALL
+    security_opt:
+    - no-new-privileges:true
+    command:
+    - --config.file=/etc/prometheus/rendered/prometheus.yml
+    - --storage.tsdb.path=/prometheus
+    - --storage.tsdb.retention.time=30d
+    - --storage.tsdb.retention.size=10GB
+    - --web.console.libraries=/usr/share/prometheus/console_libraries
+    - --web.console.templates=/usr/share/prometheus/consoles
+    - --web.enable-lifecycle
+    healthcheck:
+      test:
+      - CMD-SHELL
+      - wget -qO- http://localhost:9090/-/healthy | grep -q 'Prometheus'
+      interval: 15s
+      timeout: 5s
+      retries: 3
+      start_period: 30s
+    labels:
+      tsisip.environment: production
+      tsisip.deployed-by: ansible
+    deploy:
+      resources:
+        limits:
+          memory: 2G
+        reservations:
+          memory: 1G
+  alertmanager:
+    image: prom/alertmanager:v0.27.0@sha256:e13b6ed5cb929eeaee733479dce55e10eb3bc2e9c4586c705a4e8da41e5eacf5
+    networks:
+    - db_internal
+    restart: on-failure
+    environment:
+      ALERTMANAGER_WEBHOOK_URL: ${ALERTMANAGER_WEBHOOK_URL:-http://localhost:5000/alerts}
+    volumes:
+    - ./docker/prometheus/alertmanager.yml.tpl:/etc/alertmanager/alertmanager.yml.tpl:ro
+    - alertmanager_data:/alertmanager
+    cap_drop:
+    - ALL
+    security_opt:
+    - no-new-privileges:true
+    command:
+    - --config.file=/etc/alertmanager/alertmanager.yml
+    - --storage.path=/alertmanager
+    - --web.external-url=http://alertmanager:9093
+    healthcheck:
+      test:
+      - CMD-SHELL
+      - wget -qO- http://localhost:9093/-/healthy | grep -q 'OK'
+      interval: 15s
+      timeout: 5s
+      retries: 3
+      start_period: 10s
+    labels:
+      tsisip.environment: production
+      tsisip.deployed-by: ansible
+    deploy:
+      resources:
+        limits:
+          memory: 512M
+        reservations:
+          memory: 256M
+  anomaly-detector:
+    image: ghcr.io/b0yz4kr14/tsisip/anomaly-detector:${TSISIP_IMAGE_TAG:?must be set}
+    networks:
+    - sip_internal
+    restart: on-failure
+    environment:
+      ANOMALY_WINDOW_SECONDS: 60
+      ANOMALY_Z_THRESHOLD: 3.0
+      BASELINE_WINDOW_HOURS: 24
+      ALERT_COOLDOWN_SECONDS: 300
+    ports:
+    - 127.0.0.1:8080:8080
+    depends_on:
+      opensips:
+        condition: service_healthy
+    cap_drop:
+    - ALL
+    security_opt:
+    - no-new-privileges:true
+    labels:
+      tsisip.environment: production
+      tsisip.deployed-by: ansible
+    deploy:
+      resources:
+        limits:
+          memory: 1G
+        reservations:
+          memory: 512M
+    healthcheck:
+      test:
+      - CMD-SHELL
+      - curl -fsSL http://localhost:8080/health || exit 1
+      interval: 15s
+      timeout: 5s
+      retries: 3
+      start_period: 10s
+  grafana:
+    image: ghcr.io/b0yz4kr14/tsisip/grafana:${TSISIP_IMAGE_TAG:?must be set}
+    networks:
+    - db_internal
+    restart: on-failure
+    environment:
+      GF_SECURITY_ADMIN_PASSWORD__FILE: /run/secrets/grafana_admin_password
+      GF_USERS_DEFAULT_THEME: light
+      GF_SERVER_ROOT_URL: ${GRAFANA_ROOT_URL:-http://localhost:3000}
+      GF_INSTALL_PLUGINS: ''
+    secrets:
+    - grafana_admin_password
+    volumes:
+    - grafana_data:/var/lib/grafana
+    cap_drop:
+    - ALL
+    security_opt:
+    - no-new-privileges:true
+    depends_on:
+    - prometheus
+    healthcheck:
+      test:
+      - CMD-SHELL
+      - curl -fsSL http://localhost:3000/api/health | grep -q 'ok'
+      interval: 15s
+      timeout: 5s
+      retries: 3
+      start_period: 30s
+    labels:
+      tsisip.environment: production
+      tsisip.deployed-by: ansible
+    deploy:
+      resources:
+        limits:
+          memory: 1G
+        reservations:
+          memory: 512M
+  opensips-exporter:
+    image: ghcr.io/b0yz4kr14/tsisip/opensips-exporter:${TSISIP_IMAGE_TAG:?must be set}
+    networks:
+    - sip_internal
+    - db_internal
+    restart: on-failure
+    environment:
+      OPENSIPS_MI_HOST: opensips
+      OPENSIPS_MI_PORT: 8888
+      EXPORTER_PORT: 9442
+      CACHE_TTL_SECONDS: 10
+      TLS_CERT_PATH: /certs/live/server.crt
+    cap_drop:
+    - ALL
+    security_opt:
+    - no-new-privileges:true
+    volumes:
+    - tls_certs:/certs/live:ro
+    depends_on:
+    - opensips
+    healthcheck:
+      test:
+      - CMD-SHELL
+      - curl -fsSL http://localhost:9442/metrics | grep -q 'opensips'
+      interval: 15s
+      timeout: 5s
+      retries: 3
+      start_period: 10s
+    labels:
+      tsisip.environment: production
+      tsisip.deployed-by: ansible
+    deploy:
+      resources:
+        limits:
+          memory: 512M
+        reservations:
+          memory: 256M
+  certbot:
+    image: tsisip/certbot:${TSISIP_IMAGE_TAG:?must be set}
+    networks:
+    - sip_internal
+    restart: unless-stopped
+    environment:
+      TLS_DOMAIN: ${TLS_DOMAIN}
+      ACME_EMAIL: ${ACME_EMAIL}
+      ACME_SERVER: ${ACME_SERVER:-https://acme-v02.api.letsencrypt.org/directory}
+      CERTBOT_STAGING: "${CERTBOT_STAGING:-0}"
+      OPENSIPS_MI_URL: http://opensips:8888/mi
+    volumes:
+    - certbot_data:/etc/letsencrypt
+    - tls_certs:/certs/live
+    depends_on:
+      opensips:
+        condition: service_healthy
+    cap_drop:
+    - ALL
+    cap_add:
+    - SETUID
+    - SETGID
+    security_opt:
+    - no-new-privileges:true
+    labels:
+      tsisip.environment: production
+      tsisip.deployed-by: ansible
+    deploy:
+      resources:
+        limits:
+          memory: 256M
+
+  tailscale-cert:
+    image: tsisip/tailscale-cert:${TSISIP_IMAGE_TAG:?must be set}
+    networks:
+    - sip_internal
+    restart: unless-stopped
+    environment:
+      TS_HOSTNAME: ${TS_HOSTNAME:-tsisip}
+      OPENSIPS_MI_URL: http://opensips:8888/mi
+    volumes:
+    - tls_certs:/certs/live
+    - tailscale_state:/var/lib/tailscale
+    cap_drop:
+    - ALL
+    security_opt:
+    - no-new-privileges:true
+    labels:
+      tsisip.environment: production
+      tsisip.deployed-by: ansible
+    deploy:
+      resources:
+        limits:
+          memory: 128M
+
+  certbot-exporter:
+    image: ghcr.io/b0yz4kr14/tsisip/certbot-exporter:${TSISIP_IMAGE_TAG:?must be set}
+    networks:
+    - sip_internal
+    - db_internal
+    restart: on-failure
+    environment:
+      CERT_PATH: /certs/live/server.crt
+      STATE_DIR: /var/lib/certbot-exporter
+      EXPORTER_PORT: 9101
+      CERT_SOURCE: certbot
+      TLS_DOMAIN: ${TLS_DOMAIN:-unknown}
+    cap_drop:
+    - ALL
+    security_opt:
+    - no-new-privileges:true
+    volumes:
+    - tls_certs:/certs/live:ro
+    expose:
+    - "9101"
+    healthcheck:
+      test:
+      - CMD-SHELL
+      - curl -fsSL http://localhost:9101/metrics | grep -q 'certbot'
+      interval: 30s
+      timeout: 5s
+      retries: 3
+      start_period: 10s
+    labels:
+      tsisip.environment: production
+      tsisip.deployed-by: ansible
+    deploy:
+      resources:
+        limits:
+          memory: 64M
+
+  backup:
+    image: ghcr.io/b0yz4kr14/tsisip/backup:${TSISIP_IMAGE_TAG:?must be set}
+    networks:
+    - db_internal
+    restart: on-failure
+    environment:
+      BACKUP_SCHEDULE: 0 2 * * *
+      PURGE_SCHEDULE: 0 3 * * *
+      VALIDATE_SCHEDULE: 0 4 * * *
+      REPLICATE_SCHEDULE: 0 * * * *
+      BACKUP_RETENTION_DAYS: 30
+      WAL_RETENTION_DAYS: 37
+      PGHOST: postgres
+      PGPORT: 5432
+      PGDATABASE: opensips
+      PGUSER: opensips
+      PGPASSWORD_FILE: /run/secrets/db_password
+      ENCRYPTION_KEY_FILE: /run/secrets/backup_encryption_key
+      RCLONE_S3_PROVIDER: ${RCLONE_S3_PROVIDER:-}
+      RCLONE_S3_REGION: ${RCLONE_S3_REGION:-us-east-1}
+      RCLONE_S3_ENDPOINT: ${RCLONE_S3_ENDPOINT:-}
+      RCLONE_REMOTE_NAME: ${RCLONE_REMOTE_NAME:-remote}
+      RCLONE_REMOTE_PATH: ${RCLONE_REMOTE_PATH:-tsisip-backups}
+      RCLONE_BW_LIMIT: ${RCLONE_BW_LIMIT:-50M}
+    cap_drop:
+    - ALL
+    cap_add:
+    - SETUID
+    - SETGID
+    security_opt:
+    - no-new-privileges:true
+    secrets:
+    - db_password
+    - backup_encryption_key
+    - rclone_s3_access_key
+    - rclone_s3_secret_key
+    volumes:
+    - backup_data:/backup
+    depends_on:
+      postgres:
+        condition: service_healthy
+    labels:
+      tsisip.environment: production
+      tsisip.deployed-by: ansible
+    deploy:
+      resources:
+        limits:
+          memory: 1G
+        reservations:
+          memory: 512M
+    healthcheck:
+      test:
+      - CMD-SHELL
+      - /usr/local/bin/healthcheck.sh
+      interval: 15s
+      timeout: 5s
+      retries: 3
+      start_period: 10s
+  asterisk-pbx-1:
+    image: ghcr.io/b0yz4kr14/tsisip/asterisk:${TSISIP_IMAGE_TAG:?must be set}
+    networks:
+    - sip_internal
+    restart: on-failure
+    expose:
+    - 5060/udp
+    - 5060/tcp
+    - 5038/tcp
+    volumes:
+    - asterisk_config:/etc/asterisk
+    cap_drop:
+    - ALL
+    cap_add:
+    - NET_BIND_SERVICE
+    security_opt:
+    - no-new-privileges:true
+    healthcheck:
+      test:
+      - CMD-SHELL
+      - /usr/local/bin/healthcheck.sh
+      interval: 15s
+      timeout: 5s
+      retries: 3
+      start_period: 25s
+      start_interval: 5s
+    labels:
+      tsisip.environment: production
+      tsisip.deployed-by: ansible
+    deploy:
+      resources:
+        limits:
+          memory: 2G
+        reservations:
+          memory: 1G
+  asterisk-pbx-2:
+    image: ghcr.io/b0yz4kr14/tsisip/asterisk:${TSISIP_IMAGE_TAG:?must be set}
+    networks:
+    - sip_internal
+    restart: on-failure
+    cap_drop:
+    - ALL
+    cap_add:
+    - NET_BIND_SERVICE
+    security_opt:
+    - no-new-privileges:true
+    expose:
+    - 5060/udp
+    - 5060/tcp
+    - 5038/tcp
+    volumes:
+    - asterisk_config:/etc/asterisk
+    healthcheck:
+      test:
+      - CMD-SHELL
+      - /usr/local/bin/healthcheck.sh
+      interval: 15s
+      timeout: 5s
+      retries: 3
+      start_period: 25s
+      start_interval: 5s
+    labels:
+      tsisip.environment: production
+      tsisip.deployed-by: ansible
+    deploy:
+      resources:
+        limits:
+          memory: 2G
+        reservations:
+          memory: 1G
+networks:
+  sip_edge:
+    driver: bridge
+  sip_internal:
+    driver: bridge
+    internal: true
+  db_internal:
+    driver: bridge
+    internal: true
+volumes:
+  postgres_data: null
+  backup_data: null
+  prometheus_data: null
+  alertmanager_data: null
+  grafana_data: null
+  asterisk_config: {}
+  tls_certs:
+  certbot_data:
+  tailscale_state:
+secrets:
+  db_password:
+    file: ./secrets/db_password
+  auth_secret:
+    file: ./secrets/auth_secret
+  topology_secret:
+    file: ./secrets/topology_secret
+  grafana_admin_password:
+    file: ./secrets/grafana_admin_password
+  backup_encryption_key:
+    file: ./secrets/backup_encryption_key
+  ca.crt:
+    file: ./secrets/ca.crt
+  server.crt:
+    file: ./secrets/server.crt
+  server.key:
+    file: ./secrets/server.key
+  crl.pem:
+    file: ./secrets/crl.pem
+  rclone_s3_access_key:
+    file: ./secrets/rclone_s3_access_key
+  rclone_s3_secret_key:
+    file: ./secrets/rclone_s3_secret_key
+  trunk_cred_key:
+    file: ./secrets/trunk_cred_key

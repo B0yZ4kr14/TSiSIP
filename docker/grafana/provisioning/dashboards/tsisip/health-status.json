@@ -1,0 +1,64 @@
+{
+  "dashboard": {
+    "id": null,
+    "title": "TSiSIP - Health Status",
+    "tags": ["tsisip", "health", "monitoring"],
+    "timezone": "browser",
+    "schemaVersion": 38,
+    "refresh": "10s",
+    "time": {"from": "now-1h", "to": "now"},
+    "panels": [
+      {
+        "id": 1,
+        "title": "${i18n:container_health}",
+        "type": "table",
+        "targets": [
+          {
+            "expr": "container_health_status",
+            "format": "table",
+            "instant": true
+          }
+        ],
+        "gridPos": {"h": 6, "w": 12, "x": 0, "y": 0}
+      },
+      {
+        "id": 2,
+        "title": "${i18n:circuit_state}",
+        "type": "stat",
+        "targets": [
+          {
+            "expr": "opensips_dispatcher_circuit_state",
+            "legendFormat": "{{target}}"
+          }
+        ],
+        "gridPos": {"h": 6, "w": 12, "x": 12, "y": 0}
+      },
+      {
+        "id": 3,
+        "title": "${i18n:restart_count}",
+        "type": "graph",
+        "targets": [
+          {
+            "expr": "rate(opensips_container_restarts_total[5m])",
+            "legendFormat": "{{service}}"
+          }
+        ],
+        "gridPos": {"h": 8, "w": 12, "x": 0, "y": 6}
+      },
+      {
+        "id": 4,
+        "title": "${i18n:degradation_events}",
+        "type": "table",
+        "targets": [
+          {
+            "expr": "opensips_healthcheck_failures_total",
+            "format": "table",
+            "instant": true
+          }
+        ],
+        "gridPos": {"h": 8, "w": 12, "x": 12, "y": 6}
+      }
+    ]
+  },
+  "overwrite": true
+}

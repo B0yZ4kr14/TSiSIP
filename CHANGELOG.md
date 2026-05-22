@@ -1,0 +1,62 @@
+# Changelog
+
+All notable changes to this project will be documented in this file.
+
+The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
+and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
+
+## [Unreleased]
+
+## [0.7.0] - 2026-05-20
+
+### Added
+
+#### Feature 015: Automated TLS Certificate Rotation
+- Containerized certbot service for Let's Encrypt ACME v2 HTTP-01 challenges
+- Tailscale internal certificate service for tailnet endpoints
+- Zero-downtime OpenSIPS TLS reload via MI HTTP (`tls_reload`)
+- Atomic certificate deploy with pre-flight validation (`deploy-hook.sh`)
+- Prometheus certbot-exporter with 6 Alertmanager alert rules (30d/14d/7d/1d/expired/renewal-failed)
+- Integration tests (`tests/integration/test-tls-rotation.sh`)
+
+#### Feature 016: OCP Audit Log & Compliance Dashboard
+- Immutable PostgreSQL audit log (`ocp_audit_log`) with SHA-256 hash chain
+- Compliance dashboard (`web/audit-log.php`) with filters, pagination, JSON details
+- CSV/JSON export endpoint (`web/audit-export.php`)
+- Automated retention purge via cron (`docker/ocp/cron/audit-retention.sh`)
+- PHP audit library (`web/common/audit.php`) instrumenting login, logout, password changes, subscriber/dispatcher CRUD
+- Integration tests (`tests/integration/test-ocp-audit.sh`, `test-audit-dashboard.sh`)
+
+#### Feature 017: SIP Trunk Provider Integration
+- PostgreSQL schema for trunk providers, DID mappings, and registrations
+- OpenSIPS outbound trunk routing with priority selection and failover (`route[TRUNK_ROUTING]`)
+- Inbound DID routing with trusted-IP bypass (`route[INBOUND_DID_ROUTING]`)
+- Per-trunk CPS rate limiting and health monitoring via dispatcher OPTIONS probes
+- OCP admin pages: `trunk-providers.php`, `trunk-dids.php`, `trunk-status.php`
+- Grafana dashboard (`TSiSIP — SIP Trunk Providers`)
+- 5 Python integration tests (`tests/integration/test_sip_trunk_*.py`)
+
+#### DevSecOps Hardening (Feature 008)
+- Trivy CVE scanning in CI/CD pipeline (`.github/workflows/deploy.yml`)
+- Docker hardening: `cap_drop: [ALL]` and `security_opt: ["no-new-privileges:true"]` on all services
+- Backup S3 credentials migrated from plain env vars to Docker secrets
+- Removed `latest` tag fallback from `docker-compose.yml` (strict `${TSISIP_IMAGE_TAG:?must be set}`)
+- Non-root `USER` directives in `opensips-exporter` and `anomaly-detector` Dockerfiles
+- Ansible `no_log` coverage for secret-handling tasks
+
+#### Memorylint Remediation
+- M1: OpenSIPS pkg_mem_size increased from 16MB to 32MB
+- M3: VPS backup `mem_limit` increased from 128m to 256m
+- M4: Explicit Prometheus TSDB retention (30d / 10GB)
+- M5: Explicit OpenSIPS `shm_mem_size = 512` in config template
+
+### Changed
+- `AGENTS.md` updated with Feature 015/B/C test commands and validation procedures
+- `docs/TSiSIP-OPERATOR-RUNBOOK.md` expanded with operator sections for TLS rotation, audit compliance, and trunk management
+- Cross-project consistency: `constitution.md`, `brownfield-scan-report.md`, `memorylint-report.md`, `remediation-summary.md`, and `security-compliance.md` synchronized with ground truth
+
+### Fixed
+- Brownfield residual findings B14-B16 (backup encryption, healthchecks, CI `latest` tag documentation)
+- Speckit-analyze issues across all 014 specs (placeholders, port numbers, schema references, plan corruption)
+- `scripts/ci-scan.sh` robustness: handles missing PHP, missing env vars, and non-running compose stacks gracefully
+

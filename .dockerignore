@@ -1,0 +1,26 @@
+# Git
+.git/
+.gitignore
+
+# Secrets
+secrets/
+.env
+.env.*
+!.env.example
+
+# Local artifacts
+*.log
+*.pid
+
+# Documentation (not needed in image)
+docs/*
+!docs/wiki/
+!docs/wiki/*.md
+*.md
+
+# Speckit specs
+specs/
+.specify/
+
+# Spec Kit Memory Hub
+.spec-kit-memory/

@@ -1,0 +1,14 @@
+{
+  "mcpServers": {
+    "omk-project": {
+      "command": "bash",
+      "args": [
+        "-lc",
+        "set -e\nomk_bin=\"$(command -v omk 2>/dev/null || command -v oh-my-kimi 2>/dev/null || true)\"\nif [ -n \"$omk_bin\" ]; then\n  omk_cli=\"$('/usr/bin/node' -e 'const fs=require('\\''fs'\\'');process.stdout.write(fs.realpathSync(process.argv[1]))' \"$omk_bin\" 2>/dev/null || true)\"\n  if [ -n \"$omk_cli\" ]; then\n    exec '/usr/bin/node' \"$omk_cli\" mcp serve omk-project\n  fi\nfi\nmcp_bin=\"$(command -v omk-project-mcp 2>/dev/null || true)\"\nif [ -n \"$mcp_bin\" ]; then\n  mcp_js=\"$('/usr/bin/node' -e 'const fs=require('\\''fs'\\'');process.stdout.write(fs.realpathSync(process.argv[1]))' \"$mcp_bin\" 2>/dev/null || true)\"\n  if [ -n \"$mcp_js\" ]; then\n    exec '/usr/bin/node' \"$mcp_js\"\n  fi\nfi\necho \"omk-project MCP server not found; install @oh-my-kimi/cli or rerun omk init\" >&2\nexit 127"
+      ],
+      "env": {
+        "OMK_PROJECT_ROOT": "/home/b0yz4kr14/Projects/TSiSIP"
+      }
+    }
+  }
+}

@@ -1,0 +1,156 @@
+groups:
+  - name: tsisip-opensips
+    interval: 15s
+    rules:
+      # Dispatcher target degradation
+      - alert: OpenSIPSDispatcherDegradation
+        expr: opensips_dispatcher_target_response_ms > 500
+        for: 2m
+        labels:
+          severity: critical
+          service: opensips
+        annotations:
+          summary: "OpenSIPS dispatcher target {{ $labels.target }} response time high"
+          description: "Dispatcher target {{ $labels.target }} response time is {{ $value }}ms for more than 2 minutes"
+          runbook_url: "https://docs.tsiapp.io/runbooks/opensips-dispatcher-degradation"
+
+      # Authentication spike
+      - alert: OpenSIPSAuthSpike
+        expr: rate(opensips_auth_failures_total[1m]) > 10
+        for: 2m
+        labels:
+          severity: warning
+          service: opensips
+        annotations:
+          summary: "High authentication failure rate"
+          description: "Authentication failures are {{ $value }}/min for more than 2 minutes"
+          runbook_url: "https://docs.tsiapp.io/runbooks/opensips-auth-spike"
+
+  - name: tsisip-rtpengine
+    interval: 30s
+    rules:
+      # RTPengine high port utilization
+      - alert: RTPengineHighUtilization
+        expr: (rtpengine_ports_used / rtpengine_ports_total) > 0.8
+        for: 5m
+        labels:
+          severity: warning
+          service: rtpengine
+        annotations:
+          summary: "RTPengine port utilization above 80%"
+          description: "RTPengine port utilization is {{ $value | humanizePercentage }} for more than 5 minutes"
+          runbook_url: "https://docs.tsiapp.io/runbooks/rtpengine-high-utilization"
+
+  - name: tsisip-postgres
+    interval: 30s
+    rules:
+      # PostgreSQL slow queries
+      - alert: PostgreSQLSlowQueries
+        expr: pg_stat_statements_mean_time > 100
+        for: 5m
+        labels:
+          severity: warning
+          service: postgres
+        annotations:
+          summary: "PostgreSQL query latency high"
+          description: "Average query time is {{ $value }}ms for more than 5 minutes"
+          runbook_url: "https://docs.tsiapp.io/runbooks/postgresql-slow-queries"
+
+  - name: tsisip-infrastructure
+    interval: 15s
+    rules:
+      # Prometheus disk full
+      - alert: PrometheusDiskFull
+        expr: (prometheus_tsdb_storage_blocks_bytes / prometheus_tsdb_retention_limit_bytes) > 0.85
+        for: 5m
+        labels:
+          severity: critical
+          service: prometheus
+        annotations:
+          summary: "Prometheus disk usage above 85%"
+          description: "Prometheus TSDB is {{ $value | humanizePercentage }} full"
+          runbook_url: "https://docs.tsiapp.io/runbooks/prometheus-disk-full"
+
+  - name: tsisip-tls
+    interval: 60s
+    rules:
+      # T3.2: TLS certificate expiry alert (critical if < 30 days)
+      - alert: OpenSIPSTLSCertificateExpiringSoon
+        expr: opensips_tls_certificate_expiry_timestamp - time() < 30 * 24 * 3600
+        for: 5m
+        labels:
+          severity: critical
+          service: opensips
+        annotations:
+          summary: "OpenSIPS TLS certificate expires in less than 30 days"
+          description: "TLS certificate for OpenSIPS expires in {{ $value | humanizeDuration }}"
+          runbook_url: "https://docs.tsiapp.io/runbooks/opensips-tls-cert-expiry"
+
+  - name: tsisip-certificates
+    interval: 60s
+    rules:
+      - alert: CertExpiry30d
+        expr: certbot_days_until_expiry < 30
+        for: 5m
+        labels:
+          severity: warning
+          service: certbot
+        annotations:
+          summary: "TLS certificate expires in less than 30 days"
+          description: "Certificate for {{ $labels.domain }} expires in {{ $value | humanizeDuration }}"
+          runbook_url: "https://docs.tsiapp.io/runbooks/certbot-cert-expiry"
+
+      - alert: CertExpiry14d
+        expr: certbot_days_until_expiry < 14
+        for: 5m
+        labels:
+          severity: warning
+          service: certbot
+        annotations:
+          summary: "TLS certificate expires in less than 14 days"
+          description: "Certificate for {{ $labels.domain }} expires in {{ $value | humanizeDuration }}"
+          runbook_url: "https://docs.tsiapp.io/runbooks/certbot-cert-expiry"
+
+      - alert: CertExpiry7d
+        expr: certbot_days_until_expiry < 7
+        for: 5m
+        labels:
+          severity: critical
+          service: certbot
+        annotations:
+          summary: "TLS certificate expires in less than 7 days"
+          description: "Certificate for {{ $labels.domain }} expires in {{ $value | humanizeDuration }}"
+          runbook_url: "https://docs.tsiapp.io/runbooks/certbot-cert-expiry"
+
+      - alert: CertExpiry1d
+        expr: certbot_days_until_expiry < 1
+        for: 5m
+        labels:
+          severity: critical
+          service: certbot
+        annotations:
+          summary: "TLS certificate expires in less than 1 day"
+          description: "Certificate for {{ $labels.domain }} expires in {{ $value | humanizeDuration }}"
+          runbook_url: "https://docs.tsiapp.io/runbooks/certbot-cert-expiry"
+
+      - alert: CertExpired
+        expr: certbot_days_until_expiry <= 0
+        for: 1m
+        labels:
+          severity: critical
+          service: certbot
+        annotations:
+          summary: "TLS certificate has expired"
+          description: "Certificate for {{ $labels.domain }} has expired"
+          runbook_url: "https://docs.tsiapp.io/runbooks/certbot-cert-expiry"
+
+      - alert: CertRenewalFailed
+        expr: increase(certbot_renewal_failure_total[1h]) > 0
+        for: 5m
+        labels:
+          severity: critical
+          service: certbot
+        annotations:
+          summary: "Certificate renewal failed"
+          description: "Certificate renewal from {{ $labels.source }} has recorded new failures in the last hour"
+          runbook_url: "https://docs.tsiapp.io/runbooks/certbot-renewal-failed"

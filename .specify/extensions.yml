@@ -1,0 +1,181 @@
+hooks:
+  before_specify:
+  - extension: memory-loader
+    command: speckit.memory-loader.load
+    enabled: true
+    optional: false
+    prompt: Execute speckit.memory-loader.load?
+    description: Load project memory files before specification
+    condition: null
+  after_specify:
+  - extension: spec-validate
+    command: speckit.spec-validate.validate
+    enabled: true
+    optional: true
+    prompt: Spec generated. Run comprehension validation now?
+    description: Run spec validation after specification is generated
+    condition: null
+  - extension: speckit-utils
+    command: speckit.speckit-utils.doctor
+    enabled: true
+    optional: true
+    prompt: Run project health check?
+    description: Validate project health after specification generation
+    condition: null
+  before_plan:
+  - extension: memory-loader
+    command: speckit.memory-loader.load
+    enabled: true
+    optional: false
+    prompt: Execute speckit.memory-loader.load?
+    description: Load project memory files before planning
+    condition: null
+  - extension: memory-md
+    command: speckit.memory-md.plan-with-memory
+    enabled: true
+    optional: true
+    prompt: Would you like to synthesize project memory before planning?
+    description: ''
+    condition: null
+  after_plan:
+  - extension: agent-governance
+    command: speckit.agent-governance.refresh
+    enabled: true
+    optional: true
+    prompt: Refresh agent governance after planning?
+    description: Keeps agent context aligned with current repository governance
+    condition: null
+  - extension: architecture-guard
+    command: speckit.architecture-guard.violation-detection
+    enabled: true
+    optional: true
+    prompt: Would you like to scan the technical plan for architectural drift and
+      Constitution violations?
+    description: ''
+    condition: null
+  - extension: speckit-utils
+    command: speckit.speckit-utils.validate
+    enabled: true
+    optional: true
+    prompt: Validate spec-to-task traceability?
+    description: Verify requirements map to planned tasks after planning
+    condition: null
+  before_tasks:
+  - extension: memory-loader
+    command: speckit.memory-loader.load
+    enabled: true
+    optional: false
+    prompt: Execute speckit.memory-loader.load?
+    description: Load project memory files before task generation
+    condition: null
+  after_tasks:
+  - extension: blueprint
+    command: speckit.blueprint.generate
+    enabled: true
+    optional: true
+    prompt: Generate blueprint from tasks?
+    description: Auto-generate blueprint.md after task generation
+    condition: null
+  - extension: agent-governance
+    command: speckit.agent-governance.refresh
+    enabled: true
+    optional: true
+    prompt: Refresh agent governance after task generation?
+    description: Keeps agent context aligned with current repository governance
+    condition: null
+  - extension: architecture-guard
+    command: speckit.architecture-guard.refactor-generator
+    enabled: true
+    optional: true
+    prompt: Would you like to generate architectural refactor tasks before implementation?
+    description: ''
+    condition: null
+  - extension: spec-validate
+    command: speckit.spec-validate.validate-tasks
+    enabled: true
+    optional: true
+    prompt: Tasks generated. Run task validation now?
+    description: Run task validation after tasks are generated
+    condition: null
+  before_analyze:
+  - extension: memory-loader
+    command: speckit.memory-loader.load
+    enabled: true
+    optional: false
+    prompt: Execute speckit.memory-loader.load?
+    description: Load project memory files before analysis
+    condition: null
+  after_analyze: []
+  after_constitution:
+  - extension: agent-governance
+    command: speckit.agent-governance.refresh
+    enabled: true
+    optional: true
+    prompt: Refresh agent governance after constitution changes?
+    description: Projects governance memory into the active agent context file
+    condition: null
+  after_implement:
+  - extension: architecture-guard
+    command: speckit.architecture-guard.architecture-review
+    enabled: true
+    optional: true
+    prompt: Would you like to run a post-implementation architecture review?
+    description: ''
+    condition: null
+  - extension: memory-md
+    command: speckit.memory-md.capture-from-diff
+    enabled: true
+    optional: true
+    prompt: Would you like to capture durable lessons from this implementation to
+      project memory?
+    description: ''
+    condition: null
+  - extension: ripple
+    command: speckit.ripple.scan
+    enabled: true
+    optional: true
+    prompt: Scan for untested side effects?
+    description: Auto-scan for ripple effects after implementation
+    condition: null
+  before_implement:
+  - extension: spec-validate
+    command: speckit.spec-validate.gate
+    enabled: true
+    optional: false
+    prompt: Execute speckit.spec-validate.gate?
+    description: Hard gate implementation on validation and review policy
+    condition: null
+  - extension: memory-loader
+    command: speckit.memory-loader.load
+    enabled: true
+    optional: false
+    prompt: Execute speckit.memory-loader.load?
+    description: Load project memory files before implementation
+    condition: null
+  before_clarify:
+  - extension: memory-loader
+    command: speckit.memory-loader.load
+    enabled: true
+    optional: false
+    prompt: Execute speckit.memory-loader.load?
+    description: Load project memory files before clarification
+    condition: null
+  before_checklist:
+  - extension: memory-loader
+    command: speckit.memory-loader.load
+    enabled: true
+    optional: false
+    prompt: Execute speckit.memory-loader.load?
+    description: Load project memory files before checklist generation
+    condition: null
+installed:
+- agent-governance
+- architecture-guard
+- blueprint
+- memory-loader
+- memory-md
+- ripple
+- spec-validate
+- speckit-utils
+settings:
+  auto_execute_hooks: true

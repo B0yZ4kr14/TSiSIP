@@ -1,0 +1,17 @@
+May 20 06:44:48 [23332] NOTICE:core:main: config file ok, exiting...
+Listening on 
+             udp: 0.0.0.0 [0.0.0.0]:5060
+             tcp: 0.0.0.0 [0.0.0.0]:5060
+             tls: 0.0.0.0 [0.0.0.0]:5061
+             ws: 0.0.0.0 [0.0.0.0]:8080
+             wss: 0.0.0.0 [0.0.0.0]:4443
+Aliases: 
+
+OCI runtime exec failed: exec failed: unable to start container process: exec: "opensipsctl": executable file not found in $PATH
+Warning: Permanently added '100.111.74.69' (ED25519) to the list of known hosts.
+version: opensips 3.6.5 (x86_64/linux)
+flags: STATS: On, DISABLE_NAGLE, USE_MCAST, SHM_MMAP, PKG_MALLOC, Q_MALLOC, F_MALLOC, HP_MALLOC, F_PARALLEL_MALLOC, DBG_MALLOC, FAST_LOCK-ADAPTIVE_WAIT
+ADAPTIVE_WAIT_LOOPS=1024, MAX_RECV_BUFFER_SIZE 262144, MAX_LISTEN 16, MAX_URI_SIZE 1024, BUF_SIZE 65535
+poll method support: poll, epoll, sigio_rt, select.
+git revision: 5dfe21b
+main.c compiled on 21:28:11 May 18 2026 with cc 12

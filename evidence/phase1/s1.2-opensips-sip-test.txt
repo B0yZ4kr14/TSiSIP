@@ -1,0 +1,17 @@
+Warning: Permanently added '100.111.74.69' (ED25519) to the list of known hosts.
+
+message received:
+SIP/2.0 200 OK
+Via: SIP/2.0/UDP 172.18.0.4:57761;received=172.18.0.4;branch=z9hG4bK.7d2c044f;rport=57761;alias
+To: sip:opensips:5060;tag=60f6.7e24fefc5cc5c6a81803280206419392
+From: sip:sipsak@172.18.0.4:57761;tag=48f3392f
+Call-ID: 1223899439@172.18.0.4
+CSeq: 1 OPTIONS
+Server: OpenSIPS (3.6.5 (x86_64/linux))
+Content-Length: 0
+
+
+
+** reply received after 0.423 ms **
+   SIP/2.0 200 OK
+   final received

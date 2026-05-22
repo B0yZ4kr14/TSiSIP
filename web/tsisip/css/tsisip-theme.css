@@ -1,0 +1,813 @@
+/* TSiSIP Premium Theme Override Layer */
+/* Generated from tsisip-theme.src.css */
+
+@import url('tsisip-variables.css');
+
+/* ===== Global Resets & Base ===== */
+html {
+  font-family: var(--tsisip-font-body);
+  color: var(--tsisip-text-primary);
+  background-color: var(--tsisip-surface-base);
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+body {
+  margin: 0;
+  min-height: 100vh;
+  background-color: var(--tsisip-surface-base);
+}
+
+/* ===== Header Chrome ===== */
+.tsisip-header,
+header.tsisip-header,
+#header.tsisip-header {
+  background: linear-gradient(90deg, var(--tsisip-surface-header) 0%, var(--tsisip-primary-blue-dark) 100%);
+  color: var(--tsisip-text-on-dark);
+  border-bottom: 1px solid rgba(255,255,255,0.06);
+  padding: 0.75rem 1.5rem;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  min-height: 56px;
+  backdrop-filter: blur(8px);
+}
+
+.tsisip-header .logo-full {
+  display: block;
+}
+
+.tsisip-header .logo-compact {
+  display: none;
+}
+
+@media (max-width: 767px) {
+  .tsisip-header .logo-full {
+    display: none;
+  }
+  .tsisip-header .logo-compact {
+    display: block;
+  }
+}
+
+/* ===== Navigation Sidebar ===== */
+.tsisip-sidebar,
+#sidebar.tsisip-sidebar {
+  background-color: var(--tsisip-surface-card);
+  border-right: 1px solid var(--tsisip-border-light);
+  width: 240px;
+  min-height: calc(100vh - 56px);
+  transition: transform 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.tsisip-sidebar.collapsed {
+  transform: translateX(-100%);
+}
+
+@media (max-width: 1023px) {
+  .tsisip-sidebar {
+    position: fixed;
+    left: 0;
+    top: 56px;
+    z-index: 1000;
+    transform: translateX(-100%);
+    box-shadow: var(--tsisip-shadow-lg);
+  }
+  .tsisip-sidebar.open {
+    transform: translateX(0);
+  }
+  .tsisip-sidebar-toggle {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 44px;
+    height: 44px;
+    background: transparent;
+    border: none;
+    color: var(--tsisip-text-on-dark);
+    cursor: pointer;
+  }
+}
+
+@media (min-width: 1024px) {
+  .tsisip-sidebar-toggle {
+    display: none;
+  }
+}
+
+/* ===== Buttons ===== */
+.tsisip-btn,
+button.tsisip-btn,
+.tsisip-btn-primary {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 44px;
+  min-width: 44px;
+  padding: 0.5rem 1.25rem;
+  border-radius: var(--tsisip-radius-sm);
+  font-family: var(--tsisip-font-body);
+  font-size: var(--tsisip-text-sm);
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+  border: 1px solid transparent;
+  letter-spacing: 0.01em;
+}
+
+.tsisip-btn-primary {
+  background: var(--tsisip-accent-gradient);
+  color: var(--tsisip-text-on-dark);
+  border-color: transparent;
+  box-shadow: var(--tsisip-shadow-sm);
+}
+
+.tsisip-btn-primary:hover {
+  transform: translateY(-1px);
+  box-shadow: var(--tsisip-shadow-md), var(--tsisip-shadow-glow);
+}
+
+.tsisip-btn-primary:active {
+  transform: translateY(0);
+  box-shadow: var(--tsisip-shadow-sm);
+}
+
+.tsisip-btn-secondary {
+  background-color: transparent;
+  color: var(--tsisip-primary-blue);
+  border-color: var(--tsisip-border-subtle);
+}
+
+.tsisip-btn-secondary:hover {
+  background-color: var(--tsisip-surface-base);
+  border-color: var(--tsisip-primary-blue-light);
+  box-shadow: var(--tsisip-shadow-sm);
+}
+
+/* ===== Forms ===== */
+.tsisip-form-group {
+  margin-bottom: 1.25rem;
+}
+
+.tsisip-input,
+input.tsisip-input,
+textarea.tsisip-input,
+select.tsisip-input {
+  display: block;
+  width: 100%;
+  min-height: 46px;
+  padding: 0.625rem 0.875rem;
+  font-family: var(--tsisip-font-body);
+  font-size: var(--tsisip-text-base);
+  color: var(--tsisip-text-primary);
+  background-color: var(--tsisip-surface-card);
+  border: 1.5px solid var(--tsisip-border-subtle);
+  border-radius: var(--tsisip-radius-sm);
+  transition: border-color 0.2s ease, box-shadow 0.2s ease;
+}
+
+.tsisip-input:focus {
+  outline: none;
+  border-color: var(--tsisip-accent-teal);
+  box-shadow: 0 0 0 4px rgba(13, 138, 110, 0.12);
+}
+
+.tsisip-input::placeholder {
+  color: var(--tsisip-text-muted);
+}
+
+/* ===== Tables ===== */
+.tsisip-table,
+table.tsisip-table,
+.dataTable.tsisip-table {
+  width: 100%;
+  border-collapse: separate;
+  border-spacing: 0;
+  font-size: var(--tsisip-text-sm);
+  background-color: var(--tsisip-surface-card);
+  border-radius: var(--tsisip-radius-md);
+  overflow: hidden;
+  box-shadow: var(--tsisip-shadow-sm);
+}
+
+.tsisip-table thead {
+  background: linear-gradient(90deg, var(--tsisip-surface-header) 0%, var(--tsisip-primary-blue-dark) 100%);
+  color: var(--tsisip-text-on-dark);
+}
+
+.tsisip-table th,
+.tsisip-table td {
+  padding: 0.75rem 1rem;
+  text-align: left;
+  border-bottom: 1px solid var(--tsisip-border-light);
+}
+
+.tsisip-table tbody tr:nth-child(even) {
+  background-color: var(--tsisip-surface-base);
+}
+
+.tsisip-table tbody tr:hover {
+  background-color: rgba(26, 58, 92, 0.04);
+}
+
+.tsisip-table .mono-cell {
+  font-family: var(--tsisip-font-mono);
+  font-size: var(--tsisip-text-xs);
+}
+
+@media (max-width: 767px) {
+  .tsisip-table-container {
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+    border-radius: var(--tsisip-radius-md);
+  }
+  .tsisip-table th:first-child,
+  .tsisip-table td:first-child {
+    position: sticky;
+    left: 0;
+    background-color: var(--tsisip-surface-card);
+    z-index: 1;
+  }
+}
+
+/* ===== Badges ===== */
+.tsisip-badge {
+  display: inline-flex;
+  align-items: center;
+  padding: 0.25rem 0.625rem;
+  border-radius: 9999px;
+  font-size: var(--tsisip-text-xs);
+  font-weight: 600;
+  line-height: 1.5;
+}
+
+.tsisip-badge-success {
+  background-color: rgba(13, 138, 110, 0.10);
+  color: var(--tsisip-accent-success);
+}
+
+.tsisip-badge-warning {
+  background-color: rgba(196, 134, 12, 0.10);
+  color: var(--tsisip-accent-warning);
+}
+
+.tsisip-badge-error {
+  background-color: rgba(184, 50, 50, 0.10);
+  color: var(--tsisip-accent-error);
+}
+
+.tsisip-badge-info {
+  background-color: rgba(37, 99, 168, 0.10);
+  color: var(--tsisip-accent-info);
+}
+
+/* ===== Login Page ===== */
+body.tsisip-login {
+  background: linear-gradient(135deg, var(--tsisip-surface-header) 0%, var(--tsisip-primary-blue-dark) 50%, #0d1f33 100%);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 100vh;
+  position: relative;
+  overflow: hidden;
+}
+
+/* Decorative ambient orbs */
+body.tsisip-login::before {
+  content: '';
+  position: absolute;
+  width: 600px;
+  height: 600px;
+  border-radius: 50%;
+  background: radial-gradient(circle, rgba(13, 138, 110, 0.15) 0%, transparent 70%);
+  top: -200px;
+  right: -200px;
+  pointer-events: none;
+}
+
+body.tsisip-login::after {
+  content: '';
+  position: absolute;
+  width: 500px;
+  height: 500px;
+  border-radius: 50%;
+  background: radial-gradient(circle, rgba(37, 99, 168, 0.12) 0%, transparent 70%);
+  bottom: -150px;
+  left: -150px;
+  pointer-events: none;
+}
+
+.tsisip-login-card {
+  background: var(--tsisip-surface-glass);
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+  border: 1px solid rgba(255, 255, 255, 0.15);
+  border-radius: var(--tsisip-radius-xl);
+  padding: 2.5rem;
+  width: 100%;
+  max-width: 420px;
+  box-shadow: var(--tsisip-shadow-lg), 0 0 60px rgba(10, 22, 40, 0.2);
+  position: relative;
+  z-index: 1;
+  animation: tsisip-card-enter 0.6s cubic-bezier(0.4, 0, 0.2, 1) both;
+}
+
+@keyframes tsisip-card-enter {
+  from {
+    opacity: 0;
+    transform: translateY(20px) scale(0.98);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+}
+
+.tsisip-login-card .logo {
+  margin-bottom: 1.5rem;
+  text-align: center;
+}
+
+.tsisip-login-card .logo img {
+  filter: drop-shadow(0 4px 12px rgba(0,0,0,0.15));
+}
+
+.tsisip-login-card h1 {
+  font-family: var(--tsisip-font-heading);
+  font-weight: 700;
+  font-size: var(--tsisip-text-2xl);
+  color: var(--tsisip-text-primary);
+  margin: 0 0 0.5rem;
+}
+
+.tsisip-login-subtitle {
+  font-size: var(--tsisip-text-sm);
+  color: var(--tsisip-text-secondary);
+  margin-bottom: 1.5rem;
+  text-align: center;
+}
+
+/* ===== Role Density ===== */
+[data-tsisip-role="readonly"] .tsisip-actions-column,
+[data-tsisip-role="readonly"] .actions-column,
+[data-tsisip-role="readonly"] .tsisip-btn-edit,
+[data-tsisip-role="readonly"] .tsisip-btn-delete {
+  display: none !important;
+}
+
+[data-tsisip-role="readonly"] .tsisip-nav-admin-only {
+  display: none !important;
+}
+
+/* ===== Utility ===== */
+.tsisip-sr-only {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+  border: 0;
+}
+
+.tsisip-text-center {
+  text-align: center;
+}
+
+.tsisip-mb-0 { margin-bottom: 0; }
+.tsisip-mb-1 { margin-bottom: 0.25rem; }
+.tsisip-mb-2 { margin-bottom: 0.5rem; }
+.tsisip-mb-3 { margin-bottom: 0.75rem; }
+.tsisip-mb-4 { margin-bottom: 1rem; }
+.tsisip-mb-5 { margin-bottom: 1.25rem; }
+.tsisip-mb-6 { margin-bottom: 1.5rem; }
+
+/* ===== Role-Aware Density Modifiers ===== */
+[data-tsisip-role="admin"] .tsisip-sidebar {
+  border-right: 2px solid var(--tsisip-accent-teal);
+}
+
+[data-tsisip-role="devops"] .tsisip-table {
+  font-family: var(--tsisip-font-mono);
+}
+
+.tsisip-role-badge--admin {
+  background-color: rgba(13, 138, 110, 0.15);
+  color: var(--tsisip-accent-teal);
+}
+
+.tsisip-role-badge--devops {
+  background-color: rgba(37, 99, 168, 0.15);
+  color: var(--tsisip-accent-blue);
+}
+
+.tsisip-role-badge--dentist {
+  background-color: rgba(184, 50, 50, 0.15);
+  color: var(--tsisip-accent-error);
+}
+
+.tsisip-role-badge--assistant {
+  background-color: rgba(196, 134, 12, 0.15);
+  color: var(--tsisip-accent-warning);
+}
+
+.tsisip-role-badge--user {
+  background-color: rgba(37, 99, 168, 0.10);
+  color: var(--tsisip-accent-info);
+}
+
+.tsisip-role-badge--readonly {
+  background-color: rgba(136, 150, 164, 0.15);
+  color: var(--tsisip-text-muted);
+}
+
+/* ===== Layout Fixes for Sidebar ===== */
+#content {
+  margin-left: 240px;
+  padding: 1.5rem;
+  min-height: calc(100vh - 56px);
+}
+
+@media (max-width: 1023px) {
+  #content {
+    margin-left: 0;
+    padding: 1rem;
+  }
+}
+
+/* ===== Header Navigation ===== */
+.tsisip-header-nav {
+  display: flex;
+  gap: 1.5rem;
+  align-items: center;
+}
+
+.tsisip-header-link {
+  color: var(--tsisip-text-on-dark);
+  text-decoration: none;
+  font-size: var(--tsisip-text-sm);
+  font-weight: 500;
+  opacity: 0.85;
+  transition: opacity 0.2s ease;
+}
+
+.tsisip-header-link:hover,
+.tsisip-header-link.is-active {
+  opacity: 1;
+  text-decoration: underline;
+  text-underline-offset: 4px;
+}
+
+/* ===== Sidebar Navigation ===== */
+.tsisip-nav-list {
+  list-style: none;
+  margin: 0;
+  padding: 0.75rem 0;
+}
+
+.tsisip-nav-item {
+  margin: 0;
+}
+
+.tsisip-nav-link {
+  display: block;
+  padding: 0.625rem 1.25rem;
+  color: var(--tsisip-text-primary);
+  text-decoration: none;
+  font-size: var(--tsisip-text-sm);
+  font-weight: 500;
+  transition: background-color 0.15s ease, color 0.15s ease;
+}
+
+.tsisip-nav-link:hover {
+  background-color: rgba(26, 58, 92, 0.06);
+  color: var(--tsisip-primary-blue);
+}
+
+.tsisip-nav-item.is-active .tsisip-nav-link {
+  background-color: rgba(13, 138, 110, 0.08);
+  color: var(--tsisip-accent-teal);
+  border-right: 3px solid var(--tsisip-accent-teal);
+}
+
+/* ===== Wiki Styles ===== */
+.tsisip-wiki-page {
+  max-width: 1200px;
+}
+
+.tsisip-wiki-layout {
+  display: flex;
+  gap: 2rem;
+}
+
+.tsisip-wiki-toc {
+  width: 260px;
+  flex-shrink: 0;
+  position: sticky;
+  top: 1.5rem;
+  align-self: flex-start;
+  max-height: calc(100vh - 3rem);
+  overflow-y: auto;
+  background-color: var(--tsisip-surface-card);
+  border-radius: var(--tsisip-radius-md);
+  border: 1px solid var(--tsisip-border-light);
+  padding: 1rem;
+}
+
+.tsisip-wiki-toc-header {
+  margin-bottom: 0.75rem;
+}
+
+.tsisip-wiki-toc-header h3 {
+  margin: 0 0 0.5rem;
+  font-size: var(--tsisip-text-sm);
+  font-weight: 600;
+  color: var(--tsisip-text-secondary);
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+}
+
+.tsisip-wiki-toc-search {
+  min-height: 36px;
+  font-size: var(--tsisip-text-xs);
+  padding: 0.375rem 0.625rem;
+}
+
+.tsisip-wiki-toc-list {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+
+.tsisip-wiki-toc-item {
+  margin: 0;
+}
+
+.tsisip-wiki-toc-link {
+  display: block;
+  padding: 0.375rem 0.5rem;
+  color: var(--tsisip-text-primary);
+  text-decoration: none;
+  font-size: var(--tsisip-text-sm);
+  border-radius: var(--tsisip-radius-sm);
+  transition: background-color 0.15s ease, color 0.15s ease;
+}
+
+.tsisip-wiki-toc-link:hover {
+  background-color: rgba(26, 58, 92, 0.06);
+  color: var(--tsisip-primary-blue);
+}
+
+.tsisip-wiki-toc-link.is-active {
+  background-color: rgba(13, 138, 110, 0.08);
+  color: var(--tsisip-accent-teal);
+  font-weight: 600;
+}
+
+.tsisip-wiki-toc-level-3 .tsisip-wiki-toc-link {
+  padding-left: 1.25rem;
+  font-size: var(--tsisip-text-xs);
+  color: var(--tsisip-text-secondary);
+}
+
+.tsisip-wiki-toc-section {
+  display: flex;
+  align-items: center;
+  gap: 0.25rem;
+}
+
+.tsisip-wiki-toc-section .tsisip-wiki-toc-link {
+  flex: 1;
+}
+
+.tsisip-wiki-toc-toggle {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 20px;
+  height: 20px;
+  padding: 0;
+  border: none;
+  background: transparent;
+  color: var(--tsisip-text-muted);
+  cursor: pointer;
+  font-size: var(--tsisip-text-sm);
+  font-family: var(--tsisip-font-mono);
+  line-height: 1;
+}
+
+.tsisip-wiki-toc-toggle:hover {
+  color: var(--tsisip-text-primary);
+}
+
+.tsisip-wiki-toc-item.is-collapsed .tsisip-wiki-toc-toggle {
+  color: var(--tsisip-text-primary);
+}
+
+.tsisip-wiki-content {
+  flex: 1;
+  min-width: 0;
+}
+
+.tsisip-wiki-content h1,
+.tsisip-wiki-content h2,
+.tsisip-wiki-content h3,
+.tsisip-wiki-content h4 {
+  font-family: var(--tsisip-font-heading);
+  color: var(--tsisip-text-primary);
+  margin-top: 1.5rem;
+  margin-bottom: 0.75rem;
+}
+
+.tsisip-wiki-content h1 {
+  font-size: var(--tsisip-text-3xl);
+  border-bottom: 1px solid var(--tsisip-border-light);
+  padding-bottom: 0.5rem;
+}
+
+.tsisip-wiki-content h2 {
+  font-size: var(--tsisip-text-2xl);
+  color: var(--tsisip-primary-blue);
+}
+
+.tsisip-wiki-content h3 {
+  font-size: var(--tsisip-text-xl);
+}
+
+.tsisip-wiki-content p {
+  line-height: 1.7;
+  margin-bottom: 1rem;
+}
+
+.tsisip-wiki-content pre {
+  background-color: var(--tsisip-surface-header);
+  color: var(--tsisip-text-on-dark);
+  padding: 1rem;
+  border-radius: var(--tsisip-radius-md);
+  overflow-x: auto;
+  font-family: var(--tsisip-font-mono);
+  font-size: var(--tsisip-text-sm);
+}
+
+.tsisip-wiki-content code {
+  background-color: rgba(26, 58, 92, 0.08);
+  padding: 0.125rem 0.375rem;
+  border-radius: 4px;
+  font-family: var(--tsisip-font-mono);
+  font-size: 0.9em;
+}
+
+.tsisip-wiki-content pre code {
+  background: transparent;
+  padding: 0;
+}
+
+.tsisip-wiki-content blockquote {
+  border-left: 4px solid var(--tsisip-accent-teal);
+  margin: 1rem 0;
+  padding: 0.5rem 1rem;
+  background-color: rgba(13, 138, 110, 0.04);
+  color: var(--tsisip-text-secondary);
+}
+
+.tsisip-wiki-content ul,
+.tsisip-wiki-content ol {
+  margin-bottom: 1rem;
+  padding-left: 1.5rem;
+}
+
+.tsisip-wiki-content li {
+  margin-bottom: 0.375rem;
+}
+
+.tsisip-wiki-content hr {
+  border: none;
+  border-top: 1px solid var(--tsisip-border-light);
+  margin: 1.5rem 0;
+}
+
+.tsisip-wiki-content a {
+  color: var(--tsisip-accent-blue);
+  text-decoration: underline;
+  text-underline-offset: 2px;
+}
+
+.tsisip-wiki-content a:hover {
+  color: var(--tsisip-primary-blue);
+}
+
+.tsisip-wiki-content table {
+  margin-bottom: 1rem;
+}
+
+.tsisip-wiki-404 {
+  text-align: center;
+  padding: 3rem 1rem;
+}
+
+.tsisip-wiki-404 h1 {
+  font-size: var(--tsisip-text-3xl);
+  color: var(--tsisip-text-muted);
+  margin-bottom: 1rem;
+}
+
+.tsisip-wiki-404 p {
+  color: var(--tsisip-text-secondary);
+  margin-bottom: 1.5rem;
+}
+
+/* ===== Dashboard ===== */
+.tsisip-dashboard h1 {
+  font-size: var(--tsisip-text-2xl);
+  margin-bottom: 1.5rem;
+}
+
+.tsisip-dashboard-role {
+  color: var(--tsisip-accent-teal);
+}
+
+.tsisip-dashboard-section {
+  background-color: var(--tsisip-surface-card);
+  border-radius: var(--tsisip-radius-md);
+  padding: 1.5rem;
+  margin-bottom: 1.5rem;
+  box-shadow: var(--tsisip-shadow-sm);
+}
+
+.tsisip-dashboard-section h2 {
+  font-size: var(--tsisip-text-lg);
+  margin-top: 0;
+  margin-bottom: 1rem;
+  color: var(--tsisip-primary-blue);
+}
+
+.tsisip-dashboard-links {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.75rem;
+}
+
+/* ===== Responsive Adjustments ===== */
+@media (max-width: 1023px) {
+  .tsisip-wiki-layout {
+    flex-direction: column;
+  }
+  .tsisip-wiki-toc {
+    width: 100%;
+    position: static;
+    max-height: none;
+  }
+}
+
+@media (max-width: 767px) {
+  .tsisip-header-nav {
+    display: none;
+  }
+}
+
+/* ===== Navigation Section Headings ===== */
+.tsisip-nav-heading {
+  padding: 0.5rem 1rem;
+  margin-top: 0.5rem;
+  font-size: 0.7rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  color: var(--tsisip-accent-silver);
+  border-top: 1px solid var(--tsisip-border-subtle);
+}
+
+.tsisip-nav-heading-text {
+  display: block;
+}
+
+/* ===== Status Indicators ===== */
+.tsisip-status-list {
+  list-style: none;
+  padding: 0;
+  margin: 0.5rem 0 0;
+}
+
+.tsisip-status-list li {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.35rem 0;
+  font-size: 0.9rem;
+  color: var(--tsisip-text-primary);
+}
+
+.tsisip-status-dot {
+  display: inline-block;
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background-color: var(--tsisip-accent-silver);
+}
+
+.tsisip-status-dot--ok {
+  background-color: var(--tsisip-accent-success);
+  box-shadow: 0 0 6px var(--tsisip-accent-success);
+}

@@ -1,0 +1,12 @@
+Warning: Permanently added '100.111.74.69' (ED25519) to the list of known hosts.
+subscribers_noauth: 200
+csrf_missing: 200
+curl: (3) URL rejected: Malformed input to a URL function
+sqli_attempt: 000
+Warning: Permanently added '100.111.74.69' (ED25519) to the list of known hosts.
+LOGIN DONE
+                        Subscribers                    </a>
+                    <a href="wiki.php?page=security-compliance"
+    <h2>Subscriber Management</h2>
+            <div class="tsisip-badge tsisip-badge-error" role="alert">Invalid CSRF token.</div>
+        <h3>Add New Subscriber</h3>

@@ -1,0 +1,96 @@
+                List of relations
+ Schema |         Name         | Type  |  Owner   
+--------+----------------------+-------+----------
+ public | acc                  | table | opensips
+ public | address              | table | opensips
+ public | auth_audit_log       | table | opensips
+ public | cdr                  | table | opensips
+ public | dispatcher           | table | opensips
+ public | header_routing_rules | table | opensips
+ public | missed_calls         | table | opensips
+ public | ocp_login_log        | table | opensips
+ public | ocp_users            | table | opensips
+ public | pbx_backends         | table | opensips
+ public | subscriber           | table | opensips
+ public | tenants              | table | opensips
+ public | trunk_ips            | table | opensips
+ public | userblacklist        | table | opensips
+ public | version              | table | opensips
+(15 rows)
+
+                                           Table "public.subscriber"
+     Column     |          Type          | Collation | Nullable |                   Default                    
+----------------+------------------------+-----------+----------+----------------------------------------------
+ id             | integer                |           | not null | nextval('subscriber_id_seq'::regclass)
+ username       | character varying(64)  |           | not null | ''::character varying
+ domain         | character varying(64)  |           | not null | ''::character varying
+ password       | character varying(64)  |           | not null | ''::character varying
+ ha1            | character varying(128) |           | not null | ''::character varying
+ ha1_sha256     | character varying(256) |           | not null | ''::character varying
+ ha1_sha512t256 | character varying(256) |           | not null | ''::character varying
+ email_address  | character varying(128) |           | not null | ''::character varying
+ rpid           | character varying(128) |           |          | NULL::character varying
+ tenant_id      | uuid                   |           | not null | '00000000-0000-0000-0000-000000000000'::uuid
+ routing_group  | integer                |           | not null | 1
+ enabled        | boolean                |           | not null | true
+Indexes:
+    "subscriber_pkey" PRIMARY KEY, btree (id)
+    "idx_subscriber_tenant_domain" btree (tenant_id, domain)
+    "subscriber_idx" UNIQUE, btree (username, domain)
+    "uq_subscriber_tenant_username_domain" UNIQUE, btree (tenant_id, username, domain)
+
+                                                  Table "public.cdr"
+   Column   |            Type             | Collation | Nullable |                      Default                       
+------------+-----------------------------+-----------+----------+----------------------------------------------------
+ id         | integer                     |           | not null | nextval('cdr_id_seq'::regclass)
+ start_time | timestamp without time zone |           | not null | '1900-01-01 00:00:00'::timestamp without time zone
+ end_time   | timestamp without time zone |           | not null | '1900-01-01 00:00:00'::timestamp without time zone
+ duration   | real                        |           | not null | 0
+ sip_code   | character varying(3)        |           | not null | ''::character varying
+ sip_reason | character varying(128)      |           | not null | ''::character varying
+ setuptime  | real                        |           | not null | 0
+ created    | timestamp without time zone |           |          | 
+Indexes:
+    "cdr_pkey" PRIMARY KEY, btree (id)
+
+---
+                                      Table "public.dispatcher"
+   Column    |          Type          | Collation | Nullable |                Default                 
+-------------+------------------------+-----------+----------+----------------------------------------
+ id          | integer                |           | not null | nextval('dispatcher_id_seq'::regclass)
+ setid       | integer                |           | not null | 0
+ destination | character varying(192) |           | not null | ''::character varying
+ socket      | character varying(128) |           |          | NULL::character varying
+ state       | integer                |           | not null | 0
+ probe_mode  | integer                |           | not null | 0
+ weight      | character varying(64)  |           | not null | '1'::character varying
+ priority    | integer                |           | not null | 0
+ attrs       | character varying(128) |           |          | NULL::character varying
+ description | character varying(64)  |           |          | NULL::character varying
+Indexes:
+    "dispatcher_pkey" PRIMARY KEY, btree (id)
+    "dispatcher_setid_idx" btree (setid)
+
+---
+                                        Table "public.ocp_users"
+        Column         |           Type           | Collation | Nullable |            Default            
+-----------------------+--------------------------+-----------+----------+-------------------------------
+ id                    | uuid                     |           | not null | gen_random_uuid()
+ username              | character varying(64)    |           | not null | 
+ email                 | character varying(255)   |           | not null | ''::character varying
+ password_hash         | character varying(255)   |           | not null | 
+ role                  | character varying(32)    |           | not null | 'readonly'::character varying
+ enabled               | boolean                  |           | not null | true
+ failed_attempts       | integer                  |           | not null | 0
+ locked_until          | timestamp with time zone |           |          | 
+ last_login_at         | timestamp with time zone |           |          | 
+ created_at            | timestamp with time zone |           | not null | now()
+ updated_at            | timestamp with time zone |           | not null | now()
+ force_password_change | boolean                  |           | not null | true
+Indexes:
+    "ocp_users_pkey" PRIMARY KEY, btree (id)
+    "idx_ocp_users_enabled" btree (username, enabled) WHERE enabled = true
+    "ocp_users_username_key" UNIQUE CONSTRAINT, btree (username)
+Check constraints:
+    "ocp_users_role_check" CHECK (role::text = ANY (ARRAY['admin'::character varying, 'devops'::character varying, 'dentist'::character varying, 'assistant'::character varying, 'user'::character varying, 'readonly'::character varying]::text[]))
+

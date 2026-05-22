@@ -1,0 +1,68 @@
+/* OCP v9 Base Styles - TSiSIP Compatible Stub */
+/* This file serves as the OCP base stylesheet. TSiSIP theme loads after this. */
+
+* {
+  box-sizing: border-box;
+}
+
+body {
+  font-family: Arial, sans-serif;
+  font-size: 14px;
+  line-height: 1.5;
+  color: #333;
+  background-color: #f5f5f5;
+  margin: 0;
+}
+
+header {
+  background-color: #2c3e50;
+  color: #fff;
+  padding: 10px 20px;
+}
+
+#sidebar {
+  background-color: #34495e;
+  color: #ecf0f1;
+  width: 220px;
+  float: left;
+  min-height: 100vh;
+}
+
+#content {
+  margin-left: 220px;
+  padding: 20px;
+}
+
+.dataTable {
+  width: 100%;
+  border-collapse: collapse;
+  background-color: #fff;
+}
+
+.dataTable th,
+.dataTable td {
+  padding: 8px 12px;
+  border: 1px solid #ddd;
+  text-align: left;
+}
+
+.dataTable th {
+  background-color: #2c3e50;
+  color: #fff;
+}
+
+.btn {
+  display: inline-block;
+  padding: 6px 12px;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  background-color: #fff;
+  color: #333;
+  cursor: pointer;
+}
+
+.btn-primary {
+  background-color: #3498db;
+  color: #fff;
+  border-color: #2980b9;
+}

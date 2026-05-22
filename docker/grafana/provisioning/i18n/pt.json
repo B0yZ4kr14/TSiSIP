@@ -1,0 +1,14 @@
+{
+  "active_dialogs": "Diálogos Ativos",
+  "dispatcher_targets": "Destinos do Dispatcher",
+  "response_time": "Tempo de Resposta (ms)",
+  "active_alerts": "Alertas Ativos",
+  "concurrent_calls_trend": "Tendência de Chamadas Concorrentes",
+  "rtp_port_utilization": "Utilização de Portas RTP",
+  "subscriber_growth": "Crescimento de Assinantes",
+  "query_latency": "Latência de Consultas PostgreSQL",
+  "call_success_rate": "Taxa de Sucesso de Chamadas",
+  "registration_rate": "Taxa de Registro",
+  "dispatcher_summary": "Resumo de Saúde do Dispatcher",
+  "recent_alerts": "Alertas Recentes"
+}

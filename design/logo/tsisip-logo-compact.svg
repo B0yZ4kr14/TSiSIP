@@ -1,0 +1,5 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 48 48" width="48" height="48" aria-label="TSiSIP">
+  <rect width="48" height="48" rx="8" fill="#1A3A5C"/>
+  <text x="6" y="32" font-family="Inter, system-ui, sans-serif" font-size="18" font-weight="700" fill="#E8ECF0" letter-spacing="0.02em">T</text>
+  <circle cx="38" cy="24" r="6" fill="#0D8A6E" opacity="0.9"/>
+</svg>
