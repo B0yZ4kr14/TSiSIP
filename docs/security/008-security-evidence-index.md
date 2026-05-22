@@ -39,6 +39,22 @@ Produced during `speckit-implement` with Security Governance preset:
 | EV-019-002 | Agent Memory Governance Framework | `docs/security/019-agent-memory-governance.md` | speckit-implement | 2026-05-19 |
 | EV-019-003 | MSL Applicability Justification | §6 of 019-memory-hub-security-assessment.md | speckit-implement | 2026-05-19 |
 
+## 6. Feature 020 — OCP Critical Tool Gap Closure Evidence
+
+Produced during `speckit-implement` with Security Governance preset:
+
+| Evidence ID | Description | Location | Produced By | Date |
+|---|---|---|---|---|
+| EV-020-001 | OCP Gap Closure Security Assessment | `docs/security/020-ocp-gap-closure-security-assessment.md` | speckit-implement | 2026-05-19 |
+| EV-020-002 | OCP Gap Closure Threat Model | `docs/security/020-ocp-gap-closure-threat-model.md` | speckit-implement | 2026-05-19 |
+| EV-020-003 | MSL Applicability Justification | §6 of 020-ocp-gap-closure-security-assessment.md | speckit-implement | 2026-05-19 |
+
+**Open Actions from Feature 020**:
+- SEC-ACTION-020-001: Implement 6 OCP tools (T1.1–T3.4)
+- SEC-ACTION-020-002: Run security checkpoints SR-1/2/3
+
+---
+
 **Open Actions from Feature 019**:
 - SEC-ACTION-019-001: Complete memory-md bootstrap and validation (T2.1–T3.5)
 - SEC-ACTION-019-002: Integrate memory capture into Feature 020+ workflow
