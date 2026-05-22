@@ -446,8 +446,10 @@ deployer() {
     # ── 4d: Pull from registry or build on target ──
     if [ "${FALLBACK_BUILD_ON_TARGET:-0}" = "1" ]; then
         info "Deployer: FALLBACK mode — building images on target..."
+        # Build only the services we need to update (rtpengine is the critical one)
+        # Other services use existing GHCR images on the VPS
         ssh $SSH_OPTS ${SSH_KEY:+-i "$SSH_KEY"} "$target" \
-            "cd ${remote_dir} && sudo docker compose -f docker-compose.prod.yml -f docker-compose.build.yml build --parallel 2>&1 | tail -30" || warn "Deployer: build had warnings"
+            "cd ${remote_dir} && sudo docker compose -f docker-compose.prod.yml -f docker-compose.build.yml build rtpengine 2>&1 | tail -30" || warn "Deployer: build had warnings"
         # Verify critical images exist after build
         local missing_img
         missing_img=$(ssh $SSH_OPTS ${SSH_KEY:+-i "$SSH_KEY"} "$target" \
