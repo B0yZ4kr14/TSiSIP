@@ -137,7 +137,7 @@ http {
 EOF
 
 if command -v nginx >/dev/null 2>&1; then
-    if nginx -t -c "$TEMP_NGINX/nginx.conf" >/dev/null 2>&1; then
+    if nginx -t -c "$TEMP_NGINX/nginx.conf" 2>&1; then
         pass "nginx config syntax valid (host binary)"
     else
         fail "nginx config syntax error"
