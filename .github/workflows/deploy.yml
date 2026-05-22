@@ -249,7 +249,8 @@ jobs:
       # ------------------------------------------------------------------
       - name: Tag and push
         run: |
-          PREFIX="ghcr.io/${{ github.repository_owner }}"
+          OWNER_LC=$(echo "${{ github.repository_owner }}" | tr '[:upper:]' '[:lower:]')
+          PREFIX="ghcr.io/${OWNER_LC}"
           for img in opensips ocp rtpengine postgres asterisk prometheus grafana opensips-exporter anomaly-detector backup; do
             if docker images --format '{{.Repository}}:{{.Tag}}' | grep -q "tsisip/${img}:latest"; then
               docker tag "tsisip/${img}:latest" "${PREFIX}/tsisip/${img}:latest"
