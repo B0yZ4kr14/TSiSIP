@@ -137,9 +137,11 @@ http {
 EOF
 
 if command -v nginx >/dev/null 2>&1; then
-    if nginx -t -c "$TEMP_NGINX/nginx.conf" >/dev/null 2>&1; then
+    NGINX_OUT=$(nginx -t -c "$TEMP_NGINX/nginx.conf" 2>&1) || true
+    if echo "$NGINX_OUT" | grep -q "syntax is ok"; then
         pass "nginx config syntax valid (host binary)"
     else
+        echo "$NGINX_OUT" >&2
         fail "nginx config syntax error"
     fi
 elif [ -n "${CI:-}" ] || [ -n "${GITHUB_ACTIONS:-}" ]; then
