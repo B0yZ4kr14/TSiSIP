@@ -112,22 +112,14 @@ fi
 
 # 10. Nginx syntax check (SG2.2)
 info "=== Nginx Syntax Check ==="
-if command -v nginx >/dev/null 2>&1; then
-    if nginx -t -c "$SCRIPT_DIR/nginx/tsisip-reverse-proxy.conf" >/dev/null 2>&1; then
-        pass "nginx config syntax valid (host binary)"
-    else
-        fail "nginx config syntax error"
-    fi
-elif [ -n "${CI:-}" ] || [ -n "${GITHUB_ACTIONS:-}" ]; then
-    # CI-native check using nginx container with dummy certificates
-    TEMP_CERTS=$(mktemp -d)
-    openssl req -x509 -nodes -days 1 -newkey rsa:2048 \
-        -keyout "$TEMP_CERTS/tsiapp.io.key" \
-        -out "$TEMP_CERTS/tsiapp.io.crt" \
-        -subj "/CN=tsiapp.io" 2>/dev/null || true
-    # Create a temporary nginx.conf that wraps the config in an http block
-    TEMP_NGINX=$(mktemp -d)
-    cat > "$TEMP_NGINX/nginx.conf" << 'EOF'
+# Create a temporary nginx.conf that wraps the config in an http block
+TEMP_CERTS=$(mktemp -d)
+openssl req -x509 -nodes -days 1 -newkey rsa:2048 \
+    -keyout "$TEMP_CERTS/tsiapp.io.key" \
+    -out "$TEMP_CERTS/tsiapp.io.crt" \
+    -subj "/CN=tsiapp.io" 2>/dev/null || true
+TEMP_NGINX=$(mktemp -d)
+cat > "$TEMP_NGINX/nginx.conf" << EOF
 user nginx;
 worker_processes auto;
 error_log /var/log/nginx/error.log warn;
@@ -137,9 +129,18 @@ http {
     include /etc/nginx/mime.types;
     default_type application/octet-stream;
     access_log /var/log/nginx/access.log;
-    include /etc/nginx/tsisip-reverse-proxy.conf;
+    include $SCRIPT_DIR/nginx/tsisip-reverse-proxy.conf;
 }
 EOF
+
+if command -v nginx >/dev/null 2>&1; then
+    if nginx -t -c "$TEMP_NGINX/nginx.conf" >/dev/null 2>&1; then
+        pass "nginx config syntax valid (host binary)"
+    else
+        fail "nginx config syntax error"
+    fi
+elif [ -n "${CI:-}" ] || [ -n "${GITHUB_ACTIONS:-}" ]; then
+    # CI-native check using nginx container with dummy certificates
     if docker run --rm \
         -v "$SCRIPT_DIR/nginx:/etc/nginx:ro" \
         -v "$TEMP_CERTS:/etc/ssl/certs:ro" \
@@ -151,10 +152,10 @@ EOF
     else
         fail "nginx config syntax error (container CI)"
     fi
-    rm -rf "$TEMP_CERTS" "$TEMP_NGINX"
 else
     info "nginx not available and not in CI, skipping syntax check"
 fi
+rm -rf "$TEMP_CERTS" "$TEMP_NGINX"
 
 # 11. Audit document exists
 if [ -f "$SCRIPT_DIR/audit/DEVSECOPS-AUDIT.md" ]; then
