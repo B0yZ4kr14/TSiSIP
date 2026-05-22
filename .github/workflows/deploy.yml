@@ -33,6 +33,10 @@ env:
   TLS_DOMAIN: tsiapp.io
   ACME_EMAIL: admin@tsiapp.io
 
+permissions:
+  contents: read
+  packages: write
+
 jobs:
   preflight:
     name: Pre-flight Validation
