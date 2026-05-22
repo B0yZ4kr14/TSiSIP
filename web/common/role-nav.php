@@ -16,6 +16,12 @@ if ($userRole === 'admin' || $userRole === 'devops') {
         'trunk-dids'      => _('DID Mappings'),
         'trunk-status'    => _('Trunk Status'),
         'audit-log'       => _('Audit Log'),
+        'dialplan'        => _('Dialplan'),
+        'domains'         => _('Domains'),
+        'dialog'          => _('Active Dialogs'),
+        'mi-commands'     => _('MI Commands'),
+        'statistics'      => _('Statistics'),
+        'tls-management'  => _('TLS Certificates'),
     ];
 }
 

@@ -26,9 +26,15 @@ $displayRole = isset($roleLabels[$userRole]) ? $roleLabels[$userRole] : $roleLab
 $systemLinks = [];
 if ($userRole === 'admin' || $userRole === 'devops') {
     $systemLinks = [
-        ['url' => 'dispatcher.php',  'label' => _('Dispatcher Targets'),  'icon' => 'route'],
-        ['url' => 'rtpengine.php',   'label' => _('RTPengine Sessions'),  'icon' => 'broadcast'],
-        ['url' => 'audit-log.php',   'label' => _('Audit Log & Compliance'), 'icon' => 'shield'],
+        ['url' => 'dispatcher.php',   'label' => _('Dispatcher Targets'),   'icon' => 'route'],
+        ['url' => 'rtpengine.php',    'label' => _('RTPengine Sessions'),   'icon' => 'broadcast'],
+        ['url' => 'audit-log.php',    'label' => _('Audit Log & Compliance'), 'icon' => 'shield'],
+        ['url' => 'dialplan.php',     'label' => _('Dialplan'),             'icon' => 'list'],
+        ['url' => 'domains.php',      'label' => _('SIP Domains'),          'icon' => 'globe'],
+        ['url' => 'dialog.php',       'label' => _('Active Dialogs'),       'icon' => 'phone'],
+        ['url' => 'mi-commands.php',  'label' => _('MI Commands'),          'icon' => 'terminal'],
+        ['url' => 'statistics.php',   'label' => _('Statistics'),           'icon' => 'chart'],
+        ['url' => 'tls-management.php', 'label' => _('TLS Certificates'),    'icon' => 'lock'],
     ];
 }
 
@@ -93,7 +99,7 @@ if (isset($roleNav[$userRole])) {
             <li><span class="tsisip-status-dot tsisip-status-dot--ok"></span> OCP Web Interface</li>
         </ul>
         <p class="tsisip-hint">
-            <?php echo _('Note: This is a lightweight implementation. Advanced OpenSIPS operations (MI commands, statistics, call center) require CLI or direct database access.'); ?>
+            <?php echo _('Feature 020 tools are now available: Dialog Viewer, MI Commands, Statistics, Dialplan, Domains, and TLS Management.'); ?>
         </p>
     </div>
 </div>
