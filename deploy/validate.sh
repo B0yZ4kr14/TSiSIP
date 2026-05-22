@@ -125,19 +125,19 @@ sed "s|/etc/ssl/certs/tsiapp.io.crt|$TEMP_CERTS/tsiapp.io.crt|g; s|/etc/ssl/priv
 cat > "$TEMP_NGINX/nginx.conf" << EOF
 user nginx;
 worker_processes auto;
-error_log /var/log/nginx/error.log warn;
-pid /var/run/nginx.pid;
+error_log $TEMP_NGINX/error.log warn;
+pid $TEMP_NGINX/nginx.pid;
 events { worker_connections 1024; }
 http {
     include /etc/nginx/mime.types;
     default_type application/octet-stream;
-    access_log /var/log/nginx/access.log;
+    access_log $TEMP_NGINX/access.log;
     include $TEMP_NGINX/tsisip-reverse-proxy.conf;
 }
 EOF
 
 if command -v nginx >/dev/null 2>&1; then
-    if nginx -t -c "$TEMP_NGINX/nginx.conf" 2>&1; then
+    if nginx -t -c "$TEMP_NGINX/nginx.conf" >/dev/null 2>&1; then
         pass "nginx config syntax valid (host binary)"
     else
         fail "nginx config syntax error"
