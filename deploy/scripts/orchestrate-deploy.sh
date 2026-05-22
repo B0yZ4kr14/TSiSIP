@@ -441,7 +441,7 @@ deployer() {
     # ── 4b: Sync code ──
     info "Deployer: syncing code to target..."
     ssh $SSH_OPTS ${SSH_KEY:+-i "$SSH_KEY"} "$target" \
-        "cd ${remote_dir} && git pull origin master 2>/dev/null || echo 'git pull skipped or failed'" || true
+        "cd ${remote_dir} && git checkout main 2>/dev/null || git checkout master 2>/dev/null || true; git pull origin main 2>/dev/null || git pull origin master 2>/dev/null || echo 'git pull skipped or failed'" || true
 
     # ── 4d: Pull from registry or build on target ──
     if [ "${FALLBACK_BUILD_ON_TARGET:-0}" = "1" ]; then
