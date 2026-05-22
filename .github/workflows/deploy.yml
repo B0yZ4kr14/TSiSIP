@@ -28,6 +28,10 @@ env:
   TSISIP_IMAGE_TAG: latest
   OPENSIPS_LISTEN_IP: 127.0.0.1
   HOST_PUBLIC_IP: 127.0.0.1
+  RTPENGINE_PRIVATE_IP: 127.0.0.1
+  RTPENGINE_INTERNAL_IP: 127.0.0.1
+  TLS_DOMAIN: tsiapp.io
+  ACME_EMAIL: admin@tsiapp.io
 
 jobs:
   preflight:

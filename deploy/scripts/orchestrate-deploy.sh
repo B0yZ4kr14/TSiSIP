@@ -52,10 +52,11 @@ gate_pass() { echo -e "${GREEN}[PASS]${NC} Gate $1: $2"; }
 gate_fail() { echo -e "${RED}[FAIL]${NC} Gate $1: $2"; }
 
 # ─── Secret extraction ───
-GITHUB_TOKEN=""
-TSiAPP_HOST=""
-TSiAPP_USER=""
-TSiAPP_SSH_KEY=""
+# Support both env vars (CI/GitHub Actions) and .env file (local dev)
+GITHUB_TOKEN="${GITHUB_TOKEN:-}"
+TSiAPP_HOST="${TSiAPP_HOST:-}"
+TSiAPP_USER="${TSiAPP_USER:-}"
+TSiAPP_SSH_KEY="${TSiAPP_SSH_KEY:-}"
 SSH_KEY="${HOME}/.ssh/TSiHomeLab"
 SSH_KNOWN_HOSTS="${PROJECT_ROOT}/deploy/ssh/known_hosts"
 SSH_OPTS="-o StrictHostKeyChecking=accept-new -o UserKnownHostsFile=${SSH_KNOWN_HOSTS}"
@@ -63,15 +64,15 @@ SSH_OPTS="-o StrictHostKeyChecking=accept-new -o UserKnownHostsFile=${SSH_KNOWN_
 if [ -f "$ENV_FILE" ]; then
     while IFS='=' read -r key value; do
         case "$key" in
-            GITHUB_TOKEN)    value="${value#\"}"; value="${value%\"}"; GITHUB_TOKEN="$value" ;;
-            TSiAPP_HOST)     value="${value#\"}"; value="${value%\"}"; TSiAPP_HOST="$value" ;;
-            TSiAPP_USER)     value="${value#\"}"; value="${value%\"}"; TSiAPP_USER="$value" ;;
-            TSiAPP_SSH_KEY)  value="${value#\"}"; value="${value%\"}"; TSiAPP_SSH_KEY="$value" ;;
+            GITHUB_TOKEN)    value="${value#\"}"; value="${value%\"}"; [ -z "$GITHUB_TOKEN" ] && GITHUB_TOKEN="$value" ;;
+            TSiAPP_HOST)     value="${value#\"}"; value="${value%\"}"; [ -z "$TSiAPP_HOST" ] && TSiAPP_HOST="$value" ;;
+            TSiAPP_USER)     value="${value#\"}"; value="${value%\"}"; [ -z "$TSiAPP_USER" ] && TSiAPP_USER="$value" ;;
+            TSiAPP_SSH_KEY)  value="${value#\"}"; value="${value%\"}"; [ -z "$TSiAPP_SSH_KEY" ] && TSiAPP_SSH_KEY="$value" ;;
         esac
-    done < <(grep -E '^(GITHUB_TOKEN|TSiAPP_HOST|TSiAPP_USER)=' "$ENV_FILE" 2>/dev/null || true)
+    done < <(grep -E '^(GITHUB_TOKEN|TSiAPP_HOST|TSiAPP_USER|TSiAPP_SSH_KEY)=' "$ENV_FILE" 2>/dev/null || true)
 fi
 
-if [ -z "$GITHUB_TOKEN" ]; then error "GITHUB_TOKEN not found in $ENV_FILE"; exit 1; fi
+if [ -z "$GITHUB_TOKEN" ]; then error "GITHUB_TOKEN not found in $ENV_FILE or environment"; exit 1; fi
 if [ -z "$TSiAPP_HOST" ];     then TSiAPP_HOST="179.190.15.116"; fi
 if [ -z "$TSiAPP_USER" ];     then TSiAPP_USER="tsi"; fi
 if [ -n "$TSiAPP_SSH_KEY" ];  then SSH_KEY="$TSiAPP_SSH_KEY"; fi

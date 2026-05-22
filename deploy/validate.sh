@@ -119,13 +119,23 @@ if command -v nginx >/dev/null 2>&1; then
         fail "nginx config syntax error"
     fi
 elif [ -n "${CI:-}" ] || [ -n "${GITHUB_ACTIONS:-}" ]; then
-    # CI-native check using nginx container
-    if docker run --rm -v "$SCRIPT_DIR/nginx:/etc/nginx:ro" nginx:alpine \
+    # CI-native check using nginx container with dummy certificates
+    TEMP_CERTS=$(mktemp -d)
+    openssl req -x509 -nodes -days 1 -newkey rsa:2048 \
+        -keyout "$TEMP_CERTS/tsiapp.io.key" \
+        -out "$TEMP_CERTS/tsiapp.io.crt" \
+        -subj "/CN=tsiapp.io" 2>/dev/null || true
+    if docker run --rm \
+        -v "$SCRIPT_DIR/nginx:/etc/nginx:ro" \
+        -v "$TEMP_CERTS:/etc/ssl/certs:ro" \
+        -v "$TEMP_CERTS:/etc/ssl/private:ro" \
+        nginx:alpine \
         nginx -t -c /etc/nginx/tsisip-reverse-proxy.conf >/dev/null 2>&1; then
         pass "nginx config syntax valid (container CI)"
     else
         fail "nginx config syntax error (container CI)"
     fi
+    rm -rf "$TEMP_CERTS"
 else
     info "nginx not available and not in CI, skipping syntax check"
 fi
