@@ -274,11 +274,6 @@ jobs:
     steps:
       - uses: actions/checkout@v4
 
-      - uses: actions/download-artifact@v4
-        with:
-          name: tsisip-images
-          path: /tmp/tsisip-images
-
       - name: Setup SSH
         uses: webfactory/ssh-agent@v0.9.0
         with:

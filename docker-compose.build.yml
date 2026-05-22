@@ -1,0 +1,55 @@
+# Build overlay for docker-compose.prod.yml
+# Used when GHCR push is unavailable and images must be built on the target VPS.
+services:
+  opensips:
+    build:
+      context: .
+      dockerfile: Dockerfile
+  rtpengine:
+    build:
+      context: ./docker/rtpengine
+      dockerfile: Dockerfile
+  ocp:
+    build:
+      context: ./docker/ocp
+      dockerfile: Dockerfile
+  postgres:
+    build:
+      context: ./docker/postgres
+      dockerfile: Dockerfile
+  asterisk:
+    build:
+      context: ./docker/asterisk
+      dockerfile: Dockerfile
+  prometheus:
+    build:
+      context: ./docker/prometheus
+      dockerfile: Dockerfile
+  grafana:
+    build:
+      context: ./docker/grafana
+      dockerfile: Dockerfile
+  opensips-exporter:
+    build:
+      context: ./docker/opensips-exporter
+      dockerfile: Dockerfile
+  anomaly-detector:
+    build:
+      context: ./docker/anomaly-detector
+      dockerfile: Dockerfile
+  backup:
+    build:
+      context: ./docker/backup
+      dockerfile: Dockerfile
+  certbot:
+    build:
+      context: ./docker/certbot
+      dockerfile: Dockerfile
+  certbot-exporter:
+    build:
+      context: ./docker/certbot-exporter
+      dockerfile: Dockerfile
+  tailscale-cert:
+    build:
+      context: ./docker/tailscale-cert
+      dockerfile: Dockerfile

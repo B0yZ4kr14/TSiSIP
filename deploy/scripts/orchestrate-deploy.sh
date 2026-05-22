@@ -360,6 +360,7 @@ pusher() {
     info "Pusher: GHCR login OK"
 
     local push_ok=true
+    local images_found=0
     for img in "${images[@]}"; do
         local repo tag ghcr_img
         repo=$(echo "$img" | cut -d: -f1)
@@ -367,6 +368,7 @@ pusher() {
         ghcr_img="${registry_prefix}/${repo}:${tag}"
 
         if docker images --format '{{.Repository}}:{{.Tag}}' | grep -q "^${img}$"; then
+            images_found=$((images_found + 1))
             info "Pusher: tagging ${img} → ${ghcr_img}"
             docker tag "${img}" "${ghcr_img}"
             if docker push "${ghcr_img}" >/dev/null 2>&1; then
@@ -382,6 +384,9 @@ pusher() {
 
     if [ "$push_ok" = false ]; then
         warn "Pusher: one or more pushes failed. Enabling build-on-target fallback."
+        export FALLBACK_BUILD_ON_TARGET=1
+    elif [ "$images_found" -eq 0 ]; then
+        warn "Pusher: no local images found (likely running on deploy runner without build artifacts). Enabling build-on-target fallback."
         export FALLBACK_BUILD_ON_TARGET=1
     fi
 
@@ -438,29 +443,12 @@ deployer() {
     ssh $SSH_OPTS ${SSH_KEY:+-i "$SSH_KEY"} "$target" \
         "cd ${remote_dir} && git pull origin master 2>/dev/null || echo 'git pull skipped or failed'" || true
 
-    # ── 4d: Transfer pre-built images (artifact mode) or pull from registry ──
-    local artifact_dir="/tmp/tsisip-images"
-    local images_transferred=false
-    if [ -d "$artifact_dir" ] && [ "$(ls -A "$artifact_dir"/*.tar.gz 2>/dev/null)" ]; then
-        info "Deployer: transferring pre-built images from artifacts..."
-        for f in "$artifact_dir"/*.tar.gz; do
-            [ -f "$f" ] || continue
-            local img_name
-            img_name=$(basename "$f" .tar.gz)
-            info "Deployer: loading ${img_name} on target..."
-            gunzip -c "$f" | ssh $SSH_OPTS ${SSH_KEY:+-i "$SSH_KEY"} "$target" "docker load" || warn "Deployer: failed to transfer ${img_name}"
-            images_transferred=true
-        done
-        if [ "$images_transferred" = true ]; then
-            info "Deployer: images transferred successfully"
-        fi
-    fi
-
+    # ── 4d: Pull from registry or build on target ──
     if [ "${FALLBACK_BUILD_ON_TARGET:-0}" = "1" ]; then
         info "Deployer: FALLBACK mode — building images on target..."
         ssh $SSH_OPTS ${SSH_KEY:+-i "$SSH_KEY"} "$target" \
-            "cd ${remote_dir} && sudo docker compose -f docker-compose.prod.yml build 2>&1 | tail -20" || warn "Deployer: build had warnings"
-    elif [ "$images_transferred" = false ]; then
+            "cd ${remote_dir} && sudo docker compose -f docker-compose.prod.yml -f docker-compose.build.yml build 2>&1 | tail -30" || warn "Deployer: build had warnings"
+    else
         info "Deployer: docker compose pull..."
         ssh $SSH_OPTS ${SSH_KEY:+-i "$SSH_KEY"} "$target" \
             "cd ${remote_dir} && sudo docker compose -f docker-compose.prod.yml pull 2>&1 | tail -10" || warn "Deployer: pull had warnings"
