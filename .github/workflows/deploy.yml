@@ -267,7 +267,7 @@ jobs:
   deploy:
     name: Deploy to VPS
     runs-on: ubuntu-latest
-    needs: [build, push]
+    needs: [build]
     if: ${{ inputs.dry_run == false }}
     environment:
       name: ${{ inputs.deploy_target }}

@@ -432,10 +432,16 @@ deployer() {
     ssh $SSH_OPTS -i "$SSH_KEY" "$target" \
         "cd ${remote_dir} && git pull origin master 2>/dev/null || echo 'git pull skipped or failed'" || true
 
-    # ── 4d: Pull and up ──
-    info "Deployer: docker compose pull..."
-    ssh $SSH_OPTS -i "$SSH_KEY" "$target" \
-        "cd ${remote_dir} && sudo docker compose -f docker-compose.prod.yml pull 2>&1 | tail -10" || warn "Deployer: pull had warnings"
+    # ── 4d: Pull/build and up ──
+    if [ "${FALLBACK_BUILD_ON_TARGET:-0}" = "1" ]; then
+        info "Deployer: FALLBACK mode — building images on target..."
+        ssh $SSH_OPTS -i "$SSH_KEY" "$target" \
+            "cd ${remote_dir} && sudo docker compose -f docker-compose.prod.yml build 2>&1 | tail -20" || warn "Deployer: build had warnings"
+    else
+        info "Deployer: docker compose pull..."
+        ssh $SSH_OPTS -i "$SSH_KEY" "$target" \
+            "cd ${remote_dir} && sudo docker compose -f docker-compose.prod.yml pull 2>&1 | tail -10" || warn "Deployer: pull had warnings"
+    fi
 
     info "Deployer: docker compose up..."
     ssh $SSH_OPTS -i "$SSH_KEY" "$target" \
