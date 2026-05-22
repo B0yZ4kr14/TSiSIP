@@ -112,13 +112,16 @@ fi
 
 # 10. Nginx syntax check (SG2.2)
 info "=== Nginx Syntax Check ==="
-# Create a temporary nginx.conf that wraps the config in an http block
+# Create dummy certificates and a copy of nginx config with adjusted SSL paths
 TEMP_CERTS=$(mktemp -d)
 openssl req -x509 -nodes -days 1 -newkey rsa:2048 \
     -keyout "$TEMP_CERTS/tsiapp.io.key" \
     -out "$TEMP_CERTS/tsiapp.io.crt" \
     -subj "/CN=tsiapp.io" 2>/dev/null || true
 TEMP_NGINX=$(mktemp -d)
+# Copy config and replace SSL paths with dummy cert paths
+sed "s|/etc/ssl/certs/tsiapp.io.crt|$TEMP_CERTS/tsiapp.io.crt|g; s|/etc/ssl/private/tsiapp.io.key|$TEMP_CERTS/tsiapp.io.key|g" \
+    "$SCRIPT_DIR/nginx/tsisip-reverse-proxy.conf" > "$TEMP_NGINX/tsisip-reverse-proxy.conf"
 cat > "$TEMP_NGINX/nginx.conf" << EOF
 user nginx;
 worker_processes auto;
@@ -129,12 +132,12 @@ http {
     include /etc/nginx/mime.types;
     default_type application/octet-stream;
     access_log /var/log/nginx/access.log;
-    include $SCRIPT_DIR/nginx/tsisip-reverse-proxy.conf;
+    include $TEMP_NGINX/tsisip-reverse-proxy.conf;
 }
 EOF
 
 if command -v nginx >/dev/null 2>&1; then
-    if nginx -t -c "$TEMP_NGINX/nginx.conf" 2>&1; then
+    if nginx -t -c "$TEMP_NGINX/nginx.conf" >/dev/null 2>&1; then
         pass "nginx config syntax valid (host binary)"
     else
         fail "nginx config syntax error"
@@ -142,10 +145,8 @@ if command -v nginx >/dev/null 2>&1; then
 elif [ -n "${CI:-}" ] || [ -n "${GITHUB_ACTIONS:-}" ]; then
     # CI-native check using nginx container with dummy certificates
     if docker run --rm \
-        -v "$SCRIPT_DIR/nginx:/etc/nginx:ro" \
-        -v "$TEMP_CERTS:/etc/ssl/certs:ro" \
-        -v "$TEMP_CERTS:/etc/ssl/private:ro" \
-        -v "$TEMP_NGINX/nginx.conf:/etc/nginx/nginx.conf:ro" \
+        -v "$TEMP_NGINX:/etc/nginx:ro" \
+        -v "$TEMP_CERTS:$TEMP_CERTS:ro" \
         nginx:alpine \
         nginx -t >/dev/null 2>&1; then
         pass "nginx config syntax valid (container CI)"
