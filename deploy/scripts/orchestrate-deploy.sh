@@ -447,7 +447,16 @@ deployer() {
     if [ "${FALLBACK_BUILD_ON_TARGET:-0}" = "1" ]; then
         info "Deployer: FALLBACK mode — building images on target..."
         ssh $SSH_OPTS ${SSH_KEY:+-i "$SSH_KEY"} "$target" \
-            "cd ${remote_dir} && sudo docker compose -f docker-compose.prod.yml -f docker-compose.build.yml build 2>&1 | tail -30" || warn "Deployer: build had warnings"
+            "cd ${remote_dir} && sudo docker compose -f docker-compose.prod.yml -f docker-compose.build.yml build --parallel 2>&1 | tail -30" || warn "Deployer: build had warnings"
+        # Verify critical images exist after build
+        local missing_img
+        missing_img=$(ssh $SSH_OPTS ${SSH_KEY:+-i "$SSH_KEY"} "$target" \
+            "cd ${remote_dir} && docker images --format '{{.Repository}}:{{.Tag}}' | grep '^ghcr.io/b0yz4kr14/tsisip/rtpengine:' || true")
+        if [ -z "$missing_img" ]; then
+            warn "Deployer: rtpengine image not found after build; trying explicit build..."
+            ssh $SSH_OPTS ${SSH_KEY:+-i "$SSH_KEY"} "$target" \
+                "cd ${remote_dir} && sudo docker compose -f docker-compose.prod.yml -f docker-compose.build.yml build rtpengine 2>&1 | tail -20" || { error "Deployer: rtpengine build failed"; return 1; }
+        fi
     else
         info "Deployer: docker compose pull..."
         ssh $SSH_OPTS ${SSH_KEY:+-i "$SSH_KEY"} "$target" \

@@ -1,5 +1,6 @@
 # Build overlay for docker-compose.prod.yml
 # Used when GHCR push is unavailable and images must be built on the target VPS.
+# Contexts match the CI Build Images job so COPY paths resolve correctly.
 services:
   opensips:
     build:
@@ -11,12 +12,12 @@ services:
       dockerfile: Dockerfile
   ocp:
     build:
-      context: ./docker/ocp
-      dockerfile: Dockerfile
+      context: .
+      dockerfile: docker/ocp/Dockerfile
   postgres:
     build:
-      context: ./docker/postgres
-      dockerfile: Dockerfile
+      context: .
+      dockerfile: docker/postgres/Dockerfile
   asterisk:
     build:
       context: ./docker/asterisk
