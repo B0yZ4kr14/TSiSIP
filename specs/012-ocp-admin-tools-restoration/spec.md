@@ -74,17 +74,17 @@ Subscriber management respects `tenant_id`. Admin sees all tenants; devops sees 
 
 ## Acceptance Criteria
 
-- [ ] AC1: `subscribers.php` lists subscribers with pagination (25/page)
-- [ ] AC2: `subscribers.php` supports create with auto HA1 generation
-- [ ] AC3: `subscribers.php` supports edit (username, domain, password, tenant, enabled)
-- [ ] AC4: `subscribers.php` supports soft-disable (not delete) via `enabled` flag
-- [ ] AC5: `cdr-viewer.php` lists CDRs with date range filter
-- [ ] AC6: `cdr-viewer.php` supports filtering by tenant, call status, and from_user
-- [ ] AC7: `dispatcher.php` lists real dispatcher destinations from PostgreSQL
-- [ ] AC8: `dispatcher.php` supports add/edit/delete of dispatcher destinations
-- [ ] AC9: `dispatcher.php` supports toggle of `state` column (0=active, 1=inactive)
-- [ ] AC10: All pages enforce role-based access (admin/devops only)
-- [ ] AC11: CSRF tokens present on all mutating forms
+- [x] AC1: `subscribers.php` lists subscribers with pagination (25/page)
+- [x] AC2: `subscribers.php` supports create with auto HA1 generation
+- [x] AC3: `subscribers.php` supports edit (username, domain, password, tenant, enabled)
+- [x] AC4: `subscribers.php` supports soft-disable (not delete) via `enabled` flag
+- [x] AC5: `cdr-viewer.php` lists CDRs with date range filter
+- [x] AC6: `cdr-viewer.php` supports filtering by tenant, call status, and from_user
+- [x] AC7: `dispatcher.php` lists real dispatcher destinations from PostgreSQL
+- [x] AC8: `dispatcher.php` supports add/edit/delete of dispatcher destinations
+- [x] AC9: `dispatcher.php` supports toggle of `state` column (0=active, 1=inactive)
+- [x] AC10: All pages enforce role-based access (admin/devops only)
+- [x] AC11: CSRF tokens present on all mutating forms
 - [x] AC12: Deployed to VPS and validated
 - [x] AC13: Committed to GitHub with conventional commits
 
