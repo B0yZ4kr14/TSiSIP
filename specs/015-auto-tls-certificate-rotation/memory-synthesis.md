@@ -6,11 +6,11 @@
 
 ---
 
-## 1. Current Scope
+## Current Scope
 
 Fully automated certificate issuance, renewal, and zero-downtime reload for OpenSIPS SIP-TLS (port 5061/tcp) and RTPengine DTLS-SRTP. Supports dual certificate sources (Let's Encrypt ACME v2 and Tailscale internal certificates). All 12 Acceptance Criteria verified and marked complete. Implementation spans 5 waves: Infrastructure, Certbot/Tailscale core, OpenSIPS integration, Monitoring/Alerting, and Testing.
 
-## 2. Relevant Decisions
+## Relevant Decisions
 
 - **AD-015-1**: Atomic certificate swap via temp-file + `mv -f` — prevents OpenSIPS from reading a partially written certificate during `tls_reload`
 - **AD-015-2**: MI HTTP as primary reload path — `curl -X POST http://opensips:8888/mi/tls_reload` with SIGHUP and `docker kill --signal=HUP` fallbacks
@@ -18,7 +18,7 @@ Fully automated certificate issuance, renewal, and zero-downtime reload for Open
 - **AD-015-4**: Bootstrap from runtime credential files — `docker/entrypoint.sh` copies credentials to `/certs/live` on first startup so OpenSIPS has valid certs before certbot issues its first LE cert
 - **AD-015-5**: Certbot cron at 02:00 UTC inside container — no host-level cron or systemd timers
 
-## 3. Active Architecture Constraints
+## Active Architecture Constraints
 
 | Constraint | Evidence | Status |
 |---|---|---|
@@ -29,13 +29,13 @@ Fully automated certificate issuance, renewal, and zero-downtime reload for Open
 | Network isolation | MI HTTP on port 8888 bound to `sip_internal` (internal: true); no host port mapping | Pass |
 | Zero host-published ports for Asterisk/PostgreSQL | Unchanged by this feature | Pass |
 
-## 4. Accepted Deviations
+## Accepted Deviations
 
 - **Baseline single active cert**: Spec mentions symlink to `server.crt`; implementation uses atomic `mv` copy instead. Safer and achieves the same observable behavior.
 - **RTPengine DTLS reload**: RTPengine picks up new certs on process restart; controlled rolling restart is the documented fallback since live DTLS cert reload is version-dependent.
 - **Certbot-exporter port**: Plan specified 9102; implementation uses 9101 (consistent with `certbot-exporter` service in compose and avoids collision with backup exporter).
 
-## 5. Relevant Security Constraints
+## Relevant Security Constraints
 
 - Atomic deploy-hook prevents race conditions during certificate updates
 - Certificate validation (`openssl x509 -checkend 86400`, `openssl rsa -check`) blocks deployment of invalid certs
@@ -44,18 +44,18 @@ Fully automated certificate issuance, renewal, and zero-downtime reload for Open
 - Alertmanager fires at 30d, 14d, 7d, 1d, and on renewal failure
 - No credentials baked into image layers; all runtime-injected
 
-## 6. Related Historical Lessons
+## Related Historical Lessons
 
 - ACME staging environment must be used for all non-production testing to avoid rate limits
 - `mv` is atomic on the same filesystem — temp files must be written to the same volume as the target
 - MI HTTP interface must bind to an internal Docker network only; exposing it publicly would create a management plane attack surface
 - Cron inside containers requires a proper init system or foreground process (`crond -f`); background daemons may be reaped
 
-## 7. Conflict Warnings
+## Conflict Warnings
 
 - None at this time.
 
-## 8. Retrieval Notes
+## Retrieval Notes
 
 - Search terms: TLS, certificate, rotation, certbot, tailscale, ACME, letsencrypt, mi_http, tls_reload, tls_mgm, DTLS, zero-downtime
 - Related features: 007 (TLS/SRTP baseline), 003 (Prometheus/Grafana observability), 014-A (wave 5 TLS tests), 016 (audit log compliance)
