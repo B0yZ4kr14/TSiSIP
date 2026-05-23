@@ -1,0 +1,26 @@
+diff --git a/web/common/config.php b/web/common/config.php
+index 0a6670d..86ec19f 100644
+--- a/web/common/config.php
++++ b/web/common/config.php
+@@ -12,6 +12,9 @@ $isHttps = (!empty($_SERVER['HTTPS']) && $_SERVER['HTTPS'] !== 'off') ||
+ if ($isHttps) {
+     ini_set('session.cookie_secure', '1');
+ }
++ini_set('session.cookie_httponly', '1');
++ini_set('session.cookie_samesite', 'Strict');
++ini_set('session.use_strict_mode', '1');
+ 
+ if (session_status() === PHP_SESSION_NONE) {
+     session_start();
+diff --git a/web/login.php b/web/login.php
+index 2833125..d33fea7 100644
+--- a/web/login.php
++++ b/web/login.php
+@@ -17,6 +17,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+     } else {
+         $user = authenticateUser($username, $password);
+         if ($user !== null) {
++            session_regenerate_id(true);
+             $_SESSION['ocp_user_id']    = $user['id'];
+             $_SESSION['ocp_username']   = $user['username'];
+             $_SESSION['ocp_user_email'] = $user['email'];

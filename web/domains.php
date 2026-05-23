@@ -43,6 +43,9 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                         'did' => $did,
                     ]);
                 } catch (PDOException $e) {
+                    logAuditEvent('DOMAIN_CREATE', 'domain', $domain, false, [
+                        'reason' => $e->getMessage(),
+                    ]);
                     $error = _('Failed to add domain: ') . $e->getMessage();
                 }
             }
@@ -69,6 +72,10 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                         'did' => $did,
                     ]);
                 } catch (PDOException $e) {
+                    logAuditEvent('DOMAIN_UPDATE', 'domain', $domain, false, [
+                        'id'     => $id,
+                        'reason' => $e->getMessage(),
+                    ]);
                     $error = _('Failed to update: ') . $e->getMessage();
                 }
             }

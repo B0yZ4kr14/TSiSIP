@@ -35,6 +35,13 @@ if (isset($_SESSION['ocp_user_role']) && in_array($_SESSION['ocp_user_role'], $v
 // Locale for i18n
 $ocpLocale = isset($_SESSION['lang']) ? $_SESSION['lang'] : 'en_US';
 ?>
+<?php
+// Security headers for all OCP responses
+header("Content-Security-Policy: default-src 'self'; script-src 'self' https://cdn.jsdelivr.net; style-src 'self' 'unsafe-inline'; img-src 'self' data:; font-src 'self'; connect-src 'self'; frame-ancestors 'none'; base-uri 'self'; form-action 'self';");
+header("X-Frame-Options: DENY");
+header("X-Content-Type-Options: nosniff");
+header("Referrer-Policy: strict-origin-when-cross-origin");
+?>
 <!DOCTYPE html>
 <html lang="<?php echo htmlspecialchars(substr($ocpLocale, 0, 2)); ?>">
 <head>

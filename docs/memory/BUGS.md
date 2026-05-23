@@ -50,3 +50,25 @@
 2. **Template rendering gaps** — envsubst variables must be validated in entrypoint
 3. **Orphaned utilities** — create integration task whenever a reusable helper is added
 4. **Health check assumptions** — new containers may not have expected artifacts
+5. **Audit logging asymmetry** — success paths log consistently but failure paths (PDOException catch blocks) often omit logAuditEvent() calls
+6. **CDN dependency without fallback** — D3.js loaded from CDN with no local fallback for air-gapped deployments
+
+## Active Bugs (Feature 020 Related)
+
+### BUG-006: CRUD Failure Audit Gap
+- **Date**: 2026-05-19
+- **Severity**: MEDIUM
+- **Files**: web/dialplan.php, web/domains.php
+- **Symptom**: Failed CREATE/UPDATE operations do not generate audit log entries
+- **Root Cause**: PDOException catch blocks set $error but do not call logAuditEvent()
+- **Fix**: Added logAuditEvent() in all catch blocks (R1, committed 2026-05-19)
+- **Status**: Resolved
+
+### BUG-007: Statistics Error Path May Reset Charts
+- **Date**: 2026-05-19
+- **Severity**: LOW
+- **File**: web/statistics.php
+- **Symptom**: On MI timeout, charts may reset to empty instead of freezing at last-known values
+- **Root Cause**: refreshStats() catch block did not explicitly preserve previous DOM state
+- **Fix**: Added warning banner and confirmed charts preserve state (R4+R5, committed 2026-05-19)
+- **Status**: Resolved

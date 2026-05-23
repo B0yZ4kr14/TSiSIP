@@ -34,6 +34,10 @@ TSiSIP is a Docker-first SIP edge-proxy on OpenSIPS 3.6 LTS, routing authenticat
 - CUP-012-01: Ratify Constitution amendment for OCP subscriber/dispatcher writes
 - SEC-ACTION-005: Create formal threat model document (LOW, pending)
 - Feature 019: Complete memory hub bootstrap and validation
+- Feature 020: Remediation cycle R1-R5 complete (R6 P3 optional, R7 passed)
+  - FINDING-SEC-020-001: RESOLVED — CRUD failure audit gap fixed
+  - FINDING-SEC-020-002: RESOLVED — Security headers added
+  - FINDING-SEC-020-003: RESOLVED — Session hardening applied
 
 ## Tech Stack
 OpenSIPS 3.6 LTS | PostgreSQL 15+ | RTPengine | Asterisk 20+ | Docker | PHP 8.2+ | Node.js | Python 3.11+

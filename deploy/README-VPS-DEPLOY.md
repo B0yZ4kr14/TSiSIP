@@ -1,8 +1,8 @@
 # TSiSIP VPS Deploy — Guia Rápido
 
-> **Perfil:** vps-lite+PBX (7 serviços, ~2.9GB RAM alocado)  
-> **Destino:** VPS TSiAPP (Ubuntu 24.04, 3.8GB RAM)  
-> **Registry:** GHCR (`ghcr.io/b0yz4kr14/tsisip/*`)  
+> **Perfil:** vps-lite+PBX (7 serviços essenciais, ~2.9GB RAM) / full-stack (13+ serviços, ~8GB RAM)  
+> **Destino:** VPS TSiAPP (Ubuntu 24.04, 32GB RAM, 116GB disk)  
+> **Registry:** GHCR (`ghcr.io/b0yz4kr14/tsisip/*`) — com fallback build-on-target  
 > **Pipeline:** Feature 009 — `deploy/scripts/orchestrate-deploy.sh`
 
 ## Pré-requisitos na VPS
@@ -30,6 +30,18 @@ O script `orchestrate-deploy.sh` implementa o pipeline completo com gates valida
 FORCE_DEPLOY=1 ./deploy/scripts/orchestrate-deploy.sh
 ```
 
+### Build-on-Target Fallback
+
+Quando o push para GHCR falha (ex: `permission_denied: write_package`), o pipeline ativa automaticamente o modo fallback:
+
+```bash
+# O script detecta falha no pusher() e seta FALLBACK_BUILD_ON_TARGET=1
+# O deployer() então executa na VPS:
+#   docker compose -f docker-compose.prod.yml -f docker-compose.build.yml build --parallel
+```
+
+O arquivo `docker-compose.build.yml` deve estar presente no repo e define os contextos de build corretos para cada serviço. Sem este arquivo, o fallback falhará com erros de `COPY`.
+
 ### Stages do Pipeline (gated)
 
 | Gate | Nome | Descrição | Falha = halt? |
@@ -44,6 +56,16 @@ FORCE_DEPLOY=1 ./deploy/scripts/orchestrate-deploy.sh
 ### Rollback Automático
 
 Se o gate 5 (Verify) falhar, o pipeline restaura automaticamente as imagens pré-deploy a partir do snapshot capturado no gate 4. O snapshot é salvo em `.deploy-rollback/<run-id>-digests.txt`.
+
+**Rollback manual (emergência)**:
+```bash
+# Na VPS
+sudo docker compose -f docker-compose.prod.yml down
+sudo docker compose -f docker-compose.prod.yml up -d postgres  # database first
+sleep 10
+sudo docker compose -f docker-compose.prod.yml up -d opensips rtpengine ocp
+sudo docker compose -f docker-compose.prod.yml up -d  # remaining services
+```
 
 ### Agentes OMK (funções shell)
 
@@ -154,6 +176,11 @@ curl http://127.0.0.1:9101/metrics
 | 502 no Nginx | OCP não responde | Verificar `docker compose ps` e logs do OCP |
 | SIP externo 5060/5061 filtrado | Bloqueio upstream antes do host | Confirmar com `tcpdump` no VPS e abrir ACL/NAT no provedor/edge |
 | RPO alerta em banco ocioso | Monitor antigo baseado apenas em timestamp | Usar imagem atual: compara `current_wal` com `last_archived_wal` |
+| Load average >100 | Múltiplos `docker compose up` concorrentes + memory pressure | Matar processos docker pendentes: `sudo pkill -f "docker compose up"`; aguardar load <10; reiniciar serviços |
+| SSH "Broken pipe" durante deploy | VPS sobrecarregada, SSH timeout | Usar artifact transfer mode (`.tar.gz` via pipe) em vez de build-on-target |
+| GHCR `permission_denied` | `GITHUB_TOKEN` sem scope para package write | Usar PAT com `write:packages` scope; ou habilitar fallback build-on-target |
+| Certbot/Tailscale restart loop | Configuração incompleta ou dependência ausente | Verificar logs: `docker compose logs -f certbot tailscale-cert`; corrigir env vars |
+| RTPengine `exec: "--interface=...": no such file` | ENTRYPOINT/CMD mal configurado no Dockerfile | Verificar que Dockerfile usa `ENTRYPOINT ["rtpengine"]` + `CMD ["--foreground", "--log-stderr"]` |
 
 ## Decisão Arquitetural
 

@@ -154,11 +154,24 @@ require_once __DIR__ . '/common/header.php';
 
 <!-- D3.js v7 (global) for inline chart rendering -->
 <script src="https://cdn.jsdelivr.net/npm/d3@7/dist/d3.min.js"></script>
+<script>
+if (typeof d3 === 'undefined') {
+    document.addEventListener('DOMContentLoaded', function() {
+        var chartContainer = document.getElementById('statistics-chart');
+        if (chartContainer) {
+            chartContainer.innerHTML = '<p class="tsisip-text-muted"><?php echo _('Charts unavailable — D3.js could not be loaded.'); ?></p>';
+        }
+    });
+}
+</script>
 
 <div id="content" class="tsisip-dashboard">
     <h1><?php echo _('OpenSIPS Statistics Monitor'); ?></h1>
 
     <div class="tsisip-dashboard-section">
+        <div id="stats-warning" class="tsisip-badge tsisip-badge-error" style="display:none;margin-bottom:12px;" role="alert">
+            <?php echo _('Statistics refresh failed — MI HTTP unreachable. Charts show last-known values.'); ?>
+        </div>
         <div style="display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:8px;">
             <h2><?php echo _('Real-time Metrics'); ?></h2>
             <span id="last-updated" class="tsisip-badge tsisip-badge-info">
@@ -339,7 +352,12 @@ require_once __DIR__ . '/common/header.php';
             console.error('TSiSIP statistics refresh failed:', e);
             document.getElementById('last-updated').textContent =
                 <?php echo json_encode(_('Update failed')); ?>;
+            var warning = document.getElementById('stats-warning');
+            if (warning) warning.style.display = 'block';
+            return;
         }
+        var warning = document.getElementById('stats-warning');
+        if (warning) warning.style.display = 'none';
     }
 
     // Initial render with server-side data

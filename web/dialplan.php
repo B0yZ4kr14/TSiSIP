@@ -59,6 +59,9 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                         'attrs'       => $attrs,
                     ]);
                 } catch (PDOException $e) {
+                    logAuditEvent('DIALPLAN_CREATE', 'dialplan', $match_exp, false, [
+                        'reason' => $e->getMessage(),
+                    ]);
                     $error = _('Failed to add dialplan rule: ') . $e->getMessage();
                 }
             }
@@ -104,6 +107,10 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                         'attrs'       => $attrs,
                     ]);
                 } catch (PDOException $e) {
+                    logAuditEvent('DIALPLAN_UPDATE', 'dialplan', $match_exp, false, [
+                        'id'     => $id,
+                        'reason' => $e->getMessage(),
+                    ]);
                     $error = _('Failed to update: ') . $e->getMessage();
                 }
             }

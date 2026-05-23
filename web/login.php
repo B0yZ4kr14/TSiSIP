@@ -17,6 +17,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     } else {
         $user = authenticateUser($username, $password);
         if ($user !== null) {
+            session_regenerate_id(true);
             $_SESSION['ocp_user_id']    = $user['id'];
             $_SESSION['ocp_username']   = $user['username'];
             $_SESSION['ocp_user_email'] = $user['email'];

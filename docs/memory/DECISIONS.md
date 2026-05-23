@@ -73,3 +73,34 @@ Key rejections:
 - **Amendment**: Allow authenticated admin CRUD with CSRF + RBAC gates
 - **Status**: Proposed, pending Architecture Review ratification
 - **Date**: 2026-05-19
+
+## Feature 020 Decisions
+
+### AD-020-1: MI Command Whitelist in PHP
+- **Date**: 2026-05-19
+- **Context**: Need to prevent command injection via MI HTTP interface
+- **Decision**: Hardcoded whitelist array in PHP ($miWhitelist) — never pass user input directly to MI
+- **Commands**: ds_reload, domain_reload, get_statistics, dlg_list, dlg_end_dlg, tls_reload
+- **Consequences**: New commands require code change, not config change
+- **Status**: Active (L3 Decision)
+
+### AD-020-2: Statistics Backpressure with Graceful Degradation
+- **Date**: 2026-05-19
+- **Context**: 30s auto-refresh could overwhelm MI HTTP or create retry storms
+- **Decision**: 5s cURL timeout, freeze charts on error, warning banner, no retry storm
+- **Consequences**: Operators see stale data during MI outages rather than empty charts
+- **Status**: Active (L3 Decision)
+
+### AD-020-3: Database-Driven Dialplan
+- **Date**: 2026-05-19
+- **Context**: Hardcoded dialplan rules require container restart to change
+- **Decision**: Store dialplan rules in PostgreSQL; reload via ds_reload MI command
+- **Consequences**: Runtime dialplan management enabled; schema must match OpenSIPS stock
+- **Status**: Active (L3 Decision)
+
+### AD-020-4: Read-Only Dialog Viewer
+- **Date**: 2026-05-19
+- **Context**: Dialog data is sensitive; accidental termination is high-risk
+- **Decision**: dialog.php is strictly read-only; dlg_end_dlg requires admin role in mi-commands.php
+- **Consequences**: Two-step process to terminate calls (MI Commands page + admin role)
+- **Status**: Active (L3 Decision)

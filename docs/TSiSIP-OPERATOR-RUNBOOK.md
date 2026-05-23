@@ -23,6 +23,12 @@ docker compose exec postgres pg_isready -U opensips
 
 # Check OCP health
 docker compose exec ocp bash -c "curl -fsSL http://localhost/login.php | grep -q 'TSiSIP'"
+
+# Deploy to VPS (Feature 009)
+./deploy/scripts/orchestrate-deploy.sh
+
+# Deploy with build-on-target fallback
+FALLBACK_BUILD_ON_TARGET=1 ./deploy/scripts/orchestrate-deploy.sh
 ```
 
 ## Architecture Overview
@@ -59,25 +65,19 @@ The OCP dashboard and the Professional Premium Wiki share the same authenticated
 
 ### OCP Container Operational Note
 
-The OCP container (`tsisip-ocp-1`) on the TSiAPP VPS currently runs as a manual Docker container rather than being managed by `docker compose`. This is due to a Docker Compose network state inconsistency that prevents `docker compose up -d ocp` from completing without attempting to remove active networks.
+The OCP container is managed by `docker compose` on the TSiAPP VPS. Previous network state inconsistencies were resolved by ensuring the compose file defines all networks explicitly and containers are restarted through compose rather than manual `docker run`.
 
-**Current workaround**:
+**If OCP needs restart**:
 ```bash
-# If OCP needs restart
-docker rm -f tsisip-ocp-1
-docker run -d --name tsisip-ocp-1 \
-  --network tsisip_sip_internal \
-  -p 127.0.0.1:8084:80 \
-  --restart unless-stopped \
-  -e DB_HOST=postgres -e DB_NAME=opensips -e DB_USER=opensips \
-  -e DB_PASSWORD=opensips123 \
-  -e APACHE_DOCUMENT_ROOT=/var/www/html \
-  ghcr.io/b0yz4kr14/tsisip/ocp:latest
-docker network connect tsisip_db_internal tsisip-ocp-1
-docker network connect tsisip_metrics_host tsisip-ocp-1
+docker compose up -d ocp
 ```
 
-**Planned fix**: Investigate compose network state and restore declarative management.
+**If compose network is inconsistent**:
+```bash
+# Force recreate networks and containers
+docker compose down
+docker compose up -d
+```
 
 ### Default Admin Credentials
 
@@ -1062,6 +1062,82 @@ docker compose exec postgres psql -U opensips -d opensips -c "
 | Missing `call_end` | Dialog not tracked | Verify `create_dialog("B")` |
 | Tenant_id NULL | Subscriber missing tenant FK | Check `subscriber.tenant_id` population |
 
+## Deploy Operations (Feature 009)
+
+### Pipeline Architecture
+
+The deploy pipeline is implemented in `deploy/scripts/orchestrate-deploy.sh` as a series of gated stages:
+
+| Stage | Agent | Purpose | Failure Action |
+|-------|-------|---------|----------------|
+| 0 | Pre-flight | Disk check, registry reachability, OpenSIPS syntax, secrets scan, compose validation | Halt |
+| 1 | Impact Analysis | Git diff + blast radius analysis on modified files | Halt (override: `FORCE_DEPLOY=1`) |
+| 2 | Builder | Build only images with modified Dockerfiles or dependent configs | Halt |
+| 3 | Pusher | Tag and push to GHCR; fallback to build-on-target | Warn + fallback |
+| 4 | Deployer | SSH to VPS, git pull, docker compose up | Halt |
+| 5 | Verifier | Container health, HTTP probes, SIP OPTIONS, backup metrics | Halt + rollback |
+
+### Deploy Modes
+
+**Standard deploy (GHCR images)**:
+```bash
+./deploy/scripts/orchestrate-deploy.sh
+```
+
+**Build-on-target fallback** (when GHCR push fails):
+```bash
+# The script auto-detects push failure and sets FALLBACK_BUILD_ON_TARGET=1
+# This uses docker-compose.build.yml to build images directly on the VPS
+```
+
+**Dry-run (no mutations)**:
+```bash
+./deploy/scripts/orchestrate-deploy.sh --dry-run
+```
+
+**Post-deploy verification only**:
+```bash
+./deploy/scripts/orchestrate-deploy.sh --live-test
+```
+
+### VPS Recovery After Critical Load
+
+If the VPS load average exceeds 50 (e.g., multiple stuck `docker compose up` processes):
+
+```bash
+# On the VPS
+# 1. Kill stuck docker processes
+sudo pkill -f "docker compose up"
+sudo pkill -f "docker build"
+
+# 2. Check load
+uptime
+# Wait until load < 10 before proceeding
+
+# 3. Restart core services in dependency order
+sudo docker compose -f docker-compose.prod.yml up -d postgres
+sleep 10
+sudo docker compose -f docker-compose.prod.yml up -d rtpengine opensips
+sudo docker compose -f docker-compose.prod.yml up -d ocp
+sudo docker compose -f docker-compose.prod.yml up -d
+
+# 4. Verify health
+sudo docker compose -f docker-compose.prod.yml ps
+```
+
+### Troubleshooting Deploy Failures
+
+| Symptom | Cause | Fix |
+|---------|-------|-----|
+| `permission_denied: write_package` | GITHUB_TOKEN lacks package write scope | Use PAT with `write:packages`; or enable build-on-target fallback |
+| `Broken pipe` during SSH deploy | VPS overloaded, SSH timeout | Reduce parallelism; use artifact transfer instead of on-target build |
+| `COPY failed` during on-target build | `docker-compose.build.yml` missing or wrong context | Ensure `docker-compose.build.yml` is committed with correct per-service contexts |
+| RTPengine `exec: "--interface=...": no such file` | Dockerfile ENTRYPOINT/CMD misconfiguration | Verify `ENTRYPOINT ["rtpengine"]` + `CMD ["--foreground", "--log-stderr"]` |
+| Postgres permission denied | Missing capabilities under `cap_drop: ALL` | Add `cap_add: [CHOWN, SETUID, SETGID, DAC_OVERRIDE]` |
+| Load avg >100 after deploy | Multiple concurrent compose up processes | Kill stuck processes; wait for recovery; restart sequentially |
+
+---
+
 ## CI/CD Pipeline (Feature 005)
 
 ### Workflow
@@ -1411,4 +1487,4 @@ URL: `http://<grafana-host>/d/tsisip-sip-trunk-providers`
 
 ---
 
-*Last Updated: 2026-05-19*
+*Last Updated: 2026-05-20*

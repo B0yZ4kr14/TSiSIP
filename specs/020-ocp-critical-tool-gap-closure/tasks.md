@@ -76,3 +76,23 @@ W0 (Security) → W1 (CRUD) → W2 (MI/Stats) → W3 (TLS) → W4 (Validation)
 | AC8b (Audit failure logging) | T2.11 |
 | AC9 (security assessment) | T0.1 |
 | AC10 (threat model) | T0.2 |
+
+## Wave 5: Architecture Refactor Tasks
+
+- [x] R1: Add logAuditEvent() in PDOException catch blocks for dialplan CREATE/UPDATE and domains CREATE/UPDATE
+- [x] R2: Add security headers (CSP, X-Frame-Options, X-Content-Type-Options, Referrer-Policy) to web/common/header.php
+- [x] R3: Harden session management — regenerate_id on login, httponly, samesite=Strict, strict_mode
+- [x] R4: Harden statistics error path — warning banner on MI failure, charts preserve last-known values
+- [x] R5: Add D3.js CDN fallback — graceful degradation message when CDN unreachable
+- [ ] R6: Integrate web/common/validate-input.php into dialplan.php and domains.php (P3 cleanup)
+- [ ] R7: Run post-fix brownfield scan and validation; capture evidence in evidence/remediation/ciclo-020/
+
+## Remediation Acceptance Criteria
+
+- [x] R1: Failed CRUD operations generate audit log entries with result=false
+- [x] R2: curl -I shows CSP, X-Frame-Options, X-Content-Type-Options, Referrer-Policy
+- [x] R3: Set-Cookie header shows HttpOnly; session ID changes after login
+- [x] R4: Warning banner appears on MI timeout; charts do not reset
+- [x] R5: Graceful message appears when D3.js CDN is blocked
+- [ ] R6: dialplan.php and domains.php use validate-input.php helpers (optional)
+- [ ] R7: Post-fix scan shows zero new findings
