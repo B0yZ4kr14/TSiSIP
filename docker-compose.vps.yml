@@ -62,7 +62,7 @@ services:
     command:
       - rtpengine
       - --interface=${RTPENGINE_PRIVATE_IP:-127.0.0.1}/${HOST_PUBLIC_IP:-127.0.0.1}
-      - --listen-ng=${RTPENGINE_INTERNAL_IP:?must be set}:22222
+      - --listen-ng=0.0.0.0:22222
       - --port-min=10000
       - --port-max=10999
       - --log-stderr
@@ -115,7 +115,7 @@ services:
       rtpengine:
         condition: service_started
     cap_drop: [ALL]
-    cap_add: [NET_BIND_SERVICE, SETUID, SETGID]
+    cap_add: [NET_BIND_SERVICE, SETUID, SETGID, DAC_OVERRIDE]
     security_opt: ["no-new-privileges:true"]
     healthcheck:
       test: ["CMD-SHELL", "/usr/local/bin/healthcheck.sh"]
@@ -149,7 +149,7 @@ services:
       interval: 15s
       timeout: 5s
       retries: 3
-      start_period: 25s
+      start_period: 30s
       start_interval: 5s
 
   asterisk-pbx-2:
@@ -175,8 +175,8 @@ services:
       test: ["CMD-SHELL", "/usr/local/bin/healthcheck.sh"]
       interval: 15s
       timeout: 5s
-      retries: 5
-      start_period: 60s
+      retries: 3
+      start_period: 30s
       start_interval: 5s
 
   ocp:
@@ -231,6 +231,12 @@ services:
     cap_drop: [ALL]
     cap_add: [SETUID, SETGID]
     security_opt: ["no-new-privileges:true"]
+    healthcheck:
+      test: ["CMD-SHELL", "test -f /etc/letsencrypt/live/${TLS_DOMAIN}/fullchain.pem || exit 0"]
+      interval: 60s
+      timeout: 5s
+      retries: 1
+      start_period: 30s
 
   certbot-exporter:
     image: ghcr.io/b0yz4kr14/tsisip/certbot-exporter:${TSISIP_IMAGE_TAG:?must be set}
@@ -298,11 +304,11 @@ services:
       postgres:
         condition: service_healthy
     healthcheck:
-      test: ["CMD-SHELL", "/usr/local/bin/healthcheck.sh"]
-      interval: 15s
+      test: ["CMD-SHELL", "pg_isready -h postgres -U opensips || test -f /backup/last_backup.timestamp"]
+      interval: 30s
       timeout: 5s
       retries: 3
-      start_period: 10s
+      start_period: 30s
 
 networks:
   sip_edge:
