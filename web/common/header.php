@@ -81,9 +81,6 @@ header("Referrer-Policy: strict-origin-when-cross-origin");
         <a href="dashboard.php" class="tsisip-header-link<?php echo basename($_SERVER['PHP_SELF']) === 'dashboard.php' ? ' is-active' : ''; ?>">
             <?php echo _('Dashboard'); ?>
         </a>
-        <a href="wiki.php" class="tsisip-header-link<?php echo basename($_SERVER['PHP_SELF']) === 'wiki.php' ? ' is-active' : ''; ?>">
-            <?php echo _('Wiki'); ?>
-        </a>
     </nav>
 
     <span class="tsisip-badge tsisip-role-badge--<?php echo htmlspecialchars($userRole, ENT_QUOTES, 'UTF-8'); ?>">

@@ -67,3 +67,4 @@ docs/memory/INDEX.md.lock
 .github/agents/speckit.*.agent.md
 .opencode/commands/speckit.*.md
 .github/prompts/speckit.*.prompt.md
+.kimi/skills/speckit-*/

@@ -60,6 +60,8 @@ loadmodule "proto_tls.so"
 loadmodule "proto_ws.so"
 loadmodule "proto_wss.so"
 loadmodule "acc.so"
+loadmodule "dialplan.so"
+loadmodule "domain.so"
 
 # --- BEGIN TLS ROTATION WAVE 3 ---
 # httpd provides the HTTP server infrastructure; mi_http exposes the MI interface over it
@@ -156,6 +158,8 @@ modparam("tm", "fr_inv_timeout", 60)
 
 # acc (CDR logging) — OpenSIPS 3.6 uses do_accounting() in routing script
 modparam("acc", "db_url", "postgres://${DB_USER}:${DB_PASSWORD}@${DB_HOST}:5432/${DB_NAME}")
+modparam("dialplan", "db_url", "postgres://${DB_USER}:${DB_PASSWORD}@${DB_HOST}:5432/${DB_NAME}")
+modparam("domain", "db_url", "postgres://${DB_USER}:${DB_PASSWORD}@${DB_HOST}:5432/${DB_NAME}")
 modparam("acc", "db_table_acc", "cdr")
 
 # rr

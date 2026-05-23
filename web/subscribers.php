@@ -142,6 +142,18 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                     'enabled' => ($enabled === '1' ? true : false),
                 ]);
             }
+        } elseif ($action === 'delete') {
+            $id = $_POST['id'] ?? '';
+            if ($id !== '') {
+                try {
+                    $stmt = $pdo->prepare("DELETE FROM subscriber WHERE id = :id");
+                    $stmt->execute([':id' => $id]);
+                    $success = _('Subscriber deleted successfully.');
+                    logAuditEvent('SUBSCRIBER_DELETE', 'subscriber', $id, true);
+                } catch (PDOException $e) {
+                    $error = _('Failed to delete subscriber: ') . $e->getMessage();
+                }
+            }
         }
     }
 }
@@ -280,6 +292,14 @@ require_once __DIR__ . '/common/header.php';
                                 onclick="document.getElementById('edit-<?php echo htmlspecialchars($sub['id'], ENT_QUOTES); ?>').style.display='block'">
                             <?php echo _('Edit'); ?>
                         </button>
+                        <form method="POST" action="" style="display:inline" onsubmit="return confirm('<?php echo _('Delete this subscriber? This action cannot be undone.'); ?>');">
+                            <?php echo csrfInput(); ?>
+                            <input type="hidden" name="action" value="delete">
+                            <input type="hidden" name="id" value="<?php echo htmlspecialchars($sub['id'], ENT_QUOTES); ?>">
+                            <button type="submit" class="tsisip-btn tsisip-btn-danger">
+                                <?php echo _('Delete'); ?>
+                            </button>
+                        </form>
                     </td>
                 </tr>
                 <tr id="edit-<?php echo htmlspecialchars($sub['id'], ENT_QUOTES); ?>" style="display:none">
