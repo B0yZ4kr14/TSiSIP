@@ -88,6 +88,67 @@ function validateSipDestination(string $destination): string {
 }
 
 /**
+ * Validate a dialplan match expression.
+ * Rules: non-empty, max 255 chars, printable ASCII
+ */
+function validateDialplanMatchExp(string $matchExp): string {
+    if ($matchExp === '') {
+        return _('Match expression is required.');
+    }
+    if (strlen($matchExp) > 255) {
+        return _('Match expression must not exceed 255 characters.');
+    }
+    return '';
+}
+
+/**
+ * Validate a dialplan substitution expression.
+ * Rules: max 255 chars
+ */
+function validateDialplanSubstExp(string $substExp): string {
+    if (strlen($substExp) > 255) {
+        return _('Substitution expression must not exceed 255 characters.');
+    }
+    return '';
+}
+
+/**
+ * Validate a dialplan replacement expression.
+ * Rules: max 255 chars
+ */
+function validateDialplanReplExp(string $replExp): string {
+    if (strlen($replExp) > 255) {
+        return _('Replacement expression must not exceed 255 characters.');
+    }
+    return '';
+}
+
+/**
+ * Validate dialplan attributes.
+ * Rules: max 255 chars
+ */
+function validateDialplanAttrs(string $attrs): string {
+    if (strlen($attrs) > 255) {
+        return _('Attributes must not exceed 255 characters.');
+    }
+    return '';
+}
+
+/**
+ * Validate a domain DID (optional).
+ * Rules: max 255 chars, printable ASCII
+ */
+function validateDomainDid(string $did): string {
+    if ($did === '') {
+        return '';
+    }
+    if (strlen($did) > 255) {
+        return _('DID must not exceed 255 characters.');
+    }
+    return '';
+}
+
+/**
  * Sanitize a string for safe display.
  * Encodes HTML entities and strips control characters.
  */

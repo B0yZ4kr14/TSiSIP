@@ -84,7 +84,7 @@ W0 (Security) → W1 (CRUD) → W2 (MI/Stats) → W3 (TLS) → W4 (Validation)
 - [x] R3: Harden session management — regenerate_id on login, httponly, samesite=Strict, strict_mode
 - [x] R4: Harden statistics error path — warning banner on MI failure, charts preserve last-known values
 - [x] R5: Add D3.js CDN fallback — graceful degradation message when CDN unreachable
-- [ ] R6: Integrate web/common/validate-input.php into dialplan.php and domains.php (P3 cleanup)
+- [x] R6: Integrate web/common/validate-input.php into dialplan.php and domains.php (P3 cleanup)
 - [x] R7: Run post-fix brownfield scan and validation; capture evidence in evidence/remediation/ciclo-020/
 
 ## Remediation Acceptance Criteria
@@ -94,5 +94,5 @@ W0 (Security) → W1 (CRUD) → W2 (MI/Stats) → W3 (TLS) → W4 (Validation)
 - [x] R3: Set-Cookie header shows HttpOnly; session ID changes after login
 - [x] R4: Warning banner appears on MI timeout; charts do not reset
 - [x] R5: Graceful message appears when D3.js CDN is blocked
-- [ ] R6: dialplan.php and domains.php use validate-input.php helpers (optional)
+- [x] R6: dialplan.php and domains.php use validate-input.php helpers (optional)
 - [x] R7: Post-fix scan shows zero new findings

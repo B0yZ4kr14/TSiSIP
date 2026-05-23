@@ -7,6 +7,7 @@
 require_once __DIR__ . '/common/config.php';
 require_once __DIR__ . '/common/csrf.php';
 require_once __DIR__ . '/common/pagination.php';
+require_once __DIR__ . '/common/validate-input.php';
 
 requireAuth();
 checkPasswordChange();
@@ -27,8 +28,11 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             $domain = trim($_POST['domain'] ?? '');
             $did    = trim($_POST['did'] ?? '');
 
-            if ($domain === '') {
-                $error = _('Domain is required.');
+            $validationError = validateDomain($domain)
+                ?: validateDomainDid($did);
+
+            if ($validationError !== '') {
+                $error = $validationError;
             } else {
                 try {
                     $stmt = $pdo->prepare(
@@ -54,8 +58,13 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             $domain = trim($_POST['domain'] ?? '');
             $did    = trim($_POST['did'] ?? '');
 
-            if ($id === 0 || $domain === '') {
-                $error = _('ID and domain are required.');
+            $validationError = validateDomain($domain)
+                ?: validateDomainDid($did);
+
+            if ($id === 0) {
+                $error = _('ID is required.');
+            } elseif ($validationError !== '') {
+                $error = $validationError;
             } else {
                 try {
                     $stmt = $pdo->prepare(

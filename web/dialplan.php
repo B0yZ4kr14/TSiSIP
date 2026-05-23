@@ -7,6 +7,7 @@
 require_once __DIR__ . '/common/config.php';
 require_once __DIR__ . '/common/csrf.php';
 require_once __DIR__ . '/common/pagination.php';
+require_once __DIR__ . '/common/validate-input.php';
 
 requireAuth();
 checkPasswordChange();
@@ -32,8 +33,13 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             $repl_exp    = trim($_POST['repl_exp'] ?? '');
             $attrs       = trim($_POST['attrs'] ?? '');
 
-            if ($match_exp === '') {
-                $error = _('Match expression is required.');
+            $validationError = validateDialplanMatchExp($match_exp)
+                ?: validateDialplanSubstExp($subst_exp)
+                ?: validateDialplanReplExp($repl_exp)
+                ?: validateDialplanAttrs($attrs);
+
+            if ($validationError !== '') {
+                $error = $validationError;
             } else {
                 try {
                     $stmt = $pdo->prepare(
@@ -75,8 +81,15 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             $repl_exp    = trim($_POST['repl_exp'] ?? '');
             $attrs       = trim($_POST['attrs'] ?? '');
 
-            if ($id === 0 || $match_exp === '') {
-                $error = _('ID and match expression are required.');
+            $validationError = validateDialplanMatchExp($match_exp)
+                ?: validateDialplanSubstExp($subst_exp)
+                ?: validateDialplanReplExp($repl_exp)
+                ?: validateDialplanAttrs($attrs);
+
+            if ($id === 0) {
+                $error = _('ID is required.');
+            } elseif ($validationError !== '') {
+                $error = $validationError;
             } else {
                 try {
                     $stmt = $pdo->prepare(
