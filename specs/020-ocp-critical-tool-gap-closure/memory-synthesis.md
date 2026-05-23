@@ -136,3 +136,48 @@
 - Canonical Spec: docs/TSiSIP-CANONICAL-SPEC.md
 - Operator Runbook: docs/TSiSIP-OPERATOR-RUNBOOK.md
 - Brownfield Scan: reports/brownfield-scan-report.md
+
+---
+
+## Current Scope
+
+Six PHP-based administrative tools for TSiSIP OCP: Dialog Viewer (read-only), MI Commands (whitelisted proxy), Statistics Monitor (D3.js charts), Dialplan Manager (CRUD), Domains Manager (CRUD), TLS Management (certificate reload). All enforce RBAC, CSRF, PDO, and audit logging.
+
+## Relevant Decisions
+
+- AD-020-1: MI Command Whitelist in PHP prevents command injection
+- AD-020-2: Statistics backpressure with 30s refresh, 5s timeout, freeze-on-error
+- AD-020-3: Database-driven dialplan rules from PostgreSQL
+- AD-020-4: Read-only dialog viewer via direct PDO queries
+
+## Active Architecture Constraints
+
+Docker-first, PostgreSQL-only, valid OpenSIPS modules, secret hygiene, network isolation — all verified Pass.
+
+## Accepted Deviations
+
+- D3.js CDN dependency for statistics (air-gapped needs local copy)
+- validate-input.php orphaned utility (P3 cleanup deferred)
+
+## Relevant Security Constraints
+
+RBAC (devops minimum, admin for TLS), CSRF tokens, PDO prepared statements, audit logging on all paths, htmlspecialchars() output encoding.
+
+## Related Historical Lessons
+
+- Audit logging asymmetry was a recurring pattern; now enforced
+- Security headers centralized in common/header.php
+- Session hardening at config.php level, not per-page
+
+## Conflict Warnings
+
+None at this time.
+
+## Retrieval Notes
+
+- Search: OCP, dialog, MI, statistics, dialplan, domains, TLS
+- Related: Feature 002 (OCP rebrand), Feature 016 (audit log compliance)
+
+---
+
+*Last updated: 2026-05-23*
