@@ -11,7 +11,7 @@
 **Feature**: 020 — OCP Critical Tool Gap Closure
 **Scope**: Six PHP-based administrative tools for TSiSIP OCP
 **MSL**: Non-MSL (PHP 8.2 managed runtime)
-**Status**: Complete — all 10 ACs verified, 35 tasks closed
+**Status**: Complete — all 10 ACs verified, 35 tasks closed, remediation R1-R5 executed, R7 validation passed
 
 ---
 
@@ -65,25 +65,25 @@
 | R9 (Error handling) | MI errors caught; user-friendly messages without stack traces |
 | R10 (Failure audit) | Failed MI commands logged with error code and user identity |
 
-### Open Security Findings
+### Resolved Security Findings
 
-#### FINDING-SEC-020-001: CRUD Failure Audit Gap (MEDIUM)
+#### FINDING-SEC-020-001: CRUD Failure Audit Gap (MEDIUM) — RESOLVED
 - **File**: web/dialplan.php, web/domains.php
-- **Issue**: PDOException catch blocks set error but do NOT call logAuditEvent()
-- **Impact**: Failed CREATE/UPDATE operations are invisible to audit trail
-- **Remediation**: Add logAuditEvent() in catch blocks
+- **Issue**: PDOException catch blocks set error but did NOT call logAuditEvent()
+- **Fix**: Added logAuditEvent() in all CREATE/UPDATE catch blocks (commit 98af161)
+- **Verification**: Brownfield scan confirms 4 logAuditEvent calls with result=false
 
-#### FINDING-SEC-020-002: Missing Security Headers (MEDIUM)
-- **File**: All OCP PHP pages
+#### FINDING-SEC-020-002: Missing Security Headers (MEDIUM) — RESOLVED
+- **File**: web/common/header.php
 - **Issue**: No CSP, X-Frame-Options, or X-Content-Type-Options headers
-- **Impact**: OCP vulnerable to clickjacking and MIME-sniffing
-- **Remediation**: Add security headers in web/common/header.php
+- **Fix**: Added 4 security headers via PHP header() calls (commit 98af161)
+- **Verification**: curl -I confirms all headers present
 
-#### FINDING-SEC-020-003: Session Hardening Gap (MEDIUM)
-- **File**: web/common/config.php
+#### FINDING-SEC-020-003: Session Hardening Gap (MEDIUM) — RESOLVED
+- **File**: web/common/config.php, web/login.php
 - **Issue**: session_start() without regenerate_id or strict cookie flags
-- **Impact**: Session fixation risk
-- **Remediation**: Add session_regenerate_id(true) after auth
+- **Fix**: Added cookie_httponly, cookie_samesite=Strict, use_strict_mode=1, session_regenerate_id(true) on login (commit 98af161)
+- **Verification**: Set-Cookie header inspection passes
 
 ---
 
@@ -100,7 +100,7 @@
 | ID | Finding | Severity | Status |
 |---|---|---|---|
 | R1 | statistics.php refreshStats error path may reset chart state rather than freeze | LOW | Partially mitigated |
-| R2 | CRUD failures in dialplan/domains do not call logAuditEvent() in catch blocks | MEDIUM | Open |
+| R2 | CRUD failures in dialplan/domains do not call logAuditEvent() in catch blocks | MEDIUM | Resolved |
 
 ---
 

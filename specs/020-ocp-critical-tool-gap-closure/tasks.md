@@ -85,7 +85,7 @@ W0 (Security) → W1 (CRUD) → W2 (MI/Stats) → W3 (TLS) → W4 (Validation)
 - [x] R4: Harden statistics error path — warning banner on MI failure, charts preserve last-known values
 - [x] R5: Add D3.js CDN fallback — graceful degradation message when CDN unreachable
 - [ ] R6: Integrate web/common/validate-input.php into dialplan.php and domains.php (P3 cleanup)
-- [ ] R7: Run post-fix brownfield scan and validation; capture evidence in evidence/remediation/ciclo-020/
+- [x] R7: Run post-fix brownfield scan and validation; capture evidence in evidence/remediation/ciclo-020/
 
 ## Remediation Acceptance Criteria
 
@@ -95,4 +95,4 @@ W0 (Security) → W1 (CRUD) → W2 (MI/Stats) → W3 (TLS) → W4 (Validation)
 - [x] R4: Warning banner appears on MI timeout; charts do not reset
 - [x] R5: Graceful message appears when D3.js CDN is blocked
 - [ ] R6: dialplan.php and domains.php use validate-input.php helpers (optional)
-- [ ] R7: Post-fix scan shows zero new findings
+- [x] R7: Post-fix scan shows zero new findings

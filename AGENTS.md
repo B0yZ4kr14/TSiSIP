@@ -869,50 +869,6 @@ When editing files in this repo, the hooks may trigger automatically. If you enc
 
 *Last updated: 2026-05-20. This file must be updated whenever new build tooling, manifests, or canonical architecture decisions are committed.*
 
-<!-- SPECKIT GOVERNANCE START -->
-## Speckit Agent Governance
-
-This project uses [GitHub Spec Kit](https://github.com/github/spec-kit) for Spec-Driven Development (SDD).
-
-### Active Tools
-- **Speckit CLI**: v0.8.12.dev0 (`specify`)
-- **Integration**: Kimi (default)
-- **Extensions**: Blueprint, Agent Governance, Architecture Guard, Spec Validate, SDD Utilities, Memory Loader
-- **Presets**: Agent Parity Governance, Architecture Governance, Security Governance
-- **Workflows**: Full SDD Cycle
-
-### Governance Files
-- `.specify/memory/agent-governance.md` — Source of truth for agent collaboration rules
-- `.specify/memory/constitution.md` — Project principles (managed by Architecture Guard)
-- `.specify/memory/architecture_constitution.md` — Architecture boundaries
-- `.specify/memory/security_constitution.md` — Security standards and incident response
-
-### Authority Order
-1. Current user instruction
-2. `docs/TSiSIP-CANONICAL-SPEC.md`
-3. This `AGENTS.md` file
-4. `.specify/memory/agent-governance.md`
-5. Skill-local `SKILL.md`
-6. Tool/MCP defaults
-
-### Write Boundaries
-- Code writes only during `/speckit.implement` or OMK-blessed flows
-- Required artifacts before implementation: `spec.md` + `plan.md` + `tasks.md`
-- Architecture guard must pass before implementation
-- No edits to governance, CI, MCP config, credential files, or tool settings without explicit request
-
-### MCP & Tool Policy
-
-| Tool | Purpose | Writes Allowed? | Validation |
-|------|---------|-----------------|------------|
-| GitNexus | Impact analysis | No | Blast radius report |
-| OMK | Orchestration, memory | Goals, todos only | Quality gates |
-| Obsidian Vault | Docs, sessions | Notes, changelog | Session review |
-| Speckit | SDD workflow | Specs, plans (gated) | Spec validate gate |
-| Firecrawl | Web research | No | Source logging |
-
-<!-- SPECKIT GOVERNANCE END -->
-
 <!-- SPECKIT START -->
 For additional context about technologies to be used, project structure,
 shell commands, and other important information, read the current plan
