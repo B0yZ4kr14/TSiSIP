@@ -99,6 +99,7 @@ def get_cert_domain(path: str) -> str:
 
 
 def update_metrics():
+    global _last_failures
     try:
         expiry = get_cert_expiry(CERT_PATH)
         now = datetime.datetime.now(datetime.timezone.utc)

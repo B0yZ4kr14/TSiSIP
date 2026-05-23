@@ -3,16 +3,22 @@
 -- Tables: dialplan, domain, dialog (for viewer)
 
 -- Dialplan table for OpenSIPS dialplan module
+-- Schema aligned with OpenSIPS 3.6 stock postgres schema (version 5)
 CREATE TABLE IF NOT EXISTS dialplan (
-    id          SERIAL PRIMARY KEY,
-    pr          INT NOT NULL DEFAULT 0,
-    match_op    INT NOT NULL DEFAULT 0,
-    match_exp   VARCHAR(255) NOT NULL DEFAULT '',
-    match_flags INT NOT NULL DEFAULT 0,
-    subst_exp   VARCHAR(255) NOT NULL DEFAULT '',
-    repl_exp    VARCHAR(255) NOT NULL DEFAULT '',
-    attrs       VARCHAR(255) NOT NULL DEFAULT ''
+    id          SERIAL PRIMARY KEY NOT NULL,
+    dpid        INTEGER NOT NULL,
+    pr          INTEGER DEFAULT 0 NOT NULL,
+    match_op    INTEGER NOT NULL,
+    match_exp   VARCHAR(64) NOT NULL,
+    match_flags INTEGER DEFAULT 0 NOT NULL,
+    subst_exp   VARCHAR(64) DEFAULT NULL,
+    repl_exp    VARCHAR(32) DEFAULT NULL,
+    timerec     VARCHAR(255) DEFAULT NULL,
+    disabled    INTEGER DEFAULT 0 NOT NULL,
+    attrs       VARCHAR(255) DEFAULT NULL
 );
+
+ALTER SEQUENCE dialplan_id_seq MAXVALUE 2147483647 CYCLE;
 
 CREATE INDEX IF NOT EXISTS idx_dialplan_pr ON dialplan(pr);
 
@@ -51,7 +57,7 @@ CREATE TABLE IF NOT EXISTS dialog (
 CREATE INDEX IF NOT EXISTS idx_dialog_callid ON dialog(callid);
 
 -- Version tracking for schema changes
-INSERT INTO version (table_name, table_version) VALUES ('dialplan', 1)
+INSERT INTO version (table_name, table_version) VALUES ('dialplan', 5)
     ON CONFLICT (table_name) DO UPDATE SET table_version = EXCLUDED.table_version;
 
 INSERT INTO version (table_name, table_version) VALUES ('domain', 1)

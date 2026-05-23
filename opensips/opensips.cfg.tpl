@@ -512,8 +512,10 @@ route[HEADER_ROUTING] {
             sl_send_reply(400, "Bad Request");
             exit;
         }
-        if (!sql_query("SELECT dispatcher_setid FROM header_routing_rules WHERE tenant_id = '$var(tenant_id)' AND header_name = 'X-Route-Key' AND match_value = '$var(route_key)' AND enabled = true ORDER BY priority LIMIT 1", "$avp(ra)")) {
-            xlog("L_ERR", "HEADER_ROUTING: database unavailable for tenant $var(tenant_id)\n");
+        $avp(ra) = 0;
+        sql_query("SELECT dispatcher_setid FROM header_routing_rules WHERE tenant_id = '$var(tenant_id)' AND header_name = 'X-Route-Key' AND match_value = '$var(route_key)' AND enabled = true ORDER BY priority LIMIT 1", "$avp(ra)");
+        if ($rc == -1) {
+            xlog("L_ERR", "HEADER_ROUTING: database error for tenant $var(tenant_id)\n");
             sl_send_reply(480, "Temporarily Unavailable");
             exit;
         }
@@ -595,8 +597,10 @@ route[SRTP_REOFFER] {
 route[TRUNK_VERIFY] {
     # T2.3: Mutual TLS for trunks
     # Check if source IP is a registered trunk requiring mTLS
-    if (!sql_query("SELECT 1 FROM trunk_ips WHERE ip_address = '$si' AND enabled = true AND require_mtls = true LIMIT 1", "$avp(trunk_check)")) {
-        xlog("L_ERR", "TRUNK_VERIFY: database unavailable for trunk lookup\n");
+    $avp(trunk_check) = 0;
+    sql_query("SELECT 1 FROM trunk_ips WHERE ip_address = '$si' AND enabled = true AND require_mtls = true LIMIT 1", "$avp(trunk_check)");
+    if ($rc == -1) {
+        xlog("L_ERR", "TRUNK_VERIFY: database error for trunk lookup\n");
         sl_send_reply(480, "Temporarily Unavailable");
         exit;
     }
@@ -626,8 +630,10 @@ route[TRUNK_ROUTING] {
     }
 
     # Check if destination is a local tenant domain
-    if (!sql_query_one("SELECT 1 FROM tenants WHERE sip_domain = '$rd' AND enabled = true LIMIT 1", "$var(is_local_domain)")) {
-        xlog("L_ERR", "TRUNK_ROUTING: DB unavailable during local domain check for $rd\n");
+    $var(is_local_domain) = 0;
+    sql_query_one("SELECT 1 FROM tenants WHERE sip_domain = '$rd' AND enabled = true LIMIT 1", "$var(is_local_domain)");
+    if ($rc == -1) {
+        xlog("L_ERR", "TRUNK_ROUTING: DB error during local domain check for $rd\n");
         sl_send_reply(480, "Temporarily Unavailable");
         exit;
     }
@@ -645,8 +651,10 @@ route[TRUNK_ROUTING] {
         $var(attempt) = $var(attempt) + 1;
 
         $var(trunk_query) = "SELECT id, name, host, port, transport, auth_username, from_domain, caller_id_prefix, srtp_mode, max_cps, priority FROM sip_trunk_providers WHERE enabled = true AND priority > " + $var(trunk_priority) + " ORDER BY priority ASC LIMIT 1";
-        if (!sql_query_one($var(trunk_query), "$var(trunk_id);$var(trunk_name);$var(trunk_host);$var(trunk_port);$var(trunk_transport);$var(trunk_auth_user);$var(trunk_from_domain);$var(trunk_cid_prefix);$var(trunk_srtp);$var(trunk_cps);$var(trunk_priority)")) {
-            xlog("L_ERR", "TRUNK_ROUTING: DB unavailable during trunk selection\n");
+        $var(trunk_id) = 0;
+        sql_query_one($var(trunk_query), "$var(trunk_id);$var(trunk_name);$var(trunk_host);$var(trunk_port);$var(trunk_transport);$var(trunk_auth_user);$var(trunk_from_domain);$var(trunk_cid_prefix);$var(trunk_srtp);$var(trunk_cps);$var(trunk_priority)");
+        if ($rc == -1) {
+            xlog("L_ERR", "TRUNK_ROUTING: DB error during trunk selection\n");
             sl_send_reply(503, "No Trunk Available");
             exit;
         }
@@ -765,8 +773,10 @@ failure_route[TRUNK_FAILOVER] {
         while ($var(failover_attempt) < 5 && $var(failover_found) == 0) {
             $var(failover_attempt) = $var(failover_attempt) + 1;
             $var(trunk_query) = "SELECT id, name, host, port, transport, auth_username, from_domain, caller_id_prefix, srtp_mode, max_cps, priority FROM sip_trunk_providers WHERE enabled = true AND priority > '$var(trunk_priority)' ORDER BY priority ASC LIMIT 1";
-            if (!sql_query_one($var(trunk_query), "$var(trunk_id);$var(trunk_name);$var(trunk_host);$var(trunk_port);$var(trunk_transport);$var(trunk_auth_user);$var(trunk_from_domain);$var(trunk_cid_prefix);$var(trunk_srtp);$var(trunk_cps);$var(trunk_priority)")) {
-                xlog("L_ERR", "TRUNK_FAILOVER: DB unavailable during failover selection\n");
+            $var(trunk_id) = 0;
+            sql_query_one($var(trunk_query), "$var(trunk_id);$var(trunk_name);$var(trunk_host);$var(trunk_port);$var(trunk_transport);$var(trunk_auth_user);$var(trunk_from_domain);$var(trunk_cid_prefix);$var(trunk_srtp);$var(trunk_cps);$var(trunk_priority)");
+            if ($rc == -1) {
+                xlog("L_ERR", "TRUNK_FAILOVER: DB error during failover selection\n");
                 break;
             }
 
@@ -850,8 +860,10 @@ branch_route[BRANCH_TRUNK_SRTP] {
 route[INBOUND_DID_ROUTING] {
     # --- BEGIN TRUNK INTEGRATION WAVE 4: Inbound DID Routing ---
     # Only process INVITEs from known trunk IPs (check against sip_trunk_providers.host)
-    if (!sql_query_one("SELECT id FROM sip_trunk_providers WHERE host = '$si' AND enabled = true LIMIT 1", "$var(trunk_provider_id)")) {
-        xlog("L_ERR", "INBOUND_DID_ROUTING: DB unavailable during trunk lookup for $si\n");
+    $var(trunk_provider_id) = 0;
+    sql_query_one("SELECT id FROM sip_trunk_providers WHERE host = '$si' AND enabled = true LIMIT 1", "$var(trunk_provider_id)");
+    if ($rc == -1) {
+        xlog("L_ERR", "INBOUND_DID_ROUTING: DB error during trunk lookup for $si\n");
         sl_send_reply(480, "Temporarily Unavailable");
         exit;
     }
@@ -864,8 +876,10 @@ route[INBOUND_DID_ROUTING] {
     xlog("L_INFO", "INBOUND_DID_ROUTING: trunk-originated INVITE from $si (provider=$var(trunk_provider_id))\n");
 
     # Query DID mapping for the called number (RURI user part)
-    if (!sql_query_one("SELECT tenant_id, dispatcher_setid FROM sip_trunk_did_mappings WHERE did_number = '$rU' AND enabled = true LIMIT 1", "$var(tenant_id);$var(did_setid)")) {
-        xlog("L_ERR", "INBOUND_DID_ROUTING: DB unavailable during DID lookup for $rU\n");
+    $var(did_setid) = 0;
+    sql_query_one("SELECT tenant_id, dispatcher_setid FROM sip_trunk_did_mappings WHERE did_number = '$rU' AND enabled = true LIMIT 1", "$var(tenant_id);$var(did_setid)");
+    if ($rc == -1) {
+        xlog("L_ERR", "INBOUND_DID_ROUTING: DB error during DID lookup for $rU\n");
         sl_send_reply(480, "Temporarily Unavailable");
         exit;
     }
@@ -936,7 +950,9 @@ event_route[E_DISPATCHER_STATUS] {
     if ($param(uri) =~ "^sip:") {
         $var(trunk_uri) = $param(uri);
         $var(trunk_host) = $(var(trunk_uri){uri.host});
-        if (!sql_query_one("SELECT id FROM sip_trunk_providers WHERE host = '$var(trunk_host)' AND enabled = true LIMIT 1", "$var(trunk_provider_id)")) {
+        $var(trunk_provider_id) = 0;
+        sql_query_one("SELECT id FROM sip_trunk_providers WHERE host = '$var(trunk_host)' AND enabled = true LIMIT 1", "$var(trunk_provider_id)");
+        if ($rc == -1) {
             xlog("L_ERR", "E_DISPATCHER_STATUS: failed to map $param(uri) to trunk provider\n");
         } else {
             if ($var(trunk_provider_id) != NULL && $var(trunk_provider_id) != 0) {
