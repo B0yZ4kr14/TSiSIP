@@ -27,6 +27,7 @@
 - [x] T2.7: Integrate D3.js charts (bar/line) for statistics display with 30-second auto-refresh
 - [x] T2.8: Negative test — attempt POST with non-whitelisted MI command; verify 403 rejection
 - [x] T2.9: Negative test — attempt `dlg_end_dlg` as devops role; verify 403 rejection
+- [x] T2.11: Negative test — execute a whitelisted MI command that returns HTTP 405 or timeout; verify the failure is logged to `auth_audit_log` with error details and user identity
 - [x] T2.10: Update `dashboard.php` with cards/links to new MI commands and statistics pages
 
 ## Wave 3: TLS Management
@@ -72,5 +73,6 @@ W0 (Security) → W1 (CRUD) → W2 (MI/Stats) → W3 (TLS) → W4 (Validation)
 | AC6 (TLS management) | T3.1–T3.4 |
 | AC7 (RBAC devops) | T1.6, T2.2, T2.6, T3.1 |
 | AC8 (CSRF) | T1.2, T1.4, T1.8 |
+| AC8b (Audit failure logging) | T2.11 |
 | AC9 (security assessment) | T0.1 |
 | AC10 (threat model) | T0.2 |

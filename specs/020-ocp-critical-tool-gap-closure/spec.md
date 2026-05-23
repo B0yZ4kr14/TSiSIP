@@ -71,12 +71,18 @@ Without these tools, operators must:
 | R6 | TLS reload requires `requireRole('admin')` — higher privilege than devops |
 | R7 | All actions are logged to `auth_audit_log` table |
 | R8 | Output of MI commands is sanitized before HTML rendering (XSS prevention) |
+| R9 | MI command errors (network timeout, HTTP 405, malformed JSON) are caught and displayed as user-friendly messages without leaking stack traces or internal paths |
+| R10 | Failed MI command attempts are logged to `auth_audit_log` with error code and user identity |
 
 ## Acceptance Criteria
 
 - [x] AC1: `web/dialog.php` lists active dialogs with call-id, from/to, duration, state
 - [x] AC2: `web/mi-commands.php` executes whitelisted MI commands and displays output
 - [x] AC3: `web/statistics.php` displays at least 6 key metrics with D3.js charts
+  - **Required metrics**: `active_dialogs`, `registered_users`, `dispatcher_sets`, `transactions`, `replies`, `requests`
+  - **Rendering**: Each metric displayed as a D3.js bar or line chart card
+  - **Fallback**: If a metric counter is zero or missing from MI output, display `0` with a greyed-out card rather than omitting the chart
+  - **Auto-refresh behavior**: Polls MI HTTP every 30 seconds. If the request exceeds 5 seconds or returns non-200, the page enters an error state: charts freeze at last-known values, a warning banner appears (`Statistics refresh failed — MI HTTP unreachable`), and the next poll is deferred by 30 seconds (no retry storm).
 - [x] AC4: `web/dialplan.php` provides full CRUD on `dialplan` table
 - [x] AC5: `web/domains.php` provides full CRUD on `domain` table
 - [x] AC6: `web/tls-management.php` shows certificate status and triggers `tls_reload` MI command
