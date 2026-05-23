@@ -1,0 +1,34 @@
+# Team configuration for spec-kit-team-assign
+# Fill this in once per project, then run /speckit.team.assign
+
+team:
+  # Define each engineer. Roles help the AI assign tasks sensibly.
+  members:
+    - name: "Alice"
+      github: "alice"          # optional, used in board output
+      role: "backend"          # e.g. backend, frontend, fullstack, devops, qa
+      capacity: 5              # story points or tasks per sprint (your unit)
+
+    - name: "Bob"
+      github: "bob"
+      role: "frontend"
+      capacity: 5
+
+    - name: "Carol"
+      github: "carol"
+      role: "fullstack"
+      capacity: 4
+
+    - name: "Dave"
+      github: "dave"
+      role: "devops"
+      capacity: 3
+
+  # Optional: sprint or milestone name shown in the board header
+  sprint: "Sprint 1"
+
+  # Assignment strategy:
+  #   "role-match"   — match task type to engineer role (recommended)
+  #   "round-robin"  — distribute evenly regardless of role
+  #   "manual"       — AI suggests but leaves all assignments empty for you to fill
+  strategy: "role-match"

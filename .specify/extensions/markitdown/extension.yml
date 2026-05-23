@@ -1,0 +1,34 @@
+schema_version: "1.0"
+
+extension:
+  id: "markitdown"
+  name: "MarkItDown Document Converter"
+  version: "1.0.0"
+  description: "Convert documents (PDF, Word, PowerPoint, Excel, and more) to Markdown for use as spec reference material in Spec Kit workflows."
+  author: "BenBtg"
+  repository: "https://github.com/BenBtg/spec-kit-markitdown"
+  license: "MIT"
+  homepage: "https://github.com/BenBtg/spec-kit-markitdown"
+
+requires:
+  speckit_version: ">=0.1.0"
+  tools:
+    - name: "markitdown"
+      version: ">=0.1.0"
+      required: true
+      description: "Microsoft's markitdown CLI — converts documents to Markdown. Install with: pip install 'markitdown[all]'"
+
+provides:
+  commands:
+    - name: "speckit.markitdown.convert"
+      file: "commands/convert.md"
+      description: "Convert a document (PDF, Word, PowerPoint, Excel, etc.) to Markdown and place it in the spec directory as reference material"
+      aliases: ["speckit.convert"]
+
+tags:
+  - "markdown"
+  - "pdf"
+  - "document-conversion"
+  - "markitdown"
+  - "reference-material"
+  - "extraction"

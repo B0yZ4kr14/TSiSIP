@@ -1,0 +1,125 @@
+[build-system]
+requires = ["setuptools>=68", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "spec-kit-schedule"
+version = "0.6.2"
+description = "Optimal multi-agent task scheduling via CP-SAT (spec-kit extension)"
+readme = "README.md"
+requires-python = ">=3.10,<3.13"
+license = "MIT"
+license-files = ["LICENSE"]
+authors = [
+    { name = "Julio César Franco Ardila" },
+]
+keywords = [
+    "spec-kit",
+    "scheduling",
+    "cp-sat",
+    "constraint-programming",
+    "multi-agent",
+    "llm-orchestration",
+    "ortools",
+    "rcpsp",
+    "optimization",
+]
+classifiers = [
+    "Development Status :: 4 - Beta",
+    "Intended Audience :: Developers",
+    "Intended Audience :: Science/Research",
+    "Operating System :: OS Independent",
+    "Programming Language :: Python :: 3",
+    "Programming Language :: Python :: 3 :: Only",
+    "Programming Language :: Python :: 3.10",
+    "Programming Language :: Python :: 3.11",
+    "Programming Language :: Python :: 3.12",
+    "Topic :: Scientific/Engineering :: Mathematics",
+    "Topic :: Software Development :: Build Tools",
+    "Topic :: Software Development :: Libraries :: Python Modules",
+]
+dependencies = [
+    "ortools>=9.9,<10",
+    "PyYAML>=6,<7",
+    "networkx>=3.1,<4",
+    "pydantic>=2,<3",
+]
+
+[project.urls]
+Homepage = "https://github.com/jfranc38/spec-kit-schedule"
+Documentation = "https://github.com/jfranc38/spec-kit-schedule/tree/master/docs"
+Changelog = "https://github.com/jfranc38/spec-kit-schedule/blob/master/CHANGELOG.md"
+Issues = "https://github.com/jfranc38/spec-kit-schedule/issues"
+Source = "https://github.com/jfranc38/spec-kit-schedule"
+
+[project.optional-dependencies]
+dev = [
+    "pytest>=8",
+    "pytest-cov>=5",
+    "ruff>=0.5",
+    "mypy>=1.10",
+    "pre-commit>=3.6",
+    "hypothesis>=6,<7",
+]
+viz = [
+    "matplotlib>=3.7,<4",
+    "plotly>=5,<7",
+]
+
+[project.scripts]
+speckit-schedule-parse = "solver.parse_tasks:main"
+speckit-schedule-solve = "solver.scheduler:main"
+speckit-schedule-render = "solver.render_schedule:main"
+
+[tool.setuptools]
+include-package-data = true
+
+[tool.setuptools.packages.find]
+include = ["solver*"]
+exclude = ["tests*", "docs*"]
+
+# Ship the spec-kit extension manifest, slash-command markdown, and the
+# schedule template inside the built wheel and sdist. Without these, the
+# package installs as a Python library but is NOT a working spec-kit
+# extension. Files land under `<sys.prefix>/share/spec-kit-schedule/...`
+# in installed environments and are visible in the wheel under
+# `spec_kit_schedule-<ver>.data/data/share/spec-kit-schedule/...`.
+[tool.setuptools.data-files]
+"share/spec-kit-schedule" = ["extension.yml", "LICENSE", "README.md"]
+"share/spec-kit-schedule/commands" = [
+    "commands/calibrate.md",
+    "commands/portfolio.md",
+    "commands/schedule.md",
+    "commands/status.md",
+    "commands/visualize.md",
+]
+"share/spec-kit-schedule/templates" = [
+    "templates/schedule-template.md",
+    "templates/base-portfolio.yml",
+    "templates/portfolio-claude.yml",
+    "templates/portfolio-copilot.yml",
+    "templates/portfolio-cursor.yml",
+    "templates/portfolio-gemini.yml",
+]
+
+[tool.ruff]
+line-length = 100
+target-version = "py310"
+
+[tool.ruff.lint]
+select = ["E", "F", "W", "I", "B", "UP", "SIM", "C4"]
+ignore = ["E501"]  # long lines caught separately via line-length
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+addopts = "-ra --strict-markers"
+filterwarnings = ["error"]
+
+[tool.mypy]
+python_version = "3.10"
+warn_unused_ignores = true
+warn_redundant_casts = true
+disallow_untyped_defs = true
+warn_return_any = true
+strict_equality = true
+ignore_missing_imports = true

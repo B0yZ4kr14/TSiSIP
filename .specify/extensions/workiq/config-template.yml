@@ -1,0 +1,18 @@
+# Work IQ Spec Kit Extension — Configuration Template
+# Copy this file to config.yml and adjust as needed.
+
+# Directory where Work IQ outputs are saved
+output_dir: ".specify/context"
+
+# Whether to automatically save query results
+save_results: true
+
+# Default time range for M365 queries (days)
+default_lookback_days: 30
+
+# Data sources to include in context gathering
+data_sources:
+  emails: true
+  meetings: true
+  documents: true
+  teams: true

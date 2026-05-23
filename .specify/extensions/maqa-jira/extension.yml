@@ -1,0 +1,37 @@
+schema_version: "1.0"
+
+extension:
+  id: "maqa-jira"
+  name: "MAQA Jira Integration"
+  version: "0.1.0"
+  description: "Jira board integration for the MAQA extension. Populates issues from specs, moves tickets through workflow states, tracks subtasks as checklist items."
+  author: "GenieRobot"
+  repository: "https://github.com/GenieRobot/spec-kit-maqa-jira"
+  license: "MIT"
+  homepage: "https://github.com/GenieRobot/spec-kit-maqa-jira"
+
+requires:
+  speckit_version: ">=0.3.0"
+
+provides:
+  commands:
+    - name: "speckit.maqa-jira.setup"
+      file: "commands/speckit.maqa-jira.setup.md"
+      description: "Bootstrap Jira config for MAQA. Reads projects and workflow statuses via REST API and generates maqa-jira/jira-config.yml."
+
+    - name: "speckit.maqa-jira.populate"
+      file: "commands/speckit.maqa-jira.populate.md"
+      description: "Populate Jira project from specs/*/tasks.md. Creates one story per feature with subtasks. Skips existing. Safe to re-run."
+
+  config:
+    - name: "maqa-jira/jira-config.yml"
+      template: "config-template.yml"
+      description: "Jira instance, project, and transition IDs for MAQA coordination"
+      required: true
+
+tags:
+  - "jira"
+  - "atlassian"
+  - "project-management"
+  - "multi-agent"
+  - "maqa"

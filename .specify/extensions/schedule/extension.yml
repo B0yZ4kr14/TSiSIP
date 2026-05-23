@@ -1,0 +1,64 @@
+schema_version: "1.0"
+
+extension:
+  id: "schedule"
+  name: "Spec Kit Schedule — CP-SAT Agent Orchestrator"
+  version: "0.6.2"
+  description: "Optimal multi-agent task scheduling via CP-SAT solver with DAG precedence, hallucination-aware caps, file-conflict avoidance, stochastic durations, replanning, and interactive HTML output. v0.6.0: encapsulated state under .specify/, idempotent /speckit.schedule.run with auto-bootstrap, AI-agent-aware portfolio discovery"
+  author: "Julio César Franco Ardila"
+  repository: "https://github.com/jfranc38/spec-kit-schedule"
+  license: "MIT"
+  homepage: "https://github.com/jfranc38/spec-kit-schedule"
+
+# Python package dependencies live in pyproject.toml — the spec-kit
+# extension manifest's `requires.tools[]` is for external CLI tools and
+# MCP servers, not for Python imports. Run `uv sync --extra dev` (or
+# `bin/install.sh`) once after cloning to bootstrap them.
+requires:
+  # Tested against spec-kit 0.4.x; no known incompatibilities with newer majors yet.
+  speckit_version: ">=0.4.0"
+  tools:
+    - name: "python3"
+      version: ">=3.10,<4.0"
+      required: true
+
+provides:
+  commands:
+    # Command IDs follow the canonical pattern
+    # ^speckit\.[a-z0-9-]+\.[a-z0-9-]+$ — three dotted segments where
+    # the middle segment matches `extension.id` ("schedule").
+    - name: "speckit.schedule.run"
+      file: "commands/schedule.md"
+      description: "Parse tasks.md, solve CP-SAT model, produce schedule.md with agent assignments and wave diagram"
+      aliases:
+        - "speckit.schedule.solve"
+    - name: "speckit.schedule.portfolio"
+      file: "commands/portfolio.md"
+      description: "Define or edit the agent portfolio (models, skills, capacity caps)"
+    - name: "speckit.schedule.visualize"
+      file: "commands/visualize.md"
+      description: "Render the solved schedule as a Gantt chart and DAG diagram"
+    - name: "speckit.schedule.calibrate"
+      file: "commands/calibrate.md"
+      description: "Recalibrate speed_factor and token_estimates from accumulated plan/actual logs in .specify/schedule/runs/"
+    - name: "speckit.schedule.status"
+      file: "commands/status.md"
+      description: "Self-diagnose installation state — distinguishes real problems from expected pre-first-run state"
+
+# Optional opt-in hook fired by spec-kit immediately after `/speckit.tasks`.
+# Because `optional: true`, the agent surfaces the prompt and the user
+# decides whether to proceed — no auto-execution. Mirrors the canonical
+# pattern used by the bundled `git` extension.
+hooks:
+  after_tasks:
+    command: speckit.schedule.run
+    optional: true
+    prompt: "Generate an optimal CP-SAT schedule from the new tasks?"
+    description: "Suggest running the scheduler after task generation"
+
+tags:
+  - "scheduling"
+  - "optimization"
+  - "multi-agent"
+  - "operations-research"
+  - "parallel-execution"

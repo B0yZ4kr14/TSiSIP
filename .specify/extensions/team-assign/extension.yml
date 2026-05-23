@@ -1,0 +1,33 @@
+schema_version: "1.0"
+
+extension:
+  id: "team-assign"
+  name: "Team Assign"
+  version: "1.0.0"
+  description: "Assign tasks.md items to human engineers, split into subtasks, and generate a team workboard"
+  author: "tarunkumarbhati"
+  repository: "https://github.com/tarunkumarbhati/spec-kit-team-assign"
+  license: "MIT"
+  homepage: "https://github.com/tarunkumarbhati/spec-kit-team-assign"
+
+requires:
+  speckit_version: ">=0.1.0"
+
+provides:
+  commands:
+    - name: "speckit.team-assign.setup"
+      file: "commands/team-setup.md"
+      description: "Define your team members and their roles for task assignment"
+    - name: "speckit.team-assign.assign"
+      file: "commands/team-assign.md"
+      description: "Assign tasks.md items to human engineers and split into subtasks"
+    - name: "speckit.team-assign.board"
+      file: "commands/team-board.md"
+      description: "Generate a Markdown workboard showing who owns what"
+
+tags:
+  - "team"
+  - "assignment"
+  - "process"
+  - "planning"
+  - "subtasks"

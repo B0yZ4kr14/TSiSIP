@@ -1,0 +1,105 @@
+# Hybrid portfolio mixing Anthropic, OpenAI, and Google models. The
+# scheduler is provider-agnostic: `provider` and `model` are pure
+# metadata that downstream executors (Cursor, Copilot, Claude Code,
+# Aider, custom orchestrators) use to dispatch each task to the right
+# runner. The solver only allocates tasks to slots — it does not invoke
+# any model itself.
+#
+# Pricing note: `price_per_1k_tokens` values below are in dollars but
+# scaled up ~1000× from real 2026 list prices. The scaling is what
+# makes the cost-vs-makespan trade-off visibly different from the
+# pure-makespan optimum on a 14-task toy problem; without it, the
+# total bill on this small example would round to noise. Relative
+# ratios (Opus ≫ GPT-4o ≫ Sonnet ≫ GPT-4o-mini ≈ Gemini Flash) match
+# the public pricing pages. For real-portfolio pricing guidance see
+# `docs/portfolio-design.md` Step 4 and the κ/C tier table in
+# `docs/formulation.md` (section "Hallucination Calibration").
+# A realistic-price reference config lives at `docs/example-config-mixed.yml`.
+
+agents:
+  - id: opus
+    provider: anthropic
+    model: claude-opus-4
+    skills: [design, schema, architecture, review]
+    kappa: 6
+    context_budget: 32
+    speed_factor: 0.8
+    price_per_1k_tokens: 15.0
+
+  - id: sonnet
+    provider: anthropic
+    model: claude-sonnet-4
+    skills: [python, backend, api, schema, review]
+    kappa: 10
+    context_budget: 32
+    speed_factor: 1.0
+    price_per_1k_tokens: 3.0
+
+  - id: gpt4o
+    provider: openai
+    model: gpt-4o
+    skills: [python, backend, api, frontend, react, review]
+    kappa: 10
+    context_budget: 32
+    speed_factor: 1.0
+    price_per_1k_tokens: 5.0
+
+  - id: gpt4o-mini
+    provider: openai
+    model: gpt-4o-mini
+    skills: [python, test, e2e, unit-test]
+    kappa: 12
+    context_budget: 16
+    speed_factor: 1.4
+    price_per_1k_tokens: 0.15
+
+  - id: gemini-flash
+    provider: google
+    model: gemini-2.0-flash
+    skills: [docs, frontend, review]
+    kappa: 12
+    context_budget: 16
+    speed_factor: 1.6
+    price_per_1k_tokens: 0.075
+
+# Skill rules: the parser resolves precedence by pattern specificity
+# (longest matching pattern wins; declaration order is only the
+# tiebreaker for equal-length matches). So `docs/ADR-` will correctly
+# beat `docs/` regardless of where it sits in this list — the order
+# below is documentation-only.
+skill_rules:
+  - pattern: "tests/"
+    skill: "test"
+  - pattern: "test_"
+    skill: "test"
+  - pattern: ".test."
+    skill: "test"
+  - pattern: "src/models/"
+    skill: "schema"
+  - pattern: "migrations/"
+    skill: "schema"
+  - pattern: "src/api/"
+    skill: "api"
+  - pattern: "src/services/"
+    skill: "backend"
+  - pattern: "src/components/"
+    skill: "frontend"
+  - pattern: "src/pages/"
+    skill: "frontend"
+  - pattern: ".tsx"
+    skill: "frontend"
+  - pattern: "docs/"
+    skill: "docs"
+  - pattern: ".md"
+    skill: "docs"
+  - pattern: "docs/ADR-"
+    skill: "design"
+  - pattern: "docs/design/"
+    skill: "design"
+
+default_skill: backend
+
+solver:
+  objective: cost_aware
+  time_limit: 30
+  num_workers: 4

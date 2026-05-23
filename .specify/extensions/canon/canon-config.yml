@@ -1,0 +1,43 @@
+# Project-level canon extension configuration.
+#
+# Edit project.name, canon.root, branching.base, branching.types, or
+# branching.scopes for the target project, then rerun /speckit.constitution to
+# regenerate constitution metadata and the Section 6 branch strategy tables.
+project:
+  name: ""
+
+canon:
+  root: specs/000-canon
+
+branching:
+  base: main
+  types:
+    - code: feature
+      classification: Feature
+    - code: behavior
+      classification: Behavioral Change
+    - code: breaking
+      classification: Breaking Change
+    - code: bugfix
+      classification: Bug Fix
+    - code: refactor
+      classification: Refactor
+    - code: deprecat
+      classification: Deprecation
+    - code: perform
+      classification: "Non-Functional: Performance"
+    - code: security
+      classification: "Non-Functional: Security"
+    - code: devops
+      classification: "Non-Functional: DevOps"
+    - code: document
+      classification: "Non-Functional: Documentation"
+    - code: nonfunc
+      classification: "Non-Functional: Other"
+  scopes:
+    - code: api
+      description: Public API
+    - code: worker
+      description: Background jobs
+    - code: web
+      description: Web application

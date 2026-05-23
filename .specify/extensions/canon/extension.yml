@@ -1,0 +1,125 @@
+schema_version: "1.0"
+
+extension:
+  id: "canon"
+  name: "Canon"
+  version: "0.1.0"
+  description: "Adds canon-driven (baseline-driven) workflows: spec-first, code-first, spec-drift. Requires Canon Core preset installation."
+  author: "Maxim Stupakov"
+  repository: "https://github.com/maximiliamus/spec-kit-canon/tree/master/extension"
+  license: "MIT"
+
+config:
+  defaults:
+    project:
+      name: ""
+    canon:
+      root: "specs/000-canon"
+    branching:
+      base: "main"
+      types:
+        - code: "feature"
+          classification: "Feature"
+        - code: "behavior"
+          classification: "Behavioral Change"
+        - code: "breaking"
+          classification: "Breaking Change"
+        - code: "bugfix"
+          classification: "Bug Fix"
+        - code: "refactor"
+          classification: "Refactor"
+        - code: "deprecat"
+          classification: "Deprecation"
+        - code: perform
+          classification: "Non-Functional: Performance"
+        - code: security
+          classification: "Non-Functional: Security"
+        - code: devops
+          classification: "Non-Functional: DevOps"
+        - code: document
+          classification: "Non-Functional: Documentation"
+        - code: nonfunc
+          classification: "Non-Functional: Other"
+      scopes:
+        - code: "api"
+          description: "Public API"
+        - code: "worker"
+          description: "Background jobs"
+        - code: "web"
+          description: "Web application"
+
+requires:
+  speckit_version: ">=0.4.3"
+
+provides:
+  commands:
+    - name: "speckit.canon.drift"
+      file: "commands/drift.md"
+      description: "Run the standard drift orchestration pipeline with direct resolve and analyze review gates."
+
+    - name: "speckit.canon.drift-analyze"
+      file: "commands/drift-analyze.md"
+      description: "Analyze draft canon.drift.md before canonize and optionally suggest remediation."
+      
+    - name: "speckit.canon.drift-canonize"
+      file: "commands/drift-canonize.md"
+      description: "Apply accepted canon entries to canon files."
+
+    - name: "speckit.canon.drift-detect"
+      file: "commands/drift-detect.md"
+      description: "Detect spec-level drift from tasks.drift.md."
+
+    - name: "speckit.canon.drift-implement"
+      file: "commands/drift-implement.md"
+      description: "Implement deferred alignment tasks from tasks.alignment.md."
+
+    - name: "speckit.canon.drift-reconcile"
+      file: "commands/drift-reconcile.md"
+      description: "Infer canon gaps and write canon.drift.md."
+
+    - name: "speckit.canon.drift-resolve"
+      file: "commands/drift-resolve.md"
+      description: "Resolve outstanding UNRESOLVED and IMPL-REJECTED drift items."
+
+    - name: "speckit.canon.drift-reverse"
+      file: "commands/drift-reverse.md"
+      description: "Reverse-engineer task drift from implementation changes."
+
+    - name: "speckit.canon.vibecode-drift"
+      file: "commands/vibecode-drift.md"
+      description: "Run the vibecoding drift orchestration pipeline with direct analyze review gate."
+
+    - name: "speckit.canon.vibecode-drift-analyze"
+      file: "commands/vibecode-drift-analyze.md"
+      description: "Vibecoding entrypoint alias for the shared draft canon analysis workflow."
+
+    - name: "speckit.canon.vibecode-drift-canonize"
+      file: "commands/vibecode-drift-canonize.md"
+      description: "Apply a fully accepted vibecoding canon plan."
+
+    - name: "speckit.canon.vibecode-drift-detect"
+      file: "commands/vibecode-drift-detect.md"
+      description: "Detect spec-level drift for vibecoding workflows."
+
+    - name: "speckit.canon.vibecode-drift-express"
+      file: "commands/vibecode-drift-express.md"
+      description: "Run the express vibecoding drift-to-canon pipeline."
+
+    - name: "speckit.canon.vibecode-drift-reconcile"
+      file: "commands/vibecode-drift-reconcile.md"
+      description: "Infer canon gaps for vibecoding workflows."
+
+    - name: "speckit.canon.vibecode-drift-reverse"
+      file: "commands/vibecode-drift-reverse.md"
+      description: "Reverse-engineer vibecoding task drift from implementation changes."
+      
+    - name: "speckit.canon.vibecode-specify"
+      file: "commands/vibecode-specify.md"
+      description: "Start a vibecoding session with minimal ceremony."
+
+tags:
+  - "canon"
+  - "drift"
+  - "vibecode"
+  - "specification"
+  - "workflow"

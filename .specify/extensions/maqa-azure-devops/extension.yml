@@ -1,0 +1,37 @@
+schema_version: "1.0"
+
+extension:
+  id: "maqa-azure-devops"
+  name: "MAQA Azure DevOps Integration"
+  version: "0.1.0"
+  description: "Azure DevOps Boards integration for the MAQA extension. Populates work items from specs, moves items through board columns, tracks tasks as child work items."
+  author: "GenieRobot"
+  repository: "https://github.com/GenieRobot/spec-kit-maqa-azure-devops"
+  license: "MIT"
+  homepage: "https://github.com/GenieRobot/spec-kit-maqa-azure-devops"
+
+requires:
+  speckit_version: ">=0.3.0"
+
+provides:
+  commands:
+    - name: "speckit.maqa-azure-devops.setup"
+      file: "commands/speckit.maqa-azure-devops.setup.md"
+      description: "Bootstrap Azure DevOps config for MAQA. Reads organization, project, and board columns via REST API."
+
+    - name: "speckit.maqa-azure-devops.populate"
+      file: "commands/speckit.maqa-azure-devops.populate.md"
+      description: "Populate Azure DevOps board from specs/*/tasks.md. Creates User Stories with Task child items. Skips existing. Safe to re-run."
+
+  config:
+    - name: "maqa-azure-devops/azure-devops-config.yml"
+      template: "config-template.yml"
+      description: "Azure DevOps org, project, and board config for MAQA coordination"
+      required: true
+
+tags:
+  - "azure-devops"
+  - "microsoft"
+  - "project-management"
+  - "multi-agent"
+  - "maqa"

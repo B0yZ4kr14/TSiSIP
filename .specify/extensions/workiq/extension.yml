@@ -1,0 +1,64 @@
+schema_version: "1.0"
+
+extension:
+  id: "workiq"
+  name: "Work IQ"
+  version: "1.0.0"
+  description: "Integrate Microsoft 365 organizational knowledge into spec-driven development workflows"
+  author: "sakitA"
+  repository: "https://github.com/sakitA/spec-kit-workiq"
+  license: "MIT"
+
+requires:
+  speckit_version: ">=0.1.0"
+  tools:
+    - name: "workiq"
+      description: "Microsoft Work IQ CLI or MCP server"
+      install: "npm install -g @microsoft/workiq"
+      check: "workiq --version"
+  runtime:
+    - name: "node"
+      version: ">=18.0.0"
+      description: "Node.js runtime for Work IQ CLI"
+
+provides:
+  commands:
+    - name: "speckit.workiq.ask"
+      description: "Ask a natural-language question about your M365 data (emails, meetings, docs, Teams)"
+      file: "commands/ask.md"
+    - name: "speckit.workiq.context"
+      description: "Gather M365 context (emails, meetings, documents, Teams) for a feature or topic"
+      file: "commands/context.md"
+    - name: "speckit.workiq.stakeholders"
+      description: "Discover decision-makers, SMEs, and contributors from M365 activity"
+      file: "commands/stakeholders.md"
+    - name: "speckit.workiq.enrich"
+      description: "Analyze an existing spec and enrich it with M365 organizational knowledge"
+      file: "commands/enrich.md"
+
+hooks:
+  before_specify:
+    command: "speckit.workiq.context"
+    description: "Optionally gather M365 context before writing a spec"
+    prompt: |
+      Before starting the specification, consider whether M365 organizational context would be
+      helpful. If the user has Work IQ configured, suggest running `/speckit.workiq.context` to
+      gather relevant emails, meetings, documents, and Teams messages about the topic.
+  after_specify:
+    command: "speckit.workiq.enrich"
+    description: "Suggest enriching the spec with M365 data after initial draft"
+    prompt: |
+      The specification draft is complete. Suggest running `/speckit.workiq.enrich` to check
+      for organizational knowledge that could strengthen the spec — undocumented decisions,
+      stakeholder input, or constraints discussed in emails, meetings, or Teams.
+
+tags:
+  - microsoft-365
+  - work-iq
+  - context
+  - integration
+  - productivity
+
+defaults:
+  output_dir: ".specify/context"
+  save_results: true

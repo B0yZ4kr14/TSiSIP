@@ -1,0 +1,17 @@
+{
+	"folders": [
+		{
+			"path": "."
+		},
+		{
+			"path": "../spec-kit"
+		},
+		{
+			"path": "../spec-kit-m365"
+		},
+		{
+			"path": "../spec-kit-github-issues"
+		}
+	],
+	"settings": {}
+}

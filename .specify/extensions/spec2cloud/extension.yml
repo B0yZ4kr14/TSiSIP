@@ -1,0 +1,31 @@
+schema_version: "1.0"
+
+extension:
+  id: spec2cloud
+  name: Spec2Cloud extension
+  version: 1.1.0
+  description: Adds Azure deployment (azd / Bicep / Terraform) and local verification commands to the spec-driven workflow.
+  author: "Azure Samples"
+  repository: "https://github.com/Azure-Samples/Spec2Cloud"
+  license: "MIT"
+  
+requires:
+  speckit_version: ">=0.2.0"
+
+provides:
+  commands:
+    - name: speckit.spec2cloud.deploy
+      file: commands/speckit.spec2cloud.deploy.md
+      description: Deploy the implemented feature to Azure once spec / plan / tasks / implement are complete.
+      aliases: ["speckit.deploy"]
+
+    - name: speckit.spec2cloud.verify
+      file: commands/speckit.spec2cloud.verify.md
+      description: Run the implemented feature on local servers (provisioning Azure-only dependencies first) to verify it works before deploying to Azure.
+      aliases: ["speckit.verify"]
+
+tags:
+  - spec2cloud
+  - azure
+  - cloud
+  - deploy

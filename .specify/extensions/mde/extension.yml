@@ -1,0 +1,84 @@
+schema_version: "1.0"
+
+extension:
+  id: "mde"
+  name: "MDE"
+  version: "0.5.0"
+  description: "Spec Kit slash-command wrapper that exposes the mde preset's setup, next, and status commands, plus a self-healing hook that wires the preset into the project's auto-load files and constitution. Behavior lives in the preset; this extension is delegation and wiring only."
+  author: "Ralph Hanna"
+  license: "MIT"
+
+requires:
+  speckit_version: ">=0.1.0"
+  # mde preset must be installed at .specify/presets/mde/ in the consuming project.
+  # The preset is not bundled with this extension; install it separately.
+  preset:
+    id: "mde"
+    version: ">=0.5.0"
+    path: ".specify/presets/mde"
+
+provides:
+  commands:
+    - name: "speckit.mde.setup"
+      file: "commands/setup.md"
+      description: "Delegate to the mde preset's setup (first-run project scaffolding)."
+
+    - name: "speckit.mde.next"
+      file: "commands/next.md"
+      description: "Delegate to the mde preset's next (advance the active scoped spec)."
+
+    - name: "speckit.mde.status"
+      file: "commands/status.md"
+      description: "Delegate to the mde preset's status (read-only project state)."
+
+    - name: "speckit.mde.sync"
+      file: "commands/sync.md"
+      description: "Self-healing sync of preset wiring. Reconciles CLAUDE.md, AGENTS.md, GEMINI.md, and constitution.md against the mde preset on every fire. Registered as a before_* hook for every Spec Kit command. Hidden from the user-invocable command list (hook-only) but still callable manually for debugging."
+      user-invocable: false
+
+  config:
+    - name: "mde-config.yml"
+      template: "config-template.yml"
+      description: "mde extension configuration: sync toggles and preset path."
+      required: false
+
+hooks:
+  before_constitution:
+    command: speckit.mde.sync
+    optional: false
+    description: "Sync mde preset wiring before constitution work"
+  before_specify:
+    command: speckit.mde.sync
+    optional: false
+    description: "Sync mde preset wiring before spec creation"
+  before_clarify:
+    command: speckit.mde.sync
+    optional: false
+    description: "Sync mde preset wiring before clarification"
+  before_plan:
+    command: speckit.mde.sync
+    optional: false
+    description: "Sync mde preset wiring before planning"
+  before_tasks:
+    command: speckit.mde.sync
+    optional: false
+    description: "Sync mde preset wiring before task generation"
+  before_analyze:
+    command: speckit.mde.sync
+    optional: false
+    description: "Sync mde preset wiring before analysis"
+  before_checklist:
+    command: speckit.mde.sync
+    optional: false
+    description: "Sync mde preset wiring before checklist generation"
+  before_implement:
+    command: speckit.mde.sync
+    optional: false
+    description: "Sync mde preset wiring before implementation"
+
+tags:
+  - "mde"
+  - "spec-kit"
+  - "wrapper"
+  - "scoped-change"
+  - "preset-sync"

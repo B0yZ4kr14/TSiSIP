@@ -1,0 +1,62 @@
+# mde extension configuration
+#
+# This file is installed at .specify/extensions/mde/mde-config.yml when the
+# extension is added. Edit it to tune the speckit.mde.sync hook's behavior.
+schemaVersion: "0.1.0"
+
+# The mde preset is expected at the Spec Kit standard location:
+#   .specify/presets/mde/
+# This path is fixed; if you need the preset elsewhere for development,
+# create a symlink at .specify/presets/mde/ pointing to your source.
+
+# Master toggle and per-file controls for the speckit.mde.sync hook.
+# sync.enabled = false disables the hook entirely. The hook continues
+# to register but exits silently on every fire, doing nothing.
+sync:
+  enabled: true
+
+  # Per-target toggles. The hook only writes to files that already exist on
+  # disk; set a target to false to skip the file even when it exists. Files
+  # that don't exist are skipped regardless of this setting (the hook never
+  # pre-emptively creates auto-load files).
+  targets:
+    "CLAUDE.md": true
+    "AGENTS.md": true
+    "GEMINI.md": true
+    ".specify/memory/constitution.md": true
+
+  # If a marker block has drifted from the canonical content (e.g. user edited
+  # it manually), refresh = true restores the canonical version on the next
+  # hook fire. Set to false to leave drifted markers alone — useful if you
+  # intentionally customize the marker block.
+  refresh_drifted: true
+
+  # Verbosity of the hook's status line. "summary" prints one line with per-file
+  # status. "silent" prints nothing. "verbose" prints per-file details plus the
+  # canonical marker contents (for debugging).
+  verbosity: "summary"
+
+# Session log bootstrap. Constitution Principle IX (Session Accountability)
+# requires every material interaction to be logged at logs/<YYYY-MM-DD>.md
+# (and, when spec-bound, mirrored to specs/NNN-*/session-log.md). The sync
+# hook ensures these files exist before the parent command runs so logging
+# never fails for "file missing" reasons.
+logging:
+  enabled: true
+
+  # Directory for the chronological central log (relative to project root).
+  # The principle fixes the layout at logs/<YYYY-MM-DD>.md; change only if
+  # the project has a documented reason to relocate it.
+  central_log_dir: "logs"
+
+  # When true, sync appends a one-line entry to today's central log on every
+  # fire, recording that the hook ran. Set to false if hook entries feel like
+  # noise — the parent command still writes its own user/AI entries.
+  log_hook_fires: true
+
+  # When true, sync also ensures specs/NNN-*/session-log.md exists and mirrors
+  # the hook-fire entry, but only when an active spec is unambiguously
+  # resolvable (current branch matches a specs/NNN-* folder, or exactly one
+  # in-flight spec exists). When false or unresolved, the central log still
+  # gets the entry; the parent command handles per-spec mirroring.
+  mirror_to_active_spec: true

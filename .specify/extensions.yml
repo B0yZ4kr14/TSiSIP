@@ -15,6 +15,50 @@ hooks:
       this feature?
     description: Injects capability context from existing evidence into the new specification.
     condition: null
+  - extension: branch-convention
+    command: speckit.branch-convention.validate
+    enabled: true
+    optional: true
+    prompt: Validate branch naming convention before creating new feature?
+    description: Check naming convention compliance before /specify creates a new
+      branch
+    condition: null
+  - extension: git
+    command: speckit.git.feature
+    enabled: true
+    optional: false
+    prompt: Execute speckit.git.feature?
+    description: Create feature branch before specification
+    condition: null
+  - extension: mde
+    command: speckit.mde.sync
+    enabled: true
+    optional: false
+    prompt: Execute speckit.mde.sync?
+    description: Sync mde preset wiring before spec creation
+    condition: null
+  - extension: tinyspec
+    command: speckit.tinyspec.classify
+    enabled: true
+    optional: true
+    prompt: Check if this task is small enough for the lightweight tinyspec workflow?
+    description: Auto-classify task complexity before starting the full SDD workflow
+    condition: null
+  - extension: workiq
+    command: speckit.workiq.context
+    enabled: true
+    optional: true
+    prompt: 'Before starting the specification, consider whether M365 organizational
+      context would be
+
+      helpful. If the user has Work IQ configured, suggest running `/speckit.workiq.context`
+      to
+
+      gather relevant emails, meetings, documents, and Teams messages about the topic.
+
+      '
+    description: Optionally gather M365 context before writing a spec
+    condition: null
   after_specify:
   - extension: spec-validate
     command: speckit.spec-validate.validate
@@ -29,6 +73,83 @@ hooks:
     optional: true
     prompt: Run project health check?
     description: Validate project health after specification generation
+    condition: null
+  - extension: fx-to-dotnet
+    command: speckit.fx-to-dotnet.specify-hook
+    enabled: true
+    optional: false
+    prompt: Execute speckit.fx-to-dotnet.specify-hook?
+    description: Augment specification with .NET migration context
+    condition: null
+  - extension: git
+    command: speckit.git.commit
+    enabled: true
+    optional: true
+    prompt: Commit specification changes?
+    description: Auto-commit after specification
+    condition: null
+  - extension: refine
+    command: speckit.refine.status
+    enabled: true
+    optional: true
+    prompt: Check artifact sync status after specification?
+    description: Show sync status after spec generation
+    condition: null
+  - extension: scope
+    command: speckit.scope.estimate
+    enabled: true
+    optional: true
+    prompt: Estimate effort for this spec?
+    description: Auto-generate effort estimate after spec is written
+    condition: null
+  - extension: squad
+    command: speckit.squad.generate
+    enabled: true
+    optional: true
+    prompt: Spec updated — regenerate Squad agent definitions?
+    description: Keeps Squad agents aligned as the spec evolves
+    condition: null
+  - extension: token-analyzer
+    command: speckit.token-analyzer.baseline
+    enabled: true
+    optional: true
+    prompt: Capture token metrics from specification?
+    description: Capture token metrics after specification generation
+    condition: null
+  - extension: wireframe
+    command: speckit.wireframe.generate
+    enabled: true
+    optional: true
+    prompt: Generate wireframes for this feature now?
+    description: Offer wireframe generation after spec creation
+    condition: null
+  - extension: workiq
+    command: speckit.workiq.enrich
+    enabled: true
+    optional: true
+    prompt: 'The specification draft is complete. Suggest running `/speckit.workiq.enrich`
+      to check
+
+      for organizational knowledge that could strengthen the spec — undocumented decisions,
+
+      stakeholder input, or constraints discussed in emails, meetings, or Teams.
+
+      '
+    description: Suggest enriching the spec with M365 data after initial draft
+    condition: null
+  - extension: worktree
+    command: speckit.worktree.create
+    enabled: true
+    optional: true
+    prompt: Create an isolated worktree for this new feature?
+    description: Auto-spawn a worktree after a new feature is specified
+    condition: null
+  - extension: worktrees
+    command: speckit.worktrees.create
+    enabled: true
+    optional: false
+    prompt: Execute speckit.worktrees.create?
+    description: Auto-spawn a worktree after a new feature is specified
     condition: null
   before_plan:
   - extension: memory-loader
@@ -52,6 +173,50 @@ hooks:
     prompt: Execute speckit.speckit-superpowers-bridge.guard?
     description: Prevent Spec Kit contract changes while Superpowers implementation
       is executing
+    condition: null
+  - extension: git
+    command: speckit.git.commit
+    enabled: true
+    optional: true
+    prompt: Commit outstanding changes before planning?
+    description: Auto-commit before implementation planning
+    condition: null
+  - extension: mde
+    command: speckit.mde.sync
+    enabled: true
+    optional: false
+    prompt: Execute speckit.mde.sync?
+    description: Sync mde preset wiring before planning
+    condition: null
+  - extension: memorylint
+    command: speckit.memorylint.load-agents
+    enabled: true
+    optional: false
+    prompt: Execute speckit.memorylint.load-agents?
+    description: 'Mandatory gate: Load AGENTS.md to enforce core rules and prevent
+      rule drift during the planning (plan.md generation) phase.'
+    condition: null
+  - extension: spec-reference-loader
+    command: speckit.spec-reference-loader.load
+    enabled: true
+    optional: false
+    prompt: Execute speckit.spec-reference-loader.load?
+    description: Load spec references before planning
+    condition: null
+  - extension: version-guard
+    command: speckit.version-guard.check
+    enabled: true
+    optional: false
+    prompt: Execute speckit.version-guard.check?
+    description: Verify tech stack versions and write constraints before planning
+    condition: null
+  - extension: wireframe
+    command: speckit.wireframe.review
+    enabled: true
+    optional: true
+    prompt: Review and sign off wireframes before planning? (signed-off wireframes
+      become spec constraints)
+    description: Ensure wireframes are reviewed and signed off before plan is written
     condition: null
   after_plan:
   - extension: agent-governance
@@ -84,6 +249,41 @@ hooks:
       plan?
     description: ''
     condition: null
+  - extension: critique
+    command: speckit.critique.run
+    enabled: true
+    optional: true
+    prompt: Run spec critique before proceeding to tasks?
+    description: Challenges the spec and plan through product and engineering lenses
+    condition: null
+  - extension: fx-to-dotnet
+    command: speckit.fx-to-dotnet.plan-hook
+    enabled: true
+    optional: false
+    prompt: Execute speckit.fx-to-dotnet.plan-hook?
+    description: Inject .NET migration policies and constraints into plan
+    condition: null
+  - extension: git
+    command: speckit.git.commit
+    enabled: true
+    optional: true
+    prompt: Commit plan changes?
+    description: Auto-commit after implementation planning
+    condition: null
+  - extension: refine
+    command: speckit.refine.status
+    enabled: true
+    optional: true
+    prompt: Check artifact sync status after planning?
+    description: Show sync status after plan generation
+    condition: null
+  - extension: token-analyzer
+    command: speckit.token-analyzer.baseline
+    enabled: true
+    optional: true
+    prompt: Capture token metrics from planning?
+    description: Capture token metrics after implementation planning
+    condition: null
   before_tasks:
   - extension: memory-loader
     command: speckit.memory-loader.load
@@ -106,6 +306,41 @@ hooks:
     prompt: Execute speckit.speckit-superpowers-bridge.guard?
     description: Prevent Spec Kit contract changes while Superpowers implementation
       is executing
+    condition: null
+  - extension: git
+    command: speckit.git.commit
+    enabled: true
+    optional: true
+    prompt: Commit outstanding changes before task generation?
+    description: Auto-commit before task generation
+    condition: null
+  - extension: mde
+    command: speckit.mde.sync
+    enabled: true
+    optional: false
+    prompt: Execute speckit.mde.sync?
+    description: Sync mde preset wiring before task generation
+    condition: null
+  - extension: plan-review-gate
+    command: speckit.plan-review-gate.check
+    enabled: true
+    optional: false
+    prompt: Execute speckit.plan-review-gate.check?
+    description: Require a merge request before proceeding to task generation
+    condition: null
+  - extension: spec-reference-loader
+    command: speckit.spec-reference-loader.load
+    enabled: true
+    optional: false
+    prompt: Execute speckit.spec-reference-loader.load?
+    description: Load spec references before task generation
+    condition: null
+  - extension: version-guard
+    command: speckit.version-guard.load
+    enabled: true
+    optional: false
+    prompt: Execute speckit.version-guard.load?
+    description: Load version guard constraints into context before task generation
     condition: null
   after_tasks:
   - extension: blueprint
@@ -172,6 +407,101 @@ hooks:
     prompt: Execute speckit.speckit-superpowers-bridge.handoff?
     description: Create the Superpowers handoff after Spec Kit task generation
     condition: null
+  - extension: azure-devops
+    command: speckit.azure-devops.sync
+    enabled: true
+    optional: true
+    prompt: Sync tasks to Azure DevOps?
+    description: Automatically create Azure DevOps work items after task generation
+    condition: null
+  - extension: diagram
+    command: speckit.diagram.dependencies
+    enabled: true
+    optional: true
+    prompt: Generate task dependency diagram after task breakdown?
+    description: Auto-generate dependency DAG after tasks are created
+    condition: null
+  - extension: fleet
+    command: speckit.fleet.review
+    enabled: true
+    optional: true
+    prompt: Run cross-model review to evaluate plan and tasks before implementation?
+    description: Pre-implementation review gate
+    condition: null
+  - extension: fx-to-dotnet
+    command: speckit.fx-to-dotnet.tasks-hook
+    enabled: true
+    optional: false
+    prompt: Execute speckit.fx-to-dotnet.tasks-hook?
+    description: Add .NET migration-specific tasks to task list
+    condition: null
+  - extension: git
+    command: speckit.git.commit
+    enabled: true
+    optional: true
+    prompt: Commit task changes?
+    description: Auto-commit after task generation
+    condition: null
+  - extension: maqa
+    command: speckit.maqa.coordinator
+    enabled: true
+    optional: true
+    prompt: Launch MAQA coordinator to start parallel implementation?
+    description: Optionally start the coordinator workflow after task breakdown
+    condition: null
+  - extension: ralph
+    command: speckit.ralph.run
+    enabled: true
+    optional: true
+    prompt: Run ralph loop to implement tasks?
+    description: Start autonomous implementation after task generation
+    condition: null
+  - extension: schedule
+    command: speckit.schedule.run
+    enabled: true
+    optional: true
+    prompt: Generate an optimal CP-SAT schedule from the new tasks?
+    description: Suggest running the scheduler after task generation
+    condition: null
+  - extension: sf
+    command: speckit.sf.review
+    enabled: true
+    optional: true
+    prompt: Run Architect review of generated stories?
+    description: Validates story dependency graph, deployment order, merge conflict
+      risks
+    condition: null
+  - extension: squad
+    command: speckit.squad.route
+    enabled: true
+    optional: true
+    prompt: Tasks generated — route them to Squad agents?
+    description: Distributes new tasks to the right agents automatically
+    condition: null
+  - extension: superb
+    command: speckit.superb.review
+    enabled: true
+    optional: true
+    prompt: Review tasks.md for coverage and TDD-readiness before implementation?
+    description: 'Catches missing or under-specified tasks at planning time. Produces
+      a requirement coverage and TDD-readiness report. Bridge-native logic.
+
+      '
+    condition: null
+  - extension: token-analyzer
+    command: speckit.token-analyzer.baseline
+    enabled: true
+    optional: true
+    prompt: Capture token metrics from task generation?
+    description: Capture token metrics after task generation
+    condition: null
+  - extension: v-model
+    command: speckit.v-model.trace
+    enabled: true
+    optional: true
+    prompt: Run traceability matrix to validate requirement coverage?
+    description: Builds the traceability matrix after tasks are generated
+    condition: null
   before_analyze:
   - extension: memory-loader
     command: speckit.memory-loader.load
@@ -180,7 +510,35 @@ hooks:
     prompt: Execute speckit.memory-loader.load?
     description: Load project memory files before analysis
     condition: null
-  after_analyze: []
+  - extension: git
+    command: speckit.git.commit
+    enabled: true
+    optional: true
+    prompt: Commit outstanding changes before analysis?
+    description: Auto-commit before analysis
+    condition: null
+  - extension: mde
+    command: speckit.mde.sync
+    enabled: true
+    optional: false
+    prompt: Execute speckit.mde.sync?
+    description: Sync mde preset wiring before analysis
+    condition: null
+  - extension: spec-reference-loader
+    command: speckit.spec-reference-loader.load
+    enabled: true
+    optional: false
+    prompt: Execute speckit.spec-reference-loader.load?
+    description: Load spec references before analysis
+    condition: null
+  after_analyze:
+  - extension: git
+    command: speckit.git.commit
+    enabled: true
+    optional: true
+    prompt: Commit analysis results?
+    description: Auto-commit after analysis
+    condition: null
   after_constitution:
   - extension: agent-governance
     command: speckit.agent-governance.refresh
@@ -188,6 +546,13 @@ hooks:
     optional: true
     prompt: Refresh agent governance after constitution changes?
     description: Projects governance memory into the active agent context file
+    condition: null
+  - extension: git
+    command: speckit.git.commit
+    enabled: true
+    optional: true
+    prompt: Commit constitution changes?
+    description: Auto-commit after constitution update
     condition: null
   after_implement:
   - extension: architecture-guard
@@ -242,6 +607,167 @@ hooks:
     prompt: Execute speckit.onboard.after-implement?
     description: ''
     condition: null
+  - extension: bugfix
+    command: speckit.bugfix.verify
+    enabled: true
+    optional: true
+    prompt: Run bugfix consistency check after implementation?
+    description: Verify spec artifact consistency after implementation completes
+    condition: null
+  - extension: cleanup
+    command: speckit.cleanup.run
+    enabled: true
+    optional: true
+    prompt: Run cleanup to review implementation changes and identify tech debt?
+    description: Post-implementation quality gate
+    condition: null
+  - extension: fix-findings
+    command: speckit.fix-findings.run
+    enabled: true
+    optional: true
+    prompt: Run fix-findings to analyze and resolve spec findings automatically?
+    description: Post-implementation automated finding resolution
+    condition: null
+  - extension: fx-to-dotnet
+    command: speckit.fx-to-dotnet.verify-hook
+    enabled: true
+    optional: true
+    prompt: Execute speckit.fx-to-dotnet.verify-hook?
+    description: Verify .NET migration outcomes after implementation
+    condition: null
+  - extension: git
+    command: speckit.git.commit
+    enabled: true
+    optional: true
+    prompt: Commit implementation changes?
+    description: Auto-commit after implementation
+    condition: null
+  - extension: learn
+    command: speckit.learn.review
+    enabled: true
+    optional: true
+    prompt: Generate a learning guide from this implementation?
+    description: ''
+    condition: null
+  - extension: maqa-ci
+    command: speckit.maqa-ci.check
+    enabled: true
+    optional: true
+    prompt: Check CI pipeline status before moving to review?
+    description: Gate on CI status after implementation completes
+    condition: null
+  - extension: qa
+    command: speckit.qa.run
+    enabled: true
+    optional: true
+    prompt: Run QA testing?
+    description: Validates acceptance criteria through browser-driven or CLI-based
+      testing
+    condition: null
+  - extension: retrospective
+    command: speckit.retrospective.analyze
+    enabled: true
+    optional: true
+    prompt: Run retrospective analysis now? (spec changes require explicit confirmation)
+    description: Offer a retrospective after implementation without modifying spec
+      unless approved.
+    condition: null
+  - extension: review
+    command: speckit.review.run
+    enabled: true
+    optional: true
+    prompt: Run PR review on implemented changes?
+    description: Comprehensive review after implementation
+    condition: null
+  - extension: sf
+    command: speckit.sf.verify
+    enabled: true
+    optional: true
+    prompt: Generate verification evidence for the completed story?
+    description: Runs Apex/LWC tests and generates formal Verification Evidence document
+    condition: null
+  - extension: ship
+    command: speckit.ship.run
+    enabled: true
+    optional: true
+    prompt: Ship this feature?
+    description: Runs pre-flight checks, syncs branches, generates changelog, and
+      creates PR
+    condition: null
+  - extension: staff-review
+    command: speckit.staff-review.run
+    enabled: true
+    optional: true
+    prompt: Run staff-level code review?
+    description: Reviews implementation changes against spec for correctness, security,
+      and quality
+    condition: null
+  - extension: superb
+    command: speckit.superb.verify
+    enabled: true
+    optional: false
+    prompt: Execute speckit.superb.verify?
+    description: 'Mandatory completion gate. Bridges an installed superpowers verification-before-completion
+      skill and extends it with spec-kit spec-coverage checks. Prevents false completions.
+
+      '
+    condition: null
+  - extension: sync
+    command: speckit.sync.analyze
+    enabled: true
+    optional: true
+    prompt: Check for spec drift after implementation?
+    description: ''
+    condition: null
+  - extension: threatmodel
+    command: speckit.threatmodel.analyze
+    enabled: true
+    optional: true
+    prompt: Run OWASP LLM threat analysis on this feature?
+    description: Post-implementation security review
+    condition: null
+  - extension: time-machine
+    command: speckit.time-machine.next
+    enabled: true
+    optional: true
+    prompt: Feature implemented. Continue to the next feature in the queue?
+    description: ''
+    condition: null
+  - extension: token-analyzer
+    command: speckit.token-analyzer.baseline
+    enabled: true
+    optional: true
+    prompt: Capture token metrics from implementation?
+    description: Capture token metrics after implementation
+    condition: null
+  - extension: verify
+    command: speckit.verify.run
+    enabled: true
+    optional: true
+    prompt: Run verify to validate implementation against specification?
+    description: Post-implementation verification gate
+    condition: null
+  - extension: verify-tasks
+    command: speckit.verify-tasks.run
+    enabled: true
+    optional: true
+    prompt: Run verify-tasks in a fresh session to check for phantom completions
+    description: Post-implementation phantom completion detector
+    condition: null
+  - extension: version-guard
+    command: speckit.version-guard.validate
+    enabled: true
+    optional: false
+    prompt: Execute speckit.version-guard.validate?
+    description: Scan generated code for version-incompatible API patterns
+    condition: null
+  - extension: wireframe
+    command: speckit.wireframe.screenshots
+    enabled: true
+    optional: true
+    prompt: Capture implementation screenshots and compare to signed-off wireframes?
+    description: 'Regression check: compare implementation to approved wireframes'
+    condition: null
   before_implement:
   - extension: spec-validate
     command: speckit.spec-validate.gate
@@ -279,6 +805,58 @@ hooks:
     prompt: Execute speckit.speckit-superpowers-bridge.guard?
     description: Block speckit.implement for features handed off to Superpowers
     condition: null
+  - extension: fx-to-dotnet
+    command: speckit.fx-to-dotnet.implement-hook
+    enabled: true
+    optional: false
+    prompt: Execute speckit.fx-to-dotnet.implement-hook?
+    description: Prepare .NET migration tooling before implementation
+    condition: null
+  - extension: git
+    command: speckit.git.commit
+    enabled: true
+    optional: true
+    prompt: Commit outstanding changes before implementation?
+    description: Auto-commit before implementation
+    condition: null
+  - extension: mde
+    command: speckit.mde.sync
+    enabled: true
+    optional: false
+    prompt: Execute speckit.mde.sync?
+    description: Sync mde preset wiring before implementation
+    condition: null
+  - extension: reqnroll-bdd
+    command: speckit.reqnroll-bdd.inject-tasks
+    enabled: true
+    optional: true
+    prompt: Inject Reqnroll BDD implementation tasks before implementation?
+    description: Inject BDD acceptance test tasks into tasks.md before implementation
+    condition: null
+  - extension: spec-reference-loader
+    command: speckit.spec-reference-loader.load
+    enabled: true
+    optional: false
+    prompt: Execute speckit.spec-reference-loader.load?
+    description: Load spec references before implementation
+    condition: null
+  - extension: superb
+    command: speckit.superb.tdd
+    enabled: true
+    optional: false
+    prompt: Execute speckit.superb.tdd?
+    description: 'Mandatory TDD gate. Bridges an installed superpowers test-driven-development
+      skill into the spec-kit task structure before any code is written.
+
+      '
+    condition: null
+  - extension: version-guard
+    command: speckit.version-guard.load
+    enabled: true
+    optional: false
+    prompt: Execute speckit.version-guard.load?
+    description: Load version guard constraints into context before code generation
+    condition: null
   before_clarify:
   - extension: memory-loader
     command: speckit.memory-loader.load
@@ -303,6 +881,27 @@ hooks:
     description: Prevent Spec Kit contract changes while Superpowers implementation
       is executing
     condition: null
+  - extension: git
+    command: speckit.git.commit
+    enabled: true
+    optional: true
+    prompt: Commit outstanding changes before clarification?
+    description: Auto-commit before spec clarification
+    condition: null
+  - extension: mde
+    command: speckit.mde.sync
+    enabled: true
+    optional: false
+    prompt: Execute speckit.mde.sync?
+    description: Sync mde preset wiring before clarification
+    condition: null
+  - extension: spec-reference-loader
+    command: speckit.spec-reference-loader.load
+    enabled: true
+    optional: false
+    prompt: Execute speckit.spec-reference-loader.load?
+    description: Load spec references before clarification
+    condition: null
   before_checklist:
   - extension: memory-loader
     command: speckit.memory-loader.load
@@ -311,6 +910,27 @@ hooks:
     prompt: Execute speckit.memory-loader.load?
     description: Load project memory files before checklist generation
     condition: null
+  - extension: git
+    command: speckit.git.commit
+    enabled: true
+    optional: true
+    prompt: Commit outstanding changes before checklist?
+    description: Auto-commit before checklist generation
+    condition: null
+  - extension: mde
+    command: speckit.mde.sync
+    enabled: true
+    optional: false
+    prompt: Execute speckit.mde.sync?
+    description: Sync mde preset wiring before checklist generation
+    condition: null
+  - extension: spec-reference-loader
+    command: speckit.spec-reference-loader.load
+    enabled: true
+    optional: false
+    prompt: Execute speckit.spec-reference-loader.load?
+    description: Load spec references before checklist generation
+    condition: null
   after_init:
   - extension: brownfield
     command: speckit.brownfield.scan
@@ -318,6 +938,13 @@ hooks:
     optional: true
     prompt: Scan this existing project to customize spec-kit configuration?
     description: Auto-scan project after spec-kit init to detect tech stack and conventions
+    condition: null
+  - extension: agent-orchestrator
+    command: speckit.agent-orchestrator.index
+    enabled: true
+    optional: true
+    prompt: Index available commands and agents for intelligent routing?
+    description: Auto-index capabilities after project initialization
     condition: null
   before_constitution:
   - extension: brownkit
@@ -328,6 +955,28 @@ hooks:
     description: Prepares capability-scoped AI contexts and spec seeds before constitution
       update.
     condition: null
+  - extension: git
+    command: speckit.git.initialize
+    enabled: true
+    optional: false
+    prompt: Execute speckit.git.initialize?
+    description: Initialize Git repository before constitution setup
+    condition: null
+  - extension: mde
+    command: speckit.mde.sync
+    enabled: true
+    optional: false
+    prompt: Execute speckit.mde.sync?
+    description: Sync mde preset wiring before constitution work
+    condition: null
+  - extension: memorylint
+    command: speckit.memorylint.run
+    enabled: true
+    optional: true
+    prompt: Run MemoryLint to prune out-of-bounds architecture rules and enrich missing
+      infrastructure guidelines in AGENTS.md?
+    description: ''
+    condition: null
   after_explain:
   - extension: onboard
     command: speckit.onboard.after-explain
@@ -336,24 +985,130 @@ hooks:
     prompt: Execute speckit.onboard.after-explain?
     description: ''
     condition: null
+  before_taskstoissues:
+  - extension: git
+    command: speckit.git.commit
+    enabled: true
+    optional: true
+    prompt: Commit outstanding changes before issue sync?
+    description: Auto-commit before tasks-to-issues conversion
+    condition: null
+  after_clarify:
+  - extension: git
+    command: speckit.git.commit
+    enabled: true
+    optional: true
+    prompt: Commit clarification changes?
+    description: Auto-commit after spec clarification
+    condition: null
+  after_checklist:
+  - extension: git
+    command: speckit.git.commit
+    enabled: true
+    optional: true
+    prompt: Commit checklist changes?
+    description: Auto-commit after checklist generation
+    condition: null
+  after_taskstoissues:
+  - extension: git
+    command: speckit.git.commit
+    enabled: true
+    optional: true
+    prompt: Commit after syncing issues?
+    description: Auto-commit after tasks-to-issues conversion
+    condition: null
 installed:
 - agent-assign
 - agent-governance
+- agent-orchestrator
+- aide
+- arch
 - architecture-guard
+- archive
+- azure-devops
 - blueprint
+- branch-convention
 - brownfield
 - brownkit
+- bugfix
+- canon
 - catalog-ci
+- checkpoint
+- cleanup
 - conduct
+- cost
+- critique
+- diagram
 - docguard
+- extensify
+- fix-findings
+- fixit
+- fleet
+- fx-to-dotnet
+- git
+- github-issues
+- issue
+- iterate
 - jira
+- learn
+- maqa
+- maqa-azure-devops
+- maqa-ci
+- maqa-github-projects
+- maqa-jira
+- maqa-linear
+- maqa-trello
+- markitdown
+- mde
 - memory-loader
 - memory-md
+- memorylint
+- multi-model-review
 - onboard
+- optimize
+- orchestrator
+- plan-review-gate
+- presetify
+- preview
+- product-forge
+- qa
+- ralph
+- reconcile
+- red-team
+- refine
+- repoindex
+- reqnroll-bdd
+- retro
+- retrospective
+- review
 - ripple
+- schedule
+- scope
 - security-review
+- sf
+- ship
+- spec-reference-loader
 - spec-validate
+- spec2cloud
 - speckit-superpowers-bridge
 - speckit-utils
+- squad
+- staff-review
+- status
+- superb
+- sync
+- team-assign
+- threatmodel
+- time-machine
+- tinyspec
+- token-analyzer
+- v-model
+- verify
+- verify-tasks
+- version-guard
+- wireframe
+- workiq
+- worktree
+- worktrees
 settings:
   auto_execute_hooks: true
