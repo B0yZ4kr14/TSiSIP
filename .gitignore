@@ -60,3 +60,9 @@ ca-offline/
 .spec-kit-memory/
 docs/memory/INDEX.md.lock
 .gitnexus/meta.json
+
+# Speckit extension generated files (orchestration state, not source)
+.agents/skills/
+.claude/skills/speckit-*/
+.github/agents/speckit.*.agent.md
+.opencode/commands/speckit.*.md
