@@ -72,3 +72,14 @@
 - [x] F2: Code/config quality review
 - [x] F3: Automated E2E QA execution
 - [x] F4: Scope fidelity check
+
+## Post-Implementation Follow-up (Critique Review + MemoryLint Remediation)
+- [x] M1: Fix OpenSIPS mem_limit (256m to 512m) to match -m 512 shared memory
+- [x] M2: Fix RTPengine mem_limit (256m to 512m) for production RTP load
+- [x] M3: Review swap policy (OCP/backup memswap_limit to 1.5x mem_limit)
+- [ ] C2: SIP INVITE 407 auth test with registered subscriber
+- [ ] C3: Load test — 100 concurrent REGISTER requests, verify no OOM
+- [ ] C5: Security audit — SIP fuzzing or REGISTER flooding test
+- [ ] C6: Execute rollback runbook end-to-end rehearsal
+- [ ] C7: Validate monitoring/alerting pipeline (Prometheus scrape targets)
+- [ ] M4: Add container memory alerting (Prometheus cadvisor or docker logs)

@@ -19,10 +19,10 @@ Deliver a verifiable, production-hardened `vps-lite` stack (postgres, rtpengine,
 
 ## Acceptance Criteria
 
-- [ ] AC1: All `vps-lite` services report `healthy` or stable `Up` status
+- [ ] AC1: All core `vps-lite` services (postgres, rtpengine, opensips, ocp, asterisk-pbx-1/2, backup) report `healthy` status for >=10 minutes. Services without healthchecks (certbot, certbot-exporter) must not be in a restart loop exceeding 5 restarts in 60 seconds.
 - [ ] AC2: TDD RED→GREEN→REFACTOR cycle is evidenced for critical paths
 - [ ] AC3: SIP OPTIONS returns `200 OK` from the VPS edge
-- [ ] AC4: OCP accessible at `https://tsiapp.io/TSiSIP`
+- [ ] AC4: OCP responds with HTTP 200 on `http://127.0.0.1:8084/login.php` within 5 seconds, returning HTML body containing "TSiSIP". Production HTTPS endpoint `https://tsiapp.io/TSiSIP` verified once TLS certificates are active.
 - [ ] AC5: Rollback runbook is executable without ambiguity
 - [ ] AC6: Port exposure audit confirms zero public Asterisk/PostgreSQL ports
 - [ ] AC7: Evidence bundle exists in `.sisyphus/evidence/`
@@ -53,6 +53,8 @@ Deliver a verifiable, production-hardened `vps-lite` stack (postgres, rtpengine,
 - NAT advanced/transcoding (out of 24h window)
 - New components outside vps-lite baseline
 - Architecture changes without ADR
+- Load testing beyond 100 concurrent REGISTER requests
+- PostgreSQL HA/replica setup (single-instance accepted for vps-lite MVP)
 
 ---
 
