@@ -72,13 +72,13 @@ With memory-hub:
 
 ## Acceptance Criteria
 
-- [ ] AC1: spec-kit-memory-hub appears in .specify/extensions.yml installed list
+- [x] AC1: spec-kit-memory-hub appears in .specify/extensions.yml installed list
 - [x] AC2: `.specify/extensions/memory-md/config.yml` exists with `optimizer.enabled: false` (local-only mode — no remote embedding API or API keys required)
-- [ ] AC3: speckit.memory-md.prepare-context runs without error
-- [ ] AC4: Existing .specify/memory/*.md files are indexed and queryable
-- [ ] AC5: docs/security/019-memory-hub-security-assessment.md exists and is approved
-- [ ] AC6: docs/security/019-agent-memory-governance.md exists and is approved
-- [ ] AC7: docs/security/008-security-evidence-index.md updated with Feature 019 entries
+- [x] AC3: speckit.memory-md.prepare-context runs without error
+- [x] AC4: Existing .specify/memory/*.md files are indexed and queryable
+- [x] AC5: docs/security/019-memory-hub-security-assessment.md exists and is approved
+- [x] AC6: docs/security/019-agent-memory-governance.md exists and is approved
+- [x] AC7: docs/security/008-security-evidence-index.md updated with Feature 019 entries
 - [x] AC8: A test capture successfully persists a non-sensitive decision; the approval gate requires explicit human confirmation before the entry is committed to `docs/memory/`
 
 ## Architecture Decisions
