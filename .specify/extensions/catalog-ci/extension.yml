@@ -1,0 +1,39 @@
+schema_version: "1.0"
+
+extension:
+  id: "catalog-ci"
+  name: "Catalog CI"
+  version: "1.0.0"
+  description: "Automated validation for spec-kit community catalog entries — structure, URLs, diffs, and linting."
+  author: "Quratulain-bilal"
+  repository: "https://github.com/Quratulain-bilal/spec-kit-catalog-ci"
+  license: "MIT"
+  homepage: "https://github.com/Quratulain-bilal/spec-kit-catalog-ci"
+
+requires:
+  speckit_version: ">=0.4.0"
+
+provides:
+  commands:
+    - name: "speckit.catalog-ci.validate"
+      file: "commands/speckit.catalog-ci.validate.md"
+      description: "Validate catalog JSON structure, required fields, ID format, semver, ordering, and duplicates"
+
+    - name: "speckit.catalog-ci.check-urls"
+      file: "commands/speckit.catalog-ci.check-urls.md"
+      description: "Verify all URLs in catalog entries are accessible via HTTP HEAD"
+
+    - name: "speckit.catalog-ci.diff"
+      file: "commands/speckit.catalog-ci.diff.md"
+      description: "Compare catalog against a git ref to show added, modified, and removed entries"
+
+    - name: "speckit.catalog-ci.lint"
+      file: "commands/speckit.catalog-ci.lint.md"
+      description: "Compare local extension.yml against its catalog entry for consistency"
+
+tags:
+  - "ci"
+  - "validation"
+  - "catalog"
+  - "quality"
+  - "automation"

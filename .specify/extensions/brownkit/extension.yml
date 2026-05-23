@@ -1,0 +1,154 @@
+schema_version: "1.0"
+
+extension:
+  id: "brownkit"
+  name: "BrownKit — Brownfield Discovery for Spec-Kit"
+  version: "1.0.1"
+  description: "Evidence-driven capability discovery, security and QA risk assessment for existing codebases."
+  author: "Maksim Shautsou"
+  repository: "https://github.com/MaksimShevtsov/BrownKit"
+  homepage: "https://github.com/MaksimShevtsov/BrownKit/blob/main/README.md"
+  license: "MIT"
+
+requires:
+  speckit_version: ">=0.1.0"
+
+provides:
+  commands:
+    - name: "speckit.brownkit.init"
+      file: "commands/init.md"
+      description: "Initialize project context, security and QA scope; create evidence tree."
+    - name: "speckit.brownkit.scan"
+      file: "commands/scan.md"
+      description: "Extract capability, security, and QA signals from code and external inputs."
+    - name: "speckit.brownkit.discover"
+      file: "commands/discover.md"
+      description: "Verify candidates; lock L1/L2 capabilities; build domain model."
+    - name: "speckit.brownkit.report"
+      file: "commands/report.md"
+      description: "Generate stakeholder, architect, dev, SDET, and (conditional) security reports."
+    - name: "speckit.brownkit.assess"
+      file: "commands/assess.md"
+      description: "Capability-aware STRIDE threat modeling plus QA risk analysis and unified scoring."
+    - name: "speckit.brownkit.generate"
+      file: "commands/generate.md"
+      description: "Produce capability-scoped AI contexts, security prompts, and spec seeds."
+    - name: "speckit.brownkit.finish"
+      file: "commands/finish.md"
+      description: "Validate acceptance criteria, persist evidence, and package per-team handoffs."
+    - name: "speckit.brownkit.enrich"
+      file: "commands/enrich.md"
+      description: "Surface relevant L1/L2 capabilities and spec seeds from existing evidence for the feature in scope."
+    - name: "speckit.brownkit.gate"
+      file: "commands/gate.md"
+      description: "Check open STRIDE threats and QA risk score for the capability being implemented; raise warnings before proceeding."
+    - name: "speckit.brownkit.validate"
+      file: "commands/validate.md"
+      description: "Check acceptance criteria against the evidence tree for the capability delivered."
+  config:
+    - name: "brownkit-config.yml"
+      template: "config-template.yml"
+      description: "BrownKit project, security scope, QA scope, and scoring weights configuration."
+      required: false
+
+config_schema:
+  type: "object"
+  properties:
+    project:
+      type: "object"
+      properties:
+        codebase_path:
+          type: "string"
+        language:
+          type: "string"
+        architecture:
+          type: "string"
+        has_frontend:
+          type: "boolean"
+    security_scope:
+      type: "object"
+      properties:
+        compliance:
+          type: "array"
+          items:
+            type: "string"
+        threat_standard:
+          type: "string"
+        risk_tolerance:
+          type: "string"
+          enum: ["low", "medium", "high"]
+    qa_scope:
+      type: "object"
+      properties:
+        coverage_targets:
+          type: "object"
+          properties:
+            unit:
+              type: "number"
+              minimum: 0
+              maximum: 1
+            integration:
+              type: "number"
+              minimum: 0
+              maximum: 1
+            e2e:
+              type: "number"
+              minimum: 0
+              maximum: 1
+        environments:
+          type: "array"
+          items:
+            type: "string"
+        pyramid_shape:
+          type: "string"
+          enum: ["classic", "trophy", "diamond"]
+    weights:
+      type: "object"
+      properties:
+        unified:
+          type: "object"
+          properties:
+            security:
+              type: "number"
+              minimum: 0
+              maximum: 1
+            qa:
+              type: "number"
+              minimum: 0
+              maximum: 1
+    evidence_dir:
+      type: "string"
+
+hooks:
+  before_specify:
+    command: "speckit.brownkit.enrich"
+    optional: true
+    prompt: "Run BrownKit enrich to surface relevant capabilities and spec seeds for this feature?"
+    description: "Injects capability context from existing evidence into the new specification."
+  before_clarify:
+    command: "speckit.brownkit.enrich"
+    optional: true
+    prompt: "Run BrownKit enrich to surface relevant capabilities before clarifying this spec?"
+    description: "Grounds spec clarification in the verified capability model."
+  before_implement:
+    command: "speckit.brownkit.gate"
+    optional: true
+    prompt: "Run BrownKit gate to check security threats and QA risk before implementing?"
+    description: "Gates implementation on open STRIDE threats and QA risk score from prior assessment."
+  after_implement:
+    command: "speckit.brownkit.validate"
+    optional: true
+    prompt: "Run BrownKit validate to check acceptance criteria against the evidence tree?"
+    description: "Lightweight AC check against the capability evidence — no full packaging or handoff."
+  before_constitution:
+    command: "speckit.brownkit.generate"
+    optional: true
+    prompt: "Run BrownKit generate to prepare capability contexts first?"
+    description: "Prepares capability-scoped AI contexts and spec seeds before constitution update."
+
+tags:
+  - "brownfield"
+  - "discovery"
+  - "security"
+  - "qa"
+  - "capabilities"

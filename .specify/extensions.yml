@@ -7,6 +7,14 @@ hooks:
     prompt: Execute speckit.memory-loader.load?
     description: Load project memory files before specification
     condition: null
+  - extension: brownkit
+    command: speckit.brownkit.enrich
+    enabled: true
+    optional: true
+    prompt: Run BrownKit enrich to surface relevant capabilities and spec seeds for
+      this feature?
+    description: Injects capability context from existing evidence into the new specification.
+    condition: null
   after_specify:
   - extension: spec-validate
     command: speckit.spec-validate.validate
@@ -37,6 +45,14 @@ hooks:
     prompt: Would you like to synthesize project memory before planning?
     description: ''
     condition: null
+  - extension: speckit-superpowers-bridge
+    command: speckit.speckit-superpowers-bridge.guard
+    enabled: true
+    optional: false
+    prompt: Execute speckit.speckit-superpowers-bridge.guard?
+    description: Prevent Spec Kit contract changes while Superpowers implementation
+      is executing
+    condition: null
   after_plan:
   - extension: agent-governance
     command: speckit.agent-governance.refresh
@@ -60,6 +76,14 @@ hooks:
     prompt: Validate spec-to-task traceability?
     description: Verify requirements map to planned tasks after planning
     condition: null
+  - extension: security-review
+    command: speckit.security-review.plan
+    enabled: true
+    optional: true
+    prompt: Would you like to perform a security review on the proposed technical
+      plan?
+    description: ''
+    condition: null
   before_tasks:
   - extension: memory-loader
     command: speckit.memory-loader.load
@@ -67,6 +91,21 @@ hooks:
     optional: false
     prompt: Execute speckit.memory-loader.load?
     description: Load project memory files before task generation
+    condition: null
+  - extension: docguard
+    command: speckit.docguard.review
+    enabled: true
+    optional: true
+    prompt: Review documentation consistency before generating tasks?
+    description: ''
+    condition: null
+  - extension: speckit-superpowers-bridge
+    command: speckit.speckit-superpowers-bridge.guard
+    enabled: true
+    optional: false
+    prompt: Execute speckit.speckit-superpowers-bridge.guard?
+    description: Prevent Spec Kit contract changes while Superpowers implementation
+      is executing
     condition: null
   after_tasks:
   - extension: blueprint
@@ -96,6 +135,42 @@ hooks:
     optional: true
     prompt: Tasks generated. Run task validation now?
     description: Run task validation after tasks are generated
+    condition: null
+  - extension: security-review
+    command: speckit.security-review.tasks
+    enabled: true
+    optional: true
+    prompt: Would you like to verify that security boundaries are represented in the
+      tasks?
+    description: ''
+    condition: null
+  - extension: agent-assign
+    command: speckit.agent-assign.assign
+    enabled: true
+    optional: true
+    prompt: Assign agents to the generated tasks?
+    description: Automatically assign specialized agents to tasks after generation
+    condition: null
+  - extension: docguard
+    command: speckit.docguard.score
+    enabled: true
+    optional: true
+    prompt: Show CDD maturity score after task generation?
+    description: ''
+    condition: null
+  - extension: jira
+    command: speckit.jira.specstoissues
+    enabled: true
+    optional: true
+    prompt: Create Jira issues from tasks?
+    description: Automatically create Jira hierarchy after task generation
+    condition: null
+  - extension: speckit-superpowers-bridge
+    command: speckit.speckit-superpowers-bridge.handoff
+    enabled: true
+    optional: false
+    prompt: Execute speckit.speckit-superpowers-bridge.handoff?
+    description: Create the Superpowers handoff after Spec Kit task generation
     condition: null
   before_analyze:
   - extension: memory-loader
@@ -137,6 +212,36 @@ hooks:
     prompt: Scan for untested side effects?
     description: Auto-scan for ripple effects after implementation
     condition: null
+  - extension: security-review
+    command: speckit.security-review.branch
+    enabled: true
+    optional: true
+    prompt: Would you like to scan the new implementation for security vulnerabilities?
+    description: ''
+    condition: null
+  - extension: brownkit
+    command: speckit.brownkit.validate
+    enabled: true
+    optional: true
+    prompt: Run BrownKit validate to check acceptance criteria against the evidence
+      tree?
+    description: Lightweight AC check against the capability evidence — no full packaging
+      or handoff.
+    condition: null
+  - extension: docguard
+    command: speckit.docguard.guard
+    enabled: true
+    optional: true
+    prompt: Run DocGuard validation after implementation?
+    description: Quality gate — ensures docs stay in sync with code
+    condition: null
+  - extension: onboard
+    command: speckit.onboard.after-implement
+    enabled: true
+    optional: true
+    prompt: Execute speckit.onboard.after-implement?
+    description: ''
+    condition: null
   before_implement:
   - extension: spec-validate
     command: speckit.spec-validate.gate
@@ -152,6 +257,28 @@ hooks:
     prompt: Execute speckit.memory-loader.load?
     description: Load project memory files before implementation
     condition: null
+  - extension: brownkit
+    command: speckit.brownkit.gate
+    enabled: true
+    optional: true
+    prompt: Run BrownKit gate to check security threats and QA risk before implementing?
+    description: Gates implementation on open STRIDE threats and QA risk score from
+      prior assessment.
+    condition: null
+  - extension: onboard
+    command: speckit.onboard.before-implement
+    enabled: true
+    optional: true
+    prompt: Execute speckit.onboard.before-implement?
+    description: ''
+    condition: null
+  - extension: speckit-superpowers-bridge
+    command: speckit.speckit-superpowers-bridge.guard
+    enabled: true
+    optional: false
+    prompt: Execute speckit.speckit-superpowers-bridge.guard?
+    description: Block speckit.implement for features handed off to Superpowers
+    condition: null
   before_clarify:
   - extension: memory-loader
     command: speckit.memory-loader.load
@@ -159,6 +286,22 @@ hooks:
     optional: false
     prompt: Execute speckit.memory-loader.load?
     description: Load project memory files before clarification
+    condition: null
+  - extension: brownkit
+    command: speckit.brownkit.enrich
+    enabled: true
+    optional: true
+    prompt: Run BrownKit enrich to surface relevant capabilities before clarifying
+      this spec?
+    description: Grounds spec clarification in the verified capability model.
+    condition: null
+  - extension: speckit-superpowers-bridge
+    command: speckit.speckit-superpowers-bridge.guard
+    enabled: true
+    optional: false
+    prompt: Execute speckit.speckit-superpowers-bridge.guard?
+    description: Prevent Spec Kit contract changes while Superpowers implementation
+      is executing
     condition: null
   before_checklist:
   - extension: memory-loader
@@ -168,14 +311,49 @@ hooks:
     prompt: Execute speckit.memory-loader.load?
     description: Load project memory files before checklist generation
     condition: null
+  after_init:
+  - extension: brownfield
+    command: speckit.brownfield.scan
+    enabled: true
+    optional: true
+    prompt: Scan this existing project to customize spec-kit configuration?
+    description: Auto-scan project after spec-kit init to detect tech stack and conventions
+    condition: null
+  before_constitution:
+  - extension: brownkit
+    command: speckit.brownkit.generate
+    enabled: true
+    optional: true
+    prompt: Run BrownKit generate to prepare capability contexts first?
+    description: Prepares capability-scoped AI contexts and spec seeds before constitution
+      update.
+    condition: null
+  after_explain:
+  - extension: onboard
+    command: speckit.onboard.after-explain
+    enabled: true
+    optional: true
+    prompt: Execute speckit.onboard.after-explain?
+    description: ''
+    condition: null
 installed:
+- agent-assign
 - agent-governance
 - architecture-guard
 - blueprint
+- brownfield
+- brownkit
+- catalog-ci
+- conduct
+- docguard
+- jira
 - memory-loader
 - memory-md
+- onboard
 - ripple
+- security-review
 - spec-validate
+- speckit-superpowers-bridge
 - speckit-utils
 settings:
   auto_execute_hooks: true
