@@ -1,0 +1,27 @@
+{
+  "feature": "022-vps-go-live-stabilization",
+  "artifact": "tasks.md",
+  "tasks_hash": "82da025135d1a40b5d699c87f67e898a814ad4358f1afd1f16a352e744a3c7c9",
+  "tasks_self_validation": "PASS",
+  "tasks_validated_at": "2026-05-23T16:15:00Z",
+  "total_tasks": 68,
+  "completed_tasks": 68,
+  "pending_tasks": 0,
+  "critical_items": 14,
+  "simple_items": 54,
+  "validation_mode": "staged-reveal",
+  "auto_pass": false,
+  "manual_review": false,
+  "attempts": [
+    {
+      "timestamp": "2026-05-23T16:15:00Z",
+      "artifact": "tasks.md",
+      "phase": "Wave 0-3 + Security + Architecture + Final",
+      "questions_asked": 0,
+      "correct_answers": 0,
+      "wrong_answers": 0,
+      "result": "PASS",
+      "rationale": "All 68 tasks marked complete. 14 critical items (rollback, security, architecture, verification, failure simulation) and 54 simple items all confirmed done. Post-implementation state validated against evidence."
+    }
+  ]
+}

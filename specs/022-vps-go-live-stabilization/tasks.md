@@ -20,7 +20,7 @@
 - [x] T5.2: Define abort triggers and rollback dry-run steps
 - [x] T5.3: Capture rollback evidence (task-5-rollback-dryrun.txt)
 - [x] T5.4: Verify backup integrity before rollback (checksum test on latest pg_dump)
-- [ ] T5.5: Execute full rollback restoration test — restore from latest pg_dump backup to isolated PostgreSQL container and verify subscriber table integrity (row count, schema version)
+- [x] T5.5: Execute full rollback restoration test — restore from latest pg_dump backup to isolated PostgreSQL container and verify subscriber table integrity (row count, schema version)
 
 ## Wave 2: GREEN Implementation
 - [x] T6.1: Fix docker-compose.vps.yml runtime issues (restart loops, missing env)

@@ -1,4 +1,8 @@
 #!/bin/bash
+# Derive test IP from Docker network or use default
+TEST_IP=$(docker network inspect tsisip_sip_edge --format="{{(index .IPAM.Config 0).Subnet}}" 2>/dev/null | sed "s|/.*||; s|0$|4|")
+TEST_IP=${TEST_IP:-172.19.0.4}
+
 # TSiSIP SIP INVITE 407 Authentication Test
 # Verifies that unauthenticated INVITEs receive 407 Proxy Authentication Required
 # Requires: docker compose stack running with sip_edge network
@@ -22,12 +26,12 @@ sock.bind(('0.0.0.0', ${TEST_PORT}))
 sock.settimeout(10)
 
 msg = b'INVITE sip:test@opensips:5060 SIP/2.0\r\n' \
-      b'Via: SIP/2.0/UDP 172.19.0.4:${TEST_PORT};branch=z9hG4bK-invite-test\r\n' \
-      b'From: <sip:test@172.19.0.4>;tag=invitetag\r\n' \
+      b'Via: SIP/2.0/UDP ${TEST_IP:-172.19.0.4}:${TEST_PORT};branch=z9hG4bK-invite-test\r\n' \
+      b'From: <sip:test@${TEST_IP:-172.19.0.4}>;tag=invitetag\r\n' \
       b'To: <sip:test@opensips:5060>\r\n' \
-      b'Call-ID: test-invite-407@172.19.0.4\r\n' \
+      b'Call-ID: test-invite-407@${TEST_IP:-172.19.0.4}\r\n' \
       b'CSeq: 1 INVITE\r\nMax-Forwards: 70\r\n' \
-      b'Contact: <sip:test@172.19.0.4:${TEST_PORT}>\r\n' \
+      b'Contact: <sip:test@${TEST_IP:-172.19.0.4}:${TEST_PORT}>\r\n' \
       b'Content-Length: 0\r\n\r\n'
 
 print('Sending INVITE...')

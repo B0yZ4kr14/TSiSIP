@@ -1,19 +1,19 @@
 # Local test override for VPS profile
 services:
   postgres:
-    image: tsisip/postgres:latest
+    image: ghcr.io/b0yz4kr14/tsisip/postgres:test
     pull_policy: if_not_present
   rtpengine:
     image: tsisip/rtpengine:test
     pull_policy: if_not_present
   opensips:
-    image: tsisip/opensips:latest
+    image: ghcr.io/b0yz4kr14/tsisip/opensips:test
     pull_policy: if_not_present
   asterisk-pbx-1:
-    image: tsisip/asterisk:latest
+    image: ghcr.io/b0yz4kr14/tsisip/asterisk:test
     pull_policy: if_not_present
   asterisk-pbx-2:
-    image: tsisip/asterisk:latest
+    image: ghcr.io/b0yz4kr14/tsisip/asterisk:test
     pull_policy: if_not_present
   ocp:
     image: tsisip/ocp:test

@@ -15,12 +15,12 @@ tailscaled --tun=userspace-networking \
 TS_PID=$!
 
 # Wait for tailscaled to be ready
-sleep 2
+sleep 2  # wait for Tailscale daemon to initialize
 for _ in 1 2 3 4 5; do
     if tailscale --socket=/var/run/tailscale/tailscaled.sock status >/dev/null 2>&1; then
         break
     fi
-    sleep 1
+    sleep 1  # wait for tailscale API to become available
 done
 
 # Run tailscale cert to obtain/renew certificate for the machine

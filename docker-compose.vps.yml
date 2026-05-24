@@ -270,7 +270,7 @@ services:
   backup:
     image: ghcr.io/b0yz4kr14/tsisip/backup:${TSISIP_IMAGE_TAG:?must be set}
     # For hotfix builds on the VPS, allow using a locally built image.
-    # CI can still publish `:latest` to GHCR later.
+    # CI publishes versioned tags only; :latest is never used in production
     pull_policy: if_not_present
     networks: [db_internal, metrics_host]
     restart: on-failure

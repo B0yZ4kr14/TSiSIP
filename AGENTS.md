@@ -1010,7 +1010,7 @@ All OCP tools follow the same security baseline:
 <!-- gitnexus:start -->
 # GitNexus — Code Intelligence
 
-This project is indexed by GitNexus as **TSiSIP** (3963 symbols, 4409 relationships, 7 execution flows). Use the GitNexus MCP tools to understand code, assess impact, and navigate safely.
+This project is indexed by GitNexus as **TSiSIP** (5752 symbols, 6229 relationships, 7 execution flows). Use the GitNexus MCP tools to understand code, assess impact, and navigate safely.
 
 > If any GitNexus tool warns the index is stale, run `npx gitnexus analyze` in terminal first.
 

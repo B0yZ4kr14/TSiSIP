@@ -52,7 +52,7 @@ if [ "$RPO_LAG" -gt "$RPO_THRESHOLD" ]; then
     PGPASSWORD="$DB_PASS" \
         psql -h "$PGHOST" -p "$PGPORT" -U "$PGUSER" -d "$PGDATABASE" \
         -t -A -c "SELECT pg_switch_wal();" >/dev/null 2>&1 || true
-    sleep 2
+    sleep 2  # wait for PostgreSQL to accept connections
 
     ARCHIVER_STATE="$(PGPASSWORD="$DB_PASS" \
         psql -h "$PGHOST" -p "$PGPORT" -U "$PGUSER" -d "$PGDATABASE" \

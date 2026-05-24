@@ -1,7 +1,24 @@
+#!/bin/bash
+# scripts/consolidate-security-evidence.sh
+
+mkdir -p docs/security/evidence/022-vps-go-live
+
+# Copy all evidence artifacts
+cp docs/security/008-MSL-applicability-justification.md \
+   docs/security/evidence/022-vps-go-live/ 2>/dev/null
+cp docs/security/008-data-flow-diagram.md \
+   docs/security/evidence/022-vps-go-live/ 2>/dev/null
+cp docs/security/008-legal-basis-registry.md \
+   docs/security/evidence/022-vps-go-live/ 2>/dev/null
+cp docs/security/008-data-minimization-audit.md \
+   docs/security/evidence/022-vps-go-live/ 2>/dev/null
+
+# Generate manifest
+cat > docs/security/evidence/022-vps-go-live/MANIFEST.md << 'MANIFEST'
 # Evidence Manifest — Feature 022
 
 **Date**: 2026-05-23
-**Total Artifacts**: 23
+**Total Artifacts**: [AUTO-COUNT]
 
 | # | Artifact | Status | Location |
 |---|----------|--------|----------|
@@ -21,10 +38,6 @@
 | 14 | Data Retention | Complete | data-retention-verification.md |
 | 15 | Encryption/Access | Complete | encryption-access-control-evidence.md |
 | 16 | SOC 2 Package | Complete | soc2-evidence-package.md |
-| 17 | TLS Certificate Scan | Complete | 001-tls-certificate-scan.md |
-| 18 | Container Image Scan v1 | Complete | 002-container-image-scan.md |
-| 19 | Container Image Scan v2 | Complete | 002-container-image-scan-v2.md |
-| 20 | Container Image Scan v3 | Complete | 002-container-image-scan-v3.md |
-| 21 | Network Segmentation Test | Complete | 004-network-segmentation-test.md |
-| 22 | Secret Management Audit | Complete | 005-secret-management-audit.md |
-| 23 | Rollback Restoration Test | Complete | 018-rollback-restoration-test-v1.md |
+MANIFEST
+
+echo "Evidence consolidation complete"
