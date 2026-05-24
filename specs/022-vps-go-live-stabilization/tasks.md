@@ -77,7 +77,7 @@
 - [x] M1: Fix OpenSIPS mem_limit (256m to 512m) to match -m 512 shared memory
 - [x] M2: Fix RTPengine mem_limit (256m to 512m) for production RTP load
 - [x] M3: Review swap policy (OCP/backup memswap_limit to 1.5x mem_limit)
-- [x] C2: SIP INVITE 407 auth test with registered subscriber (BLOCKED by sql_query bug in TRUNK_VERIFY route — all INVITEs return 480)
+- [x] C2: SIP INVITE 407 auth test with registered subscriber — FIXED: sql_query empty-result-set bug corrected, INVITE returns 407 Proxy Authentication Required
 - [x] C3: Load test — 100 concurrent REGISTER blocked by PIKE (expected security behavior); OpenSIPS did not OOM
 - [x] C5: Security audit — PIKE + auth throttling + ban list verified; no SIP fuzzing tool available
 - [x] C6: Rollback rehearsal — OpenSIPS stopped/recreated, OCP unaffected, SIP OPTIONS recovered
