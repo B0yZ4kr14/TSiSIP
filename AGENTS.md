@@ -32,7 +32,7 @@ The project follows **Spec-Driven Development (SDD)** via Speckit, with 23 track
   - Docker builds: `Dockerfile`, `docker-compose.yml`, `docker-compose.prod.yml`, `docker-compose.vps.yml`, `.dockerignore`
   - OpenSIPS config: `opensips/opensips.cfg.tpl`
   - Container entrypoints: `docker/entrypoint.sh`, `docker/ocp/entrypoint.sh`
-  - PostgreSQL schema: `db/init/01-stock-opensips-schema.sql`, `db/init/02-tsisip-extensions.sql`, `db/init/03-seed-data.sql`
+  - PostgreSQL schema: `db/init/01-stock-opensips-schema.sql`, `db/init/02-tsisip-extensions.sql`, `db/init/03-seed-data.sql`, `db/init/04-ocp-tools-schema.sql`, `db/init/04-ocp-audit-schema.sql`, `db/init/04-trunk-schema.sql`, `db/init/05-seed-trunk-data.sql`
   - OCP web application: `web/` (PHP 8.2 + Apache)
   - OCP theme build pipeline: `build/`, `scripts/build-ocp-theme.sh`
   - Integration tests: `tests/integration/` (pytest + Python sockets)
@@ -227,11 +227,26 @@ TSiSIP/
 │   │   ├── ca-init.sh
 │   │   ├── cert-gen.sh
 │   │   └── cert-rotate.sh
+│   ├── admin-api/
+│   │   └── Dockerfile                  # Admin API proxy container
+│   ├── certbot/
+│   │   ├── Dockerfile
+│   │   ├── deploy-hook.sh
+│   │   └── healthcheck.sh
+│   ├── certbot-exporter/
+│   │   ├── Dockerfile
+│   │   └── exporter.py
+│   ├── tailscale-cert/
+│   │   └── Dockerfile
 │   └── healthcheck/                    # Shared healthcheck scripts
 ├── db/init/                            # PostgreSQL initialization scripts
 │   ├── 01-stock-opensips-schema.sql
 │   ├── 02-tsisip-extensions.sql
-│   └── 03-seed-data.sql
+│   ├── 03-seed-data.sql
+│   ├── 04-ocp-tools-schema.sql
+│   ├── 04-ocp-audit-schema.sql
+│   ├── 04-trunk-schema.sql
+│   └── 05-seed-trunk-data.sql
 ├── web/                                # OCP v9 PHP application
 │   ├── common/
 │   │   ├── config.php                  # DB auth, PDO, role hierarchy
@@ -295,7 +310,7 @@ TSiSIP/
 │   ├── README.md
 │   ├── README-VPS-DEPLOY.md
 │   └── VPS-DEPLOY-READINESS.md
-├── specs/                              # Speckit SDD artifacts (001–011)
+├── specs/                              # Speckit SDD artifacts (001–023)
 │   ├── 001-opensips-docker-edge-proxy/
 │   ├── 002-tsisip-ocp-rebrand/
 │   ├── 003-prometheus-grafana-observability/
@@ -306,7 +321,18 @@ TSiSIP/
 │   ├── 008-devsecops-deployment/
 │   ├── 009-vps-deploy-automation/
 │   ├── 010-ocp-navigation-system-links/
-│   └── 011-ocp-forced-password-change/
+│   ├── 011-ocp-forced-password-change/
+│   ├── 012-ocp-admin-tools-restoration/
+│   ├── 013-brownfield-follow-up/
+│   ├── 014-auto-tls-certificate-rotation/
+│   ├── 015-ocp-audit-log-compliance/
+│   ├── 016-sip-trunk-provider-integration/
+│   ├── 017-global-requirement-id-migration/
+│   ├── 018-spec-kit-memory-hub-integration/
+│   ├── 019-ocp-critical-tool-gap-closure/
+│   ├── 020-brownfield-security-production-hardening/
+│   ├── 021-vps-go-live-stabilization/
+│   └── 022-subscriber-crud-refactor/
 ├── reports/                            # Quality gate & scan reports
 ├── secrets/                            # Runtime secrets (gitignored)
 ├── design/
@@ -315,9 +341,9 @@ TSiSIP/
 ├── .env.example
 ├── .dockerignore
 ├── Dockerfile                          # OpenSIPS 3.6 LTS source-build image
-├── docker-compose.yml                  # Full development stack (13 services)
+├── docker-compose.yml                  # Full development stack (16 services)
 ├── docker-compose.prod.yml             # Production stack (GHCR images)
-├── docker-compose.vps.yml              # VPS-lite profile (~4GB RAM, 7 services)
+├── docker-compose.vps.yml              # VPS-lite profile (~7.5GB RAM, 10 services)
 ├── Makefile
 ├── CHANGELOG.md
 ├── STATUS.md
