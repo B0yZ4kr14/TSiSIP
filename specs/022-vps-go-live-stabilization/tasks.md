@@ -20,6 +20,7 @@
 - [x] T5.2: Define abort triggers and rollback dry-run steps
 - [x] T5.3: Capture rollback evidence (task-5-rollback-dryrun.txt)
 - [x] T5.4: Verify backup integrity before rollback (checksum test on latest pg_dump)
+- [ ] T5.5: Execute full rollback restoration test — restore from latest pg_dump backup to isolated PostgreSQL container and verify subscriber table integrity (row count, schema version)
 
 ## Wave 2: GREEN Implementation
 - [x] T6.1: Fix docker-compose.vps.yml runtime issues (restart loops, missing env)
@@ -96,7 +97,7 @@
 - [x] G4: Verify data minimization (only necessary fields collected)
 
 ### Security Obligations — Evidence Production
-- [x] G5: Produce SSL Labs evidence report for tsiapp.io (grade A+ target) — BLOCKED: DNS A record must point to 179.190.15.116
+- [-] G5: Produce SSL Labs evidence report for tsiapp.io (grade A+ target) — BLOCKED: DNS A record must point to 179.190.15.116
 - [x] G6: Produce Trivy container scan evidence for all 8 vps-lite images — COMPLETE with remediation:
   - Baseline (ghcr.io pre-built): 31 CRITICAL, 304 HIGH
   - Post-apt-upgrade rebuild (local): 19 CRITICAL, 276 HIGH
@@ -104,7 +105,7 @@
   - Remaining: primarily `will_not_fix` / `affected` status in Debian upstream
 - [x] G7: Produce network port scan evidence (nmap/nc) confirming zero Asterisk/PostgreSQL exposure — PASS
 - [x] G8: Produce auth contract evidence (HA1 precomputed, no plaintext passwords) — PASS
-- [x] G9: Produce TLS certificate chain evidence (validity, expiry, auto-rotation) — BLOCKED: DNS A record must point to 179.190.15.116
+- [-] G9: Produce TLS certificate chain evidence (validity, expiry, auto-rotation) — BLOCKED: DNS A record must point to 179.190.15.116
 
 ### Secure Development Documentation
 - [x] G10: Document threat model for vps-lite deployment (STRIDE analysis)
