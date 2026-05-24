@@ -96,3 +96,24 @@ W0 (Security) → W1 (CRUD) → W2 (MI/Stats) → W3 (TLS) → W4 (Validation)
 - [x] R5: Graceful message appears when D3.js CDN is blocked
 - [x] R6: dialplan.php and domains.php use validate-input.php helpers (optional)
 - [x] R7: Post-fix scan shows zero new findings
+
+## Architecture Debt: ARCH-PRE-001 Remediation
+
+> **Trigger**: Governed-implement architecture review discovered pre-existing violation.
+> **Priority**: P2 (non-blocking, tracked technical debt)
+> **Scope**: Refactor subscriber CRUD out of OCP into OpenSIPS layer or dedicated admin API
+
+- [ ] AD-001: Design subscriber management API contract — define OpenSIPS MI command(s) or REST endpoint for subscriber CREATE/UPDATE/DELETE
+- [ ] AD-002: Implement subscriber proxy in OpenSIPS layer — expose `subscriber_create`, `subscriber_update`, `subscriber_delete` via MI HTTP or dedicated microservice
+- [ ] AD-003: Migrate `web/subscribers.php` from direct PDO writes to API/MI calls — preserve HA1 generation in OCP, delegate INSERT/UPDATE/DELETE to backend
+- [ ] AD-004: Add audit logging on the proxy layer — ensure `auth_audit_log` entries are created for all subscriber mutations regardless of caller
+- [ ] AD-005: Validate layer boundary compliance — confirm OCP no longer writes to `subscriber` table directly; reads only via `SELECT`
+- [ ] AD-006: Update architecture_constitution.md — mark ARCH-PRE-001 as resolved once verified
+
+## ARCH-PRE-001 Acceptance Criteria
+
+- [ ] AC-AD-1: `web/subscribers.php` contains zero `INSERT INTO subscriber`, `UPDATE subscriber`, or `DELETE FROM subscriber` statements
+- [ ] AC-AD-2: All subscriber mutations route through OpenSIPS-layer API or MI command
+- [ ] AC-AD-3: HA1 generation remains in OCP (or trusted control plane) before passing precomputed hashes to backend
+- [ ] AC-AD-4: Audit logging covers success and failure paths for all subscriber operations
+- [ ] AC-AD-5: No regression in existing subscriber list/read functionality
