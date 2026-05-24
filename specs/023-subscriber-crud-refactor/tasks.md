@@ -6,6 +6,7 @@
 - [ ] T0.3: Update `docs/security/008-security-evidence-index.md` with Feature 023 entries and expiration dates
 - [ ] T0.4: MSL applicability review — assess if subscriber HA1 data falls under MSL; document justification with risk acceptance
 - [ ] T0.5: Write architecture decision record (ADR) — choose MI command vs REST API for subscriber proxy; document trade-offs and constitution alignment
+- [ ] T0.6: Secure-development verification — scan new/modified PHP files for SQL injection patterns (raw concatenation), XSS vulnerabilities (unescaped output), missing auth checks, and secret leakage
 
 ## Wave 1: Proxy Layer Implementation
 - [ ] T1.1: Implement subscriber proxy — `subscriber_create`, `subscriber_update`, `subscriber_delete` endpoints/commands
@@ -38,6 +39,7 @@
 | Checkpoint | Trigger | Gate Condition |
 |---|---|---|
 | SR-1 | After T0.3 | Threat model must cover proxy injection, hash tampering, unauthorized subscriber modification |
+| SR-4 | After T0.6 | All new/modified PHP files must pass secret-leakage scan and secure-development validation with zero findings |
 | SR-2 | After T1.3 | Proxy must reject plaintext passwords, validate all inputs, enforce rate limiting |
 | SR-3 | After T2.3 | OCP must contain zero direct writes to `subscriber`; all mutations route through proxy |
 
@@ -73,3 +75,8 @@ W0 (Security + ADR) → W1 (Proxy) → W2 (OCP Migration) → W3 (Validation)
 | R8 (graceful fallback) | T2.7 |
 | R9 (RBAC preserved) | T2.6 |
 | R10 (regression test) | T2.8 |
+
+## Additional Security Tasks
+
+- [ ] T2.9: Run secret-leakage scan on all new PHP files (`web/common/subscriber-proxy.php`, proxy implementation) — verify zero plaintext secrets, credentials, or IP addresses
+- [ ] T2.10: Run CSRF validation test on subscriber mutating forms (create/update/delete) — verify token validation still enforced after proxy integration
