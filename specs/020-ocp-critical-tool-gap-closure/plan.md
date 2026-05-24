@@ -113,19 +113,19 @@ W0 (Security) → W1 (CRUD) → W2 (MI/Stats) → W3 (TLS) → W4 (Validation)
 - No new npm packages (reuses existing D3.js).
 - No new PHP extensions beyond existing PDO.
 
-## Wave 5: Architecture Refactor Remediation (Post-Implementation)
+## Wave 5: Architecture Refactor Tasks
 
 **Agents:** `security`, `coder`, `reviewer`
 
 **Constitution Gate**: Brownfield Hygiene — fixes require evidence in evidence/remediation/ciclo-020/
 
-- [x] W5.1 (R1): CRUD failure audit logging — Add logAuditEvent() in PDOException catch blocks for dialplan.php and domains.php
-- [x] W5.2 (R2): Security headers — Add CSP, X-Frame-Options, X-Content-Type-Options, Referrer-Policy to common/header.php
-- [x] W5.3 (R3): Session hardening — Add session_regenerate_id(true) on login, cookie_httponly, cookie_samesite=Strict, use_strict_mode=1
-- [x] W5.4 (R4): Statistics error path — Add warning banner on MI timeout; charts preserve last-known values
-- [x] W5.5 (R5): D3.js fallback — Display graceful degradation message when CDN is unreachable
-- [x] W5.6 (R6): validate-input.php integration — Refactor dialplan.php and domains.php to use common helper (P3, optional)
-- [x] W5.7 (R7): Post-fix brownfield scan — Validate no new drift, all findings resolved
+- [x] R1: CRUD failure audit logging — Add logAuditEvent() in PDOException catch blocks for dialplan.php and domains.php
+- [x] R2: Security headers — Add CSP, X-Frame-Options, X-Content-Type-Options, Referrer-Policy to common/header.php
+- [x] R3: Session hardening — Add session_regenerate_id(true) on login, cookie_httponly, cookie_samesite=Strict, use_strict_mode=1
+- [x] R4: Statistics error path — Add warning banner on MI timeout; charts preserve last-known values
+- [x] R5: D3.js fallback — Display graceful degradation message when CDN is unreachable
+- [x] R6: validate-input.php integration — Refactor dialplan.php and domains.php to use common helper (P3, optional)
+- [x] R7: Post-fix brownfield scan — Validate no new drift, all findings resolved
 
 **Dependency Graph:**
 ```

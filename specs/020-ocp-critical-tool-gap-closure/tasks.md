@@ -29,6 +29,7 @@
 - [x] T2.9: Negative test — attempt `dlg_end_dlg` as devops role; verify 403 rejection
 - [x] T2.11: Negative test — execute a whitelisted MI command that returns HTTP 405 or timeout; verify the failure is logged to `auth_audit_log` with error details and user identity
 - [x] T2.10: Update `dashboard.php` with cards/links to new MI commands and statistics pages
+- [x] T2.12: Implement user-friendly MI error handler — catch cURL timeouts, HTTP 405, malformed JSON in `web/mi-commands.php` and `web/statistics.php`; display sanitized messages without leaking stack traces or internal paths (covers R9)
 
 ## Wave 3: TLS Management
 - [x] T3.1: Create `web/tls-management.php` — display loaded TLS certificates (expiry, issuer, subject)
@@ -77,8 +78,18 @@ W0 (Security) → W1 (CRUD) → W2 (MI/Stats) → W3 (TLS) → W4 (Validation)
 | AC9 (security assessment) | T0.1 |
 | AC10 (threat model) | T0.2 |
 | R8 (XSS prevention) | T2.3 |
-| R9 (User-friendly MI errors) | T2.3, T2.11 |
+| R9 (User-friendly MI errors) | T2.3, T2.12 |
 | R10 (Failed MI logged) | T2.11 |
+
+## ARCH-PRE-001 Traceability Matrix
+
+| AC-ARCH | Task(s) |
+|---|---|
+| AC-ARCH-1 (zero subscriber writes) | ARCH-003 |
+| AC-ARCH-2 (mutations via API) | ARCH-002, ARCH-003 |
+| AC-ARCH-3 (HA1 in control plane) | ARCH-003 |
+| AC-ARCH-4 (audit coverage) | ARCH-004 |
+| AC-ARCH-5 (no regression) | ARCH-003 |
 
 ## Wave 5: Architecture Refactor Tasks
 
@@ -106,17 +117,17 @@ W0 (Security) → W1 (CRUD) → W2 (MI/Stats) → W3 (TLS) → W4 (Validation)
 > **Priority**: P2 (non-blocking, tracked technical debt)
 > **Scope**: Refactor subscriber CRUD out of OCP into OpenSIPS layer or dedicated admin API
 
-- [ ] AD-001: Design subscriber management API contract — define OpenSIPS MI command(s) or REST endpoint for subscriber CREATE/UPDATE/DELETE
-- [ ] AD-002: Implement subscriber proxy in OpenSIPS layer — expose `subscriber_create`, `subscriber_update`, `subscriber_delete` via MI HTTP or dedicated microservice
-- [ ] AD-003: Migrate `web/subscribers.php` from direct PDO writes to API/MI calls — preserve HA1 generation in OCP, delegate INSERT/UPDATE/DELETE to backend
-- [ ] AD-004: Add audit logging on the proxy layer — ensure `auth_audit_log` entries are created for all subscriber mutations regardless of caller
-- [ ] AD-005: Validate layer boundary compliance — confirm OCP no longer writes to `subscriber` table directly; reads only via `SELECT`
-- [ ] AD-006: Update architecture_constitution.md — mark ARCH-PRE-001 as resolved once verified
+- [ ] ARCH-001: Design subscriber management API contract — define OpenSIPS MI command(s) or REST endpoint for subscriber CREATE/UPDATE/DELETE
+- [ ] ARCH-002: Implement subscriber proxy in OpenSIPS layer — expose `subscriber_create`, `subscriber_update`, `subscriber_delete` via MI HTTP or dedicated microservice
+- [ ] ARCH-003: Migrate `web/subscribers.php` from direct PDO writes to API/MI calls — preserve HA1 generation in OCP, delegate INSERT/UPDATE/DELETE to backend
+- [ ] ARCH-004: Add audit logging on the proxy layer — ensure `auth_audit_log` entries are created for all subscriber mutations regardless of caller
+- [ ] ARCH-005: Validate layer boundary compliance — confirm OCP no longer writes to `subscriber` table directly; reads only via `SELECT`
+- [ ] ARCH-006: Update architecture_constitution.md — mark ARCH-PRE-001 as resolved once verified
 
 ## ARCH-PRE-001 Acceptance Criteria
 
-- [ ] AC-AD-1: `web/subscribers.php` contains zero `INSERT INTO subscriber`, `UPDATE subscriber`, or `DELETE FROM subscriber` statements
-- [ ] AC-AD-2: All subscriber mutations route through OpenSIPS-layer API or MI command
-- [ ] AC-AD-3: HA1 generation remains in OCP (or trusted control plane) before passing precomputed hashes to backend
-- [ ] AC-AD-4: Audit logging covers success and failure paths for all subscriber operations
-- [ ] AC-AD-5: No regression in existing subscriber list/read functionality
+- [ ] AC-ARCH-1: `web/subscribers.php` contains zero `INSERT INTO subscriber`, `UPDATE subscriber`, or `DELETE FROM subscriber` statements
+- [ ] AC-ARCH-2: All subscriber mutations route through OpenSIPS-layer API or MI command
+- [ ] AC-ARCH-3: HA1 generation remains in OCP (or trusted control plane) before passing precomputed hashes to backend
+- [ ] AC-ARCH-4: Audit logging covers success and failure paths for all subscriber operations
+- [ ] AC-ARCH-5: No regression in existing subscriber list/read functionality

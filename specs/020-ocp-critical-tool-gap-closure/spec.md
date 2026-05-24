@@ -83,10 +83,11 @@ Without these tools, operators must:
   - **Rendering**: Each metric displayed as a D3.js bar or line chart card
   - **Fallback**: If a metric counter is zero or missing from MI output, display `0` with a greyed-out card rather than omitting the chart
   - **Auto-refresh behavior**: Polls MI HTTP every 30 seconds. If the request exceeds 5 seconds or returns non-200, the page enters an error state: charts freeze at last-known values, a warning banner appears (`Statistics refresh failed — MI HTTP unreachable`), and the next poll is deferred by 30 seconds (no retry storm).
+  > See `plan.md` Wave 2 and `tasks.md` T2.6–T2.7 for implementation details. Do not duplicate acceptance criteria text into plan or tasks; reference by ID.
 - [x] AC4: `web/dialplan.php` provides full CRUD on `dialplan` table
 - [x] AC5: `web/domains.php` provides full CRUD on `domain` table
 - [x] AC6: `web/tls-management.php` shows certificate status and triggers `tls_reload` MI command
-- [x] AC7: All pages enforce `requireRole('devops')` minimum
+- [x] AC7: All pages enforce role-based access with `requireRole('devops')` as the minimum; privileged operations (TLS reload, dialog termination) require `requireRole('admin')`
 - [x] AC8: All mutating forms include `validateCsrfToken()`
 - [x] AC9: Security assessment document exists and is approved
 - [x] AC10: Threat model document exists and covers MI command injection risks
@@ -106,5 +107,5 @@ Active dialogs are never mutated via the web UI. The dialog page is strictly rea
 
 - docs/OCP-CROSS-ANALYSIS.md
 - docs/TSiSIP-CANONICAL-SPEC.md (Section 8: Routing Logic)
-- web/subscribers.php (reference implementation pattern)
+- web/subscribers.php (reference implementation pattern — **see Architecture Debt ARCH-PRE-001**: direct subscriber table writes violate Control Plane → Database layer boundary; scheduled for refactor)
 - web/dispatcher.php (reference implementation pattern)
