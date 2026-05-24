@@ -351,12 +351,12 @@ route {
 # --- Reply Route ---
 onreply_route {
     # Handle negative replies for failure routing
-    if (t_check_status("408|500|502|503|504")) {
+    if ($rs =~ "^(408|500|502|503|504)$") {
         xlog("L_WARN", "Failure reply $rs from $si - triggering failover\n");
     }
 
     # T4.2/T4.3: Handle SDP answer for SRTP on 2xx replies to INVITE/re-INVITE
-    if (t_check_status("2[0-9][0-9]") && has_body("application/sdp")) {
+    if ($rs =~ "^2[0-9][0-9]$" && has_body("application/sdp")) {
         if (!rtpengine_answer()) {
             xlog("L_ERR", "RTPengine answer failed for $ci\n");
         }
