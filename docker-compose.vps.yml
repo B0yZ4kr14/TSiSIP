@@ -385,7 +385,7 @@ services:
       ENCRYPTION_KEY_FILE: /run/secrets/backup_encryption_key
       METRICS_ADDR: 0.0.0.0
     cap_drop: [ALL]
-    cap_add: [SETUID, SETGID]
+    cap_add: [SETUID, SETGID, CHOWN, DAC_OVERRIDE]
     secrets:
       - db_password
       - backup_encryption_key
