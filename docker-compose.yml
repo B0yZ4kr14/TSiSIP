@@ -274,9 +274,11 @@ services:
       DB_NAME: opensips
       DB_USER: opensips
       OCP_AUDIT_RETENTION_DAYS: ${OCP_AUDIT_RETENTION_DAYS:-90}
+      ADMIN_API_URL: http://admin-api:8080/index.php
     secrets:
     - db_password
     - trunk_cred_key
+    - proxy_api_secret
     depends_on:
       postgres:
         condition: service_healthy
@@ -296,6 +298,41 @@ services:
       timeout: 5s
       retries: 3
       start_period: 20s
+  admin-api:
+    build:
+      context: .
+      dockerfile: docker/admin-api/Dockerfile
+    image: tsisip/admin-api:${TSISIP_IMAGE_TAG:?must be set}
+    networks:
+    - sip_internal
+    - db_internal
+    restart: on-failure
+    deploy:
+      resources:
+        limits:
+          memory: 256M
+        reservations:
+          memory: 128M
+    environment:
+      DB_HOST: postgres
+      DB_NAME: opensips
+      DB_USER: opensips
+      SUBSCRIBER_CREATE_RATE_LIMIT: ${SUBSCRIBER_CREATE_RATE_LIMIT:-10}
+      SUBSCRIBER_UPDATE_RATE_LIMIT: ${SUBSCRIBER_UPDATE_RATE_LIMIT:-30}
+      SUBSCRIBER_DELETE_RATE_LIMIT: ${SUBSCRIBER_DELETE_RATE_LIMIT:-10}
+    secrets:
+    - db_password
+    - proxy_api_secret
+    depends_on:
+      postgres:
+        condition: service_healthy
+    cap_drop:
+    - ALL
+    cap_add:
+    - SETUID
+    - SETGID
+    security_opt:
+    - no-new-privileges:true
   prometheus:
     build:
       context: ./docker/prometheus
@@ -686,3 +723,5 @@ secrets:
     file: ./secrets/rclone_s3_secret_key
   trunk_cred_key:
     file: ./secrets/trunk_cred_key
+  proxy_api_secret:
+    file: ./secrets/proxy_api_secret

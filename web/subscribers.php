@@ -8,6 +8,7 @@ require_once __DIR__ . '/common/config.php';
 require_once __DIR__ . '/common/csrf.php';
 require_once __DIR__ . '/common/pagination.php';
 require_once __DIR__ . '/common/ha1-generator.php';
+require_once __DIR__ . '/common/subscriber-proxy.php';
 
 requireAuth();
 checkPasswordChange();
@@ -37,30 +38,25 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                 $error = _('Password must be at least 8 characters.');
             } else {
                 $hashes = generateHa1Hashes($username, $domain, $password);
-                try {
-                    $stmt = $pdo->prepare(
-                        "INSERT INTO subscriber
-                         (username, domain, ha1, ha1_sha256, ha1_sha512t256, password, email_address, tenant_id, routing_group, enabled)
-                         VALUES (:username, :domain, :ha1, :ha1_sha256, :ha1_sha512t256, '', :email, :tenant_id, 1, :enabled)"
-                    );
-                    $stmt->execute([
-                        ':username'      => $username,
-                        ':domain'        => $domain,
-                        ':ha1'           => $hashes['ha1'],
-                        ':ha1_sha256'    => $hashes['ha1_sha256'],
-                        ':ha1_sha512t256'=> $hashes['ha1_sha512t256'],
-                        ':email'         => $_POST['email'] ?? '',
-                        ':tenant_id'     => $tenantId,
-                        ':enabled'       => $enabled,
-                    ]);
+                $result = callSubscriberProxy('create', [
+                    'username'  => $username,
+                    'domain'    => $domain,
+                    'ha1'       => $hashes['ha1'],
+                    'ha1_sha256'=> $hashes['ha1_sha256'],
+                    'ha1_sha512t256' => $hashes['ha1_sha512t256'],
+                    'email'     => $_POST['email'] ?? '',
+                    'tenant_id' => $tenantId,
+                    'enabled'   => $enabled,
+                ]);
+                if ($result['success']) {
                     $success = _('Subscriber created successfully.');
                     logAuditEvent('SUBSCRIBER_CREATE', 'subscriber', $username, true, [
                         'domain'    => $domain,
                         'tenant_id' => $tenantId,
                         'enabled'   => $enabled,
                     ]);
-                } catch (PDOException $e) {
-                    $error = _('Failed to create subscriber: ') . $e->getMessage();
+                } else {
+                    $error = $result['error'] ?? _('Failed to create subscriber.');
                 }
             }
         } elseif ($action === 'update') {
@@ -74,84 +70,55 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             if ($id === '' || $username === '' || $domain === '') {
                 $error = _('ID, username, and domain are required.');
             } else {
-                try {
-                    if ($password !== '') {
-                        $hashes = generateHa1Hashes($username, $domain, $password);
-                        $stmt = $pdo->prepare(
-                            "UPDATE subscriber SET
-                             username = :username,
-                             domain = :domain,
-                             ha1 = :ha1,
-                             ha1_sha256 = :ha1_sha256,
-                             ha1_sha512t256 = :ha1_sha512t256,
-                             email_address = :email,
-                             tenant_id = :tenant_id,
-                             enabled = :enabled,
-                             modified_at = NOW()
-                             WHERE id = :id"
-                        );
-                        $stmt->execute([
-                            ':id'            => $id,
-                            ':username'      => $username,
-                            ':domain'        => $domain,
-                            ':ha1'           => $hashes['ha1'],
-                            ':ha1_sha256'    => $hashes['ha1_sha256'],
-                            ':ha1_sha512t256'=> $hashes['ha1_sha512t256'],
-                            ':email'         => $_POST['email'] ?? '',
-                            ':tenant_id'     => $tenantId,
-                            ':enabled'       => $enabled,
-                        ]);
-                    } else {
-                        $stmt = $pdo->prepare(
-                            "UPDATE subscriber SET
-                             username = :username,
-                             domain = :domain,
-                             email_address = :email,
-                             tenant_id = :tenant_id,
-                             enabled = :enabled,
-                             modified_at = NOW()
-                             WHERE id = :id"
-                        );
-                        $stmt->execute([
-                            ':id'        => $id,
-                            ':username'  => $username,
-                            ':domain'    => $domain,
-                            ':email'     => $_POST['email'] ?? '',
-                            ':tenant_id' => $tenantId,
-                            ':enabled'   => $enabled,
-                        ]);
-                    }
+                $params = [
+                    'id'        => $id,
+                    'username'  => $username,
+                    'domain'    => $domain,
+                    'email'     => $_POST['email'] ?? '',
+                    'tenant_id' => $tenantId,
+                    'enabled'   => $enabled,
+                ];
+                if ($password !== '') {
+                    $params['ha1'] = generateHa1Hashes($username, $domain, $password);
+                }
+                $result = callSubscriberProxy('update', $params);
+                if ($result['success']) {
                     $success = _('Subscriber updated successfully.');
                     logAuditEvent('SUBSCRIBER_UPDATE', 'subscriber', $username, true, [
                         'domain'    => $domain,
                         'tenant_id' => $tenantId,
                         'enabled'   => $enabled,
                     ]);
-                } catch (PDOException $e) {
-                    $error = _('Failed to update subscriber: ') . $e->getMessage();
+                } else {
+                    $error = $result['error'] ?? _('Failed to update subscriber.');
                 }
             }
         } elseif ($action === 'toggle') {
             $id = $_POST['id'] ?? '';
             $enabled = $_POST['enabled'] ?? '0';
             if ($id !== '') {
-                $stmt = $pdo->prepare("UPDATE subscriber SET enabled = :enabled, modified_at = NOW() WHERE id = :id");
-                $stmt->execute([':id' => $id, ':enabled' => ($enabled === '1' ? true : false)]);
-                $success = _('Subscriber status updated.');
-                logAuditEvent('SUBSCRIBER_TOGGLE', 'subscriber', $id, true, [
+                $result = callSubscriberProxy('update', [
+                    'id'      => $id,
                     'enabled' => ($enabled === '1' ? true : false),
                 ]);
+                if ($result['success']) {
+                    $success = _('Subscriber status updated.');
+                    logAuditEvent('SUBSCRIBER_TOGGLE', 'subscriber', $id, true, [
+                        'enabled' => ($enabled === '1' ? true : false),
+                    ]);
+                } else {
+                    $error = $result['error'] ?? _('Failed to update subscriber status.');
+                }
             }
         } elseif ($action === 'delete') {
             $id = $_POST['id'] ?? '';
             if ($id !== '') {
-                try {
-                    $stmt = $pdo->prepare("DELETE FROM subscriber WHERE id = :id");
-                    $stmt->execute([':id' => $id]);
+                $result = callSubscriberProxy('delete', ['id' => $id]);
+                if ($result['success']) {
                     $success = _('Subscriber deleted successfully.');
                     logAuditEvent('SUBSCRIBER_DELETE', 'subscriber', $id, true);
-                } catch (PDOException $e) {
-                    $error = _('Failed to delete subscriber: ') . $e->getMessage();
+                } else {
+                    $error = $result['error'] ?? _('Failed to delete subscriber.');
                 }
             }
         }

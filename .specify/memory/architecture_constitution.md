@@ -102,4 +102,4 @@
 
 | ID | File | Violation | Introduced By | Status |
 |---|---|---|---|---|
-| ARCH-PRE-001 | web/subscribers.php | OCP writes to `subscriber` table (INSERT/UPDATE) | Feature 012 | Tracked; requires refactor to move subscriber writes to OpenSIPS layer or dedicated API |
+| ARCH-PRE-001 | web/subscribers.php | OCP writes to `subscriber` table (INSERT/UPDATE) | Feature 012 | **Resolved** by Feature 023 — subscriber mutations now route through admin-api proxy layer |

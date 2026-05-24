@@ -119,19 +119,26 @@ The following administrative tools are available to `admin` and `devops` roles v
 
 **URL**: `https://tsiapp.io/TSiSIP/subscribers.php`
 
-Full CRUD on the OpenSIPS `subscriber` table. Passwords are never stored in plaintext; instead, HA1 hashes (MD5, SHA-256, SHA-512/256) are generated automatically on create/update to match the OpenSIPS `calculate_ha1 = 0` contract.
+Full CRUD on the OpenSIPS `subscriber` table via the Admin API proxy layer. Passwords are never stored in plaintext; instead, HA1 hashes (MD5, SHA-256, SHA-512/256) are generated automatically in the OCP and sent to the proxy for database write.
 
 | Action | How |
 |---|---|
-| List | Default view shows up to 25 subscribers per page |
+| List | Default view shows up to 25 subscribers per page (read directly from DB) |
 | Create | Fill username, domain, password, tenant, routing group, enabled |
 | Edit | Click **Edit** on any row; password change is optional |
 | Delete | Click **Delete** and confirm |
 
 **Security notes**:
 - All mutating actions require a valid CSRF token.
-- PDO prepared statements are used for all queries.
+- Subscriber mutations (create/update/delete) are delegated to the `admin-api` proxy service over the internal Docker network.
+- The proxy validates HA1 hash format (hex, exact length) and rejects plaintext passwords.
+- Rate limiting: max 10 creations/min, 30 updates/min, 10 deletions/min per source IP.
 - The `password` column in `subscriber` is always empty (`''`); only `ha1`, `ha1_sha256`, and `ha1_sha512t256` are populated.
+
+**Troubleshooting**:
+- If subscriber operations fail with "Subscriber service temporarily unavailable", check that the `admin-api` container is healthy: `docker compose ps admin-api`
+- Verify the proxy service secret is mounted: `docker compose exec admin-api ls -la /run/secrets/proxy_api_secret`
+- Check proxy audit logs in PostgreSQL: `SELECT * FROM auth_audit_log WHERE user_id = 'admin-api' ORDER BY event_time DESC LIMIT 10;`
 
 ### CDR Viewer
 

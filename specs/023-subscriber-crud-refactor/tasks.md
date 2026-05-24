@@ -1,38 +1,38 @@
 # Feature 023 Tasks
 
 ## Wave 0: Security Foundation
-- [ ] T0.1: Create `docs/security/023-subscriber-crud-refactor-security-assessment.md` — data classification, proxy auth model, input validation, rate limiting design
-- [ ] T0.2: Create `docs/security/023-subscriber-crud-refactor-threat-model.md` — STRIDE analysis for subscriber proxy, hash tampering, unauthorized modification
-- [ ] T0.3: Update `docs/security/008-security-evidence-index.md` with Feature 023 entries and expiration dates
-- [ ] T0.4: MSL applicability review — assess if subscriber HA1 data falls under MSL; document justification with risk acceptance
-- [ ] T0.5: Write architecture decision record (ADR) — choose MI command vs REST API for subscriber proxy; document trade-offs and constitution alignment
-- [ ] T0.6: Secure-development verification — scan new/modified PHP files for SQL injection patterns (raw concatenation), XSS vulnerabilities (unescaped output), missing auth checks, and secret leakage
+- [x] T0.1: Create `docs/security/023-subscriber-crud-refactor-security-assessment.md` — data classification, proxy auth model, input validation, rate limiting design
+- [x] T0.2: Create `docs/security/023-subscriber-crud-refactor-threat-model.md` — STRIDE analysis for subscriber proxy, hash tampering, unauthorized modification
+- [x] T0.3: Update `docs/security/008-security-evidence-index.md` with Feature 023 entries and expiration dates
+- [x] T0.4: MSL applicability review — assess if subscriber HA1 data falls under MSL; document justification with risk acceptance
+- [x] T0.5: Write architecture decision record (ADR) — choose MI command vs REST API for subscriber proxy; document trade-offs and constitution alignment
+- [x] T0.6: Secure-development verification — scan new/modified PHP files for SQL injection patterns (raw concatenation), XSS vulnerabilities (unescaped output), missing auth checks, and secret leakage
 
 ## Wave 1: Proxy Layer Implementation
-- [ ] T1.1: Implement subscriber proxy — `subscriber_create`, `subscriber_update`, `subscriber_delete` endpoints/commands
-- [ ] T1.2: Implement proxy authentication — validate service secret on every request; reject unauthenticated calls
-- [ ] T1.3: Implement rate limiting — max 10 creations/min per source; configurable threshold
-- [ ] T1.4: Implement audit logging on proxy layer — `auth_audit_log` entries for all CREATE/UPDATE/DELETE with caller identity
-- [ ] T1.5: Validate proxy rejects plaintext passwords — negative test sending plaintext password; verify rejection
-- [ ] T1.6: Validate proxy accepts precomputed HA1 hashes — positive test with valid hashes; verify database write
+- [x] T1.1: Implement subscriber proxy — `subscriber_create`, `subscriber_update`, `subscriber_delete` endpoints/commands
+- [x] T1.2: Implement proxy authentication — validate service secret on every request; reject unauthenticated calls
+- [x] T1.3: Implement rate limiting — max 10 creations/min per source; configurable threshold
+- [x] T1.4: Implement audit logging on proxy layer — `auth_audit_log` entries for all CREATE/UPDATE/DELETE with caller identity
+- [x] T1.5: Validate proxy rejects plaintext passwords — negative test sending plaintext password; verify rejection
+- [x] T1.6: Validate proxy accepts precomputed HA1 hashes — positive test with valid hashes; verify database write
 
 ## Wave 2: OCP Migration
-- [ ] T2.1: Remove direct `subscriber` writes from `web/subscribers.php` — delete INSERT/UPDATE/DELETE statements; preserve SELECT queries
-- [ ] T2.2: Create `web/common/subscriber-proxy.php` helper — encapsulate proxy calls, error handling, timeout configuration
-- [ ] T2.3: Integrate proxy client into subscriber creation flow — generate HA1 in OCP, call proxy, handle response
-- [ ] T2.4: Integrate proxy client into subscriber update flow — generate HA1 (if password changed), call proxy, handle response
-- [ ] T2.5: Integrate proxy client into subscriber deletion flow — call proxy with subscriber ID, handle response
-- [ ] T2.6: Preserve role-based access — `requireRole('devops')` for read; `requireRole('admin')` for mutations
-- [ ] T2.7: Implement graceful fallback — display user-friendly error when proxy is unreachable; no stack trace leakage
-- [ ] T2.8: Regression test — subscriber list, search, pagination unchanged; create/update/delete work through proxy
+- [x] T2.1: Remove direct `subscriber` writes from `web/subscribers.php` — delete INSERT/UPDATE/DELETE statements; preserve SELECT queries
+- [x] T2.2: Create `web/common/subscriber-proxy.php` helper — encapsulate proxy calls, error handling, timeout configuration
+- [x] T2.3: Integrate proxy client into subscriber creation flow — generate HA1 in OCP, call proxy, handle response
+- [x] T2.4: Integrate proxy client into subscriber update flow — generate HA1 (if password changed), call proxy, handle response
+- [x] T2.5: Integrate proxy client into subscriber deletion flow — call proxy with subscriber ID, handle response
+- [x] T2.6: Preserve role-based access — `requireRole('devops')` for read; `requireRole('admin')` for mutations
+- [x] T2.7: Implement graceful fallback — display user-friendly error when proxy is unreachable; no stack trace leakage
+- [x] T2.8: Regression test — subscriber list, search, pagination unchanged; create/update/delete work through proxy
 
 ## Wave 3: Validation & Closure
-- [ ] T3.1: Run `speckit.spec-validate.validate` on Feature 023 spec — verify all 10 ACs covered
-- [ ] T3.2: Run architecture-guard verification — confirm ARCH-PRE-001 resolved; zero constitution violations
-- [ ] T3.3: Run brownfield scan — no drift, no rejected patterns introduced
-- [ ] T3.4: Update `.specify/memory/architecture_constitution.md` — mark ARCH-PRE-001 as resolved
-- [ ] T3.5: Write conventional commit with all Feature 023 changes and push to `main`
-- [ ] T3.6: Update `docs/TSiSIP-OPERATOR-RUNBOOK.md` with subscriber management operational procedures
+- [x] T3.1: Run `speckit.spec-validate.validate` on Feature 023 spec — verify all 10 ACs covered
+- [x] T3.2: Run architecture-guard verification — confirm ARCH-PRE-001 resolved; zero constitution violations
+- [x] T3.3: Run brownfield scan — no drift, no rejected patterns introduced
+- [x] T3.4: Update `.specify/memory/architecture_constitution.md` — mark ARCH-PRE-001 as resolved
+- [x] T3.5: Write conventional commit with all Feature 023 changes and push to `main`
+- [x] T3.6: Update `docs/TSiSIP-OPERATOR-RUNBOOK.md` with subscriber management operational procedures
 
 ## Security Review Checkpoints
 
@@ -78,5 +78,5 @@ W0 (Security + ADR) → W1 (Proxy) → W2 (OCP Migration) → W3 (Validation)
 
 ## Additional Security Tasks
 
-- [ ] T2.9: Run secret-leakage scan on all new PHP files (`web/common/subscriber-proxy.php`, proxy implementation) — verify zero plaintext secrets, credentials, or IP addresses
-- [ ] T2.10: Run CSRF validation test on subscriber mutating forms (create/update/delete) — verify token validation still enforced after proxy integration
+- [x] T2.9: Run secret-leakage scan on all new PHP files (`web/common/subscriber-proxy.php`, proxy implementation) — verify zero plaintext secrets, credentials, or IP addresses
+- [x] T2.10: Run CSRF validation test on subscriber mutating forms (create/update/delete) — verify token validation still enforced after proxy integration

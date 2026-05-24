@@ -10,6 +10,7 @@
 | Feature | Directory | Artifacts | Status |
 |---|---|---|---|
 | 022 — VPS Go-Live | `evidence/022-vps-go-live/` | 17 | In Progress |
+| 023 — Subscriber CRUD Refactor | `evidence/023-subscriber-crud-refactor/` | [TBD] | Planned |
 
 ## 022 Evidence Detail
 
