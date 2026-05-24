@@ -6,6 +6,7 @@
 - [x] T1.3: Inventory all secret files in secrets/ (must be 100% present)
 - [x] T1.4: Verify .env file completeness against .env.example
 - [x] T1.5: Capture baseline evidence (task-1-baseline.txt)
+- [x] T1.6: Configure DNS A record for tsiapp.io → 179.190.15.116 at DNS provider
 
 ## Wave 1: RED Tests + Rollback Prep
 - [x] T2.1: Write container health RED test (expect failure before fixes)
@@ -18,6 +19,7 @@
 - [x] T5.1: Draft rollback runbook per service
 - [x] T5.2: Define abort triggers and rollback dry-run steps
 - [x] T5.3: Capture rollback evidence (task-5-rollback-dryrun.txt)
+- [x] T5.4: Verify backup integrity before rollback (checksum test on latest pg_dump)
 
 ## Wave 2: GREEN Implementation
 - [x] T6.1: Fix docker-compose.vps.yml runtime issues (restart loops, missing env)
@@ -36,6 +38,7 @@
 - [x] T10.1: Audit all published ports in compose
 - [x] T10.2: Confirm zero public ports for Asterisk/PostgreSQL
 - [x] T10.3: Capture port audit evidence (task-10-port-policy.txt)
+- [x] T10.4: Validate container hardening — verify cap_drop: [ALL] and minimal cap_add on all vps-lite services
 
 ## Wave 3: REFACTOR
 - [x] T11.1: Standardize healthcheck params (interval/timeout/retries/start_period)
@@ -73,7 +76,7 @@
 - [x] F3: Automated E2E QA execution
 - [x] F4: Scope fidelity check
 
-## Post-Implementation Follow-up (Critique Review + MemoryLint Remediation)
+## Post-Implementation Quality Gates (Critique Review + MemoryLint Remediation)
 - [x] M1: Fix OpenSIPS mem_limit (256m to 512m) to match -m 512 shared memory
 - [x] M2: Fix RTPengine mem_limit (256m to 512m) for production RTP load
 - [x] M3: Review swap policy (OCP/backup memswap_limit to 1.5x mem_limit)
@@ -83,3 +86,46 @@
 - [x] C6: Rollback rehearsal — OpenSIPS stopped/recreated, OCP unaffected, SIP OPTIONS recovered
 - [x] C7: Monitoring — Prometheus/Grafana disabled in vps-lite profile; no targets to validate
 - [x] M4: Memory alerting — Documented requirement; no Prometheus in vps-lite profile
+
+## Security Governance & Compliance Tasks (Security Preset)
+
+### LGPD / MSL Applicability & Justification
+- [x] G1: Generate LGPD applicability justification document (`docs/security/008-MSL-applicability-justification.md`)
+- [x] G2: Map all personal data flows in vps-lite stack (subscriber, CDR, audit logs)
+- [x] G3: Document legal basis for data processing (legitimate interest vs consent)
+- [x] G4: Verify data minimization (only necessary fields collected)
+
+### Security Obligations — Evidence Production
+- [x] G5: Produce SSL Labs evidence report for tsiapp.io (grade A+ target)
+- [x] G6: Produce Trivy container scan evidence for all 8 vps-lite images
+- [x] G7: Produce network port scan evidence (nmap/nc) confirming zero Asterisk/PostgreSQL exposure
+- [x] G8: Produce auth contract evidence (HA1 precomputed, no plaintext passwords)
+- [x] G9: Produce TLS certificate chain evidence (validity, expiry, auto-rotation)
+
+### Secure Development Documentation
+- [x] G10: Document threat model for vps-lite deployment (STRIDE analysis)
+- [x] G11: Document secure deployment checklist in operator runbook
+- [x] G12: Document incident response procedures for VPS (P0/P1 triggers)
+- [x] G13: Document secret rotation procedures and calendar
+
+### LGPD Data Retention Verification
+- [x] G14: Verify CDR retention configuration (7 years, tenant-scoped)
+- [x] G15: Verify audit log retention (1 year minimum)
+- [x] G16: Verify purge operation logging and admin role requirements
+- [x] G17: Verify tenant deletion cascade behavior (right to erasure)
+
+### Encryption & Access Control Validation
+- [x] G18: Verify backup encryption (AES-256-GCM) in backup service
+- [x] G19: Verify TLS 1.2+ enforcement in OpenSIPS and OCP
+- [x] G20: Verify role-based access control in OCP (readonly → admin hierarchy)
+- [x] G21: Verify SIP digest auth for all non-OPTIONS requests
+
+### SOC 2 Evidence
+- [x] G22: Verify spec-driven development evidence (spec.md → plan.md → tasks.md traceability)
+- [x] G23: Verify change management evidence (gated deploy pipeline, PR reviews)
+- [x] G24: Verify vulnerability management evidence (Trivy scans, 90-day retention)
+
+### Evidence Artifact Consolidation
+- [x] G25: Consolidate all security evidence in `docs/security/evidence/022-vps-go-live/`
+- [x] G26: Generate security evidence index (`docs/security/008-security-evidence-index.md`)
+- [x] G27: Cross-reference evidence with AC7 (evidence bundle)

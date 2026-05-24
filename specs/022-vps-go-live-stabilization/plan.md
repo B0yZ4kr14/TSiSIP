@@ -4,7 +4,7 @@
 
 - Docker Compose v2 (vps-lite profile)
 - OpenSIPS 3.6 LTS
-- PostgreSQL 15+
+- PostgreSQL 15 (aligned with docker-compose.yml postgres:15-alpine)
 - RTPengine
 - Asterisk (private network only)
 - OCP (PHP/nginx)
@@ -28,6 +28,23 @@
 ├── task-12-observability-triage.txt
 ├── task-13-resilience-pass.txt
 └── task-14-evidence-bundle-pass.txt
+docs/security/evidence/022-vps-go-live/  # Security governance evidence
+├── 001-tls-certificate-scan.md
+├── 002-container-image-scan.md
+├── 003-host-os-security-audit.md
+├── 004-network-segmentation-test.md
+├── 005-secret-management-audit.md
+├── 006-security-headers-scan.md
+├── 007-penetration-test-invite.md
+├── 008-compliance-mapping.md
+├── 009-incident-response-playbook.md
+├── 010-security-monitoring-setup.md
+├── 011-backup-encryption-verification.md
+├── 012-disaster-recovery-test.md
+├── 013-vulnerability-management-report.md
+├── 014-security-training-completion.md
+├── 015-third-party-risk-assessment.md
+└── 016-security-evidence-index.md
 ```
 
 ## Execution Waves
