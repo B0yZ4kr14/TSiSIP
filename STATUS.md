@@ -15,7 +15,7 @@ Feature 022 (VPS Go-Live Stabilization) is **complete** — all 10 ACs verified 
 Feature 005 (PostgreSQL Backup & Restore) was audited and validated on the local/manual path; PITR live and offsite replication remain pending environment.
 GitNexus was updated locally on 2026-05-19 and reported the TSiSIP index as `up-to-date`.
 On 2026-05-24, the TSiSIP SIP edge was stabilized on the VPS after OpenSIPS 3.6 engine compatibility fixes and `userblacklist` schema corrections.
-On 2026-05-24, the backup pipeline was revalidated on the VPS: **WAL archiving active**, backup/validate/purge working manually, and metrics exporter accessible at `127.0.0.1:9101`.
+On 2026-05-24, the backup pipeline was revalidated on the VPS: **WAL archiving active**, backup/validate/purge working manually, and metrics exporter accessible internally via Docker network `metrics_host` at `backup:9101` (host loopback mapping removed due to `userland-proxy=false`).
 On 2026-05-24, Cloudflare DNS was configured: `tsiapp.io` proxied for HTTPS; `sip.tsiapp.io` non-proxied → `179.190.15.116` for SIP signaling.
 
 ---
@@ -59,7 +59,7 @@ On 2026-05-24, Cloudflare DNS was configured: `tsiapp.io` proxied for HTTPS; `si
 | asterisk-pbx-1 | `tsisip/asterisk:latest` | 1G | internal |
 | asterisk-pbx-2 | `tsisip/asterisk:latest` | 1G | internal |
 | ocp | `tsisip/ocp:latest` | 512M | container bridge IP via nginx (userland-proxy=false) |
-| backup | `tsisip/backup:latest` | 1G | 127.0.0.1:9101/tcp |
+| backup | `tsisip/backup:latest` | 1G | internal (`metrics_host` network) |
 | admin-api | `tsisip/admin-api:latest` | 256M | internal |
 | certbot | `tsisip/certbot:latest` | 128M | — |
 | certbot-exporter | `tsisip/certbot-exporter:latest` | 64M | — |
@@ -124,9 +124,9 @@ On 2026-05-24, Cloudflare DNS was configured: `tsiapp.io` proxied for HTTPS; `si
 | External ports | 5060/tcp and 5061/tcp appear `filtered` from outside; `tcpdump` confirms packets do not reach host |
 | Dispatcher DB | 2 real active destinations: `sip:asterisk-pbx-1:5060`, `sip:asterisk-pbx-2:5060` |
 | SIP OPTIONS | UDP and TCP return `SIP/2.0 200 OK` internally |
-| SIP INVITE without auth | UDP and TCP return `SIP/2.0 401 Unauthorized` |
+| SIP INVITE without auth | UDP and TCP return `SIP/2.0 407 Proxy Authentication Required` |
 | Backup + WAL | Encrypted backup created at `/backup/daily`, validate manual OK, purge manual OK, WAL `.gz` generated at `/backup/wal` |
-| Backup metrics | `curl http://127.0.0.1:9101/metrics` returns RPO/RTO/status and `backup_current_wal_info`; port not exposed externally |
+| Backup metrics | `curl http://backup:9101/metrics` (via Docker `metrics_host` network) returns RPO/RTO/status and `backup_current_wal_info`; host port mapping removed due to `userland-proxy=false` |
 | Certbot metrics | `curl http://<certbot-exporter-ip>:9101/metrics` returns `certbot_days_until_expiry`, `certbot_renewal_failure_total`, `certbot_last_success_timestamp`; port on `metrics_host` (internal) |
 
 ---

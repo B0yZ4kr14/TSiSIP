@@ -28,12 +28,16 @@ while [[ "$(date +%s)" -lt "${end_at}" ]]; do
     | tee -a "${LOG_FILE}" >/dev/null || true
 
   log "CHECK backup metrics"
-  if curl -fsS http://127.0.0.1:9101/metrics >/dev/null 2>&1; then
-    curl -fsS http://127.0.0.1:9101/metrics \
+  # With userland-proxy=false, host loopback port mappings do not create working
+  # iptables rules. Access backup metrics via Docker metrics_host network.
+  if docker run --rm --network tsisip_metrics_host alpine \
+       wget -qO- http://backup:9101/metrics >/dev/null 2>&1; then
+    docker run --rm --network tsisip_metrics_host alpine \
+      wget -qO- http://backup:9101/metrics \
       | grep -E '^(backup_(rpo_lag_seconds|rto_last_seconds|validation_status|success_total|exporter_info))' \
       | tee -a "${LOG_FILE}" >/dev/null || true
   else
-    log "WARN metrics endpoint not reachable on 127.0.0.1:9101"
+    log "WARN metrics endpoint not reachable at backup:9101 on metrics_host network"
   fi
 
   log "CHECK rpo-monitor (updates metrics source)"

@@ -64,7 +64,7 @@ Check:
 
 ```bash
 docker compose -f docker-compose.vps.yml exec backup /usr/local/bin/rpo-monitor.sh
-curl -fsS http://127.0.0.1:9101/metrics | grep -E 'backup_rpo|backup_current_wal'
+docker run --rm --network tsisip_metrics_host alpine wget -qO- http://backup:9101/metrics | grep -E 'backup_rpo|backup_current_wal'
 ```
 
 If `current_wal` equals `last_archived_wal`, the archive is caught up and RPO should be `0`.

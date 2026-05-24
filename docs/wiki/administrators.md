@@ -6,7 +6,7 @@
 |---|---|---|
 | VPS SSH | `ssh-tsiapp` | Canonical host alias on the workstation |
 | OCP | `https://tsiapp.io/TSiSIP/` | Public HTTPS path through Nginx |
-| Backup metrics | `http://127.0.0.1:9101/metrics` | VPS-local only |
+| Backup metrics | `docker run --rm --network tsisip_metrics_host alpine wget -qO- http://backup:9101/metrics` | Internal Docker network only (userland-proxy=false) |
 | SIP | 5060/udp, 5060/tcp, 5061/tcp | Host-ready; external exposure still blocked upstream |
 
 ## Routine Health Check
@@ -17,7 +17,7 @@ cd /opt/tsisip
 
 docker compose -f docker-compose.vps.yml ps
 curl -I https://tsiapp.io/TSiSIP/
-curl -fsS http://127.0.0.1:9101/metrics | head
+docker run --rm --network tsisip_metrics_host alpine wget -qO- http://backup:9101/metrics | head
 ```
 
 ## Backup Administration

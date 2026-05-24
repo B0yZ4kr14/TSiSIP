@@ -45,7 +45,7 @@ sudo ./deploy/scripts/vps-nginx-setup.sh  # Configura /TSiSIP/ no nginx
 - [x] Backup container esta UP/healthy
 - [x] Asterisk PBX 1 e 2 estao UP/healthy
 - [x] Dispatcher set 1 contem `asterisk-pbx-1` e `asterisk-pbx-2` com `state=0`
-- [x] Metricas de backup acessiveis em loopback (`curl 127.0.0.1:9101/metrics`) *(validado em 2026-05-19; nao exposto externamente)*
+- [x] Metricas de backup acessiveis via rede Docker `metrics_host` (`docker run --rm --network tsisip_metrics_host alpine wget -qO- http://backup:9101/metrics`) *(validado em 2026-05-24; host loopback removido devido a userland-proxy=false)*
 
 ## Funcionalidades a Validar
 

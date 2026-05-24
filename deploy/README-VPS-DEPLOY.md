@@ -135,9 +135,9 @@ sudo ./deploy/scripts/vps-nginx-setup.sh
 | ocp | 8084/tcp | 256m | Essencial |
 | asterisk-pbx-1 | interno | 768m | Essencial para validacao SIP fim-a-fim |
 | asterisk-pbx-2 | interno | 768m | Essencial para failover/dispatcher |
-| backup | 127.0.0.1:9101/tcp | 128m | Essencial |
+| backup | internal (`metrics_host` network) | 128m | Essencial |
 
-**Serviços desabilitados no VPS-lite:** prometheus, grafana, alertmanager, opensips-exporter, anomaly-detector. O exporter de backup fica ativo em loopback (`127.0.0.1:9101`) para métricas locais.
+**Serviços desabilitados no VPS-lite:** prometheus, grafana, alertmanager, opensips-exporter, anomaly-detector. O exporter de backup fica ativo internamente na rede Docker `metrics_host` (`backup:9101`) devido a `userland-proxy=false` necessário para o RTPengine.
 
 ## Operações
 
@@ -158,7 +158,7 @@ docker compose -f docker-compose.vps.yml exec backup /usr/local/bin/backup.sh
 docker compose -f docker-compose.vps.yml exec backup /usr/local/bin/validate.sh
 
 # Ver metricas locais de backup/RPO
-curl http://127.0.0.1:9101/metrics
+docker run --rm --network tsisip_metrics_host alpine wget -qO- http://backup:9101/metrics
 
 # Acessar OCP
 # Local: http://localhost:8084

@@ -48,7 +48,7 @@ The current TSiAPP VPS production profile runs seven services:
 | `asterisk-pbx-1` | `ghcr.io/b0yz4kr14/tsisip/asterisk:latest` | sip_internal | (none) |
 | `asterisk-pbx-2` | `ghcr.io/b0yz4kr14/tsisip/asterisk:latest` | sip_internal | (none) |
 | `ocp` | `ghcr.io/b0yz4kr14/tsisip/ocp:latest` | sip_internal, db_internal, metrics_host | 127.0.0.1:8084/tcp (requires userland-proxy=true; VPS uses container bridge IP via nginx) |
-| `backup` | `ghcr.io/b0yz4kr14/tsisip/backup:latest` | db_internal, metrics_host | 127.0.0.1:9101/tcp |
+| `backup` | `ghcr.io/b0yz4kr14/tsisip/backup:latest` | db_internal, metrics_host | internal only (metrics_host network at `backup:9101`) |
 
 **SIP public exposure status**: OpenSIPS listens locally on `5060/udp`, `5060/tcp`, and `5061/tcp`. External scans still show 5060/5061 as filtered; prior packet capture showed packets do not reach the VPS host, so the remaining public SIP exposure work is upstream of the host.
 
@@ -634,8 +634,8 @@ docker compose exec backup cat /backup/metrics/rto_last_seconds
 # Storage quota
 docker compose exec backup cat /backup/metrics/quota_usage.prom
 
-# All metrics via loopback exporter on VPS-lite
-curl http://127.0.0.1:9101/metrics
+# All metrics via Docker metrics_host network (userland-proxy=false removes host loopback access)
+docker run --rm --network tsisip_metrics_host alpine wget -qO- http://backup:9101/metrics
 ```
 
 The RPO monitor emits both `backup_rpo_lag_seconds` and `backup_current_wal_info`. If `current_wal` equals `last_archived_wal`, the database is idle or caught up and RPO lag is reported as `0`.

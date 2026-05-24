@@ -575,11 +575,11 @@ except:
         verify_ok=false
     fi
 
-    # ── 5e: Backup metrics loopback ──
+    # ── 5e: Backup metrics (internal Docker network) ──
     info "Verifier: backup metrics endpoint..."
     local backup_code
     backup_code=$(ssh $SSH_OPTS ${SSH_KEY:+-i "$SSH_KEY"} "$target" \
-        "curl -s -o /dev/null -w '%{http_code}' http://127.0.0.1:9101/metrics || echo '000'" 2>/dev/null)
+        "docker run --rm --network tsisip_metrics_host alpine wget -qO- http://backup:9101/metrics >/dev/null 2>&1 && echo '200' || echo '000'" 2>/dev/null)
     if [ "$backup_code" = "200" ] || [ "$backup_code" = "000" ]; then
         info "Verifier: backup metrics → HTTP ${backup_code} (best-effort)"
     else

@@ -63,7 +63,7 @@ Operational notes:
 Backup metrics are local-only:
 
 ```bash
-curl http://127.0.0.1:9101/metrics
+docker run --rm --network tsisip_metrics_host alpine wget -qO- http://backup:9101/metrics
 ```
 
 Important metrics:
