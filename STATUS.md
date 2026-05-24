@@ -106,6 +106,8 @@ On 2026-05-24, Cloudflare DNS was configured: `tsiapp.io` proxied for HTTPS; `si
 | Certbot-exporter restart loop (`UnboundLocalError`) | Medium | **Resolved** — Added `global _last_failures`; image rebuilt and healthy (2026-05-24) |
 | Cloudflare DNS configuration | Medium | **Resolved** — `tsiapp.io` proxied for HTTPS (Cloudflare anycast); `sip.tsiapp.io` non-proxied → `179.190.15.116` for SIP signaling; legacy wildcard `*.tsiapp.io` removed |
 | Backup container restart loop | Medium | **Resolved** — Added `CHOWN` + `DAC_OVERRIDE` capabilities to compose; runtime `chown` for tsisip-backup dirs in entrypoint; OpenBSD netcat syntax fix in metrics exporter; image rebuilt and healthy (2026-05-24) |
+| OpenSIPS log spam (`t_check_status` ERROR) | Low | **Resolved** — Replaced `t_check_status()` with `$rs` regex in `onreply_route` to handle dispatcher probe replies correctly; eliminated ~11,500 ERROR lines/day; image rebuilt and pushed to GHCR (2026-05-24) |
+| Dispatcher duplicate entries | Low | **Resolved** — Removed duplicate PBX entries and stale test IP `10.0.0.1` from dispatcher table; both asterisk backends now active (2026-05-24) |
 
 ## Live VPS Validation (2026-05-24)
 
@@ -122,10 +124,10 @@ On 2026-05-24, Cloudflare DNS was configured: `tsiapp.io` proxied for HTTPS; `si
 | SIP subdomain | `sip.tsiapp.io` resolves to VPS IP `179.190.15.116` (non-proxied for SIP signaling) |
 | Local ports on VPS | 5060/tcp, 5061/tcp, 5060/udp and RTP 10000-20000/udp listening |
 | External ports | 5060/tcp and 5061/tcp appear `filtered` from outside; `tcpdump` confirms packets do not reach host |
-| Dispatcher DB | 2 real active destinations: `sip:asterisk-pbx-1:5060`, `sip:asterisk-pbx-2:5060` |
+| Dispatcher DB | 2 active destinations (duplicates and test IP cleaned up on 2026-05-24) |
 | SIP OPTIONS | UDP and TCP return `SIP/2.0 200 OK` internally |
 | SIP INVITE without auth | UDP and TCP return `SIP/2.0 407 Proxy Authentication Required` |
-| Backup + WAL | Encrypted backup created at `/backup/daily`, validate manual OK, purge manual OK, WAL `.gz` generated at `/backup/wal` |
+| Backup + WAL | Encrypted backup created at `/backup/daily`, validate manual OK, purge manual OK, WAL `.gz` generated at `/backup/wal`; cron active (02:00/03:00/04:00 UTC) |
 | Backup metrics | `curl http://backup:9101/metrics` (via Docker `metrics_host` network) returns RPO/RTO/status and `backup_current_wal_info`; host port mapping removed due to `userland-proxy=false` |
 | Certbot metrics | `curl http://<certbot-exporter-ip>:9101/metrics` returns `certbot_days_until_expiry`, `certbot_renewal_failure_total`, `certbot_last_success_timestamp`; port on `metrics_host` (internal) |
 
@@ -179,6 +181,8 @@ Updated: 2026-05-24.
 ## Recent Commits
 
 ```
+fb431fd fix(opensips): replace t_check_status with $rs regex in onreply_route (dispatcher probe log hygiene)
+c7bcf14 docs: update all backup metrics references from 127.0.0.1:9101 to Docker internal network
 279ae33 docs(vps): document Docker userland-proxy=false impact on OCP port 8084
 496de30 fix(security): resolve socratic-popperian audit findings — docs, code, and config alignment
 ```
