@@ -102,6 +102,8 @@ On 2026-05-24, the backup pipeline was revalidated on the VPS: **WAL archiving a
 | UFW 5061/tcp | Medium | **Resolved** — 5061/tcp released IPv4/IPv6 |
 | Ansible docker.io conflict | Low | **Resolved** — skip install if Docker present |
 | Docker userland-proxy=false | Low | **Mitigated** — nginx proxy uses OCP container bridge IP; documented in 21 files |
+| Certbot restart loop (`setpgid: EPERM`) | Medium | **Resolved** — Replaced cron daemon with sleep loop in entrypoint; image rebuilt and healthy (2026-05-24) |
+| Certbot-exporter restart loop (`UnboundLocalError`) | Medium | **Resolved** — Added `global _last_failures`; image rebuilt and healthy (2026-05-24) |
 
 ## Live VPS Validation (2026-05-24)
 
@@ -109,7 +111,7 @@ On 2026-05-24, the backup pipeline was revalidated on the VPS: **WAL archiving a
 |-------|--------|
 | SSH TSiAPP | OK via alias, public and Tailscale |
 | VPS Resources | Ubuntu 24.04, Docker 29.5.2, Compose v5.1.4, ~62GB free |
-| Docker Stack | `postgres`, `rtpengine`, `opensips`, `ocp`, `backup`, `admin-api`, `asterisk-pbx-1`, `asterisk-pbx-2` UP/healthy |
+| Docker Stack | 10 services UP/healthy: `postgres`, `rtpengine`, `opensips`, `ocp`, `backup`, `admin-api`, `asterisk-pbx-1`, `asterisk-pbx-2`, `certbot`, `certbot-exporter` |
 | TSiSIP SIP edge healthcheck | `OK: OpenSIPS is healthy` |
 | Asterisk healthcheck | Both return `OK: Asterisk is healthy` |
 | OCP public | `https://127.0.0.1/TSiSIP/login.php` responds HTTP 200 via nginx (use `-k` for self-signed cert) |
@@ -120,6 +122,7 @@ On 2026-05-24, the backup pipeline was revalidated on the VPS: **WAL archiving a
 | SIP INVITE without auth | UDP and TCP return `SIP/2.0 401 Unauthorized` |
 | Backup + WAL | Encrypted backup created at `/backup/daily`, validate manual OK, purge manual OK, WAL `.gz` generated at `/backup/wal` |
 | Backup metrics | `curl http://127.0.0.1:9101/metrics` returns RPO/RTO/status and `backup_current_wal_info`; port not exposed externally |
+| Certbot metrics | `curl http://<certbot-exporter-ip>:9101/metrics` returns `certbot_days_until_expiry`, `certbot_renewal_failure_total`, `certbot_last_success_timestamp`; port on `metrics_host` (internal) |
 
 ---
 
