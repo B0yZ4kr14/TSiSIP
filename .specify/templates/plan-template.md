@@ -103,6 +103,35 @@ ios/ or android/
 **Structure Decision**: [Document the selected structure and reference the real
 directories captured above]
 
+## Infrastructure & Deployment Plan
+
+### Docker Changes
+- New images to build: [list services]
+- Modified Dockerfiles: [list files]
+- New networks or network changes: [list]
+- New secrets or environment variables: [list with .env.example updates]
+
+### VPS Deploy Phase
+- Deployment target: `vps-lite` (Tailscale) or `prod` (public)
+- Pre-deploy validation: `docker compose config`, `opensips -c`, Trivy scan
+- Deploy sequence: postgres → opensips/rtpengine → asterisk → ocp → monitoring
+- Post-deploy validation: sipsak OPTIONS 200, INVITE 407, container healthchecks
+
+### Security Hardening Phase
+- cap_drop/cap_add review for new containers
+- Secret leakage scan on new files
+- Port audit (nmap) confirming zero public Asterisk/PostgreSQL ports
+- TLS chain verification (if certificates changed)
+
+### Evidence & Compliance
+- Evidence directory: `docs/security/evidence/[feature-dir]/`
+- Required evidence artifacts:
+  - Container image scan (Trivy)
+  - Port scan report
+  - Auth contract verification
+  - Network segmentation test
+  - Rollback restoration test (if database schema changes)
+
 ## Complexity Tracking
 
 > **Fill ONLY if Constitution Check has violations that must be justified**

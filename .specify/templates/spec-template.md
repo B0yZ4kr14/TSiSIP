@@ -61,6 +61,35 @@
 
 ---
 
+## Security Requirements
+
+| ID | Requirement | Verification Method |
+|---|---|---|
+| SR-001 | No host-published ports on Asterisk or PostgreSQL | `docker compose config` + port audit |
+| SR-002 | Auth uses precomputed HA1 only (`calculate_ha1 = 0`) | `opensips -c` + schema verification |
+| SR-003 | Secrets not committed (secrets/, .env*) | `.gitignore` + secret-leakage scan |
+| SR-004 | RTPengine control binds to internal IP only | `docker compose config` + nmap verification |
+| SR-005 | Header sanitization strips untrusted inbound headers | Code review + negative test |
+
+## Docker & Infrastructure Requirements
+
+### Network Topology
+- Which networks: `sip_edge` (public), `sip_internal` (private), `db_internal` (private)
+- Any new networks? Specify CIDR and whether they are `internal: true`.
+
+### Container Configuration
+- Base image tag: must be pinned (not `:latest` unless explicitly justified)
+- `cap_drop: [ALL]` required unless documented exception
+- `security_opt: ["no-new-privileges:true"]` required
+- `restart` policy: `unless-stopped`, `on-failure`, or `always` with justification
+
+### OpenSIPS Module Requirements
+- List new `loadmodule` entries and `modparam` configurations
+- Verify every module is documented for OpenSIPS 3.6 LTS
+- Forbidden modules: `sanity`, `db_mysql`, `rtpproxy` (unless ADR exists)
+
+---
+
 ## Success Criteria
 
 | ID | Criterion | Measurement | Target |

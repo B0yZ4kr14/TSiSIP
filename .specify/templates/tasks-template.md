@@ -160,6 +160,23 @@ Examples of foundational tasks (adjust based on your project):
 
 ---
 
+## Phase N+1: Validation & Evidence (TSiSIP-Specific)
+
+**Purpose**: Post-implementation validation gates and security evidence collection
+
+- [ ] TXXX Validate OpenSIPS config: `docker run --rm tsisip-opensips:latest opensips -c -f /etc/opensips/opensips.cfg`
+- [ ] TXXX Validate Compose configuration: `docker compose config`
+- [ ] TXXX Runtime SIP OPTIONS test: `sipsak -s sip:opensips:5060 -vv` (expect 200 OK)
+- [ ] TXXX Runtime SIP INVITE test: `python3 scripts/test-invite-407.py` (expect 407 Proxy-Authenticate)
+- [ ] TXXX Container image security scan: `trivy image tsisip/[service]:[tag]`
+- [ ] TXXX Port audit: `nmap -p 5060,5432,8084,10000-20000 [host]` (expect only 5060 public)
+- [ ] TXXX Auth contract verification: `psql -c "SELECT COUNT(*) FROM subscriber WHERE ha1 IS NULL"` (expect 0)
+- [ ] TXXX Network segmentation test: verify Asterisk/PostgreSQL unreachable from host
+- [ ] TXXX Evidence report: create `docs/security/evidence/[feature]/` with scan results
+- [ ] TXXX Brownfield scan: run `/speckit.brownfield.scan` and verify zero CRITICAL findings
+
+---
+
 ## Dependencies & Execution Order
 
 ### Phase Dependencies

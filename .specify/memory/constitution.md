@@ -102,6 +102,20 @@ Re-check after Phase 1 design if the plan introduces new services, networks, or 
 - Each remediation cycle must include: (a) fix, (b) evidence in a cycle-specific subdirectory under evidence/remediation/ (e.g., ciclo-1/, feature-013/), (c) post-fix validation scan.
 - Residual bugs introduced during remediation are treated as P0 regressions.
 
+## Infrastructure Configuration Rules
+
+### Docker Compose
+- **RTPengine control socket**: Must bind to `${RTPENGINE_INTERNAL_IP}:22222` on `sip_internal` only. Binding to `0.0.0.0` or `127.0.0.1` is forbidden (AGENTS.md Section 4, Section 10).
+- **Container user context**: Services running with `cap_drop: [ALL]` that require filesystem ownership changes must specify `user` matching the container's expected runtime UID (e.g., postgres `user: "999:999"`).
+- **Published ports whitelist**: Only OpenSIPS (5060/udp, 5060/tcp) and RTPengine (10000-20000/udp) may publish host ports. All other services must remain on internal networks only.
+
+### Certificate Management
+- **Self-signed cert rotation**: `secrets/server.crt` and `secrets/ca.crt` must be monitored for expiry. Alert threshold: 90 days before expiry.
+- **Rotation evidence**: Every cert rotation must produce an evidence file in `docs/security/evidence/{feature-dir}/` with before/after fingerprint and validation command output.
+
+### Test Scripts
+- **No hard-coded network IPs**: Test scripts must not embed Docker network CIDR IPs (e.g., `172.19.0.4`). Use parameterized `TEST_IP` with dynamic discovery or compose network inspection.
+
 ## Blocking vs Non-Blocking Rules
 
 **Blocking (P0)**:
@@ -109,6 +123,8 @@ Re-check after Phase 1 design if the plan introduces new services, networks, or 
 - OpenSIPS config must pass opensips -c validation.
 - Docker Compose must not expose Asterisk or PostgreSQL ports publicly.
 - Auth contract must use precomputed HA1 (calculate_ha1 = 0).
+- RTPengine control socket must not bind to `0.0.0.0` or loopback in multi-container runtime.
+- Certificates must not expire without documented rotation plan.
 
 **Non-Blocking**:
 - CSS/frontend cosmetic changes.
