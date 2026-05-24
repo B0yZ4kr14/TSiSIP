@@ -78,9 +78,9 @@ serve_metrics() {
     while true; do
         generate_metrics
 
-        # Use nc to serve a single request
+        # Use nc to serve a single request (OpenBSD netcat syntax: nc -l [host] [port])
         { echo -e "HTTP/1.1 200 OK\r\nContent-Type: text/plain; charset=utf-8\r\nConnection: close\r\n\r\n"; cat "${METRICS_DIR}/backup_metrics.prom"; } | \
-            timeout 3 nc -l -p "$LISTEN_PORT" -s "$LISTEN_ADDR" -w 1 2>/dev/null || true
+            timeout 3 nc -lN "$LISTEN_ADDR" "$LISTEN_PORT" -w 1 2>/dev/null || true
     done
 }
 
