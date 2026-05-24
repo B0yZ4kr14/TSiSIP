@@ -117,17 +117,17 @@ W0 (Security) → W1 (CRUD) → W2 (MI/Stats) → W3 (TLS) → W4 (Validation)
 > **Priority**: P2 (non-blocking, tracked technical debt)
 > **Scope**: Refactor subscriber CRUD out of OCP into OpenSIPS layer or dedicated admin API
 
-- [ ] ARCH-001: Design subscriber management API contract — define OpenSIPS MI command(s) or REST endpoint for subscriber CREATE/UPDATE/DELETE
-- [ ] ARCH-002: Implement subscriber proxy in OpenSIPS layer — expose `subscriber_create`, `subscriber_update`, `subscriber_delete` via MI HTTP or dedicated microservice
-- [ ] ARCH-003: Migrate `web/subscribers.php` from direct PDO writes to API/MI calls — preserve HA1 generation in OCP, delegate INSERT/UPDATE/DELETE to backend
-- [ ] ARCH-004: Add audit logging on the proxy layer — ensure `auth_audit_log` entries are created for all subscriber mutations regardless of caller
-- [ ] ARCH-005: Validate layer boundary compliance — confirm OCP no longer writes to `subscriber` table directly; reads only via `SELECT`
-- [ ] ARCH-006: Update architecture_constitution.md — mark ARCH-PRE-001 as resolved once verified
+- [x] ARCH-001: Design subscriber management API contract — **RESOLVED by Feature 023** (ADR-023 selected REST API approach) — define OpenSIPS MI command(s) or REST endpoint for subscriber CREATE/UPDATE/DELETE
+- [x] ARCH-002: Implement subscriber proxy in OpenSIPS layer — **RESOLVED by Feature 023** (docker/admin-api/ microservice implemented) — expose `subscriber_create`, `subscriber_update`, `subscriber_delete` via MI HTTP or dedicated microservice
+- [x] ARCH-003: Migrate `web/subscribers.php` from direct PDO writes — **RESOLVED by Feature 023** (all INSERT/UPDATE/DELETE removed, proxy client integrated) to API/MI calls — preserve HA1 generation in OCP, delegate INSERT/UPDATE/DELETE to backend
+- [x] ARCH-004: Add audit logging on the proxy layer — **RESOLVED by Feature 023** (auth_audit_log entries from admin-api) — ensure `auth_audit_log` entries are created for all subscriber mutations regardless of caller
+- [x] ARCH-005: Validate layer boundary compliance — **RESOLVED by Feature 023** (grep confirms zero direct writes) — confirm OCP no longer writes to `subscriber` table directly; reads only via `SELECT`
+- [x] ARCH-006: Update architecture_constitution.md — **RESOLVED by Feature 023** (ARCH-PRE-001 marked resolved) — mark ARCH-PRE-001 as resolved once verified
 
 ## ARCH-PRE-001 Acceptance Criteria
 
-- [ ] AC-ARCH-1: `web/subscribers.php` contains zero `INSERT INTO subscriber`, `UPDATE subscriber`, or `DELETE FROM subscriber` statements
-- [ ] AC-ARCH-2: All subscriber mutations route through OpenSIPS-layer API or MI command
-- [ ] AC-ARCH-3: HA1 generation remains in OCP (or trusted control plane) before passing precomputed hashes to backend
-- [ ] AC-ARCH-4: Audit logging covers success and failure paths for all subscriber operations
-- [ ] AC-ARCH-5: No regression in existing subscriber list/read functionality
+- [x] AC-ARCH-1: `web/subscribers.php` contains zero — **RESOLVED by Feature 023** (T2.1) `INSERT INTO subscriber`, `UPDATE subscriber`, or `DELETE FROM subscriber` statements
+- [x] AC-ARCH-2: All subscriber mutations route through — **RESOLVED by Feature 023** (T2.2–T2.5) OpenSIPS-layer API or MI command
+- [x] AC-ARCH-3: HA1 generation remains in OCP — **RESOLVED by Feature 023** (T2.3, T2.4) (or trusted control plane) before passing precomputed hashes to backend
+- [x] AC-ARCH-4: Audit logging covers success and failure — **RESOLVED by Feature 023** (T1.4) paths for all subscriber operations
+- [x] AC-ARCH-5: No regression in existing subscriber list — **RESOLVED by Feature 023** (T2.8)/read functionality
