@@ -151,7 +151,7 @@ Deliver a repeatable, auditable deployment pipeline that:
 - **Relationships**: provisions VPS; pulls images from GHCR; validates via `deploy/validate.sh`
 
 ### Entity: Reverse Proxy (Nginx)
-- **Attributes**: TLS config, rate limiting zones, upstream backend (`127.0.0.1:8084`), security headers
+- **Attributes**: TLS config, rate limiting zones, upstream backend (`127.0.0.1:8084` when userland-proxy=true; container bridge IP otherwise), security headers
 - **Relationships**: terminates TLS for `tsiapp.io`; proxies to OCP container
 
 ### Entity: Secret Scope

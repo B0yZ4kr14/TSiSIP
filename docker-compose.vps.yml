@@ -239,6 +239,9 @@ services:
           memory: 512M
         reservations:
           memory: 256M
+    # NOTE: Port 8084 requires Docker userland-proxy=true to bind on host.
+    # When userland-proxy=false (VPS default for RTPengine performance),
+    # access OCP via nginx proxy to the container's Docker bridge IP instead.
     ports:
       - "127.0.0.1:8084:80"
     environment:

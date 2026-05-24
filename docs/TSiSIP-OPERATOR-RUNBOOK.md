@@ -47,14 +47,14 @@ The current TSiAPP VPS production profile runs seven services:
 | `postgres` | `ghcr.io/b0yz4kr14/tsisip/postgres:latest` | db_internal | (none) |
 | `asterisk-pbx-1` | `ghcr.io/b0yz4kr14/tsisip/asterisk:latest` | sip_internal | (none) |
 | `asterisk-pbx-2` | `ghcr.io/b0yz4kr14/tsisip/asterisk:latest` | sip_internal | (none) |
-| `ocp` | `ghcr.io/b0yz4kr14/tsisip/ocp:latest` | sip_internal, db_internal, metrics_host | 127.0.0.1:8084/tcp |
+| `ocp` | `ghcr.io/b0yz4kr14/tsisip/ocp:latest` | sip_internal, db_internal, metrics_host | 127.0.0.1:8084/tcp (requires userland-proxy=true; VPS uses container bridge IP via nginx) |
 | `backup` | `ghcr.io/b0yz4kr14/tsisip/backup:latest` | db_internal, metrics_host | 127.0.0.1:9101/tcp |
 
 **SIP public exposure status**: OpenSIPS listens locally on `5060/udp`, `5060/tcp`, and `5061/tcp`. External scans still show 5060/5061 as filtered; prior packet capture showed packets do not reach the VPS host, so the remaining public SIP exposure work is upstream of the host.
 
 ## OCP Access
 
-Public HTTPS is via the existing Nginx location `https://tsiapp.io/TSiSIP/`. The container publishes only `127.0.0.1:8084/tcp` on the host for the local reverse proxy path.
+Public HTTPS is via the existing Nginx location `https://tsiapp.io/TSiSIP/`. The container publishes `127.0.0.1:8084/tcp` when Docker userland-proxy=true; on the VPS (userland-proxy=false for RTPengine performance), nginx proxies to the container's Docker bridge IP directly.
 
 The OCP dashboard and the Professional Premium Wiki share the same authenticated session. Navigate to:
 

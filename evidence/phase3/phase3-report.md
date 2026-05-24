@@ -10,7 +10,7 @@ Container OCP estava rodando manualmente (criado via docker run), não gerenciad
 1. Removido container manual antigo
 2. Criado novo container com imagem GHCR oficial
 3. Conectado às 3 redes necessárias: sip_internal, db_internal, metrics_host
-4. Port mapping: 127.0.0.1:8084:80
+4. Port mapping: 127.0.0.1:8084:80 (requires userland-proxy=true; VPS uses nginx → container bridge IP)
 5. Copiados arquivos web atualizados do host para o container
 
 ### Status Pós-Correção

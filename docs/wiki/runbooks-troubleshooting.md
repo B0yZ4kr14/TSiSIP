@@ -20,7 +20,7 @@ docker compose -f docker-compose.vps.yml up -d --no-deps --force-recreate <servi
 ```bash
 docker compose -f docker-compose.vps.yml ps ocp
 docker compose -f docker-compose.vps.yml logs --tail=200 ocp
-curl -I http://127.0.0.1:8084/login.php
+curl -Ik https://127.0.0.1/TSiSIP/login.php
 curl -I https://tsiapp.io/TSiSIP/
 ```
 

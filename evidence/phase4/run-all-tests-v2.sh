@@ -29,22 +29,22 @@ fi
 
 log "=== T4.3: OCP E2E ==="
 rm -f /tmp/test_cookies.txt
-curl -fsSL -c /tmp/test_cookies.txt -b /tmp/test_cookies.txt -L -d 'username=Admin&pass=admin123!' http://127.0.0.1:8084/login.php -o /dev/null 2>&1
+curl -fsSkL -c /tmp/test_cookies.txt -b /tmp/test_cookies.txt -d 'username=Admin&pass=admin123!' https://127.0.0.1/TSiSIP/login.php -o /dev/null 2>&1
 [ -s /tmp/test_cookies.txt ] && pass "OCP login" || fail "OCP login"
 
-HTML=$(curl -fsSL -b /tmp/test_cookies.txt http://127.0.0.1:8084/subscribers.php 2>&1)
+HTML=$(curl -fsSkL -b /tmp/test_cookies.txt https://127.0.0.1/TSiSIP/subscribers.php 2>&1)
 echo "$HTML" | grep -q 'Subscriber Management' && pass "subscribers.php" || fail "subscribers.php"
 
-HTML=$(curl -fsSL -b /tmp/test_cookies.txt http://127.0.0.1:8084/cdr-viewer.php 2>&1)
+HTML=$(curl -fsSkL -b /tmp/test_cookies.txt https://127.0.0.1/TSiSIP/cdr-viewer.php 2>&1)
 echo "$HTML" | grep -q 'Call Detail Records' && pass "cdr-viewer.php" || fail "cdr-viewer.php"
 
-HTML=$(curl -fsSL -b /tmp/test_cookies.txt http://127.0.0.1:8084/dispatcher.php 2>&1)
+HTML=$(curl -fsSkL -b /tmp/test_cookies.txt https://127.0.0.1/TSiSIP/dispatcher.php 2>&1)
 echo "$HTML" | grep -q 'Dispatcher Targets' && pass "dispatcher.php" || fail "dispatcher.php"
 
 log "=== T4.4: Security ==="
-curl -fsSL -I http://127.0.0.1:8084/subscribers.php 2>&1 | grep -q '302' && pass "Auth redirect" || fail "Auth redirect"
+curl -fsSkL -I https://127.0.0.1/TSiSIP/subscribers.php 2>&1 | grep -q '302' && pass "Auth redirect" || fail "Auth redirect"
 
-HTML=$(curl -fsSL -b /tmp/test_cookies.txt -X POST -d 'action=delete&id=1' http://127.0.0.1:8084/subscribers.php 2>&1)
+HTML=$(curl -fsSkL -b /tmp/test_cookies.txt -X POST -d 'action=delete&id=1' https://127.0.0.1/TSiSIP/subscribers.php 2>&1)
 echo "$HTML" | grep -qi 'Invalid CSRF token' && pass "CSRF protection" || fail "CSRF protection"
 
 log "=== T4.5: Backup ==="

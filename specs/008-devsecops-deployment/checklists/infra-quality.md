@@ -18,7 +18,7 @@
 - [x] Asterisk services have no `ports:` stanza.
 - [x] PostgreSQL service has no `ports:` stanza.
 - [x] RTPengine control socket (`--listen-ng`) binds to `sip_internal` address, not `0.0.0.0`.
-- [x] OCP is bound to `127.0.0.1:8084` (not `0.0.0.0`) and exposed only via Nginx reverse proxy. (bound in docker-compose.vps.yml; not host-exposed in other compose files)
+- [x] OCP is bound to `127.0.0.1:8084` (not `0.0.0.0`) when Docker userland-proxy=true; on VPS (userland-proxy=false), nginx proxies to container bridge IP. Exposed only via Nginx reverse proxy. (bound in docker-compose.vps.yml; not host-exposed in other compose files)
 - [ ] Backup metrics exporter is bound to `127.0.0.1:9101` (not exposed publicly). (docker-compose.vps.yml binds to `127.0.0.1:9101`; docker-compose.yml and docker-compose.prod.yml use container-only `expose:` with no host-published port)
 
 ## Secret Management Verification

@@ -3,6 +3,10 @@
 # Configura o Nginx existente da TSiAPP para rotear /TSiSIP/ para o OCP
 # Executar na VPS como root ou com sudo.
 #
+# NOTE: Docker userland-proxy=false (VPS default for RTPengine performance)
+# means published port 8084 does not bind on host. We proxy directly to the
+# OCP container's Docker bridge IP, detected dynamically below.
+#
 set -euo pipefail
 
 NGINX_SITE="/etc/nginx/sites-available/tsiapp-https"
@@ -14,6 +18,16 @@ log_warn() { echo "[WARN] $*"; }
 log_fatal() { echo "[FATAL] $*" >&2; exit 1; }
 
 log_info "=== TSiSIP Nginx Integration ==="
+
+# Detect OCP container IP on db_internal network (fallback to first network IP)
+OCP_IP=$(docker inspect tsisip-ocp-1 --format='{{range $k,$v := .NetworkSettings.Networks}}{{if eq $k "tsisip_db_internal"}}{{$v.IPAddress}}{{end}}{{end}}' 2>/dev/null || true)
+if [ -z "$OCP_IP" ]; then
+    OCP_IP=$(docker inspect tsisip-ocp-1 --format='{{range $k,$v := .NetworkSettings.Networks}}{{$v.IPAddress}}{{break}}{{end}}' 2>/dev/null || true)
+fi
+if [ -z "$OCP_IP" ]; then
+    log_fatal "Nao foi possivel detectar o IP do container tsisip-ocp-1. Verifique se o container esta rodando."
+fi
+log_info "OCP container IP detectado: $OCP_IP"
 
 if [ ! -f "${NGINX_SITE}" ]; then
     log_fatal "Site Nginx nao encontrado: ${NGINX_SITE}"
@@ -32,12 +46,12 @@ else
     log_info "Adicionando location /TSiSIP/ ao site..."
     # Inserir antes do ultimo closing brace do server block
     # Usar awk para inserir antes do ultimo '}'
-    awk '
+    awk -v ocp_ip="$OCP_IP" '
         /^}/ && !done {
             print "    location /TSiSIP/ {"
             print "        limit_req zone=tsisip_web burst=10 nodelay;"
             print "        limit_conn tsisip_conn 10;"
-            print "        proxy_pass         http://127.0.0.1:8084/;"
+            print "        proxy_pass         http://" ocp_ip "/;"
             print "        proxy_http_version 1.1;"
             print "        proxy_set_header Host              $host;"
             print "        proxy_set_header X-Real-IP         $remote_addr;"
@@ -49,7 +63,7 @@ else
             print "    }"
             print ""
             print "    location /TSiSIP/health {"
-            print "        proxy_pass         http://127.0.0.1:8084/login.php;"
+            print "        proxy_pass         http://" ocp_ip "/login.php;"
             print "        access_log off;"
             print "        allow 127.0.0.1;"
             print "        allow 10.0.0.0/8;"

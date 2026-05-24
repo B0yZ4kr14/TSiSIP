@@ -653,7 +653,7 @@ docker compose exec certbot ls -la /etc/letsencrypt/renewal-hooks/deploy/
 - [ ] PostgreSQL schema initialized (\dt shows expected tables)
 - [ ] OpenSIPS config validates (`opensips -c` passes)
 - [ ] SIP OPTIONS returns 200 OK from edge
-- [ ] OCP responds on http://127.0.0.1:8084/login.php
+- [ ] OCP responds on `https://127.0.0.1/TSiSIP/login.php` (via nginx; use `-k` for self-signed cert)
 
 ## Post-Deployment Security Verification
 

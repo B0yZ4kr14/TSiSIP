@@ -24,7 +24,7 @@ Sessão de 6 horas para **consolidar, corrigir, validar e documentar** o estado 
 | OCP Auth | ✅ Funcional | Login `Admin` funciona, bcrypt OK |
 | OCP Admin Tools | ✅ Implementado | subscribers, cdr-viewer, dispatcher CRUD real |
 | Backup | ✅ Configurado | `backup.sh` + `replicate.sh` template pronto |
-| Nginx proxy | ✅ Operacional | `/TSiSIP/` → `127.0.0.1:8084` |
+| Nginx proxy | ✅ Operacional | `/TSiSIP/` → OCP container bridge IP (userland-proxy=false) or `127.0.0.1:8084` (userland-proxy=true) |
 
 ### O que está INCOMPLETO ou NÃO VALIDADO (gaps críticos)
 | Componente | Status | Risco |

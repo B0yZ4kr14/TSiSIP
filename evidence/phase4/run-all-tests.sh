@@ -43,11 +43,11 @@ else
 fi
 
 # Port policy
-PUBLIC_PORTS=$(ss -tlnp 2>/dev/null | grep -cE ':5060|:5061|:8084' || echo 0)
+PUBLIC_PORTS=$(ss -tlnp 2>/dev/null | grep -cE ':5060|:5061|:443' || echo 0)
 if [ "$PUBLIC_PORTS" -ge 3 ]; then
     pass "Required ports listening"
 else
-    fail "Missing required ports"
+    fail "Missing required ports (note: OCP accessed via nginx 443, not 8084, when userland-proxy=false)"
 fi
 
 # No postgres/asterisk public
@@ -74,7 +74,7 @@ log "=== T4.3: OCP E2E Tests ==="
 rm -f /tmp/test_cookies.txt
 
 # Login
-curl -fsSL -c /tmp/test_cookies.txt -b /tmp/test_cookies.txt -L -d 'username=Admin&pass=admin123!' http://127.0.0.1:8084/login.php -o /dev/null 2>&1
+curl -fsSkL -c /tmp/test_cookies.txt -b /tmp/test_cookies.txt -d 'username=Admin&pass=admin123!' https://127.0.0.1/TSiSIP/login.php -o /dev/null 2>&1
 if [ -s /tmp/test_cookies.txt ]; then
     pass "OCP login successful"
 else
@@ -82,21 +82,21 @@ else
 fi
 
 # Subscribers page
-if curl -fsSL -b /tmp/test_cookies.txt http://127.0.0.1:8084/subscribers.php 2>&1 | grep -q 'Subscriber Management'; then
+if curl -fsSkL -b /tmp/test_cookies.txt https://127.0.0.1/TSiSIP/subscribers.php 2>&1 | grep -q 'Subscriber Management'; then
     pass "OCP subscribers page accessible"
 else
     fail "OCP subscribers page failed"
 fi
 
 # CDR viewer
-if curl -fsSL -b /tmp/test_cookies.txt http://127.0.0.1:8084/cdr-viewer.php 2>&1 | grep -q 'Call Detail Records'; then
+if curl -fsSkL -b /tmp/test_cookies.txt https://127.0.0.1/TSiSIP/cdr-viewer.php 2>&1 | grep -q 'Call Detail Records'; then
     pass "OCP CDR viewer accessible"
 else
     fail "OCP CDR viewer failed"
 fi
 
 # Dispatcher
-if curl -fsSL -b /tmp/test_cookies.txt http://127.0.0.1:8084/dispatcher.php 2>&1 | grep -q 'Dispatcher Targets'; then
+if curl -fsSkL -b /tmp/test_cookies.txt https://127.0.0.1/TSiSIP/dispatcher.php 2>&1 | grep -q 'Dispatcher Targets'; then
     pass "OCP dispatcher page accessible"
 else
     fail "OCP dispatcher page failed"
@@ -105,14 +105,14 @@ fi
 log "=== T4.4: Security Tests ==="
 
 # Auth required
-if curl -fsSL -I http://127.0.0.1:8084/subscribers.php 2>&1 | grep -q '302'; then
+if curl -fsSkL -I https://127.0.0.1/TSiSIP/subscribers.php 2>&1 | grep -q '302'; then
     pass "Auth redirect works"
 else
     fail "Auth redirect failed"
 fi
 
 # CSRF protection
-if curl -fsSL -b /tmp/test_cookies.txt -X POST -d 'action=delete&id=1' http://127.0.0.1:8084/subscribers.php 2>&1 | grep -q 'Invalid CSRF token'; then
+if curl -fsSkL -b /tmp/test_cookies.txt -X POST -d 'action=delete&id=1' https://127.0.0.1/TSiSIP/subscribers.php 2>&1 | grep -q 'Invalid CSRF token'; then
     pass "CSRF protection works"
 else
     fail "CSRF protection failed"

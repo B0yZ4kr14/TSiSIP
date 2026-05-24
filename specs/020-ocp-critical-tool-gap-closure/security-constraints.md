@@ -23,7 +23,7 @@ Feature 020 security posture: **CONDITIONAL PASS**
 | Public SIP Edge | Authenticate all non-OPTIONS SIP requests | N/A | OCP is HTTP, not SIP |
 | Internal SIP | Topology hiding mandatory | N/A | No SIP forwarding in OCP |
 | Database | No container bypasses OpenSIPS to write subscriber data | Pass | OCP writes to dialplan/domain only; not subscriber |
-| Control Plane | OCP proxied via Nginx; no direct container exposure | Pass | OCP bound to 127.0.0.1:8084 in prod |
+| Control Plane | OCP proxied via Nginx; no direct container exposure | Pass | OCP bound to 127.0.0.1:8084 when userland-proxy=true; VPS uses container bridge IP via nginx |
 | Observability | Metrics endpoints must not leak tenant-scoped data | Pass | Statistics show aggregate counts only |
 
 ---

@@ -22,7 +22,7 @@ Em 2026-05-19, o pipeline de backup foi revalidado no VPS: **WAL archiving ativo
 | Feature | Status | Validacao |
 |---------|--------|-----------|
 | 001 — TSiSIP SIP Edge | ✅ | Imagem GHCR com motor OpenSIPS 3.6 e tls_openssl.so |
-| 002 — TSiSIP Control Panel | ✅ | Imagem GHCR; acesso publico via Nginx/TLS e porta local 127.0.0.1:8084 |
+| 002 — TSiSIP Control Panel | ✅ | Imagem GHCR; acesso publico via Nginx/TLS. Porta local 127.0.0.1:8084 quando userland-proxy=true; VPS usa container bridge IP. |
 | 003 — Prometheus/Grafana | Artefatos prontos | Prometheus/Grafana/Alertmanager desabilitados no VPS-lite; exporter de backup ativo em loopback |
 | 004 — Health Checks | ✅ | Scripts em todos os containers |
 | 005 — PostgreSQL Backup | Parcial live | Backup/WAL/validate/purge manuais OK; cron/offsite/PITR live pendentes |
@@ -42,7 +42,7 @@ Em 2026-05-19, o pipeline de backup foi revalidado no VPS: **WAL archiving ativo
 | tsisip-sip-edge | `tsisip/opensips:latest` | 256m | 5060/udp+tcp, 5061/tcp |
 | asterisk-pbx-1 | `tsisip/asterisk:latest` | 768m | interno |
 | asterisk-pbx-2 | `tsisip/asterisk:latest` | 768m | interno |
-| ocp | `tsisip/ocp:latest` | 256m | 127.0.0.1:8084/tcp |
+| ocp | `tsisip/ocp:latest` | 256m | 127.0.0.1:8084/tcp (userland-proxy=true) ou container bridge IP (userland-proxy=false) |
 | backup | `tsisip/backup:latest` | 128m | 127.0.0.1:9101/tcp |
 
 **Total RAM alocado:** ~2.9GB  

@@ -24,7 +24,7 @@ The active VPS profile is `docker-compose.vps.yml`.
 | `postgres` | SIP database | internal only |
 | `asterisk-pbx-1` | private PBX backend | internal only |
 | `asterisk-pbx-2` | private PBX backend | internal only |
-| `ocp` | control panel | loopback-only `127.0.0.1:8084`, proxied at `/TSiSIP/` |
+| `ocp` | control panel | `127.0.0.1:8084` when userland-proxy=true; container bridge IP via nginx when userland-proxy=false. Proxied at `/TSiSIP/` |
 | `backup` | backup, validation, metrics | 127.0.0.1:9101 |
 
 ## Readiness Summary

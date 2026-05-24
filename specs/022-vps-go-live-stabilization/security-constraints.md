@@ -13,7 +13,7 @@
 | Public SIP Edge | PASS | OpenSIPS on sip_edge (5060/udp, 5060/tcp); auth enforced per AC3 |
 | Internal SIP | PASS | sip_internal network; Asterisk/RTPengine have no host-published ports |
 | Database | PASS | PostgreSQL on db_internal; zero host ports per AC6 |
-| Control Plane | REVIEW | OCP exposed on host port 8084 (http://127.0.0.1:8084); intended for local healthcheck only. Verify this is not exposed to 0.0.0.0 |
+| Control Plane | PASS | OCP accessed via nginx reverse proxy (https://127.0.0.1/TSiSIP/); container port 8084 only binds when Docker userland-proxy=true. VPS uses userland-proxy=false for RTPengine performance. Direct container IP (Docker bridge) is used by nginx; not exposed to 0.0.0.0 |
 | Observability | PASS | Prometheus/Grafana on metrics_host (internal only) |
 
 ## Authentication & Authorization

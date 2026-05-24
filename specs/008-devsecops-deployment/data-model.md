@@ -12,7 +12,7 @@
 | `postgres` | `db_internal`, `metrics_host` | — | 512 MB |
 | `rtpengine` | `sip_edge`, `sip_internal` | `10000-10999/udp` | 256 MB |
 | `opensips` | `sip_edge`, `sip_internal`, `db_internal` | `5060/udp+tcp`, `5061/tcp` | 256 MB |
-| `ocp` | `sip_internal`, `db_internal`, `metrics_host` | `127.0.0.1:8084/tcp` | 256 MB |
+| `ocp` | `sip_internal`, `db_internal`, `metrics_host` | `127.0.0.1:8084/tcp` (userland-proxy=true) or container bridge IP | 256 MB |
 | `asterisk-pbx-1` | `sip_internal` | — (internal only) | 768 MB |
 | `asterisk-pbx-2` | `sip_internal` | — (internal only) | 768 MB |
 | `backup` | `db_internal`, `metrics_host` | `127.0.0.1:9101/tcp` | 128 MB |
