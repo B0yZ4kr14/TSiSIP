@@ -370,8 +370,10 @@ services:
           memory: 1G
         reservations:
           memory: 256M
-    ports:
-      - "127.0.0.1:9101:9101/tcp"
+    # Note: With userland-proxy=false, loopback port mappings (127.0.0.1) do not
+    # create working iptables rules. The backup metrics exporter is accessible
+    # via Docker internal network (db_internal/metrics_host) at backup:9101.
+    # Prometheus, when enabled, scrapes via internal network — not via host loopback.
     environment:
       PGHOST: postgres
       PGPORT: 5432
