@@ -3,7 +3,7 @@
 > **Updated:** 2026-05-24
 > **Architect:** DevSecOps Autonomous
 > **VPS TSiAPP:** Production vps-lite+PBX stack running; SIP public 5060/5061 blocked upstream of host
-> **GitHub:** `main` at `ced2817`
+> **GitHub:** `main` at `8cdcdd7`
 
 ---
 
@@ -28,9 +28,9 @@ On 2026-05-24, Cloudflare DNS was configured: `tsiapp.io` proxied for HTTPS; `si
 | 002 — TSiSIP Control Panel | ✅ | GHCR image; public access via Nginx/TLS. Local port 127.0.0.1:8084 when userland-proxy=true; VPS uses container bridge IP via nginx |
 | 003 — Prometheus/Grafana | Artifacts ready | Prometheus/Grafana/Alertmanager disabled on VPS-lite; backup exporter active on loopback |
 | 004 — Health Checks | ✅ | Scripts in all containers |
-| 005 — PostgreSQL Backup | Partial live | Backup/WAL/validate/purge manual OK; cron/offsite/PITR live pending |
+| 005 — PostgreSQL Backup | **Live** | Backup container stable; WAL archiving active; metrics exporter operational; cron schedules active; offsite/PITR pending environment |
 | 006 — Rate Limiting | Partial live | TSiSIP SIP edge uses pike + Nginx limit_req; anomaly detector/dashboard and external flood pending |
-| 007 — TLS/SRTP | Partial live | tls_openssl.so compiled; real certs/mTLS/SRTP external pending |
+| 007 — TLS/SRTP | Partial live | tls_openssl.so compiled; **Let's Encrypt certificates active** for `tsiapp.io` (valid until 2026-08-19); auto-renewal via certbot with `tls_reload` deploy hook; mTLS trunk/SRTP external pending |
 | 008 — DevSecOps Deploy | Partial live | Ansible + GHCR + bootstrap; supply chain hardening and formal SSL Labs pending |
 | 009 — VPS Deploy Automation | ✅ | Orchestrated pipeline implemented; all 13 tasks complete (T1.1–T4.2) |
 | 010 — OCP Navigation System Links | ✅ | Implemented |
@@ -105,6 +105,7 @@ On 2026-05-24, Cloudflare DNS was configured: `tsiapp.io` proxied for HTTPS; `si
 | Certbot restart loop (`setpgid: EPERM`) | Medium | **Resolved** — Replaced cron daemon with sleep loop in entrypoint; image rebuilt and healthy (2026-05-24) |
 | Certbot-exporter restart loop (`UnboundLocalError`) | Medium | **Resolved** — Added `global _last_failures`; image rebuilt and healthy (2026-05-24) |
 | Cloudflare DNS configuration | Medium | **Resolved** — `tsiapp.io` proxied for HTTPS (Cloudflare anycast); `sip.tsiapp.io` non-proxied → `179.190.15.116` for SIP signaling; legacy wildcard `*.tsiapp.io` removed |
+| Backup container restart loop | Medium | **Resolved** — Added `CHOWN` + `DAC_OVERRIDE` capabilities to compose; runtime `chown` for tsisip-backup dirs in entrypoint; OpenBSD netcat syntax fix in metrics exporter; image rebuilt and healthy (2026-05-24) |
 
 ## Live VPS Validation (2026-05-24)
 
@@ -113,6 +114,7 @@ On 2026-05-24, Cloudflare DNS was configured: `tsiapp.io` proxied for HTTPS; `si
 | SSH TSiAPP | OK via alias, public and Tailscale |
 | VPS Resources | Ubuntu 24.04, Docker 29.5.2, Compose v5.1.4, ~62GB free |
 | Docker Stack | 10 services UP/healthy: `postgres`, `rtpengine`, `opensips`, `ocp`, `backup`, `admin-api`, `asterisk-pbx-1`, `asterisk-pbx-2`, `certbot`, `certbot-exporter` |
+| Backup container | `healthy`; metrics exporter serves Prometheus text format on container port 9101; cron jobs active |
 | TSiSIP SIP edge healthcheck | `OK: OpenSIPS is healthy` |
 | Asterisk healthcheck | Both return `OK: Asterisk is healthy` |
 | OCP loopback | `https://127.0.0.1/TSiSIP/login.php` responds HTTP 200 via nginx (use `-k` for self-signed cert) |
