@@ -104,6 +104,7 @@ On 2026-05-24, the backup pipeline was revalidated on the VPS: **WAL archiving a
 | Docker userland-proxy=false | Low | **Mitigated** — nginx proxy uses OCP container bridge IP; documented in 21 files |
 | Certbot restart loop (`setpgid: EPERM`) | Medium | **Resolved** — Replaced cron daemon with sleep loop in entrypoint; image rebuilt and healthy (2026-05-24) |
 | Certbot-exporter restart loop (`UnboundLocalError`) | Medium | **Resolved** — Added `global _last_failures`; image rebuilt and healthy (2026-05-24) |
+| Cloudflare DNS configuration | Medium | **Resolved** — `tsiapp.io` proxied for HTTPS (Cloudflare anycast); `sip.tsiapp.io` non-proxied → `179.190.15.116` for SIP signaling; legacy wildcard `*.tsiapp.io` removed |
 
 ## Live VPS Validation (2026-05-24)
 
@@ -114,7 +115,9 @@ On 2026-05-24, the backup pipeline was revalidated on the VPS: **WAL archiving a
 | Docker Stack | 10 services UP/healthy: `postgres`, `rtpengine`, `opensips`, `ocp`, `backup`, `admin-api`, `asterisk-pbx-1`, `asterisk-pbx-2`, `certbot`, `certbot-exporter` |
 | TSiSIP SIP edge healthcheck | `OK: OpenSIPS is healthy` |
 | Asterisk healthcheck | Both return `OK: Asterisk is healthy` |
-| OCP public | `https://127.0.0.1/TSiSIP/login.php` responds HTTP 200 via nginx (use `-k` for self-signed cert) |
+| OCP loopback | `https://127.0.0.1/TSiSIP/login.php` responds HTTP 200 via nginx (use `-k` for self-signed cert) |
+| OCP public | `https://tsiapp.io/TSiSIP` accessible via Cloudflare proxy (TLS origin-pull active) |
+| SIP subdomain | `sip.tsiapp.io` resolves to VPS IP `179.190.15.116` (non-proxied for SIP signaling) |
 | Local ports on VPS | 5060/tcp, 5061/tcp, 5060/udp and RTP 10000-20000/udp listening |
 | External ports | 5060/tcp and 5061/tcp appear `filtered` from outside; `tcpdump` confirms packets do not reach host |
 | Dispatcher DB | 2 real active destinations: `sip:asterisk-pbx-1:5060`, `sip:asterisk-pbx-2:5060` |
