@@ -4,6 +4,7 @@ services:
       context: .
       dockerfile: docker/postgres/Dockerfile
     image: tsisip/postgres:${TSISIP_IMAGE_TAG:?must be set}
+    user: "999:999"
     networks:
     - db_internal
     restart: unless-stopped
