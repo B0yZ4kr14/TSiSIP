@@ -2,7 +2,8 @@ FROM debian:bookworm-slim@sha256:67b30a61dc87758f0caf819646104f29ecbda97d920aaf5
 
 ARG ASTERISK_VERSION=20.9.3
 
-RUN apt-get update && apt-get install -y --no-install-recommends \
+RUN apt-get update && apt-get upgrade -y --no-install-recommends \
+    && apt-get install -y --no-install-recommends \
     build-essential \
     curl \
     ca-certificates \
@@ -33,7 +34,8 @@ RUN curl -fsSL \
 # Runtime stage
 FROM debian:bookworm-slim@sha256:67b30a61dc87758f0caf819646104f29ecbda97d920aaf5edc834128ac8493d3
 
-RUN apt-get update && apt-get install -y --no-install-recommends \
+RUN apt-get update && apt-get upgrade -y --no-install-recommends \
+    && apt-get install -y --no-install-recommends \
     libssl3 \
     libncurses6 \
     libnewt0.52 \
@@ -51,10 +53,10 @@ RUN mkdir -p /etc/asterisk
 COPY --from=builder /etc/asterisk /etc/asterisk
 
 # Copy TSiSIP-specific Asterisk configuration
-COPY docker/asterisk/pjsip.conf /etc/asterisk/pjsip.conf
-COPY docker/asterisk/extensions.conf /etc/asterisk/extensions.conf
-COPY docker/asterisk/pjsip.conf /usr/local/etc/asterisk/pjsip.conf
-COPY docker/asterisk/extensions.conf /usr/local/etc/asterisk/extensions.conf
+COPY pjsip.conf /etc/asterisk/pjsip.conf
+COPY extensions.conf /etc/asterisk/extensions.conf
+COPY pjsip.conf /usr/local/etc/asterisk/pjsip.conf
+COPY extensions.conf /usr/local/etc/asterisk/extensions.conf
 
 # Copy health check script
 COPY healthcheck.sh /usr/local/bin/healthcheck.sh

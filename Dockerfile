@@ -4,6 +4,7 @@ ARG OPENSIPS_VERSION=3.6
 ENV DEBIAN_FRONTEND=noninteractive
 
 RUN apt-get update \
+ && apt-get upgrade -y --no-install-recommends \
  && apt-get install -y --no-install-recommends \
     ca-certificates git \
     gcc make bison flex \
@@ -27,6 +28,7 @@ FROM debian:bookworm-slim@sha256:67b30a61dc87758f0caf819646104f29ecbda97d920aaf5
 ENV DEBIAN_FRONTEND=noninteractive
 
 RUN apt-get update \
+ && apt-get upgrade -y --no-install-recommends \
  && apt-get install -y --no-install-recommends ca-certificates gettext-base libpq5 libssl3 libmicrohttpd12 libpcre2-8-0 netcat-openbsd procps \
  && rm -rf /var/lib/apt/lists/*
 

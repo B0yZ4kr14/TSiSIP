@@ -1,7 +1,7 @@
 FROM certbot/certbot@sha256:0107d084c225631fc64a8313e19adb07275f7296fde338f7dfa93986c80b2e3e
 
 USER root
-RUN apk add --no-cache curl openssl ca-certificates dcron
+RUN apk update && apk upgrade --no-cache && apk add --no-cache curl openssl ca-certificates dcron
 
 COPY deploy-hook.sh /usr/local/bin/deploy-hook.sh
 RUN chmod +x /usr/local/bin/deploy-hook.sh

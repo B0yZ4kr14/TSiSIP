@@ -16,7 +16,9 @@
 | File | Evidence Type | Status | Notes |
 |------|--------------|--------|-------|
 | `001-tls-certificate-scan.md` | G5 + G9 | BLOCKED | DNS A record pending |
-| `002-container-image-scan.md` | G6 | REVIEW | 31 CRITICAL, 304 HIGH vulns found |
+| `002-container-image-scan.md` | G6 | REVIEW | Baseline: 31 CRITICAL, 304 HIGH |
+| `002-container-image-scan-v2.md` | G6 | REVIEW | 7 images rebuilt: 17 CRITICAL, 263 HIGH |
+| `002-container-image-scan-v3.md` | G6 | REVIEW | All 8 images rebuilt: 19 CRITICAL, 276 HIGH |
 | `004-network-segmentation-test.md` | G7 | PASS | Zero public Asterisk/PostgreSQL ports |
 | `005-secret-management-audit.md` | G8 | PASS | HA1 precomputed, no plaintext passwords |
 | 021 — Brownfield Hardening | `evidence/021-brownfield/` | [TBD] | Planned |

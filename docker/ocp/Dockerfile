@@ -9,7 +9,8 @@ LABEL org.opencontainers.image.description="OpenSIPS Control Panel v9 with TSiSI
 LABEL org.tsisip.feature="002-tsisip-ocp-rebrand"
 
 # Install system dependencies
-RUN apt-get update && apt-get install -y --no-install-recommends \
+RUN apt-get update && apt-get upgrade -y --no-install-recommends \
+    && apt-get install -y --no-install-recommends \
     cron \
     gettext \
     libpq-dev \
