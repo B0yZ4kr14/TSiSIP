@@ -50,13 +50,13 @@ else
     echo "[CERTBOT] Certificate for ${TLS_DOMAIN} already exists."
 fi
 
-# Start cron for scheduled renewals
-echo "[CERTBOT] Starting cron daemon for scheduled renewals..."
-if command -v crond >/dev/null 2>&1; then
-    exec crond -f
-elif command -v cron >/dev/null 2>&1; then
-    exec cron -f
-else
-    echo "[CERTBOT] ERROR: No cron daemon found"
-    exit 1
-fi
+# Start renewal loop (cron daemons require setpgid which fails in hardened containers)
+echo "[CERTBOT] Starting renewal loop (checking every 12 hours)..."
+RENEWAL_INTERVAL="${CERTBOT_RENEWAL_INTERVAL:-43200}"  # 12 hours in seconds
+
+while true; do
+    echo "[CERTBOT] Running certbot renew check at $(date -Iseconds)"
+    /usr/local/bin/certbot renew --non-interactive --deploy-hook "$DEPLOY_HOOK" || true
+    echo "[CERTBOT] Next check in ${RENEWAL_INTERVAL}s"
+    sleep "$RENEWAL_INTERVAL"
+done

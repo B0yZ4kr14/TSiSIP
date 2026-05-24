@@ -98,6 +98,10 @@ def get_cert_domain(path: str) -> str:
     return TLS_DOMAIN
 
 
+# Module-level state
+_last_failures = 0
+
+
 def update_metrics():
     global _last_failures
     try:
@@ -126,9 +130,6 @@ def update_metrics():
         last_success_timestamp.labels(source=CERT_SOURCE).set(last_success)
     else:
         last_success_timestamp.labels(source=CERT_SOURCE).set(0)
-
-
-_last_failures = 0
 
 
 def main():
