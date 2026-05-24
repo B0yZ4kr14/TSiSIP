@@ -97,3 +97,9 @@
 
 - Governance principles: `.specify/memory/constitution.md`
 - Security standards and incident response: `.specify/memory/security_constitution.md`
+
+## Pre-Existing Violations (Tracked)
+
+| ID | File | Violation | Introduced By | Status |
+|---|---|---|---|---|
+| ARCH-PRE-001 | web/subscribers.php | OCP writes to `subscriber` table (INSERT/UPDATE) | Feature 012 | Tracked; requires refactor to move subscriber writes to OpenSIPS layer or dedicated API |
