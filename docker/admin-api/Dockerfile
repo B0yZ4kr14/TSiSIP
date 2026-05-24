@@ -14,7 +14,7 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
 RUN a2enmod rewrite
 
 # Copy application
-COPY src/ /var/www/html/
+COPY docker/admin-api/src/ /var/www/html/
 
 # Internal port only — not published in compose
 EXPOSE 8080
