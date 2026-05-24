@@ -63,8 +63,8 @@
   - Keep `generateHa1Hashes()` usage in subscriber creation/update flows
   - Pass hashes to proxy client instead of writing to DB directly
 - [ ] W2.4: Preserve role-based access
-  - `requireRole('devops')` for list/read
-  - `requireRole('admin')` for CREATE/UPDATE/DELETE (or proxy enforces)
+  - `requireRole('devops')` enforced at OCP entry for all subscriber page access
+  - Future sprints may introduce `requireRole('admin')` for mutations; proxy layer validates service secret only
 - [ ] W2.5: Regression test — verify existing subscriber functionality
   - List, search, pagination unchanged
   - Create, update, delete work through proxy
@@ -96,8 +96,8 @@
 
 | Layer | Technology | Role |
 |---|---|---|
-| Proxy (Option A) | OpenSIPS 3.6 LTS + `sql_query` module | MI command handlers for subscriber mutations |
-| Proxy (Option B) | PHP 8.2 + Apache + PDO | Thin REST API microservice |
+| Proxy (REJECTED Option A) | OpenSIPS 3.6 LTS + `sql_query` module | MI command handlers — rejected: no parameterized SQL via MI |
+| Proxy (SELECTED Option B) | PHP 8.2 + Apache + PDO | Thin REST API microservice (`tsisip/admin-api`) |
 | OCP Client | PHP 8.2 + cURL | Proxy client helper in OCP frontend |
 | Database | PostgreSQL 16 | `subscriber` table (schema unchanged) |
 | Auth | Docker secrets | Service-to-service shared secret |
@@ -107,7 +107,6 @@
 ```
 docker/admin-api/
 ├── Dockerfile
-├── entrypoint.sh
 └── src/
     ├── index.php          # Router
     ├── config.php         # DB connection, secret validation

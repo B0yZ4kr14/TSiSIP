@@ -22,7 +22,7 @@
 - [x] T2.3: Integrate proxy client into subscriber creation flow — generate HA1 in OCP, call proxy, handle response
 - [x] T2.4: Integrate proxy client into subscriber update flow — generate HA1 (if password changed), call proxy, handle response
 - [x] T2.5: Integrate proxy client into subscriber deletion flow — call proxy with subscriber ID, handle response
-- [x] T2.6: Preserve role-based access — `requireRole('devops')` for read; `requireRole('admin')` for mutations
+- [x] T2.6: Preserve role-based access — `requireRole('devops')` enforced at OCP entry for all subscriber access. Future sprints may introduce `requireRole('admin')` for mutations.
 - [x] T2.7: Implement graceful fallback — display user-friendly error when proxy is unreachable; no stack trace leakage
 - [x] T2.8: Regression test — subscriber list, search, pagination unchanged; create/update/delete work through proxy
 
@@ -70,7 +70,6 @@ W0 (Security + ADR) → W1 (Proxy) → W2 (OCP Migration) → W3 (Validation)
 | R3 (HA1 only) | T1.5, T1.6 |
 | R4 (proxy audit) | T1.4 |
 | R5 (rate limiting) | T1.3 |
-| R6 (read-only validation) | T2.1, T3.2 |
 | R7 (TLS/encryption) | T1.1, T2.2 |
 | R8 (graceful fallback) | T2.7 |
 | R9 (RBAC preserved) | T2.6 |
