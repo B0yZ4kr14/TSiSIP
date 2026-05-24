@@ -96,11 +96,11 @@
 - [x] G4: Verify data minimization (only necessary fields collected)
 
 ### Security Obligations — Evidence Production
-- [x] G5: Produce SSL Labs evidence report for tsiapp.io (grade A+ target)
-- [x] G6: Produce Trivy container scan evidence for all 8 vps-lite images
-- [x] G7: Produce network port scan evidence (nmap/nc) confirming zero Asterisk/PostgreSQL exposure
-- [x] G8: Produce auth contract evidence (HA1 precomputed, no plaintext passwords)
-- [x] G9: Produce TLS certificate chain evidence (validity, expiry, auto-rotation)
+- [x] G5: Produce SSL Labs evidence report for tsiapp.io (grade A+ target) — BLOCKED: DNS A record must point to 179.190.15.116
+- [x] G6: Produce Trivy container scan evidence for all 8 vps-lite images — COMPLETE with findings: 31 CRITICAL, 304 HIGH vulnerabilities. Remediation required.
+- [x] G7: Produce network port scan evidence (nmap/nc) confirming zero Asterisk/PostgreSQL exposure — PASS
+- [x] G8: Produce auth contract evidence (HA1 precomputed, no plaintext passwords) — PASS
+- [x] G9: Produce TLS certificate chain evidence (validity, expiry, auto-rotation) — BLOCKED: DNS A record must point to 179.190.15.116
 
 ### Secure Development Documentation
 - [x] G10: Document threat model for vps-lite deployment (STRIDE analysis)
