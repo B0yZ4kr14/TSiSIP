@@ -181,3 +181,46 @@ None at this time.
 ---
 
 *Last updated: 2026-05-23*
+
+## 10. Post-Implementation Review (2026-05-24)
+
+### Ripple Findings Summary
+
+| ID | Finding | Severity |
+|---|---|---|
+| RP-001 | header.php security headers affect all 22 OCP pages | LOW (positive) |
+| RP-002 | config.php session hardening affects all authenticated sessions | LOW (positive) |
+| RP-003 | statistics.php 30s auto-refresh generates continuous MI HTTP load | MEDIUM |
+| RP-004 | tls_reload affects OpenSIPS runtime state | MEDIUM |
+| RP-005 | dashboard.php and role-nav.php expanded navigation surface | LOW |
+
+### Durable Patterns Captured
+
+1. **Centralized Security Headers** — Add headers in `common/header.php`, not per-page.
+2. **Config-Level Session Hardening** — Set cookie flags in `common/config.php`, not per-page.
+3. **MI Command Whitelist Array** — Hardcoded PHP array with role gating per command.
+4. **Dual-Path Audit Logging** — Log success AND failure in PDOException catch blocks.
+5. **Statistics Backpressure** — Fixed interval + timeout + freeze-on-error + no retry storm.
+6. **Graceful CDN Degradation** — Check `typeof d3 === 'undefined'` before rendering charts.
+
+### Repeatable Recipe for Future OCP Admin Tools
+
+1. Create PHP file with `config.php`, `csrf.php`, and `requireRole()`.
+2. For CRUD: PDO prepared, CSRF on POST, `logAuditEvent()` on success and catch blocks.
+3. For MI commands: Use `$miWhitelist` pattern; check `array_key_exists`; enforce role gating.
+4. For display: Wrap all output in `htmlspecialchars(..., ENT_QUOTES, 'UTF-8')`.
+5. Add to `role-nav.php` and `dashboard.php`.
+6. Run scans: secret-leakage, CSRF validation, brownfield scan.
+7. Capture evidence in `evidence/remediation/ciclo-{NNN}/`.
+
+### Anti-Patterns to Avoid
+
+| ID | Anti-Pattern | Mitigation |
+|---|---|---|
+| AP-001 | Direct PDO writes to core tables from OCP | Route through OpenSIPS layer or dedicated API |
+| AP-002 | CDN-dependent JS without local fallback | Add `typeof` check and graceful degradation |
+| AP-003 | No circuit breaker on external HTTP calls | Add timeout and consider exponential backoff |
+
+---
+
+*Last updated: 2026-05-24*
