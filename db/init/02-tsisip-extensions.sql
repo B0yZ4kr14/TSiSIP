@@ -182,9 +182,9 @@ CREATE INDEX IF NOT EXISTS idx_trunk_ips_lookup
 CREATE TABLE IF NOT EXISTS ocp_password_changes (
     id              SERIAL PRIMARY KEY,
     event_time      TIMESTAMP WITH TIME ZONE DEFAULT NOW() NOT NULL,
-    user_id         INTEGER NOT NULL,
+    user_id         UUID NOT NULL,
     username        VARCHAR(64) NOT NULL,
-    changed_by      INTEGER NOT NULL,
+    changed_by      UUID NOT NULL,
     changed_by_name VARCHAR(64) NOT NULL,
     source_ip       INET NOT NULL,
     user_agent      VARCHAR(512),

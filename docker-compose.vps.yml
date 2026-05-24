@@ -316,7 +316,7 @@ services:
     cap_drop: [ALL]
     cap_add: [SETUID, SETGID]
     healthcheck:
-      test: ["CMD-SHELL", "test -f /etc/letsencrypt/live/${TLS_DOMAIN}/fullchain.pem || exit 0"]
+      test: ["CMD-SHELL", "test -f /etc/letsencrypt/live/${TLS_DOMAIN}/fullchain.pem"]
       interval: 60s
       timeout: 5s
       retries: 1
@@ -408,7 +408,7 @@ networks:
   db_internal:
     internal: true
   metrics_host:
-    internal: false
+    internal: true
 
 volumes:
   postgres_data:

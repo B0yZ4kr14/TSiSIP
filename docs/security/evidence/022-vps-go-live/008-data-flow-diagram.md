@@ -47,7 +47,7 @@ PostgreSQL → pg_dump → Backup container
 ```
 
 **Personal Data**: All subscriber and CDR data
-**Encryption**: AES-256-GCM at rest
+**Encryption**: TLS/SRTP uses AES-256-GCM; backup encryption uses AES-256-CBC + PBKDF2 + HMAC-SHA256 (Feature 005)
 **Retention**: Aligned with source data retention policies
 
 ## Data Flow Matrix
@@ -57,4 +57,4 @@ PostgreSQL → pg_dump → Backup container
 | SIP Client | OpenSIPS | SIP URI, HA1 | TLS/Digest | Auth |
 | OpenSIPS | PostgreSQL | CDR | Internal network | Billing/Compliance |
 | OCP | PostgreSQL | Queries | PDO prepared statements | Administration |
-| Backup | S3 Storage | Dump files | AES-256-GCM | Disaster recovery |
+| Backup | S3 Storage | Dump files | AES-256-CBC + PBKDF2 + HMAC-SHA256 | Disaster recovery |

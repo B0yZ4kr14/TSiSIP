@@ -120,7 +120,7 @@
 - [x] G17: Verify tenant deletion cascade behavior (right to erasure)
 
 ### Encryption & Access Control Validation
-- [x] G18: Verify backup encryption (AES-256-GCM) in backup service
+- [x] G18: Verify backup encryption (AES-256-CBC + PBKDF2 + HMAC-SHA256) in backup service
 - [x] G19: Verify TLS 1.2+ enforcement in OpenSIPS and OCP
 - [x] G20: Verify role-based access control in OCP (readonly → admin hierarchy)
 - [x] G21: Verify SIP digest auth for all non-OPTIONS requests

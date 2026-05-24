@@ -171,9 +171,11 @@ services:
       DB_NAME: opensips
       DB_USER: opensips
       OCP_AUDIT_RETENTION_DAYS: ${OCP_AUDIT_RETENTION_DAYS:-90}
+      ADMIN_API_URL: http://admin-api:8080/index.php
     secrets:
     - db_password
     - trunk_cred_key
+    - proxy_api_secret
     depends_on:
       postgres:
         condition: service_healthy
@@ -201,6 +203,41 @@ services:
           memory: 1G
         reservations:
           memory: 512M
+  admin-api:
+    image: ghcr.io/b0yz4kr14/tsisip/admin-api:${TSISIP_IMAGE_TAG:?must be set}
+    networks:
+    - sip_internal
+    - db_internal
+    restart: on-failure
+    environment:
+      DB_HOST: postgres
+      DB_NAME: opensips
+      DB_USER: opensips
+      SUBSCRIBER_CREATE_RATE_LIMIT: ${SUBSCRIBER_CREATE_RATE_LIMIT:-10}
+      SUBSCRIBER_UPDATE_RATE_LIMIT: ${SUBSCRIBER_UPDATE_RATE_LIMIT:-30}
+      SUBSCRIBER_DELETE_RATE_LIMIT: ${SUBSCRIBER_DELETE_RATE_LIMIT:-10}
+    secrets:
+    - db_password
+    - proxy_api_secret
+    depends_on:
+      postgres:
+        condition: service_healthy
+    cap_drop:
+    - ALL
+    cap_add:
+    - SETUID
+    - SETGID
+    security_opt:
+    - no-new-privileges:true
+    deploy:
+      resources:
+        limits:
+          memory: 256M
+        reservations:
+          memory: 128M
+    labels:
+      tsisip.environment: production
+      tsisip.deployed-by: ansible
   prometheus:
     image: ghcr.io/b0yz4kr14/tsisip/prometheus:${TSISIP_IMAGE_TAG:?must be set}
     networks:
@@ -650,3 +687,5 @@ secrets:
     file: ./secrets/rclone_s3_secret_key
   trunk_cred_key:
     file: ./secrets/trunk_cred_key
+  proxy_api_secret:
+    file: ./secrets/proxy_api_secret

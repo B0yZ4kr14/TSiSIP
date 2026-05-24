@@ -79,7 +79,7 @@ Where possible, services drop to unprivileged users inside the container after s
 - **Retention**: 30 days for base backups, 37 days for WAL.
 
 ### Encryption
-- All backup artifacts are encrypted with AES-256-GCM using a key injected via Docker secret (`backup_encryption_key`).
+- All backup artifacts are encrypted with AES-256-CBC + PBKDF2 + HMAC-SHA256 using a key injected via Docker secret (`backup_encryption_key`).
 - The encryption key is stored in the TSiHomeLab vault and never committed.
 
 ### Validation

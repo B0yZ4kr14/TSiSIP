@@ -4,7 +4,7 @@
 
 ---
 
-## G18: Backup Encryption (AES-256-GCM)
+## G18: Backup Encryption (AES-256-CBC + PBKDF2 + HMAC-SHA256)
 
 ```bash
 # Verify backup encryption key exists
@@ -58,7 +58,7 @@ bash scripts/test-invite-407.sh
 
 | Check | Expected | Actual | Status |
 |---|---|---|---|
-| Backup encryption | AES-256-GCM | [PENDING] | [PENDING] |
+| Backup encryption | AES-256-CBC + PBKDF2 + HMAC-SHA256 | [PENDING] | [PENDING] |
 | TLS 1.2+ | Enforced | [PENDING] | [PENDING] |
 | Role hierarchy | 6 levels | [PENDING] | [PENDING] |
 | SIP digest | 407 for unauth | [PENDING] | [PENDING] |

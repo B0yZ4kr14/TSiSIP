@@ -74,7 +74,7 @@
 | TM-002 | Zero-day in OpenSIPS C code | Low | Critical | Medium | Trivy CI scan, Debian security updates |
 | TM-003 | Insider threat (admin abuse) | Low | High | Low | Audit logs, role separation |
 | TM-004 | DDoS on SIP edge | Medium | Medium | Medium | pike, rate limiting, Cloudflare |
-| TM-005 | Backup exfiltration | Low | Critical | Medium | AES-256-GCM encryption, S3 IAM |
+| TM-005 | Backup exfiltration | Low | Critical | Medium | AES-256-CBC + PBKDF2 + HMAC-SHA256 encryption, S3 IAM |
 
 ## Accepted Risks
 

@@ -16,7 +16,7 @@
 
 ## LGPD — Encryption
 
-- [ ] CHK005 - Is encryption at rest (backup AES-256-GCM) explicitly validated? [Completeness, security_constitution §9]
+- [ ] CHK005 - Is encryption at rest (backup AES-256-CBC + PBKDF2 + HMAC-SHA256) explicitly validated? [Completeness, security_constitution §9]
 - [ ] CHK006 - Is TLS 1.2+ in transit requirement verified? [Measurability, security_constitution §9]
 - [ ] CHK007 - Are backup encryption key rotation requirements defined? [Clarity, security_constitution §4]
 

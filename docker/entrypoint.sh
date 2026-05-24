@@ -31,7 +31,10 @@ mkdir -p /etc/opensips/tls
 for cert in ca.crt server.crt server.key crl.pem; do
     if [ -f "/run/secrets/${cert}" ]; then
         read_secret "/run/secrets/${cert}" > "/etc/opensips/tls/${cert}"
-        chmod 644 "/etc/opensips/tls/${cert}"
+        case "${cert}" in
+            *.key) chmod 600 "/etc/opensips/tls/${cert}" ;;
+            *)     chmod 644 "/etc/opensips/tls/${cert}" ;;
+        esac
     fi
 done
 

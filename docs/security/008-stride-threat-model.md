@@ -25,7 +25,7 @@
 | Container escape | Elevation | Docker | MEDIUM | cap_drop, no-new-privileges | PASS |
 | Secret leakage | Information | Git | HIGH | .gitignore, pre-commit scan | PASS |
 | MITM | Tampering | TLS | HIGH | TLS 1.2+, HSTS | PENDING DNS |
-| Backup theft | Information | Backup | MEDIUM | AES-256-GCM encryption | PASS |
+| Backup theft | Information | Backup | MEDIUM | AES-256-CBC + PBKDF2 + HMAC-SHA256 encryption | PASS |
 
 ## Risk Register
 

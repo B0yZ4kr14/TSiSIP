@@ -15,7 +15,7 @@
 | V5 Validation | Met | Input validation, PDO prepared statements |
 | V6 Cryptography | Met | HA1-only, TLS 1.2+, HSTS preload |
 | V7 Error Handling | Partial | ocp_password_changes audit table missing |
-| V8 Data Protection | Met | pgcrypto encryption, backup AES-256-GCM |
+| V8 Data Protection | Met | pgcrypto encryption, backup AES-256-CBC + PBKDF2 + HMAC-SHA256 |
 | V9 Communication | Met | TLS termination, topology hiding |
 | V10 Malicious Code | Met | No eval, no raw SQL, cap_drop ALL |
 | V11 Business Logic | Met | Rate limiting, pike, circuit breaker |

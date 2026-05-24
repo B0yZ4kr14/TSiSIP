@@ -429,7 +429,7 @@ services:
     security_opt:
     - no-new-privileges:true
     ports:
-    - 127.0.0.1:8080:8080
+    - 127.0.0.1:8082:8080
     depends_on:
       opensips:
         condition: service_healthy

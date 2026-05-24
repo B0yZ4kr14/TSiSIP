@@ -16,7 +16,7 @@ In plain terms:
 - Asterisk and PostgreSQL live on isolated Docker networks with zero host-published ports.
 - An OCP (OpenSIPS Control Panel) v9 web interface provides operational dashboards, role-based wiki, and tenant management.
 
-The project follows **Spec-Driven Development (SDD)** via Speckit, with 11 tracked feature specifications (001–011).
+The project follows **Spec-Driven Development (SDD)** via Speckit, with 23 tracked feature specifications (001–023).
 
 ---
 
@@ -660,7 +660,7 @@ Completion gate:
 
 ### LGPD / Compliance
 - The project maintains a compliance framework for data retention and encryption.
-- Backup encryption uses AES-256-GCM via `openssl enc`.
+- Backup encryption uses AES-256-CBC + PBKDF2 + HMAC-SHA256 via `openssl enc` (Feature 005 implementation).
 - CDR and audit logs include tenant isolation for multi-tenancy.
 
 ---

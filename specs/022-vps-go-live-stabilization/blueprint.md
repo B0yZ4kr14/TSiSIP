@@ -238,7 +238,7 @@ PostgreSQL → pg_dump → Backup container
 ```
 
 **Personal Data**: All subscriber and CDR data
-**Encryption**: AES-256-GCM at rest
+**Encryption**: TLS/SRTP uses AES-256-GCM; backup encryption uses AES-256-CBC + PBKDF2 + HMAC-SHA256 (Feature 005)
 **Retention**: Aligned with source data retention policies
 
 ## Data Flow Matrix
@@ -248,7 +248,7 @@ PostgreSQL → pg_dump → Backup container
 | SIP Client | OpenSIPS | SIP URI, HA1 | TLS/Digest | Auth |
 | OpenSIPS | PostgreSQL | CDR | Internal network | Billing/Compliance |
 | OCP | PostgreSQL | Queries | PDO prepared statements | Administration |
-| Backup | S3 Storage | Dump files | AES-256-GCM | Disaster recovery |
+| Backup | S3 Storage | Dump files | AES-256-CBC + PBKDF2 + HMAC-SHA256 | Disaster recovery |
 ```
 
 **Verification**: Verify all 4 flows are documented, matrix covers all service pairs, and protection mechanisms match actual implementation.
@@ -605,7 +605,7 @@ docker compose exec certbot ls -la /etc/letsencrypt/renewal-hooks/deploy/
 | Container escape | Elevation | Docker | MEDIUM | cap_drop, no-new-privileges | ✅ Mitigated |
 | Secret leakage | Information | Git | HIGH | .gitignore, pre-commit scan | ✅ Mitigated |
 | MITM | Tampering | TLS | HIGH | TLS 1.2+, HSTS | ⏳ Pending DNS |
-| Backup theft | Information | Backup | MEDIUM | AES-256-GCM encryption | ✅ Mitigated |
+| Backup theft | Information | Backup | MEDIUM | AES-256-CBC + PBKDF2 + HMAC-SHA256 encryption | ✅ Mitigated |
 
 ## Risk Register
 
@@ -883,7 +883,7 @@ ROLLBACK;
 
 ---
 
-## G18: Backup Encryption (AES-256-GCM)
+## G18: Backup Encryption (AES-256-CBC + PBKDF2 + HMAC-SHA256)
 
 ```bash
 # Verify backup encryption key exists

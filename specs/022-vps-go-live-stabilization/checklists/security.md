@@ -13,7 +13,7 @@
 - [ ] CHK002 - Is the trusted gateway whitelist explicitly defined with IP ranges and mTLS requirements? [Clarity, Spec §SIP Trunk Security]
 - [ ] CHK003 - Are OCP web auth requirements (bcrypt, lockout, forced password change) validated during stabilization? [Coverage, Gap]
 - [ ] CHK004 - Are role hierarchy requirements enforced in OCP during the go-live window? [Completeness, security_constitution §OCP Web Auth]
-- [ ] CHK005 - Are SIP trunk credential encryption requirements (AES-256-GCM) verified in the vps-lite stack? [Coverage, Gap]
+- [ ] CHK005 - Are SIP trunk credential encryption requirements (AES-256-CBC + PBKDF2) verified in the vps-lite stack? [Coverage, Gap]
 
 ## Trust Boundaries
 
@@ -27,7 +27,7 @@
 - [ ] CHK010 - Are multi-tenancy isolation requirements (tenant_id filtering) verified in OCP queries? [Coverage, security_constitution §3]
 - [ ] CHK011 - Is CDR retention policy (7 years) enforced and verified? [Measurability, security_constitution §3]
 - [ ] CHK012 - Are audit log retention requirements (1 year minimum) verified? [Measurability, security_constitution §3]
-- [ ] CHK013 - Is backup encryption (AES-256-GCM) verified for the backup service? [Completeness, security_constitution §3]
+- [ ] CHK013 - Is backup encryption (AES-256-CBC + PBKDF2 + HMAC-SHA256) verified for the backup service? [Completeness, security_constitution §3]
 
 ## Secrets Management
 

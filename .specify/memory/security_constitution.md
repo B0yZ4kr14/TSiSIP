@@ -57,7 +57,7 @@
 
 ### LGPD / Privacy
 - Personal data in CDR (caller/callee identifiers) is pseudonymized where possible.
-- Backup encryption uses AES-256-GCM; decryption keys are runtime secrets, never committed.
+- Backup encryption uses AES-256-CBC + PBKDF2 + HMAC-SHA256; decryption keys are runtime secrets, never committed.
 - Right to erasure: tenant deletion cascades to subscriber and CDR after retention period.
 
 ## 4. Secrets Management Policy
