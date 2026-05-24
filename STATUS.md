@@ -3,19 +3,20 @@
 > **Updated:** 2026-05-24
 > **Architect:** DevSecOps Autonomous
 > **VPS TSiAPP:** Production vps-lite+PBX stack running; SIP public 5060/5061 blocked upstream of host
-> **GitHub:** `main` at `279ae33`
+> **GitHub:** `main` at `ced2817`
 
 ---
 
 ## Executive Summary
 
 TSiSIP is **deployed on VPS TSiAPP** in the expanded vps-lite profile for SIP host-ready (**10 services**).
-All **23 features (001–023)** have implemented and documented artifacts.
+All **23 features (001–023)** have implemented and documented artifacts. Note: there is no spec `014` in the filesystem; numbering jumps from `013` to `015`.
 Feature 022 (VPS Go-Live Stabilization) is in progress — AC1/AC3/AC4/AC6 verified on VPS; AC2/AC5/AC7/AC8 pending evidence/documentation.
 Feature 005 (PostgreSQL Backup & Restore) was audited and validated on the local/manual path; PITR live and offsite replication remain pending environment.
 GitNexus was updated locally on 2026-05-19 and reported the TSiSIP index as `up-to-date`.
 On 2026-05-24, the TSiSIP SIP edge was stabilized on the VPS after OpenSIPS 3.6 engine compatibility fixes and `userblacklist` schema corrections.
 On 2026-05-24, the backup pipeline was revalidated on the VPS: **WAL archiving active**, backup/validate/purge working manually, and metrics exporter accessible at `127.0.0.1:9101`.
+On 2026-05-24, Cloudflare DNS was configured: `tsiapp.io` proxied for HTTPS; `sip.tsiapp.io` non-proxied → `179.190.15.116` for SIP signaling.
 
 ---
 
@@ -31,19 +32,18 @@ On 2026-05-24, the backup pipeline was revalidated on the VPS: **WAL archiving a
 | 006 — Rate Limiting | Partial live | TSiSIP SIP edge uses pike + Nginx limit_req; anomaly detector/dashboard and external flood pending |
 | 007 — TLS/SRTP | Partial live | tls_openssl.so compiled; real certs/mTLS/SRTP external pending |
 | 008 — DevSecOps Deploy | Partial live | Ansible + GHCR + bootstrap; supply chain hardening and formal SSL Labs pending |
-| 009 — VPS Deploy Automation | 🔄 In specification | Orchestrated pipeline with SpecKit + GitNexus + OMK |
+| 009 — VPS Deploy Automation | ✅ | Orchestrated pipeline implemented; all 13 tasks complete (T1.1–T4.2) |
 | 010 — OCP Navigation System Links | ✅ | Implemented |
 | 011 — OCP Forced Password Change | ✅ | Implemented |
 | 012 — OCP Admin Tools Restoration | ✅ | Implemented |
 | 013 — Brownfield Follow-up | ✅ | Implemented |
-| 014 — Auto TLS Certificate Rotation | ✅ | Implemented |
-| 015 — OCP Audit Log Compliance | ✅ | Implemented |
-| 016 — SIP Trunk Provider Integration | ✅ | Implemented |
-| 017 — Global Requirement ID Migration | ✅ | Implemented |
-| 018 — Spec-Kit Memory Hub Integration | ✅ | Implemented |
-| 019 — OCP Critical Tool Gap Closure | ✅ | Implemented |
-| 020 — Brownfield Security Production Hardening | ✅ | Implemented |
-| 021 — VPS Go-Live Stabilization | ✅ | Stack healthy on VPS; 20 evidence files in `.sisyphus/evidence/022/` |
+| 015 — Auto TLS Certificate Rotation | ✅ | Implemented |
+| 016 — OCP Audit Log Compliance | ✅ | Implemented |
+| 017 — SIP Trunk Provider Integration | ✅ | Implemented |
+| 018 — Global Requirement ID Migration | ✅ | Implemented |
+| 019 — Spec-Kit Memory Hub Integration | ✅ | Implemented |
+| 020 — OCP Critical Tool Gap Closure | ✅ | Implemented |
+| 021 — Brownfield Security Production Hardening | ✅ | Implemented |
 | 022 — VPS Go-Live Stabilization | 🔄 In progress | AC1/AC3/AC4/AC6 verified; AC2/AC5/AC7/AC8 pending |
 | 023 — Subscriber CRUD Refactor | **Complete** — All 10 ACs verified; proxy layer operational; OCP zero direct writes | 2026-05-24 |
 
