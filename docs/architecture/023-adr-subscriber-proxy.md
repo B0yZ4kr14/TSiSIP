@@ -60,3 +60,118 @@ Option B provides:
 - Aligns with Architecture Constitution v1.2.0 (Layer Boundaries)
 - Resolves ARCH-PRE-001
 - No rejected patterns introduced (no db_mysql, no bare-metal install)
+
+## Proxy API Contract
+
+This section documents the JSON request/response contract between the OCP and the Admin API proxy.
+
+### Authentication
+
+All requests must include:
+- Header: `X-Proxy-Secret: <service_secret>` (read from Docker secret mount)
+- Method: `POST`
+- Content-Type: `application/json`
+
+### Endpoint
+
+```
+POST http://admin-api:8080/index.php
+```
+
+### Request Schema
+
+```json
+{
+  "action": "create|update|delete",
+  "data": { }
+}
+```
+
+#### Create Payload
+
+```json
+{
+  "username": "string (max 64)",
+  "domain": "string (max 253)",
+  "ha1": "string (32 hex chars)",
+  "ha1_sha256": "string (64 hex chars)",
+  "ha1_sha512t256": "string (64 hex chars)",
+  "email": "string (max 255, optional)",
+  "tenant_id": "UUIDv4 string",
+  "enabled": "boolean (default: true)"
+}
+```
+
+#### Update Payload
+
+```json
+{
+  "id": "integer",
+  "username": "string (max 64)",
+  "domain": "string (max 253)",
+  "ha1": "string (32 hex chars, optional)",
+  "ha1_sha256": "string (64 hex chars, optional)",
+  "ha1_sha512t256": "string (64 hex chars, optional)",
+  "email": "string (max 255, optional)",
+  "tenant_id": "UUIDv4 string",
+  "enabled": "boolean"
+}
+```
+
+#### Delete Payload
+
+```json
+{
+  "id": "integer"
+}
+```
+
+### Response Schema
+
+**Success (HTTP 200):**
+```json
+{"success": true}
+```
+
+**Error (HTTP 400/403/429/500):**
+```json
+{
+  "success": false,
+  "error": "Human-readable error message",
+  "errors": ["Field-specific errors (optional)"]
+}
+```
+
+### Validation Rules
+
+| Field | Rule | Failure Response |
+|---|---|---|
+| `username` | Alphanumeric plus dot/underscore/hyphen, max 64 chars | 400 |
+| `domain` | Valid FQDN or IP, max 253 chars | 400 |
+| `ha1` | 32 hex chars (MD5) | 400 |
+| `ha1_sha256` | 64 hex chars | 400 |
+| `ha1_sha512t256` | 64 hex chars | 400 |
+| `password` | Must be absent or empty | 400 (plaintext rejection) |
+| `tenant_id` | UUIDv4 format | 400 |
+| `enabled` | Boolean | 400 |
+
+### Rate Limits
+
+| Action | Limit | Window |
+|---|---|---|
+| `create` | 10 requests | 60 seconds per source IP |
+| `update` | 30 requests | 60 seconds per source IP |
+| `delete` | 10 requests | 60 seconds per source IP |
+
+Exceeding the limit returns HTTP 429.
+
+### Error Handling in OCP
+
+The `callSubscriberProxy()` helper translates proxy errors into user-friendly messages:
+- cURL failure: "Subscriber service temporarily unavailable. Please try again later."
+- HTTP 429: "Too many subscriber changes. Please wait a moment and try again."
+- HTTP 403: "Access denied to subscriber service."
+- HTTP non-200: "Subscriber operation failed. Please contact support."
+- Invalid JSON: "Invalid response from subscriber service."
+
+No stack traces, internal paths, or raw error messages are exposed to the end user.

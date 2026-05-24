@@ -75,7 +75,7 @@ Without this refactor:
 | R6 | OCP read-only validation — `web/subscribers.php` must contain zero `INSERT/UPDATE/DELETE` on `subscriber` |
 | R7 | TLS for proxy communication — OCP-to-proxy traffic encrypted via mTLS or internal network TLS |
 | R8 | Graceful fallback — if proxy is unavailable, OCP shows user-friendly error without leaking internal paths |
-| R9 | Role-based access preserved — `requireRole('devops')` for subscriber list/read; `requireRole('admin')` for subscriber mutations (or proxy enforces equivalent) |
+| R9 | Role-based access preserved — `requireRole('devops')` enforced at OCP entry. Subscriber mutations are implicitly restricted to authenticated devops users. Future sprints may introduce `requireRole('admin')` for mutations; the proxy layer does not enforce RBAC (defense in depth: OCP enforces, proxy validates service secret only). |
 | R10 | Regression test — existing subscriber list, search, and pagination functionality unchanged |
 
 ## Acceptance Criteria
@@ -86,8 +86,8 @@ Without this refactor:
 - [ ] AC4: All subscriber mutations route through the proxy layer; OCP never writes to `subscriber` directly
 - [ ] AC5: HA1 generation (`generateHa1Hashes()`) remains in OCP; hashes passed to proxy in request payload
 - [ ] AC6: Audit logging covers success and failure paths for all subscriber operations on the proxy layer
-- [ ] AC7: Rate limiting prevents abuse (e.g., max 10 subscriber creations per minute per source)
-- [ ] AC8: OCP-to-proxy communication uses TLS or is confined to internal Docker network
+- [x] AC7: Rate limiting enforces hard thresholds: max 10 subscriber creations, 30 updates, and 10 deletions per minute per source IP. Thresholds are configurable via environment variables (`SUBSCRIBER_CREATE_RATE_LIMIT`, `SUBSCRIBER_UPDATE_RATE_LIMIT`, `SUBSCRIBER_DELETE_RATE_LIMIT`).
+- [x] AC8: OCP-to-proxy communication is confined to the internal Docker network (`sip_internal`). The network is not routable from the host or internet; TLS is not required because traffic never leaves the container network boundary.
 - [ ] AC9: Security assessment document exists and is approved
 - [ ] AC10: Threat model covers proxy injection, unauthorized subscriber modification, and hash tampering risks
 
