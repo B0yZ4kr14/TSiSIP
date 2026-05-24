@@ -124,7 +124,7 @@ W0 (Security) → W1 (CRUD) → W2 (MI/Stats) → W3 (TLS) → W4 (Validation)
 - [x] W5.3 (R3): Session hardening — Add session_regenerate_id(true) on login, cookie_httponly, cookie_samesite=Strict, use_strict_mode=1
 - [x] W5.4 (R4): Statistics error path — Add warning banner on MI timeout; charts preserve last-known values
 - [x] W5.5 (R5): D3.js fallback — Display graceful degradation message when CDN is unreachable
-- [ ] W5.6 (R6): validate-input.php integration — Refactor dialplan.php and domains.php to use common helper (P3, optional)
+- [x] W5.6 (R6): validate-input.php integration — Refactor dialplan.php and domains.php to use common helper (P3, optional)
 - [x] W5.7 (R7): Post-fix brownfield scan — Validate no new drift, all findings resolved
 
 **Dependency Graph:**
