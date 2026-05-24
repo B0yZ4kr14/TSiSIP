@@ -471,6 +471,7 @@ deployer() {
 
     # ── 4e: Wait for containers ──
     info "Deployer: waiting for containers to stabilize..."
+    # Allow containers time to start and stabilize before health checks
     sleep 10
 
     info "Deployer: complete"

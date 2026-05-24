@@ -6,7 +6,38 @@ import os
 import pytest
 import socket
 import hashlib
+import subprocess
 import time
+
+
+def get_test_ip() -> str:
+    """Return the IP address to use for SIP test messages.
+
+    Priority:
+    1. TEST_IP environment variable
+    2. Docker network inspect for tsisip_sip_edge gateway
+    3. Fallback to 127.0.0.1
+    """
+    env_ip = os.environ.get("TEST_IP")
+    if env_ip:
+        return env_ip
+
+    try:
+        result = subprocess.run(
+            [
+                "docker", "network", "inspect", "tsisip_sip_edge",
+                "--format", "{{range .IPAM.Config}}{{.Gateway}}{{end}}",
+            ],
+            capture_output=True,
+            text=True,
+            timeout=5,
+        )
+        if result.returncode == 0 and result.stdout.strip():
+            return result.stdout.strip().split("\n")[0]
+    except Exception:
+        pass
+
+    return "127.0.0.1"
 
 
 def _ha1_md5(username: str, realm: str, password: str) -> str:
@@ -24,17 +55,18 @@ def _build_register(
     nonce: str = None,
     uri: str = None,
 ) -> bytes:
+    test_ip = get_test_ip()
     if uri is None:
         uri = f"sip:{domain}"
     msg = (
         f"REGISTER {uri} SIP/2.0\r\n"
-        f"Via: SIP/2.0/UDP 172.22.0.1:5061;branch={branch}\r\n"
+        f"Via: SIP/2.0/UDP {test_ip}:5061;branch={branch}\r\n"
         f"From: <sip:{username}@{domain}>;tag={from_tag}\r\n"
         f"To: <sip:{username}@{domain}>\r\n"
         f"Call-ID: {call_id}\r\n"
         f"CSeq: {cseq} REGISTER\r\n"
         f"Max-Forwards: 70\r\n"
-        f"Contact: <sip:{username}@172.22.0.1:5061>\r\n"
+        f"Contact: <sip:{username}@{test_ip}:5061>\r\n"
     )
     if with_auth and nonce:
         ha1 = _ha1_md5(username, domain, "devpass")
@@ -59,16 +91,17 @@ def _build_invite(
     domain: str = "dev.tsisip.local",
     nonce: str = None,
 ) -> bytes:
+    test_ip = get_test_ip()
     uri = f"sip:{to_user}@{domain}"
     msg = (
         f"INVITE {uri} SIP/2.0\r\n"
-        f"Via: SIP/2.0/UDP 172.22.0.1:5061;branch={branch}\r\n"
+        f"Via: SIP/2.0/UDP {test_ip}:5061;branch={branch}\r\n"
         f"From: <sip:{username}@{domain}>;tag={from_tag}\r\n"
         f"To: <sip:{to_user}@{domain}>\r\n"
         f"Call-ID: {call_id}\r\n"
         f"CSeq: {cseq} INVITE\r\n"
         f"Max-Forwards: 70\r\n"
-        f"Contact: <sip:{username}@172.22.0.1:5061>\r\n"
+        f"Contact: <sip:{username}@{test_ip}:5061>\r\n"
     )
     if nonce:
         ha1 = _ha1_md5(username, domain, "devpass")
@@ -81,9 +114,9 @@ def _build_invite(
         )
     sdp = (
         "v=0\r\n"
-        "o=- 0 0 IN IP4 172.22.0.1\r\n"
+        f"o=- 0 0 IN IP4 {test_ip}\r\n"
         "s=TSiSIP Test\r\n"
-        "c=IN IP4 172.22.0.1\r\n"
+        f"c=IN IP4 {test_ip}\r\n"
         "t=0 0\r\n"
         "m=audio 10000 RTP/AVP 0 8\r\n"
         "a=rtpmap:0 PCMU/8000\r\n"
@@ -122,8 +155,9 @@ class TestEndToEndCall:
 
     def test_register_unauthorized(self):
         """Unauthenticated REGISTER receives 401 with nonce."""
+        test_ip = get_test_ip()
         msg = _build_register(
-            call_id="test-register-001@172.22.0.1",
+            call_id=f"test-register-001@{test_ip}",
             cseq=1,
             from_tag="regtag001",
             branch="z9hG4bK-reg001",
@@ -134,9 +168,10 @@ class TestEndToEndCall:
 
     def test_register_authenticated(self):
         """Authenticated REGISTER receives 200 OK."""
+        test_ip = get_test_ip()
         # Step 1: get nonce
         msg1 = _build_register(
-            call_id="test-register-002@172.22.0.1",
+            call_id=f"test-register-002@{test_ip}",
             cseq=1,
             from_tag="regtag002",
             branch="z9hG4bK-reg002",
@@ -153,7 +188,7 @@ class TestEndToEndCall:
 
         # Step 2: REGISTER with auth
         msg2 = _build_register(
-            call_id="test-register-002@172.22.0.1",
+            call_id=f"test-register-002@{test_ip}",
             cseq=2,
             from_tag="regtag002",
             branch="z9hG4bK-reg003",

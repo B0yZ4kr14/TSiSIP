@@ -107,11 +107,27 @@ fi
 
 # === 6. .env ===
 log_info "Configurando .env..."
+
+# Discover Docker network IPs dynamically (survives network recreation)
+discover_network_ip() {
+    local network="$1"
+    local ip
+    ip=$(docker network inspect "${network}" --format='{{range .IPAM.Config}}{{.Gateway}}{{end}}' 2>/dev/null || true)
+    if [[ -z "${ip}" ]]; then
+        echo "[ERROR] Failed to discover IP for Docker network: ${network}" >&2
+        exit 1
+    fi
+    echo "${ip}"
+}
+
+RTPENGINE_PRIVATE_IP=$(discover_network_ip "tsisip_sip_edge")
+RTPENGINE_INTERNAL_IP=$(discover_network_ip "tsisip_sip_internal")
+
 cat > "${TSISIP_DIR}/.env" <<ENVEOF
 OPENSIPS_LISTEN_IP=0.0.0.0
 HOST_PUBLIC_IP=179.190.15.116
-RTPENGINE_PRIVATE_IP=172.19.0.1
-RTPENGINE_INTERNAL_IP=172.21.0.1
+RTPENGINE_PRIVATE_IP=${RTPENGINE_PRIVATE_IP}
+RTPENGINE_INTERNAL_IP=${RTPENGINE_INTERNAL_IP}
 ENVEOF
 
 # === 7. GHCR Login ===

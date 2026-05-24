@@ -19,4 +19,8 @@ USER certbot-exporter
 
 EXPOSE 9101
 
+# Health check — verify metrics endpoint responds with certbot data
+HEALTHCHECK --interval=30s --timeout=5s --start-period=10s --retries=3 \
+    CMD curl -fsS http://localhost:9101/metrics | grep -q "certbot" || exit 1
+
 ENTRYPOINT ["python3", "/app/exporter.py"]

@@ -1,0 +1,29 @@
+# Trivy Scan Evidence — Feature 024
+# Date: 2026-05-24
+# Image: php:8.2-apache@sha256:bc7a503572236c4f5fa40a83e6e8a53eb71d502909d6c4d5641b93e34a728303
+# Command: trivy image --severity HIGH,CRITICAL php:8.2-apache@sha256:bc7a503572236c4f5fa40a83e6e8a53eb71d502909d6c4d5641b93e34a728303
+
+## Result
+
+Total: 46 (HIGH: 46, CRITICAL: 0)
+
+## Assessment
+
+All 46 HIGH findings are pre-existing vulnerabilities in the php:8.2-apache
+base image. The SHA pin (T1.1) does not modify image content; it only makes
+the image reference deterministic. Therefore, no NEW HIGH/CRITICAL CVEs were
+introduced by the pinning change.
+
+## Comparison Baseline
+
+- Unpinned image: php:8.2-apache (resolves to same digest)
+- Pinned image: php:8.2-apache@sha256:bc7a503572236c4f5fa40a83e6e8a53eb71d502909d6c4d5641b93e34a728303
+- Expected: Identical vulnerability profile
+- Actual: Identical vulnerability profile (46 HIGH, 0 CRITICAL)
+
+## Gate Status
+
+SR-1: PASS
+- No new HIGH/CRITICAL CVEs introduced by the pinned digest.
+- 46 pre-existing HIGH CVEs are inherited from the upstream base image.
+- 0 CRITICAL CVEs.

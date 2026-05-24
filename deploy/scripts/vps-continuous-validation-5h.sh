@@ -44,6 +44,7 @@ while [[ "$(date +%s)" -lt "${end_at}" ]]; do
   docker compose -f "${COMPOSE_FILE}" exec -T backup /usr/local/bin/rpo-monitor.sh \
     | tee -a "${LOG_FILE}" >/dev/null || true
 
+  # Wait for the next validation cycle interval
   sleep "${INTERVAL_SECONDS}"
 done
 

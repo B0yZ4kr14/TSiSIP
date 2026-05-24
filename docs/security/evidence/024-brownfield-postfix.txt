@@ -1,0 +1,50 @@
+# Post-Fix Brownfield Scan — Feature 024
+# Date: 2026-05-24
+# Scope: All files modified in Feature 024 remediation
+# Tool: manual verification against B1-B12 criteria
+
+## B1 — SHA-pinned Dockerfile
+File: docker/admin-api/Dockerfile
+Status: PASS
+Evidence: FROM php:8.2-apache@sha256:bc7a503572236c4f5fa40a83e6e8a53eb71d502909d6c4d5641b93e34a728303
+
+## B2 — Hard-coded IPs in test_end_to_end_call.py
+File: tests/integration/test_end_to_end_call.py
+Status: PASS
+Evidence: grep -c '172\.22\.0\.1' returns 0; get_test_ip() helper implemented
+
+## B3 — Hard-coded IPs in test_sip_trunk_failover.py
+File: tests/integration/test_sip_trunk_failover.py
+Status: PASS
+Evidence: grep -c '172\.22\.0\.1' returns 0; get_test_ip() helper implemented
+
+## B4-B6 — Dynamic IP discovery in deploy scripts
+Files: deploy/scripts/test-vps-local.sh, vps-bootstrap.sh, vps-deploy.sh
+Status: PASS
+Evidence: grep '172\.19\.0\.1\|172\.21\.0\.1' returns 0; discover_network_ip() helper used
+
+## B7 — Complete env-example
+File: .env.example
+Status: PASS
+Evidence: SUBSCRIBER_CREATE_RATE_LIMIT, SUBSCRIBER_UPDATE_RATE_LIMIT, SUBSCRIBER_DELETE_RATE_LIMIT added
+
+## B8-B10 — Sleep comments
+Files: deploy/scripts/orchestrate-deploy.sh, safe-recovery.sh, vps-deploy.sh, test-vps-local.sh, vps-continuous-validation-5h.sh
+Status: PASS
+Evidence: All sleep statements have preceding inline comments
+
+## B11 — OCP healthcheck verification
+File: docker-compose.vps.yml
+Status: PASS
+Evidence: Healthcheck uses 127.0.0.1 inside container namespace; userland-proxy=false does not affect internal loopback
+
+## B12 — Dockerfile HEALTHCHECKs
+Files: docker/admin-api/Dockerfile, docker/backup/Dockerfile, docker/ca-tool/Dockerfile, docker/certbot-exporter/Dockerfile
+Status: PASS
+Evidence: HEALTHCHECK added to 3 Dockerfiles; 2 existing HEALTHCHECKs verified (backup interval updated to 30s, anomaly-detector already compliant)
+
+## Summary
+
+- HIGH findings: 0
+- MEDIUM findings: 0
+- LOW findings: 0

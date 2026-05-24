@@ -24,4 +24,8 @@ RUN mkdir -p /ca/root/private /ca/root/certs /ca/root/crl \
 
 VOLUME ["/ca/output", "/ca/secrets"]
 
+# Health check — verify CA directory structure and openssl availability
+HEALTHCHECK --interval=30s --timeout=5s --start-period=10s --retries=3 \
+    CMD test -d /ca/root/private && test -d /ca/output && openssl version > /dev/null || exit 1
+
 CMD ["bash"]

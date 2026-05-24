@@ -1,0 +1,592 @@
+diff --git a/.env.example b/.env.example
+index 7315001..fdc45e0 100644
+--- a/.env.example
++++ b/.env.example
+@@ -45,6 +45,12 @@ TS_HOSTNAME=tsisip
+ # OCP audit log retention (Feature 014-B Wave 5)
+ OCP_AUDIT_RETENTION_DAYS=90
+ 
++# Admin API rate limits (requests per minute)
++# These limits protect the subscriber management endpoints from abuse.
++SUBSCRIBER_CREATE_RATE_LIMIT=10
++SUBSCRIBER_UPDATE_RATE_LIMIT=30
++SUBSCRIBER_DELETE_RATE_LIMIT=10
++
+ # Database credentials are injected via Docker secrets.
+ # The DB_PASSWORD file should be placed in secrets/db_password
+ # The AUTH_SECRET file should be placed in secrets/auth_secret (32 chars)
+diff --git a/.gitignore b/.gitignore
+index 6139e0a..6c44639 100644
+--- a/.gitignore
++++ b/.gitignore
+@@ -68,3 +68,11 @@ docs/memory/INDEX.md.lock
+ .opencode/commands/speckit.*.md
+ .github/prompts/speckit.*.prompt.md
+ .kimi/skills/speckit-*/
++# Squad: ignore runtime state (logs, inbox, sessions)
++.squad/orchestration-log/
++.squad/log/
++.squad/decisions/inbox/
++.squad/sessions/
++.squad/.scratch/
++# Squad: SubSquad activation file (local to this machine)
++.squad-workstream
+diff --git a/deploy/scripts/orchestrate-deploy.sh b/deploy/scripts/orchestrate-deploy.sh
+index 18b12ab..8575d9b 100755
+--- a/deploy/scripts/orchestrate-deploy.sh
++++ b/deploy/scripts/orchestrate-deploy.sh
+@@ -471,6 +471,7 @@ deployer() {
+ 
+     # ── 4e: Wait for containers ──
+     info "Deployer: waiting for containers to stabilize..."
++    # Allow containers time to start and stabilize before health checks
+     sleep 10
+ 
+     info "Deployer: complete"
+diff --git a/deploy/scripts/safe-recovery.sh b/deploy/scripts/safe-recovery.sh
+index 5f2a7b4..3a5312c 100755
+--- a/deploy/scripts/safe-recovery.sh
++++ b/deploy/scripts/safe-recovery.sh
+@@ -42,6 +42,7 @@ PHASES=(
+ for phase in "${PHASES[@]}"; do
+     info "Fase: $phase"
+     docker compose -f "$COMPOSE_FILE" up -d $phase
++    # Wait for containers in this phase to reach healthy state before starting next phase
+     sleep 10
+     info "  RAM livre: $(free -m | awk 'NR==2{print $7}') MB"
+ done
+@@ -70,6 +71,7 @@ fi
+ 
+ # ─── 5. Health checks ───
+ info "Health checks..."
++# Brief pause for health endpoints to become ready before probing
+ sleep 5
+ 
+ HEALTH_URLS=(
+diff --git a/deploy/scripts/test-vps-local.sh b/deploy/scripts/test-vps-local.sh
+index 421160b..19d6eed 100755
+--- a/deploy/scripts/test-vps-local.sh
++++ b/deploy/scripts/test-vps-local.sh
+@@ -35,12 +35,27 @@ openssl req -x509 -newkey rsa:2048 -keyout "${PROJECT_ROOT}/secrets/server.key"
+ cp "${PROJECT_ROOT}/secrets/server.crt" "${PROJECT_ROOT}/secrets/ca.crt"
+ touch "${PROJECT_ROOT}/secrets/crl.pem"
+ 
++# Discover Docker network IPs dynamically
++discover_network_ip() {
++    local network="$1"
++    local ip
++    ip=$(docker network inspect "${network}" --format='{{range .IPAM.Config}}{{.Gateway}}{{end}}' 2>/dev/null || true)
++    if [[ -z "${ip}" ]]; then
++        echo "[ERROR] Failed to discover IP for Docker network: ${network}" >&2
++        exit 1
++    fi
++    echo "${ip}"
++}
++
++RTPENGINE_PRIVATE_IP=$(discover_network_ip "tsisip_sip_edge")
++RTPENGINE_INTERNAL_IP=$(discover_network_ip "tsisip_sip_internal")
++
+ # .env de teste
+-cat > "${PROJECT_ROOT}/.env" <<'ENVEOF'
++cat > "${PROJECT_ROOT}/.env" <<ENVEOF
+ OPENSIPS_LISTEN_IP=0.0.0.0
+ HOST_PUBLIC_IP=127.0.0.1
+-RTPENGINE_PRIVATE_IP=172.19.0.1
+-RTPENGINE_INTERNAL_IP=172.21.0.1
++RTPENGINE_PRIVATE_IP=${RTPENGINE_PRIVATE_IP}
++RTPENGINE_INTERNAL_IP=${RTPENGINE_INTERNAL_IP}
+ ENVEOF
+ 
+ # Subir stack
+@@ -54,6 +69,7 @@ for i in {1..30}; do
+         log_info "PostgreSQL OK."
+         break
+     fi
++    # Poll PostgreSQL health every 2 seconds until healthy or timeout
+     sleep 2
+ done
+ 
+@@ -64,6 +80,7 @@ for i in {1..30}; do
+         log_info "OpenSIPS OK."
+         break
+     fi
++    # Poll OpenSIPS health every 2 seconds until healthy or timeout
+     sleep 2
+ done
+ 
+@@ -74,6 +91,7 @@ for i in {1..30}; do
+         log_info "OCP responde em :8084."
+         break
+     fi
++    # Poll OCP endpoint every 2 seconds until responsive or timeout
+     sleep 2
+ done
+ 
+diff --git a/deploy/scripts/vps-bootstrap.sh b/deploy/scripts/vps-bootstrap.sh
+index ea13fde..37aa6bb 100755
+--- a/deploy/scripts/vps-bootstrap.sh
++++ b/deploy/scripts/vps-bootstrap.sh
+@@ -107,11 +107,27 @@ fi
+ 
+ # === 6. .env ===
+ log_info "Configurando .env..."
++
++# Discover Docker network IPs dynamically (survives network recreation)
++discover_network_ip() {
++    local network="$1"
++    local ip
++    ip=$(docker network inspect "${network}" --format='{{range .IPAM.Config}}{{.Gateway}}{{end}}' 2>/dev/null || true)
++    if [[ -z "${ip}" ]]; then
++        echo "[ERROR] Failed to discover IP for Docker network: ${network}" >&2
++        exit 1
++    fi
++    echo "${ip}"
++}
++
++RTPENGINE_PRIVATE_IP=$(discover_network_ip "tsisip_sip_edge")
++RTPENGINE_INTERNAL_IP=$(discover_network_ip "tsisip_sip_internal")
++
+ cat > "${TSISIP_DIR}/.env" <<ENVEOF
+ OPENSIPS_LISTEN_IP=0.0.0.0
+ HOST_PUBLIC_IP=179.190.15.116
+-RTPENGINE_PRIVATE_IP=172.19.0.1
+-RTPENGINE_INTERNAL_IP=172.21.0.1
++RTPENGINE_PRIVATE_IP=${RTPENGINE_PRIVATE_IP}
++RTPENGINE_INTERNAL_IP=${RTPENGINE_INTERNAL_IP}
+ ENVEOF
+ 
+ # === 7. GHCR Login ===
+diff --git a/deploy/scripts/vps-continuous-validation-5h.sh b/deploy/scripts/vps-continuous-validation-5h.sh
+index 5bf338c..b14d32d 100644
+--- a/deploy/scripts/vps-continuous-validation-5h.sh
++++ b/deploy/scripts/vps-continuous-validation-5h.sh
+@@ -44,6 +44,7 @@ while [[ "$(date +%s)" -lt "${end_at}" ]]; do
+   docker compose -f "${COMPOSE_FILE}" exec -T backup /usr/local/bin/rpo-monitor.sh \
+     | tee -a "${LOG_FILE}" >/dev/null || true
+ 
++  # Wait for the next validation cycle interval
+   sleep "${INTERVAL_SECONDS}"
+ done
+ 
+diff --git a/deploy/scripts/vps-deploy.sh b/deploy/scripts/vps-deploy.sh
+index fbb1bed..6d85d11 100755
+--- a/deploy/scripts/vps-deploy.sh
++++ b/deploy/scripts/vps-deploy.sh
+@@ -87,26 +87,42 @@ for c in ${NON_CRITICAL}; do
+     fi
+ done
+ 
++# Discover Docker network IPs dynamically (survives network recreation)
++discover_network_ip() {
++    local network="$1"
++    local ip
++    ip=$(docker network inspect "${network}" --format='{{range .IPAM.Config}}{{.Gateway}}{{end}}' 2>/dev/null || true)
++    if [[ -z "${ip}" ]]; then
++        log_fatal "Failed to discover IP for Docker network: ${network}"
++    fi
++    echo "${ip}"
++}
++
+ if [[ ! -f "${ENV_FILE}" ]]; then
+     log_warn ".env nao encontrado. Criando com defaults..."
+-    cat > "${ENV_FILE}" <<'EOF'
++    RTPENGINE_PRIVATE_IP=$(discover_network_ip "tsisip_sip_edge")
++    RTPENGINE_INTERNAL_IP=$(discover_network_ip "tsisip_sip_internal")
++    cat > "${ENV_FILE}" <<EOF
+ OPENSIPS_LISTEN_IP=0.0.0.0
+ HOST_PUBLIC_IP=127.0.0.1
+-RTPENGINE_PRIVATE_IP=172.19.0.1
+-RTPENGINE_INTERNAL_IP=172.21.0.1
++RTPENGINE_PRIVATE_IP=${RTPENGINE_PRIVATE_IP}
++RTPENGINE_INTERNAL_IP=${RTPENGINE_INTERNAL_IP}
+ EOF
+ fi
+ 
+-if grep -q 'RTPENGINE_INTERNAL_IP=10\.0\.0\.2' "${ENV_FILE}" 2>/dev/null; then
+-    # Discover the actual Docker network gateway for sip_internal
+-    RTPENGINE_INTERNAL_IP=$(docker network inspect tsisip_sip_internal --format='{{range .IPAM.Config}}{{.Gateway}}{{end}}' 2>/dev/null || echo "172.21.0.1")
+-    if grep -q "^RTPENGINE_INTERNAL_IP=" "${ENV_FILE}" 2>/dev/null; then
+-        sed -i "s|^RTPENGINE_INTERNAL_IP=.*|RTPENGINE_INTERNAL_IP=${RTPENGINE_INTERNAL_IP}|" "${ENV_FILE}"
++# Ensure both RTPENGINE IPs are discovered dynamically, overwriting any stale defaults
++RTPENGINE_PRIVATE_IP=$(discover_network_ip "tsisip_sip_edge")
++RTPENGINE_INTERNAL_IP=$(discover_network_ip "tsisip_sip_internal")
++
++for var in RTPENGINE_PRIVATE_IP RTPENGINE_INTERNAL_IP; do
++    val="${!var}"
++    if grep -q "^${var}=" "${ENV_FILE}" 2>/dev/null; then
++        sed -i "s|^${var}=.*|${var}=${val}|" "${ENV_FILE}"
+     else
+-        echo "RTPENGINE_INTERNAL_IP=${RTPENGINE_INTERNAL_IP}" >> "${ENV_FILE}"
++        echo "${var}=${val}" >> "${ENV_FILE}"
+     fi
+-    log_warn "Ajustado RTPENGINE_INTERNAL_IP para ${RTPENGINE_INTERNAL_IP} (descoberto da rede Docker)"
+-fi
++done
++log_info "RTPENGINE IPs atualizados: PRIVATE=${RTPENGINE_PRIVATE_IP} INTERNAL=${RTPENGINE_INTERNAL_IP}"
+ 
+ log_info "Verificando login no GHCR..."
+ if ! docker info 2>/dev/null | grep -q "ghcr.io"; then
+@@ -128,6 +144,7 @@ for i in {1..30}; do
+         log_info "PostgreSQL healthy."
+         break
+     fi
++    # Poll PostgreSQL health every 2 seconds until healthy or timeout
+     sleep 2
+ done
+ 
+@@ -162,6 +179,7 @@ for i in {1..30}; do
+         log_info "OpenSIPS healthy."
+         break
+     fi
++    # Poll OpenSIPS health every 2 seconds until healthy or timeout
+     sleep 2
+ done
+ 
+diff --git a/docker/admin-api/Dockerfile b/docker/admin-api/Dockerfile
+index ed7ee2d..a12f169 100644
+--- a/docker/admin-api/Dockerfile
++++ b/docker/admin-api/Dockerfile
+@@ -1,7 +1,10 @@
+ # TSiSIP Admin API — Subscriber Proxy Microservice
+ # Minimal PHP 8.2 Apache image for internal subscriber mutations
+ 
+-FROM php:8.2-apache
++# Base image pinned to SHA256 digest for supply-chain determinism.
++# Fetched: 2026-05-24
++# Verify: docker inspect php:8.2-apache --format='{{index .RepoDigests 0}}'
++FROM php:8.2-apache@sha256:bc7a503572236c4f5fa40a83e6e8a53eb71d502909d6c4d5641b93e34a728303
+ 
+ # Install PDO PostgreSQL extension
+ RUN apt-get update && apt-get install -y --no-install-recommends \
+@@ -23,5 +26,9 @@ EXPOSE 8080
+ RUN sed -i 's/Listen 80/Listen 8080/' /etc/apache2/ports.conf \
+     && sed -i 's/:80/:8080/' /etc/apache2/sites-available/000-default.conf
+ 
++# Health check — lightweight HTTP probe on internal port
++HEALTHCHECK --interval=30s --timeout=5s --start-period=60s --retries=3 \
++    CMD curl -sS http://127.0.0.1:8080/index.php > /dev/null || exit 1
++
+ # Security: run as non-root (www-data is default in php-apache)
+ # Drop all capabilities except necessary ones at runtime via compose
+diff --git a/docker/backup/Dockerfile b/docker/backup/Dockerfile
+index bf8ed78..eff5fc7 100644
+--- a/docker/backup/Dockerfile
++++ b/docker/backup/Dockerfile
+@@ -48,7 +48,7 @@ ENV BACKUP_SCHEDULE="0 2 * * *" \
+     METRICS_ADDR=0.0.0.0
+ 
+ # Health check
+-HEALTHCHECK --interval=60s --timeout=10s --start-period=30s --retries=3 \
++HEALTHCHECK --interval=30s --timeout=10s --start-period=30s --retries=3 \
+     CMD pg_isready -h "$PGHOST" -p "$PGPORT" -U "$PGUSER" || exit 1
+ 
+ ENTRYPOINT ["/usr/local/bin/entrypoint.sh"]
+diff --git a/docker/ca-tool/Dockerfile b/docker/ca-tool/Dockerfile
+index da1a424..32c4507 100644
+--- a/docker/ca-tool/Dockerfile
++++ b/docker/ca-tool/Dockerfile
+@@ -24,4 +24,8 @@ RUN mkdir -p /ca/root/private /ca/root/certs /ca/root/crl \
+ 
+ VOLUME ["/ca/output", "/ca/secrets"]
+ 
++# Health check — verify CA directory structure and openssl availability
++HEALTHCHECK --interval=30s --timeout=5s --start-period=10s --retries=3 \
++    CMD test -d /ca/root/private && test -d /ca/output && openssl version > /dev/null || exit 1
++
+ CMD ["bash"]
+diff --git a/docker/certbot-exporter/Dockerfile b/docker/certbot-exporter/Dockerfile
+index 8b2dad1..307e650 100644
+--- a/docker/certbot-exporter/Dockerfile
++++ b/docker/certbot-exporter/Dockerfile
+@@ -19,4 +19,8 @@ USER certbot-exporter
+ 
+ EXPOSE 9101
+ 
++# Health check — verify metrics endpoint responds with certbot data
++HEALTHCHECK --interval=30s --timeout=5s --start-period=10s --retries=3 \
++    CMD curl -fsS http://localhost:9101/metrics | grep -q "certbot" || exit 1
++
+ ENTRYPOINT ["python3", "/app/exporter.py"]
+diff --git a/tests/integration/test_end_to_end_call.py b/tests/integration/test_end_to_end_call.py
+index b9537d7..487978f 100644
+--- a/tests/integration/test_end_to_end_call.py
++++ b/tests/integration/test_end_to_end_call.py
+@@ -6,9 +6,40 @@ import os
+ import pytest
+ import socket
+ import hashlib
++import subprocess
+ import time
+ 
+ 
++def get_test_ip() -> str:
++    """Return the IP address to use for SIP test messages.
++
++    Priority:
++    1. TEST_IP environment variable
++    2. Docker network inspect for tsisip_sip_edge gateway
++    3. Fallback to 127.0.0.1
++    """
++    env_ip = os.environ.get("TEST_IP")
++    if env_ip:
++        return env_ip
++
++    try:
++        result = subprocess.run(
++            [
++                "docker", "network", "inspect", "tsisip_sip_edge",
++                "--format", "{{range .IPAM.Config}}{{.Gateway}}{{end}}",
++            ],
++            capture_output=True,
++            text=True,
++            timeout=5,
++        )
++        if result.returncode == 0 and result.stdout.strip():
++            return result.stdout.strip().split("\n")[0]
++    except Exception:
++        pass
++
++    return "127.0.0.1"
++
++
+ def _ha1_md5(username: str, realm: str, password: str) -> str:
+     return hashlib.md5(f"{username}:{realm}:{password}".encode()).hexdigest()
+ 
+@@ -24,17 +55,18 @@ def _build_register(
+     nonce: str = None,
+     uri: str = None,
+ ) -> bytes:
++    test_ip = get_test_ip()
+     if uri is None:
+         uri = f"sip:{domain}"
+     msg = (
+         f"REGISTER {uri} SIP/2.0\r\n"
+-        f"Via: SIP/2.0/UDP 172.22.0.1:5061;branch={branch}\r\n"
++        f"Via: SIP/2.0/UDP {test_ip}:5061;branch={branch}\r\n"
+         f"From: <sip:{username}@{domain}>;tag={from_tag}\r\n"
+         f"To: <sip:{username}@{domain}>\r\n"
+         f"Call-ID: {call_id}\r\n"
+         f"CSeq: {cseq} REGISTER\r\n"
+         f"Max-Forwards: 70\r\n"
+-        f"Contact: <sip:{username}@172.22.0.1:5061>\r\n"
++        f"Contact: <sip:{username}@{test_ip}:5061>\r\n"
+     )
+     if with_auth and nonce:
+         ha1 = _ha1_md5(username, domain, "devpass")
+@@ -59,16 +91,17 @@ def _build_invite(
+     domain: str = "dev.tsisip.local",
+     nonce: str = None,
+ ) -> bytes:
++    test_ip = get_test_ip()
+     uri = f"sip:{to_user}@{domain}"
+     msg = (
+         f"INVITE {uri} SIP/2.0\r\n"
+-        f"Via: SIP/2.0/UDP 172.22.0.1:5061;branch={branch}\r\n"
++        f"Via: SIP/2.0/UDP {test_ip}:5061;branch={branch}\r\n"
+         f"From: <sip:{username}@{domain}>;tag={from_tag}\r\n"
+         f"To: <sip:{to_user}@{domain}>\r\n"
+         f"Call-ID: {call_id}\r\n"
+         f"CSeq: {cseq} INVITE\r\n"
+         f"Max-Forwards: 70\r\n"
+-        f"Contact: <sip:{username}@172.22.0.1:5061>\r\n"
++        f"Contact: <sip:{username}@{test_ip}:5061>\r\n"
+     )
+     if nonce:
+         ha1 = _ha1_md5(username, domain, "devpass")
+@@ -81,9 +114,9 @@ def _build_invite(
+         )
+     sdp = (
+         "v=0\r\n"
+-        "o=- 0 0 IN IP4 172.22.0.1\r\n"
++        f"o=- 0 0 IN IP4 {test_ip}\r\n"
+         "s=TSiSIP Test\r\n"
+-        "c=IN IP4 172.22.0.1\r\n"
++        f"c=IN IP4 {test_ip}\r\n"
+         "t=0 0\r\n"
+         "m=audio 10000 RTP/AVP 0 8\r\n"
+         "a=rtpmap:0 PCMU/8000\r\n"
+@@ -122,8 +155,9 @@ class TestEndToEndCall:
+ 
+     def test_register_unauthorized(self):
+         """Unauthenticated REGISTER receives 401 with nonce."""
++        test_ip = get_test_ip()
+         msg = _build_register(
+-            call_id="test-register-001@172.22.0.1",
++            call_id=f"test-register-001@{test_ip}",
+             cseq=1,
+             from_tag="regtag001",
+             branch="z9hG4bK-reg001",
+@@ -134,9 +168,10 @@ class TestEndToEndCall:
+ 
+     def test_register_authenticated(self):
+         """Authenticated REGISTER receives 200 OK."""
++        test_ip = get_test_ip()
+         # Step 1: get nonce
+         msg1 = _build_register(
+-            call_id="test-register-002@172.22.0.1",
++            call_id=f"test-register-002@{test_ip}",
+             cseq=1,
+             from_tag="regtag002",
+             branch="z9hG4bK-reg002",
+@@ -153,7 +188,7 @@ class TestEndToEndCall:
+ 
+         # Step 2: REGISTER with auth
+         msg2 = _build_register(
+-            call_id="test-register-002@172.22.0.1",
++            call_id=f"test-register-002@{test_ip}",
+             cseq=2,
+             from_tag="regtag002",
+             branch="z9hG4bK-reg003",
+diff --git a/tests/integration/test_sip_trunk_failover.py b/tests/integration/test_sip_trunk_failover.py
+index c3e53a7..a360418 100644
+--- a/tests/integration/test_sip_trunk_failover.py
++++ b/tests/integration/test_sip_trunk_failover.py
+@@ -25,6 +25,36 @@ import time
+ import unittest
+ 
+ 
++def get_test_ip() -> str:
++    """Return the IP address to use for SIP test messages.
++
++    Priority:
++    1. TEST_IP environment variable
++    2. Docker network inspect for tsisip_sip_edge gateway
++    3. Fallback to 127.0.0.1
++    """
++    env_ip = os.environ.get("TEST_IP")
++    if env_ip:
++        return env_ip
++
++    try:
++        result = subprocess.run(
++            [
++                "docker", "network", "inspect", "tsisip_sip_edge",
++                "--format", "{{range .IPAM.Config}}{{.Gateway}}{{end}}",
++            ],
++            capture_output=True,
++            text=True,
++            timeout=5,
++        )
++        if result.returncode == 0 and result.stdout.strip():
++            return result.stdout.strip().split("\n")[0]
++    except Exception:
++        pass
++
++    return "127.0.0.1"
++
++
+ TARGET_HOST = os.environ.get("TARGET_HOST", "opensips")
+ TARGET_PORT = int(os.environ.get("TARGET_PORT", "5060"))
+ COMPOSE_FILE = os.environ.get("COMPOSE_FILE", "docker-compose.yml")
+@@ -82,16 +112,17 @@ def _build_register(
+     with_auth: bool = False,
+     nonce: str = None,
+ ) -> bytes:
++    test_ip = get_test_ip()
+     uri = f"sip:{TEST_DOMAIN}"
+     msg = (
+         f"REGISTER {uri} SIP/2.0\r\n"
+-        f"Via: SIP/2.0/UDP 172.22.0.1:5061;branch={branch}\r\n"
++        f"Via: SIP/2.0/UDP {test_ip}:5061;branch={branch}\r\n"
+         f"From: <sip:{TEST_CALLER}@{TEST_DOMAIN}>;tag={from_tag}\r\n"
+         f"To: <sip:{TEST_CALLER}@{TEST_DOMAIN}>\r\n"
+         f"Call-ID: {call_id}\r\n"
+         f"CSeq: {cseq} REGISTER\r\n"
+         f"Max-Forwards: 70\r\n"
+-        f"Contact: <sip:{TEST_CALLER}@172.22.0.1:5061>\r\n"
++        f"Contact: <sip:{TEST_CALLER}@{test_ip}:5061>\r\n"
+     )
+     if with_auth and nonce:
+         ha1 = _ha1_md5(TEST_CALLER, TEST_DOMAIN, TEST_PASSWORD)
+@@ -116,16 +147,17 @@ def _build_invite(
+     with_auth: bool = False,
+     nonce: str = None,
+ ) -> bytes:
++    test_ip = get_test_ip()
+     uri = f"sip:{to_user}@{to_domain}"
+     msg = (
+         f"INVITE {uri} SIP/2.0\r\n"
+-        f"Via: SIP/2.0/UDP 172.22.0.1:5061;branch={branch}\r\n"
++        f"Via: SIP/2.0/UDP {test_ip}:5061;branch={branch}\r\n"
+         f"From: <sip:{TEST_CALLER}@{TEST_DOMAIN}>;tag={from_tag}\r\n"
+         f"To: <sip:{to_user}@{to_domain}>\r\n"
+         f"Call-ID: {call_id}\r\n"
+         f"CSeq: {cseq} INVITE\r\n"
+         f"Max-Forwards: 70\r\n"
+-        f"Contact: <sip:{TEST_CALLER}@172.22.0.1:5061>\r\n"
++        f"Contact: <sip:{TEST_CALLER}@{test_ip}:5061>\r\n"
+     )
+     if with_auth and nonce:
+         ha1 = _ha1_md5(TEST_CALLER, TEST_DOMAIN, TEST_PASSWORD)
+@@ -138,9 +170,9 @@ def _build_invite(
+         )
+     sdp = (
+         "v=0\r\n"
+-        "o=- 0 0 IN IP4 172.22.0.1\r\n"
++        f"o=- 0 0 IN IP4 {test_ip}\r\n"
+         "s=TSiSIP Test\r\n"
+-        "c=IN IP4 172.22.0.1\r\n"
++        f"c=IN IP4 {test_ip}\r\n"
+         "t=0 0\r\n"
+         "m=audio 10000 RTP/AVP 0 8\r\n"
+         "a=rtpmap:0 PCMU/8000\r\n"
+@@ -263,15 +295,16 @@ class MockTrunkServer(threading.Thread):
+ class TestSipTrunkFailover(unittest.TestCase):
+     @classmethod
+     def setUpClass(cls):
++        test_ip = get_test_ip()
+         ping = (
+             b"OPTIONS sip:" + TARGET_HOST.encode() + b":" + str(TARGET_PORT).encode() + b" SIP/2.0\r\n"
+-            b"Via: SIP/2.0/UDP 172.22.0.1:5061;branch=z9hG4bK-ping\r\n"
+-            b"From: <sip:test@localhost>;tag=ping\r\n"
+-            b"To: <sip:" + TARGET_HOST.encode() + b":" + str(TARGET_PORT).encode() + b">\r\n"
+-            b"Call-ID: ping-001@172.22.0.1\r\n"
+-            b"CSeq: 1 OPTIONS\r\n"
+-            b"Max-Forwards: 70\r\n"
+-            b"Content-Length: 0\r\n\r\n"
++            + f"Via: SIP/2.0/UDP {test_ip}:5061;branch=z9hG4bK-ping\r\n".encode()
++            + b"From: <sip:test@localhost>;tag=ping\r\n"
++            + b"To: <sip:" + TARGET_HOST.encode() + b":" + str(TARGET_PORT).encode() + b">\r\n"
++            + f"Call-ID: ping-001@{test_ip}\r\n".encode()
++            + b"CSeq: 1 OPTIONS\r\n"
++            + b"Max-Forwards: 70\r\n"
++            + b"Content-Length: 0\r\n\r\n"
+         )
+         try:
+             resp = _send_and_collect(ping, timeout=3)
+@@ -312,7 +345,7 @@ class TestSipTrunkFailover(unittest.TestCase):
+ 
+     def _authenticate(self) -> str:
+         reg1 = _build_register(
+-            call_id="trunk-fail-reg-001@172.22.0.1",
++            call_id=f"trunk-fail-reg-001@{get_test_ip()}",
+             cseq=1,
+             from_tag="fail001",
+             branch="z9hG4bK-fail001",
+@@ -330,7 +363,7 @@ class TestSipTrunkFailover(unittest.TestCase):
+         self.assertIsNotNone(nonce)
+ 
+         reg2 = _build_register(
+-            call_id="trunk-fail-reg-001@172.22.0.1",
++            call_id=f"trunk-fail-reg-001@{get_test_ip()}",
+             cseq=2,
+             from_tag="fail001",
+             branch="z9hG4bK-fail002",
+@@ -343,7 +376,7 @@ class TestSipTrunkFailover(unittest.TestCase):
+         invite1 = _build_invite(
+             to_user="+1234567890",
+             to_domain="pstn",
+-            call_id="trunk-fail-inv-001@172.22.0.1",
++            call_id=f"trunk-fail-inv-001@{get_test_ip()}",
+             cseq=1,
+             from_tag="fail003",
+             branch="z9hG4bK-fail003",
+@@ -369,7 +402,7 @@ class TestSipTrunkFailover(unittest.TestCase):
+         invite2 = _build_invite(
+             to_user="+1234567890",
+             to_domain="pstn",
+-            call_id="trunk-fail-inv-002@172.22.0.1",
++            call_id=f"trunk-fail-inv-002@{get_test_ip()}",
+             cseq=2,
+             from_tag="fail004",
+             branch="z9hG4bK-fail004",

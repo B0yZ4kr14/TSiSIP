@@ -25,6 +25,36 @@ import time
 import unittest
 
 
+def get_test_ip() -> str:
+    """Return the IP address to use for SIP test messages.
+
+    Priority:
+    1. TEST_IP environment variable
+    2. Docker network inspect for tsisip_sip_edge gateway
+    3. Fallback to 127.0.0.1
+    """
+    env_ip = os.environ.get("TEST_IP")
+    if env_ip:
+        return env_ip
+
+    try:
+        result = subprocess.run(
+            [
+                "docker", "network", "inspect", "tsisip_sip_edge",
+                "--format", "{{range .IPAM.Config}}{{.Gateway}}{{end}}",
+            ],
+            capture_output=True,
+            text=True,
+            timeout=5,
+        )
+        if result.returncode == 0 and result.stdout.strip():
+            return result.stdout.strip().split("\n")[0]
+    except Exception:
+        pass
+
+    return "127.0.0.1"
+
+
 TARGET_HOST = os.environ.get("TARGET_HOST", "opensips")
 TARGET_PORT = int(os.environ.get("TARGET_PORT", "5060"))
 COMPOSE_FILE = os.environ.get("COMPOSE_FILE", "docker-compose.yml")
@@ -82,16 +112,17 @@ def _build_register(
     with_auth: bool = False,
     nonce: str = None,
 ) -> bytes:
+    test_ip = get_test_ip()
     uri = f"sip:{TEST_DOMAIN}"
     msg = (
         f"REGISTER {uri} SIP/2.0\r\n"
-        f"Via: SIP/2.0/UDP 172.22.0.1:5061;branch={branch}\r\n"
+        f"Via: SIP/2.0/UDP {test_ip}:5061;branch={branch}\r\n"
         f"From: <sip:{TEST_CALLER}@{TEST_DOMAIN}>;tag={from_tag}\r\n"
         f"To: <sip:{TEST_CALLER}@{TEST_DOMAIN}>\r\n"
         f"Call-ID: {call_id}\r\n"
         f"CSeq: {cseq} REGISTER\r\n"
         f"Max-Forwards: 70\r\n"
-        f"Contact: <sip:{TEST_CALLER}@172.22.0.1:5061>\r\n"
+        f"Contact: <sip:{TEST_CALLER}@{test_ip}:5061>\r\n"
     )
     if with_auth and nonce:
         ha1 = _ha1_md5(TEST_CALLER, TEST_DOMAIN, TEST_PASSWORD)
@@ -116,16 +147,17 @@ def _build_invite(
     with_auth: bool = False,
     nonce: str = None,
 ) -> bytes:
+    test_ip = get_test_ip()
     uri = f"sip:{to_user}@{to_domain}"
     msg = (
         f"INVITE {uri} SIP/2.0\r\n"
-        f"Via: SIP/2.0/UDP 172.22.0.1:5061;branch={branch}\r\n"
+        f"Via: SIP/2.0/UDP {test_ip}:5061;branch={branch}\r\n"
         f"From: <sip:{TEST_CALLER}@{TEST_DOMAIN}>;tag={from_tag}\r\n"
         f"To: <sip:{to_user}@{to_domain}>\r\n"
         f"Call-ID: {call_id}\r\n"
         f"CSeq: {cseq} INVITE\r\n"
         f"Max-Forwards: 70\r\n"
-        f"Contact: <sip:{TEST_CALLER}@172.22.0.1:5061>\r\n"
+        f"Contact: <sip:{TEST_CALLER}@{test_ip}:5061>\r\n"
     )
     if with_auth and nonce:
         ha1 = _ha1_md5(TEST_CALLER, TEST_DOMAIN, TEST_PASSWORD)
@@ -138,9 +170,9 @@ def _build_invite(
         )
     sdp = (
         "v=0\r\n"
-        "o=- 0 0 IN IP4 172.22.0.1\r\n"
+        f"o=- 0 0 IN IP4 {test_ip}\r\n"
         "s=TSiSIP Test\r\n"
-        "c=IN IP4 172.22.0.1\r\n"
+        f"c=IN IP4 {test_ip}\r\n"
         "t=0 0\r\n"
         "m=audio 10000 RTP/AVP 0 8\r\n"
         "a=rtpmap:0 PCMU/8000\r\n"
@@ -263,15 +295,16 @@ class MockTrunkServer(threading.Thread):
 class TestSipTrunkFailover(unittest.TestCase):
     @classmethod
     def setUpClass(cls):
+        test_ip = get_test_ip()
         ping = (
             b"OPTIONS sip:" + TARGET_HOST.encode() + b":" + str(TARGET_PORT).encode() + b" SIP/2.0\r\n"
-            b"Via: SIP/2.0/UDP 172.22.0.1:5061;branch=z9hG4bK-ping\r\n"
-            b"From: <sip:test@localhost>;tag=ping\r\n"
-            b"To: <sip:" + TARGET_HOST.encode() + b":" + str(TARGET_PORT).encode() + b">\r\n"
-            b"Call-ID: ping-001@172.22.0.1\r\n"
-            b"CSeq: 1 OPTIONS\r\n"
-            b"Max-Forwards: 70\r\n"
-            b"Content-Length: 0\r\n\r\n"
+            + f"Via: SIP/2.0/UDP {test_ip}:5061;branch=z9hG4bK-ping\r\n".encode()
+            + b"From: <sip:test@localhost>;tag=ping\r\n"
+            + b"To: <sip:" + TARGET_HOST.encode() + b":" + str(TARGET_PORT).encode() + b">\r\n"
+            + f"Call-ID: ping-001@{test_ip}\r\n".encode()
+            + b"CSeq: 1 OPTIONS\r\n"
+            + b"Max-Forwards: 70\r\n"
+            + b"Content-Length: 0\r\n\r\n"
         )
         try:
             resp = _send_and_collect(ping, timeout=3)
@@ -312,7 +345,7 @@ class TestSipTrunkFailover(unittest.TestCase):
 
     def _authenticate(self) -> str:
         reg1 = _build_register(
-            call_id="trunk-fail-reg-001@172.22.0.1",
+            call_id=f"trunk-fail-reg-001@{get_test_ip()}",
             cseq=1,
             from_tag="fail001",
             branch="z9hG4bK-fail001",
@@ -330,7 +363,7 @@ class TestSipTrunkFailover(unittest.TestCase):
         self.assertIsNotNone(nonce)
 
         reg2 = _build_register(
-            call_id="trunk-fail-reg-001@172.22.0.1",
+            call_id=f"trunk-fail-reg-001@{get_test_ip()}",
             cseq=2,
             from_tag="fail001",
             branch="z9hG4bK-fail002",
@@ -343,7 +376,7 @@ class TestSipTrunkFailover(unittest.TestCase):
         invite1 = _build_invite(
             to_user="+1234567890",
             to_domain="pstn",
-            call_id="trunk-fail-inv-001@172.22.0.1",
+            call_id=f"trunk-fail-inv-001@{get_test_ip()}",
             cseq=1,
             from_tag="fail003",
             branch="z9hG4bK-fail003",
@@ -369,7 +402,7 @@ class TestSipTrunkFailover(unittest.TestCase):
         invite2 = _build_invite(
             to_user="+1234567890",
             to_domain="pstn",
-            call_id="trunk-fail-inv-002@172.22.0.1",
+            call_id=f"trunk-fail-inv-002@{get_test_ip()}",
             cseq=2,
             from_tag="fail004",
             branch="z9hG4bK-fail004",

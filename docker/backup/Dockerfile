@@ -48,7 +48,7 @@ ENV BACKUP_SCHEDULE="0 2 * * *" \
     METRICS_ADDR=0.0.0.0
 
 # Health check
-HEALTHCHECK --interval=60s --timeout=10s --start-period=30s --retries=3 \
+HEALTHCHECK --interval=30s --timeout=10s --start-period=30s --retries=3 \
     CMD pg_isready -h "$PGHOST" -p "$PGPORT" -U "$PGUSER" || exit 1
 
 ENTRYPOINT ["/usr/local/bin/entrypoint.sh"]

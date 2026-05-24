@@ -35,12 +35,27 @@ openssl req -x509 -newkey rsa:2048 -keyout "${PROJECT_ROOT}/secrets/server.key" 
 cp "${PROJECT_ROOT}/secrets/server.crt" "${PROJECT_ROOT}/secrets/ca.crt"
 touch "${PROJECT_ROOT}/secrets/crl.pem"
 
+# Discover Docker network IPs dynamically
+discover_network_ip() {
+    local network="$1"
+    local ip
+    ip=$(docker network inspect "${network}" --format='{{range .IPAM.Config}}{{.Gateway}}{{end}}' 2>/dev/null || true)
+    if [[ -z "${ip}" ]]; then
+        echo "[ERROR] Failed to discover IP for Docker network: ${network}" >&2
+        exit 1
+    fi
+    echo "${ip}"
+}
+
+RTPENGINE_PRIVATE_IP=$(discover_network_ip "tsisip_sip_edge")
+RTPENGINE_INTERNAL_IP=$(discover_network_ip "tsisip_sip_internal")
+
 # .env de teste
-cat > "${PROJECT_ROOT}/.env" <<'ENVEOF'
+cat > "${PROJECT_ROOT}/.env" <<ENVEOF
 OPENSIPS_LISTEN_IP=0.0.0.0
 HOST_PUBLIC_IP=127.0.0.1
-RTPENGINE_PRIVATE_IP=172.19.0.1
-RTPENGINE_INTERNAL_IP=172.21.0.1
+RTPENGINE_PRIVATE_IP=${RTPENGINE_PRIVATE_IP}
+RTPENGINE_INTERNAL_IP=${RTPENGINE_INTERNAL_IP}
 ENVEOF
 
 # Subir stack
@@ -54,6 +69,7 @@ for i in {1..30}; do
         log_info "PostgreSQL OK."
         break
     fi
+    # Poll PostgreSQL health every 2 seconds until healthy or timeout
     sleep 2
 done
 
@@ -64,6 +80,7 @@ for i in {1..30}; do
         log_info "OpenSIPS OK."
         break
     fi
+    # Poll OpenSIPS health every 2 seconds until healthy or timeout
     sleep 2
 done
 
@@ -74,6 +91,7 @@ for i in {1..30}; do
         log_info "OCP responde em :8084."
         break
     fi
+    # Poll OCP endpoint every 2 seconds until responsive or timeout
     sleep 2
 done
 
