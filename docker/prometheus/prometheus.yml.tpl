@@ -50,6 +50,13 @@ scrape_configs:
       - targets: ['certbot-exporter:9101']
     metrics_path: /metrics
 
+  # Backup Metrics Exporter
+  - job_name: 'backup'
+    scrape_interval: 60s
+    static_configs:
+      - targets: ['backup:9101']
+    metrics_path: /
+
   # Prometheus self-monitoring
   - job_name: 'prometheus'
     scrape_interval: 15s
