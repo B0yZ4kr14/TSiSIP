@@ -78,16 +78,16 @@ Without this refactor:
 
 ## Acceptance Criteria
 
-- [ ] AC1: Architecture decision record (ADR) approves either MI command or REST API approach for subscriber proxy
-- [ ] AC2: Proxy implementation accepts precomputed HA1 hashes and writes to `subscriber` table via validated PDO prepared statements
+- [x] AC1: Architecture decision record (ADR) approves either MI command or REST API approach for subscriber proxy
+- [x] AC2: Proxy implementation accepts precomputed HA1 hashes and writes to `subscriber` table via validated PDO prepared statements
 - [x] AC3: `web/subscribers.php` contains zero `INSERT INTO subscriber`, `UPDATE subscriber`, or `DELETE FROM subscriber` statements. This supersedes the former R6 requirement.
-- [ ] AC4: All subscriber mutations route through the proxy layer; OCP never writes to `subscriber` directly
-- [ ] AC5: HA1 generation (`generateHa1Hashes()`) remains in OCP; hashes passed to proxy in request payload
-- [ ] AC6: Audit logging covers success and failure paths for all subscriber operations on the proxy layer
+- [x] AC4: All subscriber mutations route through the proxy layer; OCP never writes to `subscriber` directly
+- [x] AC5: HA1 generation (`generateHa1Hashes()`) remains in OCP; hashes passed to proxy in request payload
+- [x] AC6: Audit logging covers success and failure paths for all subscriber operations on the proxy layer
 - [x] AC7: Rate limiting enforces hard thresholds: max 10 subscriber creations, 30 updates, and 10 deletions per minute per source IP. Thresholds are configurable via environment variables (`SUBSCRIBER_CREATE_RATE_LIMIT`, `SUBSCRIBER_UPDATE_RATE_LIMIT`, `SUBSCRIBER_DELETE_RATE_LIMIT`).
 - [x] AC8: OCP-to-proxy communication is confined to the internal Docker network (`sip_internal`). The network is not routable from the host or internet; TLS is not required because traffic never leaves the container network boundary.
-- [ ] AC9: Security assessment document exists and is approved
-- [ ] AC10: Threat model covers proxy injection, unauthorized subscriber modification, and hash tampering risks
+- [x] AC9: Security assessment document exists and is approved
+- [x] AC10: Threat model covers proxy injection, unauthorized subscriber modification, and hash tampering risks
 
 ## Architecture Decisions
 

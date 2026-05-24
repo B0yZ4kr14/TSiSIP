@@ -45,7 +45,7 @@ On 2026-05-24, the backup pipeline was revalidated on the VPS: **WAL archiving a
 | 020 — Brownfield Security Production Hardening | ✅ | Implemented |
 | 021 — VPS Go-Live Stabilization | ✅ | Stack healthy on VPS; 20 evidence files in `.sisyphus/evidence/022/` |
 | 022 — Subscriber CRUD Refactor | 🔄 In progress | Proxy client integration ongoing |
-| 023 — (reserved) | — | — |
+| 023 — Subscriber CRUD Refactor | **Complete** — All 10 ACs verified; proxy layer operational; OCP zero direct writes | 2026-05-24 |
 
 ---
 
