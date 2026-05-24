@@ -76,6 +76,9 @@ W0 (Security) → W1 (CRUD) → W2 (MI/Stats) → W3 (TLS) → W4 (Validation)
 | AC8b (Audit failure logging) | T2.11 |
 | AC9 (security assessment) | T0.1 |
 | AC10 (threat model) | T0.2 |
+| R8 (XSS prevention) | T2.3 |
+| R9 (User-friendly MI errors) | T2.3, T2.11 |
+| R10 (Failed MI logged) | T2.11 |
 
 ## Wave 5: Architecture Refactor Tasks
 
