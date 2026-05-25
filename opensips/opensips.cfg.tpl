@@ -111,6 +111,7 @@ modparam("dispatcher", "ds_ping_method", "OPTIONS")
 modparam("dispatcher", "ds_ping_interval", 30)
 modparam("dispatcher", "ds_probing_mode", 1)
 modparam("dispatcher", "ds_probing_threshold", 2)
+modparam("dispatcher", "persistent_state", 1)
 
 # T3.1: Load-based dispatcher routing
 modparam("dispatcher", "ds_ping_from", "sip:healthcheck@localhost")
@@ -352,36 +353,46 @@ route {
 }
 
 # --- Reply Route ---
-onreply_route {
+onreply_route[REPLY_MANAGE] {
     # Handle negative replies for failure routing
     if ($rs =~ "^(408|500|502|503|504)$") {
         xlog("L_WARN", "Failure reply $rs from $si - triggering failover\n");
     }
 
-    # T4.2/T4.3: Handle SDP answer for SRTP on 2xx replies to INVITE/re-INVITE
-    if ($rs =~ "^2[0-9][0-9]$" && has_body("application/sdp")) {
-        if (!rtpengine_answer("replace-origin replace-session-connection")) {
+    # T4.2/T4.3: Handle SDP answer for SRTP on 183-299 replies to INVITE/re-INVITE
+    if ($rs >= 183 && $rs < 300 && has_body("application/sdp")) {
+        if (!rtpengine_answer("replace-origin replace-session-connection ICE=remove")) {
             xlog("L_ERR", "RTPengine answer failed for $ci\n");
         }
     }
+
+    # Canonical: strip topology-leaking headers from replies
+    remove_hf("Server");
+    remove_hf("X-Tenant-ID");
 }
 
 # --- Failure Route ---
-failure_route[FAILOVER] {
-    if (0) {
+failure_route[FAILURE_MANAGE] {
+    # Do not failover on auth, busy, or redirect replies
+    if (t_check_status("401|407|486|6[0-9][0-9]")) {
         exit;
     }
 
-    # Dispatcher failover on failure
+    # Dispatcher failover on transient failures
     if (t_check_status("408|500|502|503|504")) {
+        ds_mark_dst("p");
         if (ds_next_dst()) {
-            t_on_failure("FAILOVER");
+            t_on_reply("REPLY_MANAGE");
+            t_on_failure("FAILURE_MANAGE");
             route(RELAY);
             exit;
         }
     }
 
-    xlog("L_ERR", "All dispatcher targets failed for $ru\n");
+    # All destinations exhausted — clean up RTP and reply 503
+    rtpengine_delete();
+    xlog("L_ERR", "All dispatcher targets failed for $ru — replying 503\n");
+    t_reply("503", "Service Unavailable");
 }
 
 # --- Branch Route ---
@@ -566,13 +577,13 @@ route[HANDLE_INVITE] {
     # T4.2: Media relay offer with SRTP for TLS-signaled calls
     if ($socket_in(proto) == "TLS") {
         # SRTP via SDES for TLS connections
-        if (!rtpengine_offer("RTP/SAVP replace-origin replace-session-connection")) {
+        if (!rtpengine_offer("RTP/SAVP replace-origin replace-session-connection ICE=remove")) {
             sl_send_reply(488, "Not Acceptable Here");
             exit;
         }
     } else {
         # Plain RTP for non-TLS connections
-        if (!rtpengine_offer("replace-origin replace-session-connection")) {
+        if (!rtpengine_offer("replace-origin replace-session-connection ICE=remove")) {
             sl_send_reply(488, "Not Acceptable Here");
             exit;
         }
@@ -582,13 +593,13 @@ route[HANDLE_INVITE] {
 route[SRTP_REOFFER] {
     # T4.3: Re-INVITE with SDP (hold/resume) - renegotiate SRTP context
     if ($socket_in(proto) == "TLS") {
-        if (!rtpengine_offer("RTP/SAVP replace-origin replace-session-connection")) {
+        if (!rtpengine_offer("RTP/SAVP replace-origin replace-session-connection ICE=remove")) {
             xlog("L_WARN", "SRTP re-offer failed for $ci\n");
             sl_send_reply(488, "Not Acceptable Here");
             exit;
         }
     } else {
-        if (!rtpengine_offer("replace-origin replace-session-connection")) {
+        if (!rtpengine_offer("replace-origin replace-session-connection ICE=remove")) {
             xlog("L_WARN", "RTP re-offer failed for $ci\n");
             sl_send_reply(488, "Not Acceptable Here");
             exit;
@@ -844,15 +855,15 @@ branch_route[BRANCH_TRUNK_SRTP] {
     xlog("L_INFO", "BRANCH_TRUNK_SRTP: branch to trunk $var(trunk_name) ($du)\n");
 
     if ($var(trunk_srtp) == "sdes") {
-        if (!rtpengine_offer("RTP/SAVP replace-origin replace-session-connection")) {
+        if (!rtpengine_offer("RTP/SAVP replace-origin replace-session-connection ICE=remove")) {
             xlog("L_ERR", "BRANCH_TRUNK_SRTP: SRTP offer failed for $ci\n");
         }
     } else if ($var(trunk_srtp) == "dtls") {
-        if (!rtpengine_offer("UDP/TLS/RTP/SAVP replace-origin replace-session-connection")) {
+        if (!rtpengine_offer("UDP/TLS/RTP/SAVP replace-origin replace-session-connection ICE=remove")) {
             xlog("L_ERR", "BRANCH_TRUNK_SRTP: DTLS-SRTP offer failed for $ci\n");
         }
     } else {
-        if (!rtpengine_offer("replace-origin replace-session-connection")) {
+        if (!rtpengine_offer("replace-origin replace-session-connection ICE=remove")) {
             xlog("L_ERR", "BRANCH_TRUNK_SRTP: RTP offer failed for $ci\n");
         }
     }
@@ -927,7 +938,7 @@ route[RELAY] {
 
     # Set branch and failure handlers
     t_on_branch("BRANCH_MANAGE");
-    t_on_failure("FAILOVER");
+    t_on_failure("FAILURE_MANAGE");
 
     # Relay statefully
     if (!t_relay()) {

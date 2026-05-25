@@ -16,7 +16,7 @@ In plain terms:
 - Asterisk and PostgreSQL live on isolated Docker networks with zero host-published ports.
 - An OCP (OpenSIPS Control Panel) v9 web interface provides operational dashboards, role-based wiki, and tenant management.
 
-The project follows **Spec-Driven Development (SDD)** via Speckit, with 23 tracked feature specifications (001–023).
+The project follows **Spec-Driven Development (SDD)** via Speckit, with 24 tracked feature specifications (001–024).
 
 ---
 
@@ -310,7 +310,7 @@ TSiSIP/
 │   ├── README.md
 │   ├── README-VPS-DEPLOY.md
 │   └── VPS-DEPLOY-READINESS.md
-├── specs/                              # Speckit SDD artifacts (001–023)
+├── specs/                              # Speckit SDD artifacts (001–024)
 │   ├── 001-opensips-docker-edge-proxy/
 │   ├── 002-tsisip-ocp-rebrand/
 │   ├── 003-prometheus-grafana-observability/
