@@ -483,6 +483,38 @@ for f in web/common/audit.php web/audit-log.php web/audit-export.php \
 done
 ```
 
+**Unified Nginx Reverse Proxy + Cloudflare Origin CA (VPS Production):**
+
+```bash
+# The unified nginx container runs in TSiAPP project and proxies to both
+# TSiAPP services and TSiSIP OCP. It uses Cloudflare Origin CA certificates
+# with 15-year validity (expires 2041-05-21).
+#
+# Certificate files (in TSiSIP/deploy/nginx/ssl/):
+#   tsiapp.io.crt      — Cloudflare Origin CA ECC certificate
+#   tsiapp.io.key      — private key (gitignored)
+#   cloudflare_origin_ca_rsa_root.pem — CA root for verification
+#
+# Cloudflare SSL/TLS mode: Full (encrypts origin traffic)
+# DNS records (proxied): tsiapp.io → 179.190.15.116
+#
+# Endpoints served:
+#   https://tsiapp.io/              → LandPages
+#   https://tsiapp.io/TSiSIP/       → TSiSIP OCP
+#   https://tsiapp.io/TSiSIP/wiki/  → Static wiki index
+#   https://tsiapp.io/OrthoPlus-Enterprise/ → OrthoPlus
+#   https://tsiapp.io/TSiMUSIC/     → TSiMUSIC
+#   https://tsiapp.io/TSiView/      → TSiView
+
+# Validate nginx config syntax
+docker exec tsiapp-nginx nginx -t
+
+# Test all HTTPS endpoints locally (skip cert verification)
+for path in / /TSiSIP/ /TSiSIP/wiki/ /OrthoPlus-Enterprise/ /TSiMUSIC/ /TSiView/; do
+  curl -sk -o /dev/null -w "%{http_code}" "https://localhost$path"
+done
+```
+
 **Automated TLS Certificate Rotation tests (Feature 015 Wave 5):**
 
 ```bash
