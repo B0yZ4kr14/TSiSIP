@@ -67,6 +67,10 @@ jobs:
             echo "ansible-playbook not available, skipping"
           fi
 
+      - name: Validate DDL traceability (R10)
+        run: |
+          python3 scripts/validate-ddl-traceability.py
+
       - name: Check for committed secrets
         run: |
           FAIL=0
