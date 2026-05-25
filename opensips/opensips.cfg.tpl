@@ -110,7 +110,7 @@ modparam("dispatcher", "ds_ping_method", "OPTIONS")
 # Per-destination attrs override: ping_interval=30 for PBX backends if needed.
 modparam("dispatcher", "ds_ping_interval", 30)
 modparam("dispatcher", "ds_probing_mode", 1)
-modparam("dispatcher", "ds_probing_threshold", 3)
+modparam("dispatcher", "ds_probing_threshold", 2)
 
 # T3.1: Load-based dispatcher routing
 modparam("dispatcher", "ds_ping_from", "sip:healthcheck@localhost")
@@ -210,7 +210,7 @@ modparam("uac_auth", "auth_realm_avp", "$avp(trunk_auth_realm)")
 # Trunk health probes use dispatcher setid 100.
 # Per-destination ping_interval should be set via dispatcher table attrs column
 # (e.g., attrs='ping_interval=30;ping_from=sip:healthcheck@tsisip') or MI.
-# Global ds_probing_threshold=5 applies; setid-specific destinations are
+# Global ds_probing_threshold=2 applies; setid-specific destinations are
 # populated via SQL insert into dispatcher(setid=100) or MI ds_reload.
 # --- END TRUNK INTEGRATION WAVE 2: Dispatcher Trunk Probe Documentation ---
 
@@ -244,6 +244,9 @@ route {
         }
     } else {
         # In-dialog request
+        if (topology_hiding_match()) {
+            # Topology hiding matched - continue with loose_route
+        }
         if (loose_route()) {
             # T4.3: Handle re-INVITE SDP for SRTP hold/resume
             if (is_method("INVITE") && has_body("application/sdp")) {
@@ -357,7 +360,7 @@ onreply_route {
 
     # T4.2/T4.3: Handle SDP answer for SRTP on 2xx replies to INVITE/re-INVITE
     if ($rs =~ "^2[0-9][0-9]$" && has_body("application/sdp")) {
-        if (!rtpengine_answer()) {
+        if (!rtpengine_answer("replace-origin replace-session-connection")) {
             xlog("L_ERR", "RTPengine answer failed for $ci\n");
         }
     }
@@ -398,9 +401,8 @@ route[SANITIZE] {
     remove_hf("X-Tenant-ID");
     remove_hf("X-Backend-ID");
     remove_hf("X-Route-Override");
-    # Strip credentials before forwarding (prevent credential leakage)
-    remove_hf("Authorization");
-    remove_hf("Proxy-Authorization");
+    # NOTE: Authorization/Proxy-Authorization stripping moved to route[RELAY]
+    # to ensure auth modules can validate credentials before removal
 }
 
 route[AUTH] {
@@ -914,6 +916,10 @@ route[INBOUND_DID_ROUTING] {
 }
 
 route[RELAY] {
+    # Strip auth credentials before forwarding to backend (prevent credential leakage)
+    remove_hf("Authorization");
+    remove_hf("Proxy-Authorization");
+
     # Add Record-Route for dialog path
     if (is_method("INVITE|SUBSCRIBE|REFER")) {
         record_route();

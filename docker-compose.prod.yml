@@ -4,6 +4,7 @@ services:
     networks:
     - db_internal
     restart: unless-stopped
+    shm_size: 2gb
     command:
     - postgres
     - -c
@@ -57,7 +58,6 @@ services:
   rtpengine:
     image: ghcr.io/b0yz4kr14/tsisip/rtpengine:${TSISIP_IMAGE_TAG:?must be set}
     networks:
-    - sip_edge
     - sip_internal
     restart: on-failure
     ports:

@@ -137,7 +137,6 @@ services:
       context: ./docker/rtpengine
     image: tsisip/rtpengine:${TSISIP_IMAGE_TAG:?must be set}
     networks:
-    - sip_edge
     - sip_internal
     restart: on-failure
     deploy:
@@ -147,12 +146,12 @@ services:
         reservations:
           memory: 1G
     ports:
-    - 10000-10050:10000-10050/udp
+    - 10000-20000:10000-20000/udp
     command:
     - --interface=${RTPENGINE_PRIVATE_IP}/${HOST_PUBLIC_IP}
-    - --listen-ng=0.0.0.0:22222
+    - --listen-ng=${RTPENGINE_INTERNAL_IP}:22222
     - --port-min=10000
-    - --port-max=10050
+    - --port-max=20000
     - --log-stderr
     - --foreground
     - --dtls-passive
@@ -432,7 +431,7 @@ services:
       retries: 3
       start_period: 30s
   alertmanager:
-    image: prom/alertmanager:v0.27.0
+    image: prom/alertmanager:v0.27.0@sha256:e13b6ed5cb929eeaee733479dce55e10eb3bc2e9c4586c705a4e8da41e5eacf5
     networks:
     - db_internal
     restart: on-failure
