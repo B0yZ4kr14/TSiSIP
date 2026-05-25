@@ -17,7 +17,7 @@ COPY --from=builder /usr/lib/libidn2.so.0 /usr/lib/libidn2.so.0
 COPY --from=builder /usr/lib/libunistring.so.5 /usr/lib/libunistring.so.5
 COPY --from=builder /usr/lib/libssl.so.3 /usr/lib/libssl.so.3
 COPY --from=builder /usr/lib/libcrypto.so.3 /usr/lib/libcrypto.so.3
-COPY --from=builder /usr/lib/libz.so.1 /usr/lib/libz.so.1
+COPY --from=builder /lib/libz.so.1 /lib/libz.so.1
 
 # Copy configuration templates
 COPY prometheus.yml.tpl /etc/prometheus/prometheus.yml.tpl
