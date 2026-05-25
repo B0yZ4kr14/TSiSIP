@@ -1,0 +1,38 @@
+schema_version: "1.0"
+workflow:
+  id: "security-review"
+  name: "Security Review Cycle"
+  version: "1.0.0"
+  author: "TSiSIP"
+  description: "Plan -> audit -> apply -> export for security governance"
+
+requires:
+  speckit_version: ">=0.8.5"
+  integrations:
+    any:
+    - claude
+    - copilot
+
+steps:
+  - id: plan
+    name: "Security Review Plan"
+    command: "/speckit.security-review.plan"
+    description: "Generate security-constraints.md for the feature"
+
+  - id: audit
+    name: "Security Audit"
+    command: "/speckit.security-review.audit"
+    description: "Run full security audit against plan and codebase"
+    depends_on: [plan]
+
+  - id: apply
+    name: "Apply Security Fixes"
+    command: "/speckit.security-review.apply"
+    description: "Apply staged security fixes with evidence"
+    depends_on: [audit]
+
+  - id: export
+    name: "Export Security Report"
+    command: "/speckit.security-review.export"
+    description: "Export findings and evidence to docs/security/"
+    depends_on: [apply]

@@ -1,0 +1,38 @@
+schema_version: "1.0"
+workflow:
+  id: "brownfield"
+  name: "Brownfield Remediation Cycle"
+  version: "1.0.0"
+  author: "TSiSIP"
+  description: "Runs scan -> validate -> fix -> verify for brownfield hygiene"
+
+requires:
+  speckit_version: ">=0.8.5"
+  integrations:
+    any:
+    - claude
+    - copilot
+
+steps:
+  - id: scan
+    name: "Brownfield Scan"
+    command: "/speckit.brownfield.scan"
+    description: "Execute brownfield scan to identify technical debt"
+
+  - id: validate
+    name: "Validate Findings"
+    command: "/speckit.brownfield.validate"
+    description: "Confirm baseline and prioritize findings"
+    depends_on: [scan]
+
+  - id: fix
+    name: "Fix Findings"
+    command: "/speckit.fix-findings"
+    description: "Apply automated fixes for HIGH/MEDIUM findings"
+    depends_on: [validate]
+
+  - id: verify
+    name: "Post-Fix Verification"
+    command: "/speckit.brownfield.validate"
+    description: "Re-run scan to verify zero HIGH/MEDIUM post-fix"
+    depends_on: [fix]
