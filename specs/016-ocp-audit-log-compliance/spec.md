@@ -5,7 +5,7 @@
 **Feature**: OCP Audit Log & Compliance Dashboard  
 **Short name**: ocp-audit-log-compliance  
 **Created**: 2026-05-19  
-**Status**: Specified (Ready for Implementation)
+**Status**: Completed
 
 ### Context
 
@@ -46,7 +46,7 @@ Build an immutable audit logging subsystem for the OCP that:
 
 ### AC1: PostgreSQL Schema — `ocp_audit_log`
 
-- [ ] A new table `ocp_audit_log` is created in `db/init/04-ocp-audit-schema.sql` (or a new idempotent migration script) with the following exact columns:
+- [x] A new table `ocp_audit_log` is created in `db/init/04-ocp-audit-schema.sql` (or a new idempotent migration script) with the following exact columns:
 
 | Column | Type | Constraints | Description |
 |---|---|---|---|
@@ -64,7 +64,7 @@ Build an immutable audit logging subsystem for the OCP that:
 | `prev_hash` | `VARCHAR(64)` | `NULL` | Hex-encoded SHA-256 of the previous row's `hash` column (NULL for first row) |
 | `hash` | `VARCHAR(64)` | `NOT NULL` | Hex-encoded SHA-256 of the canonical concatenation of all row fields plus `prev_hash` |
 
-- [ ] The following indexes are created:
+- [x] The following indexes are created:
   - `idx_ocp_audit_event_time ON ocp_audit_log(event_time)`
   - `idx_ocp_audit_user_id ON ocp_audit_log(user_id, event_time)`
   - `idx_ocp_audit_action ON ocp_audit_log(action, event_time)`
@@ -72,19 +72,19 @@ Build an immutable audit logging subsystem for the OCP that:
   - `idx_ocp_audit_ip ON ocp_audit_log(ip_address, event_time)`
   - `idx_ocp_audit_details_gin ON ocp_audit_log USING GIN(details)` (for JSONB filtering)
 
-- [ ] A PostgreSQL `BEFORE DELETE` and `BEFORE UPDATE` row-level trigger named `ocp_audit_log_immutable` prevents any `UPDATE` or `DELETE` on `ocp_audit_log` except when executed by a specific service role (`tsisip_retention`). The trigger function must raise an exception with the message `'Audit log entries are immutable'`.
+- [x] A PostgreSQL `BEFORE DELETE` and `BEFORE UPDATE` row-level trigger named `ocp_audit_log_immutable` prevents any `UPDATE` or `DELETE` on `ocp_audit_log` except when executed by a specific service role (`tsisip_retention`). The trigger function must raise an exception with the message `'Audit log entries are immutable'`.
 
-- [ ] A PostgreSQL function `ocp_audit_log_retention_purge(retention_days INTEGER)` is created that:
+- [x] A PostgreSQL function `ocp_audit_log_retention_purge(retention_days INTEGER)` is created that:
   - Accepts a retention period in days.
   - Deletes rows where `event_time < NOW() - INTERVAL '1 day' * retention_days`.
   - Can only be executed by the `tsisip_retention` role or a superuser.
   - Returns the count of deleted rows.
 
-- [ ] The schema must be idempotent (use `CREATE TABLE IF NOT EXISTS`, `CREATE OR REPLACE FUNCTION`, `DROP TRIGGER IF EXISTS` + `CREATE TRIGGER`, etc.).
+- [x] The schema must be idempotent (use `CREATE TABLE IF NOT EXISTS`, `CREATE OR REPLACE FUNCTION`, `DROP TRIGGER IF EXISTS` + `CREATE TRIGGER`, etc.).
 
 ### AC2: PHP Audit Middleware / Hook
 
-- [ ] A new file `web/common/audit.php` is created containing:
+- [x] A new file `web/common/audit.php` is created containing:
   - `function logAuditEvent(string $action, ?string $resourceType = null, ?string $resourceId = null, bool $success = true, ?array $details = null): void`
   - The function auto-populates `user_id`, `username`, `ip_address`, and `user_agent` from the current session/`$_SERVER`.
   - `ip_address` must respect reverse-proxies: read `HTTP_X_FORWARDED_FOR` first, then `REMOTE_ADDR`, falling back to `'0.0.0.0'`.
@@ -93,34 +93,34 @@ Build an immutable audit logging subsystem for the OCP that:
   - The function is resilient to DB failures: any exception during logging is caught, written to `error_log()`, and **must not** propagate or disrupt the user-facing operation.
   - All string inputs are truncated to their column max lengths before insertion.
 
-- [ ] `web/common/config.php` is updated to `require_once __DIR__ . '/audit.php';` so `logAuditEvent()` is available on every page.
+- [x] `web/common/config.php` is updated to `require_once __DIR__ . '/audit.php';` so `logAuditEvent()` is available on every page.
 
-- [ ] `authenticateUser()` in `web/common/config.php` is modified to call `logAuditEvent('LOGIN', 'ocp_user', $username, true)` on success and `logAuditEvent('LOGIN', 'ocp_user', $username, false, ['reason' => $reason])` on failure (replacing or augmenting the existing `logLoginAttempt()` — both tables may be written for backward compatibility).
+- [x] `authenticateUser()` in `web/common/config.php` is modified to call `logAuditEvent('LOGIN', 'ocp_user', $username, true)` on success and `logAuditEvent('LOGIN', 'ocp_user', $username, false, ['reason' => $reason])` on failure (replacing or augmenting the existing `logLoginAttempt()` — both tables may be written for backward compatibility).
 
-- [ ] `web/logout.php` calls `logAuditEvent('LOGOUT', 'ocp_user', $_SESSION['ocp_username'] ?? 'unknown', true)` before destroying the session.
+- [x] `web/logout.php` calls `logAuditEvent('LOGOUT', 'ocp_user', $_SESSION['ocp_username'] ?? 'unknown', true)` before destroying the session.
 
-- [ ] `web/change-password.php` calls `logAuditEvent('PASSWORD_CHANGE', 'ocp_user', $_SESSION['ocp_username'], true)` on successful password update and `logAuditEvent('PASSWORD_CHANGE', 'ocp_user', $_SESSION['ocp_username'], false, ['reason' => $error])` on failure.
+- [x] `web/change-password.php` calls `logAuditEvent('PASSWORD_CHANGE', 'ocp_user', $_SESSION['ocp_username'], true)` on successful password update and `logAuditEvent('PASSWORD_CHANGE', 'ocp_user', $_SESSION['ocp_username'], false, ['reason' => $error])` on failure.
 
-- [ ] `web/subscribers.php` calls `logAuditEvent()` for every mutating POST action (`SUBSCRIBER_CREATE`, `SUBSCRIBER_UPDATE`, `SUBSCRIBER_TOGGLE`) with:
+- [x] `web/subscribers.php` calls `logAuditEvent()` for every mutating POST action (`SUBSCRIBER_CREATE`, `SUBSCRIBER_UPDATE`, `SUBSCRIBER_TOGGLE`) with:
   - `resource_type = 'subscriber'`
   - `resource_id = $username` (or the subscriber ID for toggle)
   - `details` containing a JSON object with relevant non-sensitive metadata (e.g., `domain`, `tenant_id`, `enabled`). Passwords and HA1 hashes must **never** be written to `details`.
 
-- [ ] `web/dispatcher.php` calls `logAuditEvent()` for every mutating POST action (`DISPATCHER_CREATE`, `DISPATCHER_UPDATE`, `DISPATCHER_DELETE`, `DISPATCHER_TOGGLE`) with:
+- [x] `web/dispatcher.php` calls `logAuditEvent()` for every mutating POST action (`DISPATCHER_CREATE`, `DISPATCHER_UPDATE`, `DISPATCHER_DELETE`, `DISPATCHER_TOGGLE`) with:
   - `resource_type = 'dispatcher'`
   - `resource_id = $destination` (or dispatcher ID)
   - `details` containing `setid`, `destination`, `state`, etc.
 
-- [ ] Any future admin page can emit a single `logAuditEvent()` call; no central routing interceptor is required (keeping the PHP codebase simple and debuggable).
+- [x] Any future admin page can emit a single `logAuditEvent()` call; no central routing interceptor is required (keeping the PHP codebase simple and debuggable).
 
 ### AC3: Compliance Dashboard Page
 
-- [ ] A new file `web/audit-log.php` is created with the following behavior:
+- [x] A new file `web/audit-log.php` is created with the following behavior:
   - Requires `requireAuth(); checkPasswordChange(); requireRole('devops');`
   - Includes `common/header.php`, `common/footer.php`, and the standard sidebar via `role-nav.php`.
   - Page title: `<?php echo _('Audit Log & Compliance'); ?>`
 
-- [ ] The dashboard provides server-side filtering via GET parameters:
+- [x] The dashboard provides server-side filtering via GET parameters:
   - `from` (date, default: 7 days ago)
   - `to` (date, default: today)
   - `action` (dropdown of canonical action codes)
@@ -131,14 +131,14 @@ Build an immutable audit logging subsystem for the OCP that:
   - `q` (full-text search against `details` JSONB using `details::text ILIKE`)
   - `page` (integer, pagination)
 
-- [ ] Query requirements:
+- [x] Query requirements:
   - Results are ordered by `event_time DESC`.
   - Pagination uses the existing `common/pagination.php` helpers (`getPagination()`, `renderPagination()`).
   - Default `perPage` is 50; max allowed `perPage` is 200.
   - The SQL query must use parameterized PDO statements for all filters.
   - Count query runs first for pagination.
 
-- [ ] Result table columns displayed:
+- [x] Result table columns displayed:
   - `Event Time` (formatted as `Y-m-d H:i:s T`)
   - `User`
   - `Action`
@@ -148,42 +148,42 @@ Build an immutable audit logging subsystem for the OCP that:
   - `Success` (green badge for true, red badge for false)
   - `Details` (collapsible/expandable JSON view or a `tsisip-btn-secondary` toggle to show raw JSON in a `<pre>` block)
 
-- [ ] The page includes an export toolbar with two buttons:
+- [x] The page includes an export toolbar with two buttons:
   - `Export CSV` — submits the same filters to `audit-export.php?format=csv`
   - `Export JSON` — submits the same filters to `audit-export.php?format=json`
 
-- [ ] If no results match the filters, display: `<p class="tsisip-text-muted tsisip-text-center"><?php echo _('No audit events found.'); ?></p>`
+- [x] If no results match the filters, display: `<p class="tsisip-text-muted tsisip-text-center"><?php echo _('No audit events found.'); ?></p>`
 
 ### AC4: Export Endpoint (`audit-export.php`)
 
-- [ ] A new file `web/audit-export.php` is created:
+- [x] A new file `web/audit-export.php` is created:
   - Requires `requireAuth(); checkPasswordChange(); requireRole('devops');`
   - Accepts `format` (csv|json) and the same filter parameters as `audit-log.php`.
   - Applies identical filter logic and query construction.
   - **No pagination limit** on export; exports the full filtered result set.
   - Stream output to avoid memory exhaustion on large result sets (use PDO `PDO::CURSOR_SCROLL` or unbuffered query with `setAttribute(PDO::MYSQL_ATTR_USE_BUFFERED_QUERY, false)` equivalent for pgsql; if unbuffered is problematic, cap export at 10,000 rows and document it).
 
-- [ ] CSV export requirements:
+- [x] CSV export requirements:
   - HTTP headers: `Content-Type: text/csv; charset=utf-8`, `Content-Disposition: attachment; filename="tsisip-audit-YYYY-MM-DD.csv"`
   - UTF-8 BOM (`\xEF\xBB\xBF`) prepended for Excel compatibility.
   - Columns: `event_time`, `username`, `action`, `resource_type`, `resource_id`, `ip_address`, `user_agent`, `success`, `details` (flattened as JSON string), `hash`
   - Proper CSV escaping using `fputcsv()` to a `php://output` stream.
   - Log an `EXPORT_CSV` audit event with `details = ['filter_count' => $totalItems]` upon completion.
 
-- [ ] JSON export requirements:
+- [x] JSON export requirements:
   - HTTP headers: `Content-Type: application/json; charset=utf-8`, `Content-Disposition: attachment; filename="tsisip-audit-YYYY-MM-DD.json"`
   - Output a JSON array of objects; stream rows one by one to avoid memory issues.
   - Log an `EXPORT_JSON` audit event with `details = ['filter_count' => $totalItems]` upon completion.
 
-- [ ] Both exports must record the `logAuditEvent()` call **after** the HTTP headers are sent and **before** stream termination, wrapped in a try/catch so export delivery is never blocked by audit logging.
+- [x] Both exports must record the `logAuditEvent()` call **after** the HTTP headers are sent and **before** stream termination, wrapped in a try/catch so export delivery is never blocked by audit logging.
 
 ### AC5: Retention Policy & Automated Purge
 
-- [ ] The retention period is configurable via an environment variable `OCP_AUDIT_RETENTION_DAYS` with a default value of `90`.
+- [x] The retention period is configurable via an environment variable `OCP_AUDIT_RETENTION_DAYS` with a default value of `90`.
 
-- [ ] The OCP container entrypoint (`docker/ocp/entrypoint.sh`) exports `OCP_AUDIT_RETENTION_DAYS` as an environment variable so it is available to Apache/mod_php (e.g., via `export OCP_AUDIT_RETENTION_DAYS=...` in the entrypoint or `SetEnv` in the Apache configuration).
+- [x] The OCP container entrypoint (`docker/ocp/entrypoint.sh`) exports `OCP_AUDIT_RETENTION_DAYS` as an environment variable so it is available to Apache/mod_php (e.g., via `export OCP_AUDIT_RETENTION_DAYS=...` in the entrypoint or `SetEnv` in the Apache configuration).
 
-- [ ] A standalone PHP CLI script `web/cli/purge-audit-log.php` is created:
+- [x] A standalone PHP CLI script `web/cli/purge-audit-log.php` is created:
   - Must be executed from the command line only (`php_sapi_name() === 'cli'` or die).
   - Reads `OCP_AUDIT_RETENTION_DAYS` from environment; falls back to `90`.
   - Calls `logAuditEvent('RETENTION_RUN', 'audit_log', 'system', true, ['retention_days' => $days])` before purging.
@@ -191,22 +191,22 @@ Build an immutable audit logging subsystem for the OCP that:
   - Prints the number of deleted rows to STDOUT and exits with code `0` on success.
   - Exits with code `1` on failure and prints error to STDERR.
 
-- [ ] A cron job is configured inside the `docker/ocp/Dockerfile` (or via the host crontab documented in the runbook) to run `purge-audit-log.php` daily at `03:17` local time. The cron entry must redirect stdout/stderr to a log file:
+- [x] A cron job is configured inside the `docker/ocp/Dockerfile` (or via the host crontab documented in the runbook) to run `purge-audit-log.php` daily at `03:17` local time. The cron entry must redirect stdout/stderr to a log file:
   ```
   17 3 * * * cd /var/www/html && /usr/bin/php web/cli/purge-audit-log.php >> /var/log/tsisip/audit-retention.log 2>&1
   ```
 
-- [ ] The directory `/var/log/tsisip` is created in the OCP Dockerfile with `www-data` ownership.
+- [x] The directory `/var/log/tsisip` is created in the OCP Dockerfile with `www-data` ownership.
 
 ### AC6: Immutability & Tamper Evidence
 
-- [ ] The PostgreSQL trigger `ocp_audit_log_immutable` (AC1) is verified to block:
+- [x] The PostgreSQL trigger `ocp_audit_log_immutable` (AC1) is verified to block:
   - Any `UPDATE` statement on `ocp_audit_log` from application roles.
   - Any `DELETE` statement on `ocp_audit_log` from application roles.
 
-- [ ] The retention purge bypasses the trigger by executing as the `tsisip_retention` role. The OCP application DB user (`opensips`) does **not** have `DELETE` privileges on `ocp_audit_log`; it only has `INSERT` and `SELECT`.
+- [x] The retention purge bypasses the trigger by executing as the `tsisip_retention` role. The OCP application DB user (`opensips`) does **not** have `DELETE` privileges on `ocp_audit_log`; it only has `INSERT` and `SELECT`.
 
-- [ ] The hash chain column (`prev_hash` -> `hash`) is computed for every inserted row. A PHP helper function `verifyAuditLogIntegrity(): array` is provided in `web/common/audit.php` for offline validation:
+- [x] The hash chain column (`prev_hash` -> `hash`) is computed for every inserted row. A PHP helper function `verifyAuditLogIntegrity(): array` is provided in `web/common/audit.php` for offline validation:
   - Iterates rows ordered by `id`.
   - Recomputes `hash` for each row.
   - Returns an array of `{ 'id': int, 'valid': bool, 'expected_hash': string, 'actual_hash': string }`.
@@ -214,32 +214,32 @@ Build an immutable audit logging subsystem for the OCP that:
 
 ### AC7: Integration with Existing OCP Auth & Role System
 
-- [ ] The `audit-log.php` and `audit-export.php` pages are gated by `requireRole('devops')`, meaning only Admin and DevOps roles can access them.
+- [x] The `audit-log.php` and `audit-export.php` pages are gated by `requireRole('devops')`, meaning only Admin and DevOps roles can access them.
 
-- [ ] The `role-nav.php` sidebar is updated to include an `Audit Log` link under the `Administration` section for admin and devops roles, pointing to `audit-log.php`.
+- [x] The `role-nav.php` sidebar is updated to include an `Audit Log` link under the `Administration` section for admin and devops roles, pointing to `audit-log.php`.
 
-- [ ] The `dashboard.php` system management section is updated to include a link to `audit-log.php` labeled `Audit Log & Compliance` for admin and devops roles.
+- [x] The `dashboard.php` system management section is updated to include a link to `audit-log.php` labeled `Audit Log & Compliance` for admin and devops roles.
 
-- [ ] The existing `$_SESSION` variables (`ocp_user_id`, `ocp_username`, `ocp_user_role`) are used as the source of truth for audit attribution; no parallel auth mechanism is introduced.
+- [x] The existing `$_SESSION` variables (`ocp_user_id`, `ocp_username`, `ocp_user_role`) are used as the source of truth for audit attribution; no parallel auth mechanism is introduced.
 
 ### AC8: Docker-First Deployment
 
-- [ ] The OCP Dockerfile (`docker/ocp/Dockerfile`) is updated to:
+- [x] The OCP Dockerfile (`docker/ocp/Dockerfile`) is updated to:
   - Create `/var/log/tsisip` owned by `www-data`.
   - Install the cron daemon or add the cron job to the system crontab.
   - Ensure the cron service is started by the entrypoint or supervisord.
 
-- [ ] The `docker-compose.yml` `ocp` service section is updated (commented or documented) to show:
+- [x] The `docker-compose.yml` `ocp` service section is updated (commented or documented) to show:
   ```yaml
   environment:
     OCP_AUDIT_RETENTION_DAYS: 90
   ```
 
-- [ ] The OCP container health check continues to pass after the changes.
+- [x] The OCP container health check continues to pass after the changes.
 
 ### AC9: Testing & Validation
 
-- [ ] A manual test script `tests/integration/test-ocp-audit.sh` is created (or documented steps) that:
+- [x] A manual test script `tests/integration/test-ocp-audit.sh` is created (or documented steps) that:
   1. Logs in as an admin user.
   2. Creates a subscriber and verifies an `SUBSCRIBER_CREATE` row exists in `ocp_audit_log`.
   3. Toggles a subscriber and verifies `SUBSCRIBER_TOGGLE`.
@@ -248,12 +248,12 @@ Build an immutable audit logging subsystem for the OCP that:
   6. Attempts an `UPDATE ocp_audit_log SET ...` via direct SQL and confirms it is rejected by the trigger.
   7. Verifies the hash chain is continuous (no `NULL prev_hash` except for the first row, every `prev_hash` matches the preceding row's `hash`).
 
-- [ ] All existing PHP files pass syntax validation:
+- [x] All existing PHP files pass syntax validation:
   ```bash
   find web/ -name "*.php" -exec php -l {} \;
   ```
 
-- [ ] The container builds and starts successfully:
+- [x] The container builds and starts successfully:
   ```bash
   docker compose build ocp
   docker compose up -d ocp
