@@ -51,6 +51,10 @@ TEST_DOMAIN = "dev.tsisip.local"
 TEST_PASSWORD = "".join(["d", "e", "v", "p", "a", "s", "s"])
 
 
+def get_test_ip() -> str:
+    return os.environ.get("TEST_IP", "127.0.0.1")
+
+
 # ---------------------------------------------------------------------------
 # Helpers
 # ---------------------------------------------------------------------------
@@ -92,13 +96,13 @@ def _build_register(
     uri = f"sip:{TEST_DOMAIN}"
     msg = (
         f"REGISTER {uri} SIP/2.0\r\n"
-        f"Via: SIP/2.0/UDP 172.22.0.1:5061;branch={branch}\r\n"
+        f"Via: SIP/2.0/UDP {get_test_ip()}:5061;branch={branch}\r\n"
         f"From: <sip:{TEST_CALLER}@{TEST_DOMAIN}>;tag={from_tag}\r\n"
         f"To: <sip:{TEST_CALLER}@{TEST_DOMAIN}>\r\n"
         f"Call-ID: {call_id}\r\n"
         f"CSeq: {cseq} REGISTER\r\n"
         f"Max-Forwards: 70\r\n"
-        f"Contact: <sip:{TEST_CALLER}@172.22.0.1:5061>\r\n"
+        f"Contact: <sip:{TEST_CALLER}@{get_test_ip()}:5061>\r\n"
     )
     if with_auth and nonce:
         ha1 = _ha1_md5(TEST_CALLER, TEST_DOMAIN, TEST_PASSWORD)
@@ -126,13 +130,13 @@ def _build_invite(
     uri = f"sip:{to_user}@{to_domain}"
     msg = (
         f"INVITE {uri} SIP/2.0\r\n"
-        f"Via: SIP/2.0/UDP 172.22.0.1:5061;branch={branch}\r\n"
+        f"Via: SIP/2.0/UDP {get_test_ip()}:5061;branch={branch}\r\n"
         f"From: <sip:{TEST_CALLER}@{TEST_DOMAIN}>;tag={from_tag}\r\n"
         f"To: <sip:{to_user}@{to_domain}>\r\n"
         f"Call-ID: {call_id}\r\n"
         f"CSeq: {cseq} INVITE\r\n"
         f"Max-Forwards: 70\r\n"
-        f"Contact: <sip:{TEST_CALLER}@172.22.0.1:5061>\r\n"
+        f"Contact: <sip:{TEST_CALLER}@{get_test_ip()}:5061>\r\n"
     )
     if with_auth and nonce:
         ha1 = _ha1_md5(TEST_CALLER, TEST_DOMAIN, TEST_PASSWORD)
@@ -145,9 +149,9 @@ def _build_invite(
         )
     sdp = (
         "v=0\r\n"
-        "o=- 0 0 IN IP4 172.22.0.1\r\n"
+        "o=- 0 0 IN IP4 {get_test_ip()}\r\n"
         "s=TSiSIP Test\r\n"
-        "c=IN IP4 172.22.0.1\r\n"
+        "c=IN IP4 {get_test_ip()}\r\n"
         "t=0 0\r\n"
         "m=audio 10000 RTP/AVP 0 8\r\n"
         "a=rtpmap:0 PCMU/8000\r\n"
@@ -280,10 +284,10 @@ class TestSipTrunkOutbound(unittest.TestCase):
         # Verify OpenSIPS is reachable with a basic OPTIONS ping.
         ping = (
             b"OPTIONS sip:" + TARGET_HOST.encode() + b":" + str(TARGET_PORT).encode() + b" SIP/2.0\r\n"
-            b"Via: SIP/2.0/UDP 172.22.0.1:5061;branch=z9hG4bK-ping\r\n"
+            b"Via: SIP/2.0/UDP {get_test_ip()}:5061;branch=z9hG4bK-ping\r\n"
             b"From: <sip:test@localhost>;tag=ping\r\n"
             b"To: <sip:" + TARGET_HOST.encode() + b":" + str(TARGET_PORT).encode() + b">\r\n"
-            b"Call-ID: ping-001@172.22.0.1\r\n"
+            b"Call-ID: ping-001@{get_test_ip()}\r\n"
             b"CSeq: 1 OPTIONS\r\n"
             b"Max-Forwards: 70\r\n"
             b"Content-Length: 0\r\n\r\n"
@@ -320,7 +324,7 @@ class TestSipTrunkOutbound(unittest.TestCase):
         """Perform REGISTER auth and return the proxy-auth nonce for INVITEs."""
         # 1. REGISTER -> 401
         reg1 = _build_register(
-            call_id="trunk-out-reg-001@172.22.0.1",
+            call_id="trunk-out-reg-001@{get_test_ip()}",
             cseq=1,
             from_tag="trunkout001",
             branch="z9hG4bK-trunkout001",
@@ -342,7 +346,7 @@ class TestSipTrunkOutbound(unittest.TestCase):
 
         # 2. REGISTER(auth) -> 200
         reg2 = _build_register(
-            call_id="trunk-out-reg-001@172.22.0.1",
+            call_id="trunk-out-reg-001@{get_test_ip()}",
             cseq=2,
             from_tag="trunkout001",
             branch="z9hG4bK-trunkout002",
@@ -359,7 +363,7 @@ class TestSipTrunkOutbound(unittest.TestCase):
         invite1 = _build_invite(
             to_user="+1234567890",
             to_domain="pstn",
-            call_id="trunk-out-inv-001@172.22.0.1",
+            call_id="trunk-out-inv-001@{get_test_ip()}",
             cseq=1,
             from_tag="trunkout003",
             branch="z9hG4bK-trunkout003",
@@ -387,7 +391,7 @@ class TestSipTrunkOutbound(unittest.TestCase):
         invite2 = _build_invite(
             to_user="+1234567890",
             to_domain="pstn",
-            call_id="trunk-out-inv-001@172.22.0.1",
+            call_id="trunk-out-inv-001@{get_test_ip()}",
             cseq=2,
             from_tag="trunkout003",
             branch="z9hG4bK-trunkout004",
@@ -408,7 +412,7 @@ class TestSipTrunkOutbound(unittest.TestCase):
         invite2 = _build_invite(
             to_user="+1234567890",
             to_domain="pstn",
-            call_id="trunk-out-inv-002@172.22.0.1",
+            call_id="trunk-out-inv-002@{get_test_ip()}",
             cseq=2,
             from_tag="trunkout005",
             branch="z9hG4bK-trunkout005",

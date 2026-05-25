@@ -33,6 +33,10 @@ PG_DB = os.environ.get("PG_DB", "opensips")
 PG_HOST = os.environ.get("PG_HOST", "postgres")
 
 
+def get_test_ip() -> str:
+    return os.environ.get("TEST_IP", "127.0.0.1")
+
+
 def _psql(query: str) -> subprocess.CompletedProcess:
     return subprocess.run(
         [
@@ -66,13 +70,13 @@ def _build_inbound_invite(
     uri = f"sip:{did}@{domain}"
     msg = (
         f"INVITE {uri} SIP/2.0\r\n"
-        f"Via: SIP/2.0/UDP 172.22.0.1:5061;branch={branch}\r\n"
+        f"Via: SIP/2.0/UDP {get_test_ip()}:5061;branch={branch}\r\n"
         f"From: <sip:trunk@{domain}>;tag={from_tag}\r\n"
         f"To: <sip:{did}@{domain}>\r\n"
         f"Call-ID: {call_id}\r\n"
         f"CSeq: {cseq} INVITE\r\n"
         f"Max-Forwards: 70\r\n"
-        f"Contact: <sip:trunk@172.22.0.1:5061>\r\n"
+        f"Contact: <sip:trunk@{get_test_ip()}:5061>\r\n"
         "Content-Length: 0\r\n\r\n"
     )
     return msg.encode()
@@ -193,11 +197,11 @@ class TestSipTrunkInbound(unittest.TestCase):
     def setUpClass(cls):
         ping = (
             b"OPTIONS sip:" + TARGET_HOST.encode() + b":" + str(TARGET_PORT).encode() + b" SIP/2.0\r\n"
-            b"Via: SIP/2.0/UDP 172.22.0.1:5061;branch=z9hG4bK-ping\r\n"
-            b"From: <sip:test@localhost>;tag=ping\r\n"
+            + ("Via: SIP/2.0/UDP " + get_test_ip() + ":5061;branch=z9hG4bK-ping\r\n").encode()
+            + b"From: <sip:test@localhost>;tag=ping\r\n"
             b"To: <sip:" + TARGET_HOST.encode() + b":" + str(TARGET_PORT).encode() + b">\r\n"
-            b"Call-ID: ping-001@172.22.0.1\r\n"
-            b"CSeq: 1 OPTIONS\r\n"
+            + ("Call-ID: ping-001@" + get_test_ip() + "\r\n").encode()
+            + b"CSeq: 1 OPTIONS\r\n"
             b"Max-Forwards: 70\r\n"
             b"Content-Length: 0\r\n\r\n"
         )
@@ -255,7 +259,7 @@ class TestSipTrunkInbound(unittest.TestCase):
         invite = _build_inbound_invite(
             did="+15551234567",
             domain="dev.tsisip.local",
-            call_id="trunk-inb-inv-001@172.22.0.1",
+            call_id="trunk-inb-inv-001@" + get_test_ip(),
             cseq=1,
             from_tag="inb001",
             branch="z9hG4bK-inb001",
@@ -272,7 +276,7 @@ class TestSipTrunkInbound(unittest.TestCase):
         invite = _build_inbound_invite(
             did="+15551234567",
             domain="dev.tsisip.local",
-            call_id="trunk-inb-inv-002@172.22.0.1",
+            call_id="trunk-inb-inv-002@" + get_test_ip(),
             cseq=1,
             from_tag="inb002",
             branch="z9hG4bK-inb002",
