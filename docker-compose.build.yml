@@ -30,13 +30,13 @@ services:
     build:
       context: ./docker/grafana
       dockerfile: Dockerfile
-  opensips-exporter:
+  opensips_exporter:
     build:
-      context: ./docker/opensips-exporter
+      context: ./docker/opensips_exporter
       dockerfile: Dockerfile
-  anomaly-detector:
+  anomaly_detector:
     build:
-      context: ./docker/anomaly-detector
+      context: ./docker/anomaly_detector
       dockerfile: Dockerfile
   backup:
     build:
@@ -46,11 +46,11 @@ services:
     build:
       context: ./docker/certbot
       dockerfile: Dockerfile
-  certbot-exporter:
+  certbot_exporter:
     build:
-      context: ./docker/certbot-exporter
+      context: ./docker/certbot_exporter
       dockerfile: Dockerfile
-  tailscale-cert:
+  tailscale_cert:
     build:
-      context: ./docker/tailscale-cert
+      context: ./docker/tailscale_cert
       dockerfile: Dockerfile

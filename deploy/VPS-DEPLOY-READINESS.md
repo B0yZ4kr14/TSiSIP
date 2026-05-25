@@ -44,7 +44,7 @@ sudo ./deploy/scripts/vps-nginx-setup.sh  # Configura /TSiSIP/ no nginx
 - [x] Auth secret corrigido anteriormente para 32 bytes
 - [x] Backup container esta UP/healthy
 - [x] Asterisk PBX 1 e 2 estao UP/healthy
-- [x] Dispatcher set 1 contem `asterisk-pbx-1` e `asterisk-pbx-2` com `state=0`
+- [x] Dispatcher set 1 contem `asterisk_pbx_1` e `asterisk_pbx_2` com `state=0`
 - [x] Metricas de backup acessiveis via rede Docker `metrics_host` (`docker run --rm --network tsisip_metrics_host alpine wget -qO- http://backup:9101/metrics`) *(validado em 2026-05-24; host loopback removido devido a userland-proxy=false)*
 
 ## Funcionalidades a Validar
@@ -83,7 +83,7 @@ docker pull ghcr.io/b0yz4kr14/tsisip/opensips:<tag-anterior>
 
 - [ ] Adicionar Prometheus + Grafana (docker-compose.prod.yml)
 - [x] Adicionar Asterisk interno ao perfil vps-lite
-- [ ] Adicionar opensips-exporter + anomaly-detector
+- [ ] Adicionar opensips_exporter + anomaly_detector
 - [ ] Configurar Alertmanager com webhook real (Slack/email)
 - [ ] Substituir certificados TLS dummy por certificados reais
 - [ ] Configurar rclone com credenciais reais do MinIO

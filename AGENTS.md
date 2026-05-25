@@ -1065,6 +1065,38 @@ All OCP tools follow the same security baseline:
 
 ---
 
+## Recent Changes
+
+- 2026-05-24 — Feature 020: OCP Critical Tool Gap Closure — Added 6 admin tools (Dialog, MI Commands, Statistics, Dialplan, Domains, TLS Management), MI HTTP integration, i18n for 16 modules, security headers, session hardening
+- 2026-05-24 — Feature 023: Subscriber CRUD Refactor — ARCH-PRE-001 resolved (subscriber mutations routed through admin-api microservice)
+- 2026-05-24 — OpenSIPS canon-drift remediation — reply route renamed to REPLY_MANAGE, failure route renamed to FAILURE_MANAGE, ICE=remove added to all rtpengine_offer() calls, persistent_state=1 added to dispatcher
+- 2026-05-24 — CI scan passes — test resilience improved, audit accuracy fixed
+- 2026-05-19 — Production deploy to VPS tsiapp.io — full stack operational
+
+## Known Issues and Gotchas
+
+### ⚠️ D3.js CDN Dependency in Air-Gapped Environments
+**Issue:** statistics.php loads D3.js from CDN; air-gapped deployments will show graceful degradation message but no charts.
+**Root Cause:** No local D3.js copy bundled in OCP image.
+**Prevention Rule:** For air-gapped deployments, vendor D3.js into web/tsisip/js/ and update script src.
+
+### ⚠️ MI HTTP Timeout Cascading
+**Issue:** If the MI HTTP endpoint becomes unreachable, statistics.php and mi-commands.php both enter error states simultaneously. No circuit breaker exists.
+**Root Cause:** Each page independently polls MI HTTP with timeout but no shared circuit breaker state.
+**Prevention Rule:** Consider adding a circuit breaker or shared health state for MI HTTP-dependent pages.
+
+### ⚠️ Audit Log Table Growth
+**Issue:** All 6 new tools plus remediation logging increase auth_audit_log write volume. No retention or partitioning strategy is documented for high-volume audit scenarios.
+**Root Cause:** Audit logging was added without retention policy.
+**Prevention Rule:** Define audit log retention (e.g., 90 days) and implement automated purge or partitioning.
+
+### ⚠️ Statistics Auto-Refresh Load
+**Issue:** statistics.php 30-second auto-refresh generates continuous MI HTTP load (2 req/min per active tab).
+**Root Cause:** Fixed-interval polling without backoff.
+**Prevention Rule:** Monitor MI HTTP endpoint load; consider increasing interval or adding user-toggle for refresh.
+
+---
+
 <!-- gitnexus:start -->
 # GitNexus — Code Intelligence
 

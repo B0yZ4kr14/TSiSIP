@@ -9,10 +9,10 @@ services:
   opensips:
     image: ghcr.io/b0yz4kr14/tsisip/opensips:test
     pull_policy: if_not_present
-  asterisk-pbx-1:
+  asterisk_pbx_1:
     image: ghcr.io/b0yz4kr14/tsisip/asterisk:test
     pull_policy: if_not_present
-  asterisk-pbx-2:
+  asterisk_pbx_2:
     image: ghcr.io/b0yz4kr14/tsisip/asterisk:test
     pull_policy: if_not_present
   ocp:
@@ -21,8 +21,8 @@ services:
   certbot:
     image: tsisip/certbot:test
     pull_policy: if_not_present
-  certbot-exporter:
-    image: tsisip/certbot-exporter:test
+  certbot_exporter:
+    image: tsisip/certbot_exporter:test
     pull_policy: if_not_present
   backup:
     image: tsisip/backup:test

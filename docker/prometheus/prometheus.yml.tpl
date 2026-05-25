@@ -19,7 +19,7 @@ scrape_configs:
   - job_name: 'opensips'
     scrape_interval: 15s
     static_configs:
-      - targets: ['opensips-exporter:9442']
+      - targets: ['opensips_exporter:9442']
     metrics_path: /metrics
 
   # RTPengine — TODO: add rtpengine-exporter sidecar when metrics endpoint is implemented
@@ -33,21 +33,21 @@ scrape_configs:
   - job_name: 'postgres'
     scrape_interval: 30s
     static_configs:
-      - targets: ['postgres-exporter:9187']
+      - targets: ['postgres_exporter:9187']
     metrics_path: /metrics
 
   # Host metrics (node_exporter)
   - job_name: 'node'
     scrape_interval: 30s
     static_configs:
-      - targets: ['node-exporter:9100']
+      - targets: ['node_exporter:9100']
     metrics_path: /metrics
 
   # Certbot Exporter
   - job_name: 'certbot'
     scrape_interval: 60s
     static_configs:
-      - targets: ['certbot-exporter:9101']
+      - targets: ['certbot_exporter:9101']
     metrics_path: /metrics
 
   # Backup Metrics Exporter

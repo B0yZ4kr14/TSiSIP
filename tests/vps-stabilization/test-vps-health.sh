@@ -40,7 +40,7 @@ fi
 info "Containers running: $RUNNING"
 
 # Check health status for each expected service
-for svc in postgres rtpengine opensips asterisk-pbx-1 asterisk-pbx-2 ocp backup; do
+for svc in postgres rtpengine opensips asterisk_pbx_1 asterisk_pbx_2 ocp backup; do
     STATUS=$(docker compose -f "$PROJECT_ROOT/$COMPOSE_FILE" ps "$svc" --format '{{.Status}}' 2>/dev/null || echo "missing")
     if echo "$STATUS" | grep -qiE 'healthy|Up'; then
         pass "$svc is healthy/up ($STATUS)"

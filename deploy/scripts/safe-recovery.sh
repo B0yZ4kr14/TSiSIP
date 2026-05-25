@@ -34,9 +34,9 @@ PHASES=(
     "opensips"
     "ocp"
     "prometheus alertmanager"
-    "grafana opensips-exporter"
-    "anomaly-detector backup"
-    "asterisk-pbx-1 asterisk-pbx-2"
+    "grafana opensips_exporter"
+    "anomaly_detector backup"
+    "asterisk_pbx_1 asterisk_pbx_2"
 )
 
 for phase in "${PHASES[@]}"; do

@@ -14,7 +14,7 @@
  * @return array           ['success' => bool, 'error' => ?string]
  */
 function callSubscriberProxy(string $action, array $params): array {
-    $proxyUrl = getenv('ADMIN_API_URL') ?: 'http://admin-api:8080/index.php';
+    $proxyUrl = getenv('ADMIN_API_URL') ?: 'http://admin_api:8080/index.php';
     $secretPath = '/run/secrets/proxy_api_secret';
     $proxySecret = file_exists($secretPath) ? trim(file_get_contents($secretPath)) : (getenv('PROXY_API_SECRET') ?: '');
 

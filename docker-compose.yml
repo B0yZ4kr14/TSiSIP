@@ -79,7 +79,7 @@ services:
       start_period: 20s
       start_interval: 5s
 
-  postgres-exporter:
+  postgres_exporter:
     image: prometheuscommunity/postgres-exporter:v0.15.0@sha256:386b12d19eab2a37d7cd8ca8b4c7491cc7a830d9581f49af6c98a393da9605e6
     networks:
     - db_internal
@@ -104,7 +104,7 @@ services:
       postgres:
         condition: service_healthy
 
-  node-exporter:
+  node_exporter:
     image: prom/node-exporter:v1.8.0@sha256:8a57af80a4c77ffb97749b44895248563616fcfd405b5370d5db35fe6c15e4ec
     networks:
     - sip_internal
@@ -239,7 +239,7 @@ services:
       retries: 3
       start_period: 30s
       start_interval: 5s
-  asterisk-pbx-1:
+  asterisk_pbx_1:
     build:
       context: ./docker/asterisk
     image: tsisip/asterisk:${TSISIP_IMAGE_TAG:?must be set}
@@ -273,7 +273,7 @@ services:
       retries: 3
       start_period: 25s
       start_interval: 5s
-  asterisk-pbx-2:
+  asterisk_pbx_2:
     image: tsisip/asterisk:${TSISIP_IMAGE_TAG:?must be set}
     networks:
     - sip_internal
@@ -325,7 +325,7 @@ services:
       DB_NAME: opensips
       DB_USER: opensips
       OCP_AUDIT_RETENTION_DAYS: ${OCP_AUDIT_RETENTION_DAYS:-90}
-      ADMIN_API_URL: http://admin-api:8080/index.php
+      ADMIN_API_URL: http://admin_api:8080/index.php
     secrets:
     - db_password
     - trunk_cred_key
@@ -349,11 +349,11 @@ services:
       timeout: 5s
       retries: 3
       start_period: 20s
-  admin-api:
+  admin_api:
     build:
       context: .
-      dockerfile: docker/admin-api/Dockerfile
-    image: tsisip/admin-api:${TSISIP_IMAGE_TAG:?must be set}
+      dockerfile: docker/admin_api/Dockerfile
+    image: tsisip/admin_api:${TSISIP_IMAGE_TAG:?must be set}
     networks:
     - sip_internal
     - db_internal
@@ -462,10 +462,10 @@ services:
       timeout: 5s
       retries: 3
       start_period: 10s
-  anomaly-detector:
+  anomaly_detector:
     build:
-      context: ./docker/anomaly-detector
-    image: tsisip/anomaly-detector:${TSISIP_IMAGE_TAG:?must be set}
+      context: ./docker/anomaly_detector
+    image: tsisip/anomaly_detector:${TSISIP_IMAGE_TAG:?must be set}
     networks:
     - sip_internal
     restart: on-failure
@@ -535,10 +535,10 @@ services:
       timeout: 5s
       retries: 3
       start_period: 30s
-  opensips-exporter:
+  opensips_exporter:
     build:
-      context: ./docker/opensips-exporter
-    image: tsisip/opensips-exporter:${TSISIP_IMAGE_TAG:?must be set}
+      context: ./docker/opensips_exporter
+    image: tsisip/opensips_exporter:${TSISIP_IMAGE_TAG:?must be set}
     networks:
     - sip_internal
     - db_internal
@@ -616,10 +616,10 @@ services:
           memory: 256M
         reservations:
           memory: 128M
-  tailscale-cert:
+  tailscale_cert:
     build:
-      context: ./docker/tailscale-cert
-    image: tsisip/tailscale-cert:${TSISIP_IMAGE_TAG:?must be set}
+      context: ./docker/tailscale_cert
+    image: tsisip/tailscale_cert:${TSISIP_IMAGE_TAG:?must be set}
     profiles:
     - tailscale
     networks:
@@ -641,10 +641,10 @@ services:
           memory: 128M
         reservations:
           memory: 64M
-  certbot-exporter:
+  certbot_exporter:
     build:
-      context: ./docker/certbot-exporter
-    image: tsisip/certbot-exporter:${TSISIP_IMAGE_TAG:?must be set}
+      context: ./docker/certbot_exporter
+    image: tsisip/certbot_exporter:${TSISIP_IMAGE_TAG:?must be set}
     networks:
     - sip_internal
     - db_internal
@@ -660,7 +660,7 @@ services:
       CERT_PATHS: /nginx/ssl/tsiapp.io.crt
       CERT_SOURCES: cloudflare-origin-ca
       CERT_DOMAINS: tsiapp.io
-      STATE_DIR: /var/lib/certbot-exporter
+      STATE_DIR: /var/lib/certbot_exporter
       EXPORTER_PORT: 9101
       CERT_SOURCE: certbot
       TLS_DOMAIN: ${TLS_DOMAIN:-unknown}

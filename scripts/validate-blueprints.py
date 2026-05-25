@@ -108,7 +108,7 @@ def extract_file_references(blueprint_text: str) -> Tuple[List[str], List[str], 
                 modified_files.append(filepath)
 
     # Generic file path extraction for lines that look like file references
-    # e.g., `docker/admin-api/Dockerfile`, `web/common/header.php`
+    # e.g., `docker/admin_api/Dockerfile`, `web/common/header.php`
     pattern4 = r"`((?:[a-zA-Z0-9_-]+/)+[a-zA-Z0-9_\-\.]+)`"
     for match in re.finditer(pattern4, blueprint_text):
         filepath = match.group(1).strip()

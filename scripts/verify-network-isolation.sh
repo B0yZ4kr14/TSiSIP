@@ -27,7 +27,7 @@ for compose in docker-compose.yml docker-compose.prod.yml docker-compose.vps.yml
 done
 
 # Check 2: No host ports on asterisk/postgres
-for svc in asterisk-pbx-1 asterisk-pbx-2 postgres; do
+for svc in asterisk_pbx_1 asterisk_pbx_2 postgres; do
     HAS=$(awk "/^  ${svc}:/,/^  [a-z]/{print}" "$PROJECT_ROOT/docker-compose.yml" | grep -c '^    ports:' || true)
     if [ "$HAS" -eq 0 ]; then
         pass "${svc}: no host ports"

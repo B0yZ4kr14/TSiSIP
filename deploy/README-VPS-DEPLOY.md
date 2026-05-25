@@ -133,11 +133,11 @@ sudo ./deploy/scripts/vps-nginx-setup.sh
 | rtpengine | 10000-20000/udp | 256m | Essencial |
 | opensips | 5060/udp+tcp, 5061/tcp | 256m | Essencial |
 | ocp | 8084/tcp | 256m | Essencial |
-| asterisk-pbx-1 | interno | 768m | Essencial para validacao SIP fim-a-fim |
-| asterisk-pbx-2 | interno | 768m | Essencial para failover/dispatcher |
+| asterisk_pbx_1 | interno | 768m | Essencial para validacao SIP fim-a-fim |
+| asterisk_pbx_2 | interno | 768m | Essencial para failover/dispatcher |
 | backup | internal (`metrics_host` network) | 128m | Essencial |
 
-**Serviços desabilitados no VPS-lite:** prometheus, grafana, alertmanager, opensips-exporter, anomaly-detector. O exporter de backup fica ativo internamente na rede Docker `metrics_host` (`backup:9101`) devido a `userland-proxy=false` necessário para o RTPengine.
+**Serviços desabilitados no VPS-lite:** prometheus, grafana, alertmanager, opensips_exporter, anomaly_detector. O exporter de backup fica ativo internamente na rede Docker `metrics_host` (`backup:9101`) devido a `userland-proxy=false` necessário para o RTPengine.
 
 ## Operações
 
@@ -179,7 +179,7 @@ docker run --rm --network tsisip_metrics_host alpine wget -qO- http://backup:910
 | Load average >100 | Múltiplos `docker compose up` concorrentes + memory pressure | Matar processos docker pendentes: `sudo pkill -f "docker compose up"`; aguardar load <10; reiniciar serviços |
 | SSH "Broken pipe" durante deploy | VPS sobrecarregada, SSH timeout | Usar artifact transfer mode (`.tar.gz` via pipe) em vez de build-on-target |
 | GHCR `permission_denied` | `GITHUB_TOKEN` sem scope para package write | Usar PAT com `write:packages` scope; ou habilitar fallback build-on-target |
-| Certbot/Tailscale restart loop | Configuração incompleta ou dependência ausente | Verificar logs: `docker compose logs -f certbot tailscale-cert`; corrigir env vars |
+| Certbot/Tailscale restart loop | Configuração incompleta ou dependência ausente | Verificar logs: `docker compose logs -f certbot tailscale_cert`; corrigir env vars |
 | RTPengine `exec: "--interface=...": no such file` | ENTRYPOINT/CMD mal configurado no Dockerfile | Verificar que Dockerfile usa `ENTRYPOINT ["rtpengine"]` + `CMD ["--foreground", "--log-stderr"]` |
 
 ## Decisão Arquitetural

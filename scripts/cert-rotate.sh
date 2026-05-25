@@ -50,7 +50,7 @@ echo "[CERT-ROTATE] Starting certificate rotation for ${TLS_DOMAIN}..."
 # Determine backend
 if [ "$TAILSCALE_CERT_ENABLED" = "1" ]; then
     echo "[CERT-ROTATE] Backend: Tailscale cert"
-    docker compose -f "$COMPOSE_FILE" run --rm tailscale-cert
+    docker compose -f "$COMPOSE_FILE" run --rm tailscale_cert
 else
     echo "[CERT-ROTATE] Backend: ACME (Certbot)"
 
@@ -77,7 +77,7 @@ fi
 echo "[CERT-ROTATE] Validating certificate..."
 VALIDATION_CONTAINER="certbot"
 if [ "$TAILSCALE_CERT_ENABLED" = "1" ]; then
-    VALIDATION_CONTAINER="tailscale-cert"
+    VALIDATION_CONTAINER="tailscale_cert"
 fi
 if ! docker compose -f "$COMPOSE_FILE" run --rm "$VALIDATION_CONTAINER" openssl x509 \
     -in /certs/live/server.crt -noout -checkend 86400 >/dev/null 2>&1; then

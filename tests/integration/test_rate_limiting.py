@@ -63,7 +63,7 @@ class TestRateLimiting:
     def test_dispatcher_load_metrics_exist(self):
         """T3.2: Dispatcher load metrics are exported."""
         result = subprocess.run(
-            ["docker", "compose", "-f", COMPOSE_FILE, "exec", "-T", "opensips-exporter",
+            ["docker", "compose", "-f", COMPOSE_FILE, "exec", "-T", "opensips_exporter",
              "curl", "-s", "http://localhost:8080/metrics"],
             capture_output=True, text=True
         )
@@ -73,7 +73,7 @@ class TestRateLimiting:
     def test_anomaly_detector_health(self):
         """T5: Anomaly detector health endpoint responds."""
         result = subprocess.run(
-            ["docker", "compose", "-f", COMPOSE_FILE, "exec", "-T", "anomaly-detector",
+            ["docker", "compose", "-f", COMPOSE_FILE, "exec", "-T", "anomaly_detector",
              "curl", "-s", "http://localhost:8080/health"],
             capture_output=True, text=True
         )

@@ -93,11 +93,11 @@ class TestAnomalyDetector:
     """Anomaly detector sidecar."""
 
     def test_detector_script_exists(self):
-        r = compose_exec('anomaly-detector', ['test', '-f', '/app/detector.py'], check=False)
+        r = compose_exec('anomaly_detector', ['test', '-f', '/app/detector.py'], check=False)
         assert r.returncode == 0, "detector.py not found"
 
     def test_detector_baseline_exists(self):
-        r = compose_exec('anomaly-detector', ['test', '-f', '/app/baseline.py'], check=False)
+        r = compose_exec('anomaly_detector', ['test', '-f', '/app/baseline.py'], check=False)
         assert r.returncode == 0, "baseline.py not found"
 
 

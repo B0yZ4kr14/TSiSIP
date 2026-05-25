@@ -171,7 +171,7 @@ services:
       DB_NAME: opensips
       DB_USER: opensips
       OCP_AUDIT_RETENTION_DAYS: ${OCP_AUDIT_RETENTION_DAYS:-90}
-      ADMIN_API_URL: http://admin-api:8080/index.php
+      ADMIN_API_URL: http://admin_api:8080/index.php
     secrets:
     - db_password
     - trunk_cred_key
@@ -203,8 +203,8 @@ services:
           memory: 1G
         reservations:
           memory: 512M
-  admin-api:
-    image: ghcr.io/b0yz4kr14/tsisip/admin-api:${TSISIP_IMAGE_TAG:?must be set}
+  admin_api:
+    image: ghcr.io/b0yz4kr14/tsisip/admin_api:${TSISIP_IMAGE_TAG:?must be set}
     networks:
     - sip_internal
     - db_internal
@@ -314,8 +314,8 @@ services:
           memory: 512M
         reservations:
           memory: 256M
-  anomaly-detector:
-    image: ghcr.io/b0yz4kr14/tsisip/anomaly-detector:${TSISIP_IMAGE_TAG:?must be set}
+  anomaly_detector:
+    image: ghcr.io/b0yz4kr14/tsisip/anomaly_detector:${TSISIP_IMAGE_TAG:?must be set}
     networks:
     - sip_internal
     restart: on-failure
@@ -387,8 +387,8 @@ services:
           memory: 1G
         reservations:
           memory: 512M
-  opensips-exporter:
-    image: ghcr.io/b0yz4kr14/tsisip/opensips-exporter:${TSISIP_IMAGE_TAG:?must be set}
+  opensips_exporter:
+    image: ghcr.io/b0yz4kr14/tsisip/opensips_exporter:${TSISIP_IMAGE_TAG:?must be set}
     networks:
     - sip_internal
     - db_internal
@@ -456,8 +456,8 @@ services:
         limits:
           memory: 256M
 
-  tailscale-cert:
-    image: tsisip/tailscale-cert:${TSISIP_IMAGE_TAG:?must be set}
+  tailscale_cert:
+    image: tsisip/tailscale_cert:${TSISIP_IMAGE_TAG:?must be set}
     networks:
     - sip_internal
     restart: unless-stopped
@@ -479,15 +479,15 @@ services:
         limits:
           memory: 128M
 
-  certbot-exporter:
-    image: ghcr.io/b0yz4kr14/tsisip/certbot-exporter:${TSISIP_IMAGE_TAG:?must be set}
+  certbot_exporter:
+    image: ghcr.io/b0yz4kr14/tsisip/certbot_exporter:${TSISIP_IMAGE_TAG:?must be set}
     networks:
     - sip_internal
     - db_internal
     restart: on-failure
     environment:
       CERT_PATH: /certs/live/server.crt
-      STATE_DIR: /var/lib/certbot-exporter
+      STATE_DIR: /var/lib/certbot_exporter
       EXPORTER_PORT: 9101
       CERT_SOURCE: certbot
       TLS_DOMAIN: ${TLS_DOMAIN:-unknown}
@@ -573,7 +573,7 @@ services:
       timeout: 5s
       retries: 3
       start_period: 10s
-  asterisk-pbx-1:
+  asterisk_pbx_1:
     image: ghcr.io/b0yz4kr14/tsisip/asterisk:${TSISIP_IMAGE_TAG:?must be set}
     networks:
     - sip_internal
@@ -608,7 +608,7 @@ services:
           memory: 2G
         reservations:
           memory: 1G
-  asterisk-pbx-2:
+  asterisk_pbx_2:
     image: ghcr.io/b0yz4kr14/tsisip/asterisk:${TSISIP_IMAGE_TAG:?must be set}
     networks:
     - sip_internal

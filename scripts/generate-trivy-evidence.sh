@@ -10,7 +10,7 @@ IMAGES=(
   "ghcr.io/b0yz4kr14/tsisip/asterisk:test"
   "ghcr.io/b0yz4kr14/tsisip/backup:test"
   "ghcr.io/b0yz4kr14/tsisip/certbot:test"
-  "ghcr.io/b0yz4kr14/tsisip/certbot-exporter:test"
+  "ghcr.io/b0yz4kr14/tsisip/certbot_exporter:test"
 )
 
 mkdir -p docs/security/evidence/022-vps-go-live

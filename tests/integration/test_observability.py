@@ -14,7 +14,7 @@ import requests
 PROMETHEUS_URL = os.environ.get('PROMETHEUS_URL', 'http://prometheus:9090')
 GRAFANA_URL = os.environ.get('GRAFANA_URL', 'http://grafana:3000')
 ALERTMANAGER_URL = os.environ.get('ALERTMANAGER_URL', 'http://alertmanager:9093')
-EXPORTER_URL = os.environ.get('EXPORTER_URL', 'http://opensips-exporter:9442')
+EXPORTER_URL = os.environ.get('EXPORTER_URL', 'http://opensips_exporter:9442')
 
 # Retry configuration
 MAX_RETRIES = 30

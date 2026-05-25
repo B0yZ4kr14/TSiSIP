@@ -261,8 +261,8 @@ builder() {
     dockerfile_map["docker/postgres/Dockerfile"]="tsisip/postgres"
     dockerfile_map["docker/prometheus/Dockerfile"]="tsisip/prometheus"
     dockerfile_map["docker/grafana/Dockerfile"]="tsisip/grafana"
-    dockerfile_map["docker/opensips-exporter/Dockerfile"]="tsisip/opensips-exporter"
-    dockerfile_map["docker/anomaly-detector/Dockerfile"]="tsisip/anomaly-detector"
+    dockerfile_map["docker/opensips_exporter/Dockerfile"]="tsisip/opensips_exporter"
+    dockerfile_map["docker/anomaly_detector/Dockerfile"]="tsisip/anomaly_detector"
     dockerfile_map["docker/backup/Dockerfile"]="tsisip/backup"
 
     for df in "${!dockerfile_map[@]}"; do
@@ -274,7 +274,7 @@ builder() {
     # If no Dockerfiles changed but other deploy-relevant files did, force build all
     if [ ${#modified_images[@]} -eq 0 ] && [ -n "$changed" ]; then
         warn "No Dockerfiles changed, but other files did. Building all images."
-        modified_images=("tsisip/opensips" "tsisip/rtpengine" "tsisip/ocp" "tsisip/postgres" "tsisip/asterisk" "tsisip/prometheus" "tsisip/grafana" "tsisip/opensips-exporter" "tsisip/anomaly-detector" "tsisip/backup")
+        modified_images=("tsisip/opensips" "tsisip/rtpengine" "tsisip/ocp" "tsisip/postgres" "tsisip/asterisk" "tsisip/prometheus" "tsisip/grafana" "tsisip/opensips_exporter" "tsisip/anomaly_detector" "tsisip/backup")
     fi
 
     if [ ${#modified_images[@]} -eq 0 ]; then
@@ -290,7 +290,7 @@ builder() {
     fi
 
     # Retag existing :test images to :latest where available
-    for img in opensips prometheus grafana opensips-exporter; do
+    for img in opensips prometheus grafana opensips_exporter; do
         if docker images --format '{{.Repository}}:{{.Tag}}' | grep -q "tsisip/${img}:test"; then
             info "Retag: tsisip/${img}:test → tsisip/${img}:latest"
             docker tag "tsisip/${img}:test" "tsisip/${img}:latest"
@@ -341,8 +341,8 @@ pusher() {
         "tsisip/asterisk:latest"
         "tsisip/prometheus:latest"
         "tsisip/grafana:latest"
-        "tsisip/opensips-exporter:latest"
-        "tsisip/anomaly-detector:latest"
+        "tsisip/opensips_exporter:latest"
+        "tsisip/anomaly_detector:latest"
         "tsisip/backup:latest"
     )
 

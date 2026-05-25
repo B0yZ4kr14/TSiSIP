@@ -1,7 +1,7 @@
 # TSiSIP VPS-Lite+PBX Profile
 # Para VPS com ~4GB RAM.
 # Serviços ativos: TSiSIP SIP edge, media relay, DB, OCP, backup e 2 PBXs internos.
-# Monitoring completo (prometheus/grafana/alertmanager/exporter/anomaly-detector) fica desabilitado.
+# Monitoring completo (prometheus/grafana/alertmanager/exporter/anomaly_detector) fica desabilitado.
 # Cada container tem mem_limit para evitar OOM do kernel.
 
 services:
@@ -168,7 +168,7 @@ services:
       start_period: 25s
       start_interval: 5s
 
-  asterisk-pbx-1:
+  asterisk_pbx_1:
     image: ghcr.io/b0yz4kr14/tsisip/asterisk:${TSISIP_IMAGE_TAG:?must be set}
     pull_policy: missing
     networks: [sip_internal]
@@ -198,7 +198,7 @@ services:
       start_period: 30s
       start_interval: 5s
 
-  asterisk-pbx-2:
+  asterisk_pbx_2:
     image: ghcr.io/b0yz4kr14/tsisip/asterisk:${TSISIP_IMAGE_TAG:?must be set}
     pull_policy: missing
     networks: [sip_internal]
@@ -250,7 +250,7 @@ services:
       - DB_USER=opensips
       - DB_PASSWORD_FILE=/run/secrets/db_password
       - OCP_AUDIT_RETENTION_DAYS=${OCP_AUDIT_RETENTION_DAYS:-90}
-      - ADMIN_API_URL=http://admin-api:8080/index.php
+      - ADMIN_API_URL=http://admin_api:8080/index.php
     secrets:
       - db_password
       - trunk_cred_key
@@ -266,8 +266,8 @@ services:
       retries: 3
       start_period: 10s
 
-  admin-api:
-    image: ghcr.io/b0yz4kr14/tsisip/admin-api:${TSISIP_IMAGE_TAG:?must be set}
+  admin_api:
+    image: ghcr.io/b0yz4kr14/tsisip/admin_api:${TSISIP_IMAGE_TAG:?must be set}
     pull_policy: missing
     networks: [sip_internal, db_internal]
     restart: unless-stopped
@@ -331,8 +331,8 @@ services:
       retries: 1
       start_period: 30s
 
-  certbot-exporter:
-    image: ghcr.io/b0yz4kr14/tsisip/certbot-exporter:${TSISIP_IMAGE_TAG:?must be set}
+  certbot_exporter:
+    image: ghcr.io/b0yz4kr14/tsisip/certbot_exporter:${TSISIP_IMAGE_TAG:?must be set}
     pull_policy: if_not_present
     networks: [sip_internal, metrics_host]
     restart: on-failure
@@ -347,7 +347,7 @@ services:
       - 1.1.1.1
     environment:
       CERT_PATH: /certs/live/server.crt
-      STATE_DIR: /var/lib/certbot-exporter
+      STATE_DIR: /var/lib/certbot_exporter
       EXPORTER_PORT: 9101
       CERT_SOURCE: certbot
       TLS_DOMAIN: ${TLS_DOMAIN:-unknown}
