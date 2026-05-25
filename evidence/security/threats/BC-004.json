@@ -1,0 +1,70 @@
+{
+  "schema_version": "1.0",
+  "capability": "Tenant & Subscriber Management",
+  "threats": [
+    {
+      "id": "T-BC-004-001",
+      "category": "Spoofing",
+      "description": "Tenant impersonation via domain collision",
+      "attack_scenario": "Attacker registers tenant with domain similar to existing tenant",
+      "preconditions": [
+        "No domain uniqueness validation",
+        "Weak tenant isolation"
+      ],
+      "affected_assets": [
+        "tenant identity",
+        "subscriber routing"
+      ],
+      "evidence": [
+        {
+          "file": "db/init/02-tsisip-extensions.sql",
+          "lines": ""
+        }
+      ],
+      "likelihood_hint": "low",
+      "impact_hint": "medium"
+    },
+    {
+      "id": "T-BC-004-002",
+      "category": "Tampering",
+      "description": "Subscriber credential tampering in DB",
+      "attack_scenario": "Attacker with DB access modifies HA1 hash to set known password",
+      "preconditions": [
+        "DB access compromised",
+        "No row-level encryption"
+      ],
+      "affected_assets": [
+        "subscriber credentials"
+      ],
+      "evidence": [
+        {
+          "file": "db/init/01-stock-opensips-schema.sql",
+          "lines": ""
+        }
+      ],
+      "likelihood_hint": "low",
+      "impact_hint": "high"
+    },
+    {
+      "id": "T-BC-004-003",
+      "category": "Information Disclosure",
+      "description": "Subscriber data exposure via OCP",
+      "attack_scenario": "OCP operator with broad permissions exports subscriber list",
+      "preconditions": [
+        "No RBAC in OCP",
+        "Export function unrestricted"
+      ],
+      "affected_assets": [
+        "subscriber PII"
+      ],
+      "evidence": [
+        {
+          "file": "web/",
+          "lines": ""
+        }
+      ],
+      "likelihood_hint": "low",
+      "impact_hint": "medium"
+    }
+  ]
+}

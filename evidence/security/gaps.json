@@ -1,0 +1,81 @@
+{
+  "schema_version": "1.0",
+  "missing_controls": [
+    {
+      "capability": "BC-001",
+      "control_family": "Authentication",
+      "threat": "T-BC-001-006",
+      "gap": "MI HTTP has no authentication",
+      "priority": "high"
+    },
+    {
+      "capability": "BC-002",
+      "control_family": "Encryption",
+      "threat": "T-BC-002-003",
+      "gap": "No SRTP encryption for media",
+      "priority": "high"
+    }
+  ],
+  "weak_implementations": [
+    {
+      "capability": "BC-001",
+      "control_family": "Encryption",
+      "gap": "TLS not mandatory; plaintext SIP still accepted on 5060",
+      "priority": "medium"
+    },
+    {
+      "capability": "BC-004",
+      "control_family": "Authentication",
+      "gap": "HA1 hashes fast to brute-force; no PBKDF2",
+      "priority": "medium"
+    },
+    {
+      "capability": "BC-005",
+      "control_family": "Validation",
+      "gap": "Rate limits are per-trunk only; no global per-IP limit",
+      "priority": "medium"
+    }
+  ],
+  "high_risk_areas": [
+    {
+      "capability": "BC-001",
+      "unified_composite": 0.72,
+      "reason": "Public exposure + HIGH criticality + DoS vulnerability",
+      "priority": "high"
+    },
+    {
+      "capability": "BC-005",
+      "unified_composite": 0.65,
+      "reason": "Public exposure + HIGH criticality + rate limit bypass",
+      "priority": "high"
+    }
+  ],
+  "compliance_gaps": {
+    "OWASP-ASVS": [
+      {
+        "requirement": "V2.10 Service Authentication",
+        "gap": "MI HTTP lacks authentication",
+        "capability": "BC-001",
+        "priority": "high"
+      },
+      {
+        "requirement": "V6.2 Algorithms",
+        "gap": "HA1 without PBKDF2 for password storage",
+        "capability": "BC-004",
+        "priority": "medium"
+      },
+      {
+        "requirement": "V8.3 Sensitive Private Data",
+        "gap": "RTP media unencrypted",
+        "capability": "BC-002",
+        "priority": "high"
+      },
+      {
+        "requirement": "V11.1.1 HTTP Request Rate Limiting",
+        "gap": "No global per-IP rate limit",
+        "capability": "BC-005",
+        "priority": "medium"
+      }
+    ]
+  }
+}

@@ -1,0 +1,181 @@
+{
+  "schema_version": "1.0",
+  "controls": [
+    {
+      "control_family": "Authentication",
+      "capability": "BC-001",
+      "present": true,
+      "implementation": "SIP digest auth against PostgreSQL subscriber table with HA1 hashes",
+      "consistently_applied": true,
+      "gaps": [],
+      "mitigates": [
+        "T-BC-001-001",
+        "V-001"
+      ]
+    },
+    {
+      "control_family": "Authentication",
+      "capability": "BC-001",
+      "present": false,
+      "implementation": "MI HTTP interface has no auth",
+      "consistently_applied": false,
+      "gaps": [
+        {
+          "l2": "BC-001-01",
+          "operation": "MI HTTP /mi/which",
+          "issue": "No HTTP basic auth or token on management interface"
+        }
+      ],
+      "mitigates": [
+        "T-BC-001-006",
+        "V-003"
+      ]
+    },
+    {
+      "control_family": "Authorization",
+      "capability": "BC-001",
+      "present": true,
+      "implementation": "Per-tenant routing rules restrict destination selection",
+      "consistently_applied": true,
+      "gaps": [],
+      "mitigates": [
+        "T-BC-001-001"
+      ]
+    },
+    {
+      "control_family": "Validation",
+      "capability": "BC-001",
+      "present": true,
+      "implementation": "topology_hiding(C) strips internal headers; maxfwd checks",
+      "consistently_applied": true,
+      "gaps": [
+        {
+          "l2": "BC-001-04",
+          "operation": "error responses",
+          "issue": "Verify error responses also pass through topology hiding"
+        }
+      ],
+      "mitigates": [
+        "T-BC-001-004"
+      ]
+    },
+    {
+      "control_family": "Monitoring",
+      "capability": "BC-001",
+      "present": true,
+      "implementation": "acc module logs transactions; Prometheus exporter",
+      "consistently_applied": true,
+      "gaps": [
+        {
+          "l2": "BC-001-02",
+          "operation": "auth failures",
+          "issue": "Verify Authorization header masking in logs"
+        }
+      ],
+      "mitigates": [
+        "T-BC-001-003",
+        "V-006"
+      ]
+    },
+    {
+      "control_family": "Encryption",
+      "capability": "BC-001",
+      "present": true,
+      "implementation": "TLS on 5061; TLS_MGM module",
+      "consistently_applied": true,
+      "gaps": [
+        {
+          "l2": "BC-001-01",
+          "operation": "UDP/TCP 5060",
+          "issue": "Plaintext SIP still accepted; TLS not mandatory"
+        }
+      ],
+      "mitigates": [
+        "T-BC-001-002"
+      ]
+    },
+    {
+      "control_family": "Encryption",
+      "capability": "BC-002",
+      "present": false,
+      "implementation": "No SRTP configured",
+      "consistently_applied": false,
+      "gaps": [
+        {
+          "l2": "BC-002-01",
+          "operation": "RTP relay",
+          "issue": "All media is plaintext RTP"
+        }
+      ],
+      "mitigates": [
+        "T-BC-002-003",
+        "V-002"
+      ]
+    },
+    {
+      "control_family": "Authentication",
+      "capability": "BC-004",
+      "present": true,
+      "implementation": "SIP digest with HA1; SHA-256/SHA-512/256 supported",
+      "consistently_applied": true,
+      "gaps": [
+        {
+          "l2": "BC-004-01",
+          "operation": "password storage",
+          "issue": "HA1 is fast to brute-force; no PBKDF2"
+        }
+      ],
+      "mitigates": [
+        "T-BC-004-002",
+        "V-007"
+      ]
+    },
+    {
+      "control_family": "Monitoring",
+      "capability": "BC-004",
+      "present": true,
+      "implementation": "auth_audit_log table",
+      "consistently_applied": true,
+      "gaps": [],
+      "mitigates": [
+        "T-BC-004-003"
+      ]
+    },
+    {
+      "control_family": "Validation",
+      "capability": "BC-005",
+      "present": true,
+      "implementation": "Per-trunk rate limits in trunk_rate_limits",
+      "consistently_applied": true,
+      "gaps": [
+        {
+          "l2": "BC-005-02",
+          "operation": "rate limiting",
+          "issue": "No global per-IP limit across all trunks"
+        }
+      ],
+      "mitigates": [
+        "T-BC-005-002",
+        "V-005"
+      ]
+    },
+    {
+      "control_family": "Monitoring",
+      "capability": "BC-006",
+      "present": true,
+      "implementation": "Anomaly detection container",
+      "consistently_applied": false,
+      "gaps": [
+        {
+          "l2": "BC-006-01",
+          "operation": "detection",
+          "issue": "No accuracy benchmarks; unverified effectiveness"
+        }
+      ],
+      "mitigates": [
+        "T-BC-006-001",
+        "V-008"
+      ]
+    }
+  ]
+}

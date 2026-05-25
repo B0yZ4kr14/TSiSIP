@@ -89,3 +89,102 @@ Internet ──► BC-001 (SIP Edge Proxy)
 | Deployment | Ansible, nginx, VPS scripts (C-14) |
 | Delivery (Web) | OCP (C-09) |
 | Delivery (API) | Admin API (C-18) |
+
+## Security Context Appendix
+
+### BC-001
+
+**Security Context**:
+- Data Sensitivity: authentication, regulatory
+- Auth Required: yes (SIP Digest)
+- Exposure: public
+- Criticality: high
+
+**QA Context**:
+- Coverage: unit not-collected · integration not-collected · e2e not-collected [source: proxy]
+- Automation: regression partial · smoke partial · contract absent
+- Testability: good (0 findings)
+- Defect Profile: not-collected open · not-collected flaky · velocity medium
+- Environments: covers dev · missing staging, prod
+- Strategy Gaps: No contract tests against Asterisk backend, No performance tests for 10K+ concurrent calls, No fuzz testing for SIP parser
+
+### BC-002
+
+**Security Context**:
+- Data Sensitivity: none
+- Auth Required: no (N/A)
+- Exposure: public
+- Criticality: medium
+
+**QA Context**:
+- Coverage: unit not-collected · integration not-collected · e2e not-collected [source: proxy]
+- Automation: regression none · smoke none · contract absent
+- Testability: good (0 findings)
+- Defect Profile: not-collected open · not-collected flaky · velocity low
+- Environments: covers dev · missing staging, prod
+- Strategy Gaps: No RTP media quality tests, No SDP rewriting validation suite
+
+### BC-003
+
+**Security Context**:
+- Data Sensitivity: authentication
+- Auth Required: yes (SIP Digest (via OpenSIPS))
+- Exposure: internal
+- Criticality: medium
+
+**QA Context**:
+- Coverage: unit not-collected · integration not-collected · e2e not-collected [source: proxy]
+- Automation: regression none · smoke none · contract absent
+- Testability: good (0 findings)
+- Defect Profile: not-collected open · not-collected flaky · velocity low
+- Environments: covers dev · missing staging, prod
+- Strategy Gaps: No Asterisk application tests, No SIP trunk interop tests
+
+### BC-004
+
+**Security Context**:
+- Data Sensitivity: authentication, regulatory
+- Auth Required: yes (SIP Digest)
+- Exposure: internal
+- Criticality: high
+
+**QA Context**:
+- Coverage: unit not-collected · integration not-collected · e2e not-collected [source: proxy]
+- Automation: regression partial · smoke partial · contract absent
+- Testability: good (0 findings)
+- Defect Profile: not-collected open · not-collected flaky · velocity medium
+- Environments: covers dev · missing staging, prod
+- Strategy Gaps: No schema migration tests, No HA1 hash algorithm regression tests
+
+### BC-005
+
+**Security Context**:
+- Data Sensitivity: authentication, regulatory
+- Auth Required: yes (SIP Digest, Trunk auth credentials)
+- Exposure: public
+- Criticality: high
+
+**QA Context**:
+- Coverage: unit not-collected · integration not-collected · e2e not-collected [source: proxy]
+- Automation: regression partial · smoke partial · contract absent
+- Testability: good (0 findings)
+- Defect Profile: not-collected open · not-collected flaky · velocity high
+- Environments: covers dev · missing staging, prod
+- Strategy Gaps: No rate limiting load tests, No circuit breaker chaos tests
+
+### BC-006
+
+**Security Context**:
+- Data Sensitivity: regulatory
+- Auth Required: no (N/A)
+- Exposure: internal
+- Criticality: medium
+
+**QA Context**:
+- Coverage: unit not-collected · integration not-collected · e2e not-collected [source: proxy]
+- Automation: regression none · smoke none · contract absent
+- Testability: good (0 findings)
+- Defect Profile: not-collected open · not-collected flaky · velocity low
+- Environments: covers dev · missing staging, prod
+- Strategy Gaps: No anomaly detection accuracy tests, No false-positive rate benchmarks
+

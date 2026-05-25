@@ -1,0 +1,91 @@
+{
+  "schema_version": "1.0",
+  "capability": "Media Relay",
+  "threats": [
+    {
+      "id": "T-BC-002-001",
+      "category": "Spoofing",
+      "description": "RTP stream injection",
+      "attack_scenario": "Attacker injects RTP packets into established relay session",
+      "preconditions": [
+        "Attacker guesses RTP port",
+        "No SRTP enabled"
+      ],
+      "affected_assets": [
+        "media streams"
+      ],
+      "evidence": [
+        {
+          "file": "docker/rtpengine/Dockerfile",
+          "lines": ""
+        }
+      ],
+      "likelihood_hint": "low",
+      "impact_hint": "medium"
+    },
+    {
+      "id": "T-BC-002-002",
+      "category": "Tampering",
+      "description": "SDP manipulation to redirect media",
+      "attack_scenario": "Attacker modifies SDP to route media to malicious endpoint",
+      "preconditions": [
+        "SDP not signed",
+        "OpenSIPS does not validate SDP integrity"
+      ],
+      "affected_assets": [
+        "SDP content",
+        "media routing"
+      ],
+      "evidence": [
+        {
+          "file": "opensips/opensips.cfg.tpl",
+          "lines": "240-260"
+        }
+      ],
+      "likelihood_hint": "low",
+      "impact_hint": "high"
+    },
+    {
+      "id": "T-BC-002-003",
+      "category": "Information Disclosure",
+      "description": "RTP media eavesdropping",
+      "attack_scenario": "Unencrypted RTP streams intercepted on public UDP ports",
+      "preconditions": [
+        "No SRTP configured",
+        "Attacker on network path"
+      ],
+      "affected_assets": [
+        "voice/video content"
+      ],
+      "evidence": [
+        {
+          "file": "docker/rtpengine/Dockerfile",
+          "lines": ""
+        }
+      ],
+      "likelihood_hint": "medium",
+      "impact_hint": "high"
+    },
+    {
+      "id": "T-BC-002-004",
+      "category": "Denial of Service",
+      "description": "RTP port exhaustion",
+      "attack_scenario": "Attacker opens many concurrent media sessions exhausting UDP port range",
+      "preconditions": [
+        "No session limit per source IP",
+        "Port range 10000-20000"
+      ],
+      "affected_assets": [
+        "RTP relay capacity"
+      ],
+      "evidence": [
+        {
+          "file": "docker-compose.yml",
+          "lines": "rtpengine ports"
+        }
+      ],
+      "likelihood_hint": "medium",
+      "impact_hint": "medium"
+    }
+  ]
+}

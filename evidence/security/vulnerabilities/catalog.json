@@ -1,0 +1,142 @@
+{
+  "schema_version": "1.0",
+  "vulnerabilities": [
+    {
+      "id": "V-001",
+      "classification": "Probable",
+      "cwe": "CWE-307",
+      "title": "SIP digest auth without rate limiting on REGISTER",
+      "capability": "BC-001",
+      "location": {
+        "file": "opensips/opensips.cfg.tpl",
+        "lines": "120-160"
+      },
+      "dependency": null,
+      "exploit_path": "Attacker brute-forces REGISTER passwords; pike limits IP but not per-username attempts",
+      "remediation": "Add per-username rate limiting or account lockout after N failed attempts",
+      "linked_threats": [
+        "T-BC-001-001",
+        "T-BC-001-005"
+      ]
+    },
+    {
+      "id": "V-002",
+      "classification": "Confirmed",
+      "cwe": "CWE-319",
+      "title": "RTP media not encrypted (no SRTP)",
+      "capability": "BC-002",
+      "location": {
+        "file": "docker/rtpengine/Dockerfile",
+        "lines": ""
+      },
+      "dependency": null,
+      "exploit_path": "RTP streams on UDP 10000-20000 are plaintext; network-level eavesdropping possible",
+      "remediation": "Enable SRTP in RTPengine and configure OpenSIPS to negotiate SRTP via SDP",
+      "linked_threats": [
+        "T-BC-002-003"
+      ]
+    },
+    {
+      "id": "V-003",
+      "classification": "Potential",
+      "cwe": "CWE-306",
+      "title": "MI HTTP interface without authentication",
+      "capability": "BC-001",
+      "location": {
+        "file": "opensips/opensips.cfg.tpl",
+        "lines": "68-86"
+      },
+      "dependency": null,
+      "exploit_path": "If MI HTTP port 8888 is exposed beyond internal networks, attacker can query/modify OpenSIPS state",
+      "remediation": "Add HTTP basic auth or IP whitelist to mi_http; verify network isolation in compose",
+      "linked_threats": [
+        "T-BC-001-006"
+      ]
+    },
+    {
+      "id": "V-004",
+      "classification": "Potential",
+      "cwe": "CWE-798",
+      "title": "Hardcoded credentials in test files",
+      "capability": "BC-004",
+      "location": {
+        "file": "tests/integration/",
+        "lines": ""
+      },
+      "dependency": null,
+      "exploit_path": "Test fixtures may contain hardcoded passwords or tokens committed to repo",
+      "remediation": "Audit test files for hardcoded secrets; use fixtures loaded from environment",
+      "linked_threats": [
+        "T-BC-004-002"
+      ]
+    },
+    {
+      "id": "V-005",
+      "classification": "Probable",
+      "cwe": "CWE-770",
+      "title": "No global rate limit across trunk endpoints",
+      "capability": "BC-005",
+      "location": {
+        "file": "db/init/04-trunk-schema.sql",
+        "lines": ""
+      },
+      "dependency": null,
+      "exploit_path": "Attacker distributes INVITEs across many trunk endpoints to bypass per-trunk rate limits",
+      "remediation": "Add global per-IP rate limit in addition to per-trunk limits",
+      "linked_threats": [
+        "T-BC-005-002"
+      ]
+    },
+    {
+      "id": "V-006",
+      "classification": "Potential",
+      "cwe": "CWE-532",
+      "title": "Sensitive data in logs without masking",
+      "capability": "BC-001",
+      "location": {
+        "file": "opensips/opensips.cfg.tpl",
+        "lines": ""
+      },
+      "dependency": null,
+      "exploit_path": "SIP Authorization headers or P-Asserted-Identity may be logged to syslog/acc without masking",
+      "remediation": "Verify acc module masks Authorization headers; configure log sanitization",
+      "linked_threats": [
+        "T-BC-001-004"
+      ]
+    },
+    {
+      "id": "V-007",
+      "classification": "Confirmed",
+      "cwe": "CWE-521",
+      "title": "Weak password storage (HA1 only, no PBKDF2)",
+      "capability": "BC-004",
+      "location": {
+        "file": "db/init/01-stock-opensips-schema.sql",
+        "lines": ""
+      },
+      "dependency": null,
+      "exploit_path": "HA1 hashes are fast to brute-force offline if DB is compromised",
+      "remediation": "Consider additional password hardening or MFA for admin accounts; accept HA1 for SIP compatibility",
+      "linked_threats": [
+        "T-BC-004-002"
+      ]
+    },
+    {
+      "id": "V-008",
+      "classification": "Potential",
+      "cwe": "CWE-1104",
+      "title": "Anomaly detector accuracy unverified",
+      "capability": "BC-006",
+      "location": {
+        "file": "docker/anomaly-detector/",
+        "lines": ""
+      },
+      "dependency": null,
+      "exploit_path": "Without accuracy benchmarks, detector may miss attacks or generate excessive false positives",
+      "remediation": "Establish accuracy benchmark with labeled dataset; define acceptable FP/FN rates",
+      "linked_threats": [
+        "T-BC-006-001"
+      ]
+    }
+  ]
+}

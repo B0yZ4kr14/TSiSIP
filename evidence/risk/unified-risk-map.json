@@ -1,0 +1,200 @@
+{
+  "schema_version": "1.0",
+  "capabilities": [
+    {
+      "id": "BC-001",
+      "name": "SIP Edge Proxy",
+      "security": {
+        "likelihood": 0.5,
+        "impact": 0.8,
+        "exposure": 1.0,
+        "composite": 0.77,
+        "drivers": [
+          "T-BC-001-001",
+          "T-BC-001-005"
+        ]
+      },
+      "qa": {
+        "coverage_gap": 1.0,
+        "testability": 0.0,
+        "defect_density": null,
+        "change_velocity": 0.5,
+        "composite": "partial",
+        "drivers": [
+          "Proxy coverage 0% (LOW confidence)",
+          "No e2e call flow tests"
+        ]
+      },
+      "unified": {
+        "composite": "partial",
+        "drivers": [
+          "Security composite: 0.77",
+          "QA composite: partial (missing signals)"
+        ]
+      }
+    },
+    {
+      "id": "BC-002",
+      "name": "Media Relay",
+      "security": {
+        "likelihood": 0.3,
+        "impact": 0.5,
+        "exposure": 1.0,
+        "composite": 0.59,
+        "drivers": [
+          "T-BC-002-003",
+          "T-BC-002-004"
+        ]
+      },
+      "qa": {
+        "coverage_gap": 1.0,
+        "testability": 0.0,
+        "defect_density": null,
+        "change_velocity": 0.2,
+        "composite": "partial",
+        "drivers": [
+          "No RTP media tests",
+          "No SRTP validation"
+        ]
+      },
+      "unified": {
+        "composite": "partial",
+        "drivers": [
+          "Security composite: 0.59",
+          "QA composite: partial (missing signals)"
+        ]
+      }
+    },
+    {
+      "id": "BC-003",
+      "name": "PBX Backend",
+      "security": {
+        "likelihood": 0.1,
+        "impact": 0.5,
+        "exposure": 0.4,
+        "composite": 0.35,
+        "drivers": []
+      },
+      "qa": {
+        "coverage_gap": 1.0,
+        "testability": 0.0,
+        "defect_density": null,
+        "change_velocity": 0.2,
+        "composite": "partial",
+        "drivers": [
+          "No Asterisk interop tests",
+          "No voice call e2e tests"
+        ]
+      },
+      "unified": {
+        "composite": "partial",
+        "drivers": [
+          "Security composite: 0.35",
+          "QA composite: partial (missing signals)"
+        ]
+      }
+    },
+    {
+      "id": "BC-004",
+      "name": "Tenant & Subscriber Management",
+      "security": {
+        "likelihood": 0.1,
+        "impact": 0.8,
+        "exposure": 0.4,
+        "composite": 0.47,
+        "drivers": []
+      },
+      "qa": {
+        "coverage_gap": 1.0,
+        "testability": 0.0,
+        "defect_density": null,
+        "change_velocity": 0.5,
+        "composite": "partial",
+        "drivers": [
+          "No schema migration tests",
+          "No HA1 regression tests"
+        ]
+      },
+      "unified": {
+        "composite": "partial",
+        "drivers": [
+          "Security composite: 0.47",
+          "QA composite: partial (missing signals)"
+        ]
+      }
+    },
+    {
+      "id": "BC-005",
+      "name": "SIP Trunk Management",
+      "security": {
+        "likelihood": 0.3,
+        "impact": 0.8,
+        "exposure": 1.0,
+        "composite": 0.71,
+        "drivers": [
+          "T-BC-005-002"
+        ]
+      },
+      "qa": {
+        "coverage_gap": 1.0,
+        "testability": 0.0,
+        "defect_density": null,
+        "change_velocity": 0.8,
+        "composite": "partial",
+        "drivers": [
+          "No rate limiting load tests",
+          "No circuit breaker chaos tests"
+        ]
+      },
+      "unified": {
+        "composite": "partial",
+        "drivers": [
+          "Security composite: 0.71",
+          "QA composite: partial (missing signals)"
+        ]
+      }
+    },
+    {
+      "id": "BC-006",
+      "name": "Anomaly Detection",
+      "security": {
+        "likelihood": 0.3,
+        "impact": 0.5,
+        "exposure": 0.4,
+        "composite": 0.41,
+        "drivers": [
+          "T-BC-006-001"
+        ]
+      },
+      "qa": {
+        "coverage_gap": 1.0,
+        "testability": 0.0,
+        "defect_density": null,
+        "change_velocity": 0.2,
+        "composite": "partial",
+        "drivers": [
+          "No accuracy benchmarks",
+          "No false-positive rate measurements"
+        ]
+      },
+      "unified": {
+        "composite": "partial",
+        "drivers": [
+          "Security composite: 0.41",
+          "QA composite: partial (missing signals)"
+        ]
+      }
+    }
+  ],
+  "ranking": [
+    "BC-001",
+    "BC-002",
+    "BC-003",
+    "BC-004",
+    "BC-005",
+    "BC-006"
+  ],
+  "cross_capability": {
+    "ref": "../security/cross-capability-risks.json"
+  }
+}

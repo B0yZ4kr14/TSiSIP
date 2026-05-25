@@ -1,0 +1,83 @@
+{
+  "schema_version": "1.0",
+  "capabilities": {
+    "BC-001": {
+      "coverage_gap": 1.0,
+      "testability": 0.0,
+      "defect_density": null,
+      "change_velocity": 0.5,
+      "environment_coverage": 0.67,
+      "posture": "high-risk",
+      "drivers": [
+        "Proxy coverage 0% (LOW confidence)",
+        "No e2e call flow tests",
+        "Staging/prod absent from CI"
+      ]
+    },
+    "BC-002": {
+      "coverage_gap": 1.0,
+      "testability": 0.0,
+      "defect_density": null,
+      "change_velocity": 0.2,
+      "environment_coverage": 0.67,
+      "posture": "high-risk",
+      "drivers": [
+        "No RTP media tests",
+        "No SRTP validation",
+        "No performance tests"
+      ]
+    },
+    "BC-003": {
+      "coverage_gap": 1.0,
+      "testability": 0.0,
+      "defect_density": null,
+      "change_velocity": 0.2,
+      "environment_coverage": 0.67,
+      "posture": "high-risk",
+      "drivers": [
+        "No Asterisk interop tests",
+        "No voice call e2e tests",
+        "No application tests"
+      ]
+    },
+    "BC-004": {
+      "coverage_gap": 1.0,
+      "testability": 0.0,
+      "defect_density": null,
+      "change_velocity": 0.5,
+      "environment_coverage": 0.67,
+      "posture": "high-risk",
+      "drivers": [
+        "No schema migration tests",
+        "No HA1 regression tests",
+        "No coverage tool"
+      ]
+    },
+    "BC-005": {
+      "coverage_gap": 1.0,
+      "testability": 0.0,
+      "defect_density": null,
+      "change_velocity": 0.8,
+      "environment_coverage": 0.67,
+      "posture": "high-risk",
+      "drivers": [
+        "No rate limiting load tests",
+        "No circuit breaker chaos tests",
+        "HIGH change velocity without tests"
+      ]
+    },
+    "BC-006": {
+      "coverage_gap": 1.0,
+      "testability": 0.0,
+      "defect_density": null,
+      "change_velocity": 0.2,
+      "environment_coverage": 0.67,
+      "posture": "high-risk",
+      "drivers": [
+        "No accuracy benchmarks",
+        "No false-positive rate measurements",
+        "No synthetic traffic tests"
+      ]
+    }
+  }
+}

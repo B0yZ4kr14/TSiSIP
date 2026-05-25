@@ -1,0 +1,135 @@
+{
+  "schema_version": "1.0",
+  "capability": "SIP Edge Proxy",
+  "threats": [
+    {
+      "id": "T-BC-001-001",
+      "category": "Spoofing",
+      "description": "SIP INVITE/REGISTER spoofing with forged From/To headers",
+      "attack_scenario": "Attacker sends INVITE with spoofed caller ID to bypass auth or impersonate legitimate user",
+      "preconditions": [
+        "Attacker can reach UDP 5060",
+        "No source IP validation"
+      ],
+      "affected_assets": [
+        "subscriber identity",
+        "call routing"
+      ],
+      "evidence": [
+        {
+          "file": "opensips/opensips.cfg.tpl",
+          "lines": "120-160"
+        }
+      ],
+      "likelihood_hint": "medium",
+      "impact_hint": "high"
+    },
+    {
+      "id": "T-BC-001-002",
+      "category": "Tampering",
+      "description": "In-transit SIP message modification",
+      "attack_scenario": "MITM modifies SDP or routing headers between client and proxy",
+      "preconditions": [
+        "TLS not enforced",
+        "Unencrypted transport used"
+      ],
+      "affected_assets": [
+        "SIP messages",
+        "SDP content"
+      ],
+      "evidence": [
+        {
+          "file": "opensips/opensips.cfg.tpl",
+          "lines": "55-65"
+        }
+      ],
+      "likelihood_hint": "low",
+      "impact_hint": "medium"
+    },
+    {
+      "id": "T-BC-001-003",
+      "category": "Repudiation",
+      "description": "Missing non-repudiation for admin/config changes",
+      "attack_scenario": "Operator changes OpenSIPS config; no signed audit trail",
+      "preconditions": [
+        "Config changes via docker exec",
+        "No signed commit verification"
+      ],
+      "affected_assets": [
+        "configuration integrity"
+      ],
+      "evidence": [
+        {
+          "file": "docker/entrypoint.sh",
+          "lines": ""
+        }
+      ],
+      "likelihood_hint": "low",
+      "impact_hint": "low"
+    },
+    {
+      "id": "T-BC-001-004",
+      "category": "Information Disclosure",
+      "description": "Internal topology leakage",
+      "attack_scenario": "SIP response contains internal Asterisk IP or Via headers leak network topology",
+      "preconditions": [
+        "topology_hiding misconfigured",
+        "Error responses bypass hiding"
+      ],
+      "affected_assets": [
+        "internal network topology",
+        "backend IP addresses"
+      ],
+      "evidence": [
+        {
+          "file": "opensips/opensips.cfg.tpl",
+          "lines": "200-220"
+        }
+      ],
+      "likelihood_hint": "low",
+      "impact_hint": "medium"
+    },
+    {
+      "id": "T-BC-001-005",
+      "category": "Denial of Service",
+      "description": "SIP flood / INVITE flood overwhelming proxy",
+      "attack_scenario": "Botnet sends millions of INVITEs; no pike limit or rate limit effective",
+      "preconditions": [
+        "pike threshold set too high",
+        "No upstream DDoS mitigation"
+      ],
+      "affected_assets": [
+        "SIP Edge Proxy availability"
+      ],
+      "evidence": [
+        {
+          "file": "opensips/opensips.cfg.tpl",
+          "lines": "100-115"
+        }
+      ],
+      "likelihood_hint": "high",
+      "impact_hint": "high"
+    },
+    {
+      "id": "T-BC-001-006",
+      "category": "Elevation of Privilege",
+      "description": "Admin API access without proper auth",
+      "attack_scenario": "Attacker accesses MI HTTP on port 8888 without authentication",
+      "preconditions": [
+        "MI HTTP exposed beyond internal networks",
+        "No auth on MI interface"
+      ],
+      "affected_assets": [
+        "OpenSIPS runtime control"
+      ],
+      "evidence": [
+        {
+          "file": "opensips/opensips.cfg.tpl",
+          "lines": "68-86"
+        }
+      ],
+      "likelihood_hint": "medium",
+      "impact_hint": "high"
+    }
+  ]
+}

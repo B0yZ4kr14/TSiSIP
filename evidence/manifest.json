@@ -1,11 +1,9 @@
 {
   "schema_version": "1.0",
-  "pipeline": "EDCR",
+  "generated_at": "2026-05-25T12:38:19.790954Z",
   "phases": {
     "init": {
       "status": "completed",
-      "started_at": "2026-05-24T22:57:00Z",
-      "completed_at": "2026-05-24T22:57:00Z",
       "artifacts": [
         "evidence/context.json",
         "evidence/workflow.json"
@@ -13,8 +11,6 @@
     },
     "scan": {
       "status": "completed",
-      "started_at": "2026-05-25T02:14:58.840881Z",
-      "completed_at": "2026-05-25T02:14:58.840881Z",
       "artifacts": [
         "evidence/discovery/candidates.md",
         "evidence/discovery/signals/s1-packages.json",
@@ -37,8 +33,6 @@
     },
     "discover": {
       "status": "completed",
-      "started_at": "2026-05-25T02:21:44.733947Z",
-      "completed_at": "2026-05-25T02:21:44.733947Z",
       "artifacts": [
         "evidence/discovery/analysis.md",
         "evidence/discovery/coverage.md",
@@ -52,8 +46,6 @@
     },
     "report": {
       "status": "completed",
-      "started_at": "2026-05-25T02:27:41.398251Z",
-      "completed_at": "2026-05-25T02:27:41.398251Z",
       "artifacts": [
         "evidence/reports/stakeholder-report.md",
         "evidence/reports/architect-report.md",
@@ -63,8 +55,6 @@
     },
     "assess": {
       "status": "completed",
-      "started_at": "2026-05-25T12:36:26.171947Z",
-      "completed_at": "2026-05-25T12:36:26.171947Z",
       "artifacts": [
         "evidence/security/threats/BC-001.json",
         "evidence/security/threats/BC-002.json",
@@ -84,47 +74,53 @@
     },
     "generate": {
       "status": "pending",
-      "started_at": null,
-      "completed_at": null,
       "artifacts": []
     },
     "finish": {
-      "status": "completed",
-      "started_at": "2026-05-25T12:38:19.790954Z",
-      "completed_at": "2026-05-25T12:38:19.790954Z",
-      "artifacts": [
-        "evidence/acceptance-check.md",
-        "evidence/README.md",
-        "evidence/manifest.json",
-        "evidence/generate/handoff/platform-sre/README.md",
-        "evidence/generate/handoff/voice-engineering/README.md",
-        "evidence/generate/handoff/operations-devops/README.md",
-        "evidence/generate/handoff/shared/infrastructure.md",
-        "evidence/generate/handoff/shared/compliance-gaps.md"
-      ]
+      "status": "pending",
+      "artifacts": []
     }
   },
-  "adaptations": {
-    "db_schema_analysis": "auto",
-    "frontend_analysis": "auto",
-    "coverage_source": "proxy"
+  "acceptance": {
+    "total": 14,
+    "passed": 10,
+    "failed": [
+      5
+    ],
+    "needs_review": [
+      8
+    ],
+    "n/a": [
+      5
+    ]
   },
-  "notes": [
-    "coverage_report: not-collected (no coverage tool configured; project uses Docker-based integration tests)",
-    "ndepend_export: not-collected (C project with no .NET assemblies)",
-    "db_schema_export: not-collected (PostgreSQL schema is in db/init/ SQL files, not an exported dump)",
-    "flaky_test_history: not-collected (not available)",
-    "defect_export: not-collected (not available)",
-    "entry_point_list: not-collected (not available)",
-    "detect-stack: primary_languages skewed by .ansible-venv/ (4959 files); real project is Docker/C/Python/PHP",
-    "SS2: cve_lookup not-collected (no vulnerability data source wired in)",
-    "QS2: coverage_source=proxy (no coverage report configured)",
-    "QS4: flaky_tests not-collected (inputs.flaky_test_history is null)",
-    "D8: TM Forum missing items flagged for stakeholder clarification (billing, product catalog, partner mgmt)",
-    "D3: File coverage 92% (45 capability + 12 infra = 57/62 significant files)",
-    "report: security report skipped \u2014 assess not done",
-    "assess: BC-001 through BC-006 have unified composite 'partial' because QA signals not fully collected",
-    "assess: 8 vulnerabilities cataloged (1 Confirmed, 3 Probable, 4 Potential)",
-    "assess: 3 cross-capability systemic risks identified"
+  "teams": [
+    {
+      "id": "platform-sre",
+      "name": "Platform / SRE",
+      "capabilities": [
+        "BC-001",
+        "BC-002",
+        "BC-006"
+      ],
+      "bundle_path": "generate/handoff/platform-sre/"
+    },
+    {
+      "id": "voice-engineering",
+      "name": "Voice Engineering",
+      "capabilities": [
+        "BC-003"
+      ],
+      "bundle_path": "generate/handoff/voice-engineering/"
+    },
+    {
+      "id": "operations-devops",
+      "name": "Operations / DevOps",
+      "capabilities": [
+        "BC-004",
+        "BC-005"
+      ],
+      "bundle_path": "generate/handoff/operations-devops/"
+    }
   ]
 }

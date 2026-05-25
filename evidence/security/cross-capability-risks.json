@@ -1,0 +1,37 @@
+{
+  "schema_version": "1.0",
+  "risks": [
+    {
+      "id": "CCR-001",
+      "type": "cascading_failure",
+      "path": [
+        "BC-001",
+        "BC-002",
+        "BC-003"
+      ],
+      "description": "SIP Edge Proxy compromise enables media relay and PBX access",
+      "trust_boundary_gap": "sip_internal network has no mutual auth between services"
+    },
+    {
+      "id": "CCR-002",
+      "type": "shared_vulnerability",
+      "path": [
+        "BC-001",
+        "BC-004",
+        "BC-005"
+      ],
+      "description": "All three capabilities share PostgreSQL; SQL injection or cred theft affects all",
+      "trust_boundary_gap": "db_internal network has no row-level encryption"
+    },
+    {
+      "id": "CCR-003",
+      "type": "privilege_escalation",
+      "path": [
+        "BC-006",
+        "BC-001"
+      ],
+      "description": "Anomaly detector with write access to OpenSIPS MI could disable protections",
+      "trust_boundary_gap": "BC-006 \u2192 BC-001 control path not authenticated"
+    }
+  ]
+}

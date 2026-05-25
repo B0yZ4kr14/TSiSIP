@@ -1,0 +1,45 @@
+{
+  "schema_version": "1.0",
+  "gaps": [
+    {
+      "capability": "BC-001",
+      "gap": "Add config syntax validation to CI",
+      "priority": "high"
+    },
+    {
+      "capability": "BC-001",
+      "gap": "Add SIP OPTIONS regression test",
+      "priority": "high"
+    },
+    {
+      "capability": "BC-002",
+      "gap": "Add RTP media quality tests",
+      "priority": "medium"
+    },
+    {
+      "capability": "BC-003",
+      "gap": "Add Asterisk interop tests",
+      "priority": "medium"
+    },
+    {
+      "capability": "BC-004",
+      "gap": "Add schema migration test harness",
+      "priority": "high"
+    },
+    {
+      "capability": "BC-005",
+      "gap": "Add rate limiting load tests",
+      "priority": "high"
+    },
+    {
+      "capability": "BC-005",
+      "gap": "Add circuit breaker chaos tests",
+      "priority": "high"
+    },
+    {
+      "capability": "BC-006",
+      "gap": "Add accuracy benchmarks",
+      "priority": "medium"
+    }
+  ]
+}

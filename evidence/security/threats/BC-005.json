@@ -1,0 +1,49 @@
+{
+  "schema_version": "1.0",
+  "capability": "SIP Trunk Management",
+  "threats": [
+    {
+      "id": "T-BC-005-001",
+      "category": "Spoofing",
+      "description": "Trunk endpoint spoofing",
+      "attack_scenario": "Attacker registers rogue trunk endpoint to intercept outbound calls",
+      "preconditions": [
+        "No endpoint certificate validation",
+        "Trunk auth via username/password only"
+      ],
+      "affected_assets": [
+        "trunk routing",
+        "outbound calls"
+      ],
+      "evidence": [
+        {
+          "file": "db/init/04-trunk-schema.sql",
+          "lines": ""
+        }
+      ],
+      "likelihood_hint": "low",
+      "impact_hint": "high"
+    },
+    {
+      "id": "T-BC-005-002",
+      "category": "Denial of Service",
+      "description": "Rate limit bypass",
+      "attack_scenario": "Attacker distributes requests across many trunk endpoints to bypass per-trunk limits",
+      "preconditions": [
+        "No global rate limit",
+        "Per-trunk limits only"
+      ],
+      "affected_assets": [
+        "SIP Edge Proxy availability"
+      ],
+      "evidence": [
+        {
+          "file": "db/init/04-trunk-schema.sql",
+          "lines": ""
+        }
+      ],
+      "likelihood_hint": "medium",
+      "impact_hint": "medium"
+    }
+  ]
+}

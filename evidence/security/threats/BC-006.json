@@ -1,0 +1,48 @@
+{
+  "schema_version": "1.0",
+  "capability": "Anomaly Detection & Security Monitoring",
+  "threats": [
+    {
+      "id": "T-BC-006-001",
+      "category": "Spoofing",
+      "description": "False negative via traffic mimicry",
+      "attack_scenario": "Attacker shapes attack traffic to appear normal, evading anomaly detector",
+      "preconditions": [
+        "ML model not trained on adversarial patterns",
+        "Threshold too high"
+      ],
+      "affected_assets": [
+        "detection accuracy"
+      ],
+      "evidence": [
+        {
+          "file": "docker/anomaly-detector/",
+          "lines": ""
+        }
+      ],
+      "likelihood_hint": "medium",
+      "impact_hint": "medium"
+    },
+    {
+      "id": "T-BC-006-002",
+      "category": "Tampering",
+      "description": "Anomaly detector config tampering",
+      "attack_scenario": "Attacker modifies detection thresholds to suppress alerts",
+      "preconditions": [
+        "Config not signed",
+        "No config integrity monitoring"
+      ],
+      "affected_assets": [
+        "security monitoring"
+      ],
+      "evidence": [
+        {
+          "file": "docker/anomaly-detector/",
+          "lines": ""
+        }
+      ],
+      "likelihood_hint": "low",
+      "impact_hint": "high"
+    }
+  ]
+}
