@@ -1,0 +1,14 @@
+{
+  "SchemaVersion": 2,
+  "CreatedAt": "2026-05-25T20:34:41.157011",
+  "ArtifactName": "tsisip/opensips:latest",
+  "ArtifactType": "container_image",
+  "Results": [
+    {
+      "Target": "tsisip/opensips:latest (debian 12.10)",
+      "Class": "os-pkgs",
+      "Type": "debian",
+      "Vulnerabilities": []
+    }
+  ]
+}
