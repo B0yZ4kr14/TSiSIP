@@ -4,12 +4,34 @@
  * Demonstrates D3.js chart integration point
  */
 require_once __DIR__ . '/common/config.php';
+require_once __DIR__ . '/common/mi-http.php';
 requireAuth();
 checkPasswordChange();
+
+$miRtp = miHttpCall('rtpengine_show');
+$rtpData = [];
+$rtpError = null;
+if ($miRtp['success']) {
+    $rtpData = $miRtp['data'] ?? [];
+} else {
+    $rtpError = $miRtp['error'];
+}
+
+$activeSessions = is_array($rtpData) && isset($rtpData['sessions']) ? intval($rtpData['sessions']) : 142;
+$maxSessions    = is_array($rtpData) && isset($rtpData['max_sessions']) ? intval($rtpData['max_sessions']) : 5000;
+$available      = max(0, $maxSessions - $activeSessions);
+
 require_once __DIR__ . '/common/header.php';
 ?>
 <div id="content">
     <h2><?php echo _('RTPengine Sessions'); ?></h2>
+
+    <?php if ($rtpError): ?>
+        <div class="tsisip-badge tsisip-badge--warning" role="alert">
+            <?php echo _('MI unavailable: ') . htmlspecialchars($rtpError); ?>
+        </div>
+    <?php endif; ?>
+
     <div id="tsisip-chart--rtpengine-sessions" style="max-width:400px;height:320px;margin:1rem 0;"></div>
     <table class="dataTable tsisip-table">
         <thead>
@@ -23,8 +45,8 @@ require_once __DIR__ . '/common/header.php';
         <tbody>
             <tr>
                 <td>rtpengine-01</td>
-                <td>142</td>
-                <td>5000</td>
+                <td><?php echo $activeSessions; ?></td>
+                <td><?php echo $maxSessions; ?></td>
                 <td class="tsisip-actions-column">
                     <button type="button" class="tsisip-btn tsisip-btn-secondary tsisip-btn-edit"><?php echo _('Edit'); ?></button>
                 </td>
@@ -40,10 +62,10 @@ document.addEventListener('DOMContentLoaded', () => {
         container: '#tsisip-chart--rtpengine-sessions',
         type: 'donut',
         data: [
-            { label: 'Active', value: 142, color: 'var(--tsisip-accent-success)' },
-            { label: 'Available', value: 4858, color: 'var(--tsisip-border-subtle)' }
+            { label: 'Active', value: <?php echo $activeSessions; ?>, color: 'var(--tsisip-accent-success)' },
+            { label: 'Available', value: <?php echo $available; ?>, color: 'var(--tsisip-border-subtle)' }
         ],
-        centerText: '142'
+        centerText: '<?php echo $activeSessions; ?>'
     });
 });
 </script>

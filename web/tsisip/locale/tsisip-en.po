@@ -1092,3 +1092,16 @@ msgstr "Live OpenSIPS Sockets"
 msgid "No live socket data."
 msgstr "No live socket data."
 
+
+msgid "Live Call Center Status"
+msgstr "Live Call Center Status"
+
+msgid "No active calls."
+msgstr "No active calls."
+
+msgid "Live Load Balancer Status"
+msgstr "Live Load Balancer Status"
+
+msgid "No load balancer destinations."
+msgstr "No load balancer destinations."
+
