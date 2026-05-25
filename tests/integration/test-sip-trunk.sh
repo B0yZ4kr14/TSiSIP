@@ -10,6 +10,12 @@ PG_USER="${PG_USER:-opensips}"
 PG_DB="${PG_DB:-opensips}"
 PG_HOST="${PG_HOST:-postgres}"
 
+# Skip if PostgreSQL is not reachable
+if ! psql -U "$PG_USER" -d "$PG_DB" -h "$PG_HOST" -c "SELECT 1" >/dev/null 2>&1; then
+    echo "SKIP: PostgreSQL not reachable at $PG_HOST (trunk tests require running database)"
+    exit 0
+fi
+
 FAIL=0
 
 # a. Verify sip_trunk_providers table schema

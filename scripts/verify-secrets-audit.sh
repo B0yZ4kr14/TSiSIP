@@ -71,9 +71,16 @@ if [ -d "$SQL_DIR" ]; then
     PLAINTEXT=0
     for sqlfile in "$SQL_DIR"/0[2-9]-*.sql "$SQL_DIR"/[1-9]*.sql; do
         [ -f "$sqlfile" ] || continue
+        # Check for plaintext password columns in subscriber/auth tables
+        # Allow password columns in gateway tables (smpp, uacreg) for upstream auth
         if grep -qiE 'password\s+VARCHAR|password\s+TEXT|password\s+CHAR' "$sqlfile"; then
-            PLAINTEXT=$((PLAINTEXT + 1))
-            info "Plaintext column in: $(basename "$sqlfile")"
+            # Exclude legitimate OpenSIPS gateway module tables (smpp, uacreg)
+            # by checking if password appears within 20 lines of CREATE TABLE smpp/uacreg
+            if ! grep -A20 'CREATE TABLE.*smpp' "$sqlfile" | grep -qiE 'password\s+VARCHAR|password\s+TEXT|password\s+CHAR' && \
+               ! grep -A20 'CREATE TABLE.*uacreg' "$sqlfile" | grep -qiE 'password\s+VARCHAR|password\s+TEXT|password\s+CHAR'; then
+                PLAINTEXT=$((PLAINTEXT + 1))
+                info "Plaintext column in: $(basename "$sqlfile")"
+            fi
         fi
     done
     if [ "$PLAINTEXT" -eq 0 ]; then
