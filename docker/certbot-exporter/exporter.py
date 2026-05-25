@@ -18,11 +18,39 @@ from prometheus_client import start_http_server, Gauge, Counter
 
 # Configuration
 CERT_PATH = os.environ.get("CERT_PATH", "/certs/live/server.crt")
+CERT_PATHS = os.environ.get("CERT_PATHS", "")
+CERT_SOURCES = os.environ.get("CERT_SOURCES", "")
+CERT_DOMAINS = os.environ.get("CERT_DOMAINS", "")
 STATE_DIR = os.environ.get("STATE_DIR", "/var/lib/certbot-exporter")
 EXPORTER_PORT = int(os.environ.get("EXPORTER_PORT", "9101"))
 SCRAPE_INTERVAL_SECONDS = int(os.environ.get("SCRAPE_INTERVAL_SECONDS", "60"))
 CERT_SOURCE = os.environ.get("CERT_SOURCE", "certbot")
 TLS_DOMAIN = os.environ.get("TLS_DOMAIN", "unknown")
+
+
+def _parse_cert_list() -> list[dict]:
+    """Parse certificate list from environment variables.
+
+    Returns list of dicts with keys: path, source, domain.
+    Primary CERT_PATH is always included.
+    """
+    certs = [{"path": CERT_PATH, "source": CERT_SOURCE, "domain": TLS_DOMAIN}]
+
+    if not CERT_PATHS:
+        return certs
+
+    paths = [p.strip() for p in CERT_PATHS.split("|") if p.strip()]
+    sources = [s.strip() for s in CERT_SOURCES.split("|") if s.strip()] if CERT_SOURCES else []
+    domains = [d.strip() for d in CERT_DOMAINS.split("|") if d.strip()] if CERT_DOMAINS else []
+
+    for i, path in enumerate(paths):
+        certs.append({
+            "path": path,
+            "source": sources[i] if i < len(sources) else f"cert-{i+1}",
+            "domain": domains[i] if i < len(domains) else TLS_DOMAIN,
+        })
+
+    return certs
 
 FAILURES_FILE = os.path.join(STATE_DIR, "renewal_failures")
 LAST_SUCCESS_FILE = os.path.join(STATE_DIR, "last_success")
@@ -104,19 +132,24 @@ _last_failures = 0
 
 def update_metrics():
     global _last_failures
-    try:
-        expiry = get_cert_expiry(CERT_PATH)
-        now = datetime.datetime.now(datetime.timezone.utc)
-        if expiry.tzinfo is None:
-            expiry = expiry.replace(tzinfo=datetime.timezone.utc)
-        delta = expiry - now
-        days = max(0.0, delta.total_seconds() / 86400.0)
-        domain = get_cert_domain(CERT_PATH)
-        days_until_expiry.labels(domain=domain, source=CERT_SOURCE).set(days)
-    except subprocess.CalledProcessError as e:
-        print(f"ERROR: Failed to read certificate expiry: {e}", file=sys.stderr)
-    except Exception as e:
-        print(f"ERROR: Unexpected error reading certificate: {e}", file=sys.stderr)
+
+    certs = _parse_cert_list()
+    for cert in certs:
+        try:
+            expiry = get_cert_expiry(cert["path"])
+            now = datetime.datetime.now(datetime.timezone.utc)
+            if expiry.tzinfo is None:
+                expiry = expiry.replace(tzinfo=datetime.timezone.utc)
+            delta = expiry - now
+            days = max(0.0, delta.total_seconds() / 86400.0)
+            domain = get_cert_domain(cert["path"])
+            if domain == TLS_DOMAIN and cert["domain"] != TLS_DOMAIN:
+                domain = cert["domain"]
+            days_until_expiry.labels(domain=domain, source=cert["source"]).set(days)
+        except subprocess.CalledProcessError as e:
+            print(f"ERROR: Failed to read certificate expiry for {cert['path']}: {e}", file=sys.stderr)
+        except Exception as e:
+            print(f"ERROR: Unexpected error reading certificate {cert['path']}: {e}", file=sys.stderr)
 
     failures = _read_int_file(FAILURES_FILE, default=0)
     # Track delta for true Counter semantics

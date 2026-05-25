@@ -1,7 +1,7 @@
 # TSiSIP Project Makefile
 # Orchestrates common development and operations tasks.
 
-.PHONY: all build test up down lint clean ocp-build ocp-rollback help
+.PHONY: all build test up down lint brownfield clean ocp-build ocp-rollback help
 
 all: build test
 
@@ -55,6 +55,24 @@ lint:
 	  tsisip-opensips:latest \
 	  /entrypoint.sh /usr/local/sbin/opensips -c -f /etc/opensips/opensips.cfg \
 	  && echo "  OpenSIPS config: OK" || echo "  OpenSIPS config: FAILED"
+
+# Brownfield hygiene scan
+brownfield:
+	@echo "Running brownfield scan..."
+	@echo "  [B1] Checking for :latest image tags..."
+	@! grep -n ':latest' docker-compose.yml | grep -v 'certbot-exporter' | grep -v 'opensips-exporter' | grep -v '#' || echo "  PASS: No stray :latest tags"
+	@echo "  [B2] Checking for hard-coded 172.x IPs in deploy scripts..."
+	@! grep -rn '172\.1[6789]\.' deploy/scripts/*.sh 2>/dev/null || echo "  PASS: No hard-coded Docker IPs"
+	@echo "  [B3] Checking for secrets in git index..."
+	@! git diff --cached --name-only | grep -E '^secrets/' || echo "  PASS: No secrets staged"
+	@! git ls-files | grep -E '^secrets/' || echo "  PASS: No secrets tracked"
+	@echo "  [B4] Checking for plaintext passwords in seed data..."
+	@! grep -n "password.*[^']" db/init/03-seed-data.sql | grep -v "''" | grep -v "ha1" || echo "  PASS: Seed data uses HA1 only"
+	@echo "  [B5] Checking for htable module reference..."
+	@! grep -n "htable" Dockerfile || echo "  PASS: No htable references"
+	@echo "  [B6] Checking for published ports on internal services..."
+	@! awk '/asterisk|postgres/{found=1} found && /ports:/{print; exit}' docker-compose.yml || echo "  PASS: Internal services have no published ports"
+	@echo "  Brownfield scan complete."
 
 # Build OCP theme only
 ocp-build:

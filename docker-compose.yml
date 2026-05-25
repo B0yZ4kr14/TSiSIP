@@ -78,6 +78,59 @@ services:
       retries: 5
       start_period: 20s
       start_interval: 5s
+
+  postgres-exporter:
+    image: prometheuscommunity/postgres-exporter:v0.15.0@sha256:386b12d19eab2a37d7cd8ca8b4c7491cc7a830d9581f49af6c98a393da9605e6
+    networks:
+    - db_internal
+    restart: on-failure
+    deploy:
+      resources:
+        limits:
+          memory: 128M
+        reservations:
+          memory: 64M
+    environment:
+      DATA_SOURCE_NAME: postgresql://opensips@postgres:5432/opensips?sslmode=disable
+      PG_EXPORTER_EXTEND_QUERY_PATH: /etc/postgres_exporter/queries.yaml
+    secrets:
+    - db_password
+    cap_drop:
+    - ALL
+    security_opt:
+    - no-new-privileges:true
+    depends_on:
+      postgres:
+        condition: service_healthy
+
+  node-exporter:
+    image: prom/node-exporter:v1.8.0@sha256:8a57af80a4c77ffb97749b44895248563616fcfd405b5370d5db35fe6c15e4ec
+    networks:
+    - sip_internal
+    restart: on-failure
+    deploy:
+      resources:
+        limits:
+          memory: 128M
+        reservations:
+          memory: 64M
+    command:
+    - --path.procfs=/host/proc
+    - --path.sysfs=/host/sys
+    - --path.rootfs=/host/root
+    - --collector.filesystem.mount-points-exclude=^/(sys|proc|dev|host|etc)($$|/)
+    volumes:
+    - /proc:/host/proc:ro
+    - /sys:/host/sys:ro
+    - /:/host/root:ro
+    pid: host
+    cap_drop:
+    - ALL
+    cap_add:
+    - SYS_TIME
+    security_opt:
+    - no-new-privileges:true
+
   rtpengine:
     build:
       context: ./docker/rtpengine
@@ -107,6 +160,7 @@ services:
     - server.key
     volumes:
     - tls_certs:/certs/live:ro
+    - ./deploy/nginx/ssl:/nginx/ssl:ro
     cap_drop:
     - ALL
     cap_add:
@@ -341,6 +395,7 @@ services:
       context: ./docker/prometheus
     image: tsisip/prometheus:${TSISIP_IMAGE_TAG:?must be set}
     networks:
+    - sip_internal
     - db_internal
     restart: on-failure
     deploy:
@@ -522,9 +577,11 @@ services:
     build:
       context: ./docker/certbot
     image: tsisip/certbot:${TSISIP_IMAGE_TAG:?must be set}
+    profiles:
+    - certbot
     networks:
     - sip_internal
-    restart: unless-stopped
+    restart: on-failure
     environment:
       TLS_DOMAIN: ${TLS_DOMAIN}
       ACME_EMAIL: ${ACME_EMAIL}
@@ -563,9 +620,11 @@ services:
     build:
       context: ./docker/tailscale-cert
     image: tsisip/tailscale-cert:${TSISIP_IMAGE_TAG:?must be set}
+    profiles:
+    - tailscale
     networks:
     - sip_internal
-    restart: unless-stopped
+    restart: on-failure
     environment:
       TS_HOSTNAME: ${TS_HOSTNAME:-tsisip}
       OPENSIPS_MI_URL: http://opensips:8888/mi
@@ -598,6 +657,9 @@ services:
           memory: 32M
     environment:
       CERT_PATH: /certs/live/server.crt
+      CERT_PATHS: /nginx/ssl/tsiapp.io.crt
+      CERT_SOURCES: cloudflare-origin-ca
+      CERT_DOMAINS: tsiapp.io
       STATE_DIR: /var/lib/certbot-exporter
       EXPORTER_PORT: 9101
       CERT_SOURCE: certbot

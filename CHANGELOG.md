@@ -7,6 +7,50 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Added
+
+#### Feature 018: Global Requirement ID Migration
+- Feature-scoped FR-NNN-XXX identifiers across all 24 specs
+- Validation scripts (`scripts/validate-fr-ids.py`, `scripts/migrate-fr-ids.py`)
+
+#### Feature 019: Spec Kit Memory Hub Integration
+- Automated memory synthesis per feature cycle
+- Blueprint generation and spec validation gates
+
+#### Feature 020: OCP Critical Tool Gap Closure
+- Dialog viewer (read-only), MI command runner (whitelist), Statistics monitor (D3.js)
+- Dialplan manager, Domains manager, TLS management UI
+- Security assessment and threat model documentation
+
+#### Feature 021: Brownfield Security & Production Hardening
+- CSP, X-Frame-Options, X-Content-Type-Options, Referrer-Policy headers
+- Session hardening (regenerate_id, HttpOnly, SameSite=Strict)
+
+#### Feature 022: VPS Go-Live Stabilization
+- Production validation, port audits, network segmentation tests
+- Unified nginx reverse proxy with Cloudflare Origin CA
+
+#### Feature 023: Subscriber CRUD Refactor
+- Admin API proxy layer for subscriber mutations
+- HA1 generation remains in OCP; INSERT/UPDATE/DELETE delegated to proxy
+- ARCH-PRE-001 resolution
+
+#### Feature 024: Brownfield Remediation
+- SHA-pinned Docker base images (supply-chain determinism)
+- Dynamic IP discovery via `docker network inspect` in deploy scripts
+- Dockerfile HEALTHCHECK instructions for all services
+- Complete `.env.example` parity with `docker-compose.vps.yml`
+
+### Changed
+
+- `.editorconfig` added for consistent formatting
+- `CONTRIBUTING.md` added with workflow, gates, and conventions
+- `docs/architecture/README.md` added as ADR index
+- `certbot-exporter` now monitors multiple certificates (Origin CA + certbot)
+- `Makefile` gained `brownfield` target for hygiene scans
+- `prometheus.yml.tpl` updated with `postgres-exporter` and `node-exporter` jobs
+- `docker-compose.yml` gained `postgres-exporter` and `node-exporter` services
+
 ## [0.7.0] - 2026-05-20
 
 ### Added

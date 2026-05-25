@@ -7,8 +7,29 @@ It acts as the only public SIP signaling entry point and security boundary for a
 
 | Feature | Status | Description |
 |---|---|---|
-| **001 — TSiSIP SIP Edge Foundation** | Complete | TSiSIP SIP edge service, RTPengine, PostgreSQL schema, Docker Compose topology |
-| **002 — TSiSIP Control Panel Modernization** | Complete | TSiSIP Control Panel (OCP v9) with D3.js charts, i18n, role-aware density |
+| **001 — TSiSIP SIP Edge Foundation** | Completed | OpenSIPS 3.6 LTS, RTPengine, PostgreSQL schema, Docker Compose topology |
+| **002 — TSiSIP Control Panel Modernization** | Completed | OCP v9 rebrand with D3.js charts, i18n, role-aware density |
+| **003 — Prometheus & Grafana Observability** | Completed | Metrics collection, dashboards, alert rules |
+| **004 — Health Checks & Autohealing** | Completed | Container health probes, restart policies, dependency ordering |
+| **005 — PostgreSQL Backup & Restore** | Completed | WAL archiving, PITR, encryption, RPO/RTO monitoring |
+| **006 — Rate Limiting & DDoS Protection** | Completed | `ratelimit`, `userblacklist`, `cachedb_local` modules |
+| **007 — TLS & SRTP Encryption** | Completed | TLS v1.2+, SRTP media relay, certificate rotation |
+| **008 — DevSecOps Deployment** | Completed | VPS production stack, CI/CD, deterministic image pinning |
+| **009 — VPS Deploy Automation** | Completed | Ansible playbooks, bootstrap scripts, nginx unified proxy |
+| **010 — OCP Navigation System Links** | Completed | Role-aware navigation, dashboard cards, wiki integration |
+| **011 — OCP Forced Password Change** | Completed | First-login password change, HA1 generation, audit logging |
+| **012 — OCP Admin Tools Restoration** | Completed | Subscriber, dispatcher, address CRUD with RBAC |
+| **013 — Brownfield Follow-up** | Completed | Post-deployment scan remediation, env completeness |
+| **015 — Auto TLS Certificate Rotation** | Completed | Certbot automation, Cloudflare Origin CA, expiry alerts |
+| **016 — OCP Audit Log Compliance** | Completed | `ocp_audit_log` table, query interface, LGPD retention |
+| **017 — SIP Trunk Provider Integration** | Completed | Multi-provider trunk routing, failover, health probes |
+| **018 — Global Requirement ID Migration** | Completed | Feature-scoped FR-NNN-XXX IDs across all specs |
+| **019 — Spec Kit Memory Hub Integration** | Completed | Memory synthesis, blueprint generation, spec validation |
+| **020 — OCP Critical Tool Gap Closure** | Completed | Dialog viewer, MI commands, statistics, dialplan, domains, TLS mgmt |
+| **021 — Brownfield Security & Production Hardening** | Completed | Security headers, session hardening, input validation |
+| **022 — VPS Go-Live Stabilization** | Completed | Production readiness, port audits, network segmentation tests |
+| **023 — Subscriber CRUD Refactor** | Completed | Proxy layer, HA1 delegation, ARCH-PRE-001 resolution |
+| **024 — Brownfield Remediation** | Completed | SHA pinning, dynamic IP discovery, Dockerfile healthchecks |
 
 ## Quick Start
 
