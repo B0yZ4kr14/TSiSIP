@@ -184,7 +184,7 @@ Three durable lessons captured:
 
 | ID | Action | Owner |
 |----|--------|-------|
-| R5 | Backfill blueprints for specs 001–007, 011, 013, 015–018, 021 | scribe |
+| R5 | ~~Backfill blueprints~~ ✅ All 24 specs now have blueprint.md | scribe |
 | R6 | Expand agent charters with acceptance criteria (currently ~31 lines each) | scribe |
 | R7 | Add history.md to 6 agents missing it | scribe |
 | R8 | Deduplicate skill libraries across .agents/, .claude/, .kimi/ | devops-engineer |
