@@ -7,7 +7,7 @@
 | **Feature** | Advanced Container Health Checks and Auto-Healing |
 | **Short name** | health-checks-autohealing |
 | **Created** | 2026-05-16 |
-| **Status** | In Progress (OpenSIPS/RTPengine/PostgreSQL complete; Asterisk deferred to Feature 010) |
+| **Status** | Completed |
 | **Last Updated** | 2026-05-19 |
 | **Context** | TSiSIP is a Docker-first SIP infrastructure using OpenSIPS 3.6 LTS, PostgreSQL, RTPengine, and Asterisk. Container orchestration reliability is critical for production deployments. |
 | **Objective** | Implement multi-layer health probes, intelligent restart policies, circuit breaker patterns for dispatcher targets, graceful degradation, and health status observability to maximize service uptime and minimize manual intervention. |

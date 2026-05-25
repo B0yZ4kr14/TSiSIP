@@ -7,7 +7,7 @@
 | **Feature** | Automated PostgreSQL Backup and Point-in-Time Recovery |
 | **Short name** | postgresql-backup-restore |
 | **Created** | 2026-05-16 |
-| **Status** | Implemented |
+| **Status** | Completed |
 | **Last Updated** | 2026-05-19 |
 | **Context** | TSiSIP uses PostgreSQL as the sole database for subscriber tables, location records, and dispatcher state. Data durability and fast recovery are mandatory for production SIP service continuity. |
 | **Objective** | Provide automated logical backups, WAL archiving for PITR, encrypted at-rest storage, retention policies, restore validation, and offsite replication to protect against data loss and enable granular recovery. |
