@@ -1,4 +1,5 @@
 RewriteEngine On
+RewriteBase /
 
 # Redirect / to login.php (fallback if nginx exact match is bypassed)
 RewriteRule ^$ login.php [L,R=302]

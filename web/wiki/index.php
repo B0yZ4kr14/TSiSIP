@@ -5,7 +5,12 @@
  * Served independently from the Control Panel at /TSiSIP/wiki/
  */
 require_once __DIR__ . '/../common/config.php';
-requireAuth();
+// Wiki-relative auth redirect (/.../login.php resolves to /TSiSIP/login.php)
+if (empty($_SESSION['ocp_user_id'])) {
+    header('Location: ../login.php');
+    exit;
+}
+
 checkPasswordChange();
 require_once __DIR__ . '/common/wiki-header.php';
 
