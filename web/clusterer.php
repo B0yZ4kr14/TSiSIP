@@ -7,6 +7,7 @@
 require_once __DIR__ . '/common/config.php';
 require_once __DIR__ . '/common/csrf.php';
 require_once __DIR__ . '/common/pagination.php';
+require_once __DIR__ . '/common/mi-http.php';
 
 requireAuth();
 checkPasswordChange();
@@ -150,6 +151,51 @@ require_once __DIR__ . '/common/header.php';
             <button type="submit" class="tsisip-btn tsisip-btn--primary"><?php echo _('Filter'); ?></button>
             <a href="clusterer.php" class="tsisip-btn tsisip-btn--secondary"><?php echo _('Clear'); ?></a>
         </form>
+    </section>
+
+    <!-- Real-time cluster status via MI HTTP -->
+    <section class="tsisip-section">
+        <h2 class="tsisip-section-title"><?php echo _('Live Cluster Status'); ?></h2>
+        <?php
+        $miCluster = miHttpCall('clusterer_list');
+        if (!$miCluster['success']):
+        ?>
+            <div class="tsisip-badge tsisip-badge--warning" role="alert">
+                <?php echo _('MI unavailable: ') . htmlspecialchars($miCluster['error']); ?>
+            </div>
+        <?php else:
+            $clusterData = $miCluster['data'] ?? [];
+            if (empty($clusterData)):
+        ?>
+            <div class="tsisip-badge tsisip-badge--info"><?php echo _('No live cluster data returned by OpenSIPS.'); ?></div>
+        <?php else: ?>
+            <table class="tsisip-table">
+                <thead>
+                    <tr>
+                        <th><?php echo _('Cluster'); ?></th>
+                        <th><?php echo _('Node'); ?></th>
+                        <th><?php echo _('URL'); ?></th>
+                        <th><?php echo _('State'); ?></th>
+                        <th><?php echo _('Priority'); ?></th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <?php foreach ($clusterData as $c): ?>
+                        <tr>
+                            <td><?php echo htmlspecialchars($c['cluster_id'] ?? '—'); ?></td>
+                            <td><?php echo htmlspecialchars($c['node_id'] ?? '—'); ?></td>
+                            <td><code><?php echo htmlspecialchars($c['url'] ?? '—'); ?></code></td>
+                            <td>
+                                <span class="tsisip-badge tsisip-badge--<?php echo ($c['state'] ?? 0) ? 'success' : 'danger'; ?>">
+                                    <?php echo ($c['state'] ?? 0) ? _('Active') : _('Inactive'); ?>
+                                </span>
+                            </td>
+                            <td><?php echo htmlspecialchars($c['priority'] ?? '—'); ?></td>
+                        </tr>
+                    <?php endforeach; ?>
+                </tbody>
+            </table>
+        <?php endif; endif; ?>
     </section>
 
     <section class="tsisip-section">

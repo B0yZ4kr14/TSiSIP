@@ -6,6 +6,7 @@
 
 require_once __DIR__ . '/common/config.php';
 require_once __DIR__ . '/common/pagination.php';
+require_once __DIR__ . '/common/mi-http.php';
 
 requireAuth();
 checkPasswordChange();
@@ -79,6 +80,43 @@ require_once __DIR__ . '/common/header.php';
             <button type="submit" class="tsisip-btn tsisip-btn--primary"><?php echo _('Filter'); ?></button>
             <a href="status-report.php" class="tsisip-btn tsisip-btn--secondary"><?php echo _('Clear'); ?></a>
         </form>
+    </section>
+
+    <!-- Real-time status via MI HTTP -->
+    <section class="tsisip-section">
+        <h2 class="tsisip-section-title"><?php echo _('Live OpenSIPS Status'); ?></h2>
+        <?php
+        $miStatus = miHttpCall('status_report');
+        if (!$miStatus['success']):
+        ?>
+            <div class="tsisip-badge tsisip-badge--warning" role="alert">
+                <?php echo _('MI unavailable: ') . htmlspecialchars($miStatus['error']); ?>
+            </div>
+        <?php else:
+            $statusData = $miStatus['data'] ?? [];
+        ?>
+            <table class="tsisip-table">
+                <thead>
+                    <tr><th><?php echo _('Identifier'); ?></th><th><?php echo _('Severity'); ?></th><th><?php echo _('Details'); ?></th></tr>
+                </thead>
+                <tbody>
+                    <?php foreach ($statusData as $s): ?>
+                        <tr>
+                            <td><?php echo htmlspecialchars($s['identifier'] ?? '—'); ?></td>
+                            <td>
+                                <span class="tsisip-badge tsisip-badge--<?php echo strtolower($s['severity'] ?? 'info'); ?>">
+                                    <?php echo htmlspecialchars($s['severity'] ?? '—'); ?>
+                                </span>
+                            </td>
+                            <td><?php echo htmlspecialchars($s['details'] ?? '—'); ?></td>
+                        </tr>
+                    <?php endforeach; ?>
+                    <?php if (empty($statusData)): ?>
+                        <tr><td colspan="3" class="tsisip-empty"><?php echo _('No live status reports.'); ?></td></tr>
+                    <?php endif; ?>
+                </tbody>
+            </table>
+        <?php endif; ?>
     </section>
 
     <section class="tsisip-section">

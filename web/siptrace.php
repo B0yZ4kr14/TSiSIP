@@ -6,6 +6,7 @@
 
 require_once __DIR__ . '/common/config.php';
 require_once __DIR__ . '/common/pagination.php';
+require_once __DIR__ . '/common/mi-http.php';
 
 requireAuth();
 checkPasswordChange();
@@ -86,6 +87,38 @@ require_once __DIR__ . '/common/header.php';
     <?php if ($error): ?>
         <div class="tsisip-alert tsisip-alert--error" role="alert"><?php echo htmlspecialchars($error); ?></div>
     <?php endif; ?>
+
+    <!-- Real-time siptrace status via MI HTTP -->
+    <section class="tsisip-section">
+        <h2 class="tsisip-section-title"><?php echo _('Live SIPtrace Status'); ?></h2>
+        <?php
+        $miTrace = miHttpCall('sip_trace_status');
+        if (!$miTrace['success']):
+        ?>
+            <div class="tsisip-badge tsisip-badge--warning" role="alert">
+                <?php echo _('MI unavailable: ') . htmlspecialchars($miTrace['error']); ?>
+            </div>
+        <?php else:
+            $traceStatus = $miTrace['data'] ?? [];
+        ?>
+            <table class="tsisip-table">
+                <thead>
+                    <tr><th><?php echo _('Attribute'); ?></th><th><?php echo _('Value'); ?></th></tr>
+                </thead>
+                <tbody>
+                    <?php foreach ($traceStatus as $key => $val): ?>
+                        <tr>
+                            <td><?php echo htmlspecialchars($key); ?></td>
+                            <td><code><?php echo htmlspecialchars(is_array($val) ? json_encode($val) : $val); ?></code></td>
+                        </tr>
+                    <?php endforeach; ?>
+                    <?php if (empty($traceStatus)): ?>
+                        <tr><td colspan="2" class="tsisip-empty"><?php echo _('No live status data.'); ?></td></tr>
+                    <?php endif; ?>
+                </tbody>
+            </table>
+        <?php endif; ?>
+    </section>
     <?php if ($success): ?>
         <div class="tsisip-alert tsisip-alert--success" role="alert"><?php echo htmlspecialchars($success); ?></div>
     <?php endif; ?>

@@ -7,6 +7,7 @@
 require_once __DIR__ . '/common/config.php';
 require_once __DIR__ . '/common/csrf.php';
 require_once __DIR__ . '/common/pagination.php';
+require_once __DIR__ . '/common/mi-http.php';
 
 requireAuth();
 checkPasswordChange();
@@ -130,6 +131,45 @@ require_once __DIR__ . '/common/header.php';
             <button type="submit" class="tsisip-btn tsisip-btn--primary"><?php echo _('Filter'); ?></button>
             <a href="sockets-management.php" class="tsisip-btn tsisip-btn--secondary"><?php echo _('Clear'); ?></a>
         </form>
+    </section>
+
+    <!-- Real-time socket list via MI HTTP -->
+    <section class="tsisip-section">
+        <h2 class="tsisip-section-title"><?php echo _('Live OpenSIPS Sockets'); ?></h2>
+        <?php
+        $miSockets = miHttpCall('list_sockets');
+        if (!$miSockets['success']):
+        ?>
+            <div class="tsisip-badge tsisip-badge--warning" role="alert">
+                <?php echo _('MI unavailable: ') . htmlspecialchars($miSockets['error']); ?>
+            </div>
+        <?php else:
+            $socketData = $miSockets['data'] ?? [];
+        ?>
+            <table class="tsisip-table">
+                <thead>
+                    <tr>
+                        <th><?php echo _('Protocol'); ?></th>
+                        <th><?php echo _('Address'); ?></th>
+                        <th><?php echo _('Port'); ?></th>
+                        <th><?php echo _('Options'); ?></th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <?php foreach ($socketData as $s): ?>
+                        <tr>
+                            <td><?php echo htmlspecialchars($s['proto'] ?? '—'); ?></td>
+                            <td><code><?php echo htmlspecialchars($s['address'] ?? '—'); ?></code></td>
+                            <td><?php echo htmlspecialchars($s['port'] ?? '—'); ?></td>
+                            <td><code><?php echo htmlspecialchars($s['options'] ?? '—'); ?></code></td>
+                        </tr>
+                    <?php endforeach; ?>
+                    <?php if (empty($socketData)): ?>
+                        <tr><td colspan="4" class="tsisip-empty"><?php echo _('No live socket data.'); ?></td></tr>
+                    <?php endif; ?>
+                </tbody>
+            </table>
+        <?php endif; ?>
     </section>
 
     <section class="tsisip-section">

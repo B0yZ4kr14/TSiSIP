@@ -1061,3 +1061,34 @@ msgstr "Se requieren el ID VRRP, la interfaz y la IP virtual."
 
 msgid "Warning"
 msgstr "Advertencia"
+
+msgid "Live Cluster Status"
+msgstr "Estado del Clúster en Vivo"
+
+msgid "MI unavailable: "
+msgstr "MI no disponible: "
+
+msgid "No live cluster data returned by OpenSIPS."
+msgstr "OpenSIPS no devolvió datos de clúster en vivo."
+
+msgid "Live SIPtrace Status"
+msgstr "Estado de SIPtrace en Vivo"
+
+msgid "Attribute"
+msgstr "Atributo"
+
+msgid "No live status data."
+msgstr "No hay datos de estado en vivo."
+
+msgid "Live OpenSIPS Status"
+msgstr "Estado de OpenSIPS en Vivo"
+
+msgid "No live status reports."
+msgstr "No hay informes de estado en vivo."
+
+msgid "Live OpenSIPS Sockets"
+msgstr "Sockets de OpenSIPS en Vivo"
+
+msgid "No live socket data."
+msgstr "No hay datos de socket en vivo."
+
