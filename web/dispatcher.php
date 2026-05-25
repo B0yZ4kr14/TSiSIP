@@ -162,7 +162,7 @@ require_once __DIR__ . '/common/header.php';
         <h3><?php echo _('Add Destination'); ?></h3>
         <form method="POST" action="" class="tsisip-form">
             <?php echo csrfInput(); ?>
-            <input type="hidden" name="action" value="create">
+            <input type="hidden" name="action" value="create" aria-label="hidden">
             <div style="display:flex;flex-wrap:wrap;gap:1rem">
                 <div class="tsisip-form-group">
                     <label for="setid"><?php echo _('Set ID'); ?></label>
@@ -233,9 +233,9 @@ require_once __DIR__ . '/common/header.php';
                     <td class="tsisip-actions-column">
                         <form method="POST" action="" style="display:inline">
                             <?php echo csrfInput(); ?>
-                            <input type="hidden" name="action" value="toggle">
-                            <input type="hidden" name="id" value="<?php echo $d['id']; ?>">
-                            <input type="hidden" name="state" value="<?php echo $d['state'] == 0 ? 1 : 0; ?>">
+                            <input type="hidden" name="action" value="toggle" aria-label="hidden">
+                            <input type="hidden" name="id" aria-label="hidden" value="<?php echo $d['id']; ?>">
+                            <input type="hidden" name="state" aria-label="hidden" value="<?php echo $d['state'] == 0 ? 1 : 0; ?>">
                             <button type="submit" class="tsisip-btn tsisip-btn-secondary">
                                 <?php echo $d['state'] == 0 ? _('Deactivate') : _('Activate'); ?>
                             </button>
@@ -246,8 +246,8 @@ require_once __DIR__ . '/common/header.php';
                         </button>
                         <form method="POST" action="" style="display:inline" onsubmit="return confirm('<?php echo _('Delete this destination?'); ?>')">
                             <?php echo csrfInput(); ?>
-                            <input type="hidden" name="action" value="delete">
-                            <input type="hidden" name="id" value="<?php echo $d['id']; ?>">
+                            <input type="hidden" name="action" value="delete" aria-label="hidden">
+                            <input type="hidden" name="id" aria-label="hidden" value="<?php echo $d['id']; ?>">
                             <button type="submit" class="tsisip-btn tsisip-btn-secondary tsisip-btn-delete"><?php echo _('Delete'); ?></button>
                         </form>
                     </td>
@@ -256,32 +256,32 @@ require_once __DIR__ . '/common/header.php';
                     <td colspan="7">
                         <form method="POST" action="" class="tsisip-form">
                             <?php echo csrfInput(); ?>
-                            <input type="hidden" name="action" value="update">
-                            <input type="hidden" name="id" value="<?php echo $d['id']; ?>">
+                            <input type="hidden" name="action" value="update" aria-label="hidden">
+                            <input type="hidden" name="id" aria-label="hidden" value="<?php echo $d['id']; ?>">
                             <div style="display:flex;flex-wrap:wrap;gap:1rem">
                                 <div class="tsisip-form-group">
                                     <label><?php echo _('Set ID'); ?></label>
-                                    <input type="number" name="setid" class="tsisip-input" value="<?php echo $d['setid']; ?>" min="1" required style="width:80px">
+                                    <input type="number" id="edit-setid-<?php echo $d['id']; ?>" name="setid" class="tsisip-input" value="<?php echo $d['setid']; ?>" min="1" required style="width:80px">
                                 </div>
                                 <div class="tsisip-form-group">
                                     <label><?php echo _('Destination'); ?></label>
-                                    <input type="text" name="destination" class="tsisip-input" value="<?php echo htmlspecialchars($d['destination'], ENT_QUOTES); ?>" required style="width:280px">
+                                    <input type="text" id="edit-destination-<?php echo $d['id']; ?>" name="destination" class="tsisip-input" value="<?php echo htmlspecialchars($d['destination'], ENT_QUOTES); ?>" required style="width:280px">
                                 </div>
                                 <div class="tsisip-form-group">
                                     <label><?php echo _('Weight'); ?></label>
-                                    <input type="number" name="weight" class="tsisip-input" value="<?php echo $d['weight']; ?>" min="0" style="width:80px">
+                                    <input type="number" id="edit-weight-<?php echo $d['id']; ?>" name="weight" class="tsisip-input" value="<?php echo $d['weight']; ?>" min="0" style="width:80px">
                                 </div>
                                 <div class="tsisip-form-group">
                                     <label><?php echo _('Priority'); ?></label>
-                                    <input type="number" name="priority" class="tsisip-input" value="<?php echo $d['priority']; ?>" style="width:80px">
+                                    <input type="number" id="edit-priority-<?php echo $d['id']; ?>" name="priority" class="tsisip-input" value="<?php echo $d['priority']; ?>" style="width:80px">
                                 </div>
                                 <div class="tsisip-form-group">
                                     <label><?php echo _('Description'); ?></label>
-                                    <input type="text" name="description" class="tsisip-input" value="<?php echo htmlspecialchars($d['description'] ?? '', ENT_QUOTES); ?>" style="width:180px">
+                                    <input type="text" id="edit-description-<?php echo $d['id']; ?>" name="description" class="tsisip-input" value="<?php echo htmlspecialchars($d['description'] ?? '', ENT_QUOTES); ?>" style="width:180px">
                                 </div>
                                 <div class="tsisip-form-group">
                                     <label><?php echo _('Attrs'); ?></label>
-                                    <input type="text" name="attrs" class="tsisip-input" value="<?php echo htmlspecialchars($d['attrs'] ?? '', ENT_QUOTES); ?>" style="width:120px">
+                                    <input type="text" id="edit-attrs-<?php echo $d['id']; ?>" name="attrs" class="tsisip-input" value="<?php echo htmlspecialchars($d['attrs'] ?? '', ENT_QUOTES); ?>" style="width:120px">
                                 </div>
                                 <div class="tsisip-form-group">
                                     <label><?php echo _('State'); ?></label>
