@@ -76,3 +76,8 @@ docs/memory/INDEX.md.lock
 .squad/.scratch/
 # Squad: SubSquad activation file (local to this machine)
 .squad-workstream
+
+# Agent framework runtime artifacts (not project source)
+.agent/
+.copilot/
+

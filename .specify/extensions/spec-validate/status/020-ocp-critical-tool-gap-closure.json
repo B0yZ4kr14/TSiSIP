@@ -1,0 +1,30 @@
+{
+  "feature": "020-ocp-critical-tool-gap-closure",
+  "spec_hash": null,
+  "tasks_hash": "sha256:6a6de671fc57b34e3f2126b0ab4f093c24b3c800baf9012f2f132a4ec7b1c4cc",
+  "spec_self_validation": "not-run",
+  "tasks_self_validation": "passed",
+  "spec_validated_at": null,
+  "tasks_validated_at": "2026-05-24T22:06:47Z",
+  "spec_critical_count": 0,
+  "spec_missed_items": [],
+  "tasks_critical_count": 19,
+  "tasks_missed_items": [],
+  "review_status": "pending",
+  "review_requested_at": "2026-05-24T22:06:47Z",
+  "reviewer": null,
+  "review_comments": [],
+  "approval_status": "blocked",
+  "warnings": [
+    "Retrospective validation of completed feature; original implementation predated spec-validate workflow"
+  ],
+  "override": {
+    "used": false,
+    "reason": null,
+    "by": null
+  },
+  "timeout_self_approval": {
+    "used": false,
+    "reason": null
+  }
+}
