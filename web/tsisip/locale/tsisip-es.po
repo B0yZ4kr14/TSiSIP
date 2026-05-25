@@ -4,8 +4,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: TSiSIP 1.0\n"
 "Report-Msgid-Bugs-To: dev@tsisip.local\n"
-"POT-Creation-Date: 2026-05-17 00:00+0000\n"
-"PO-Revision-Date: 2026-05-17 00:00+0000\n"
+"POT-Creation-Date: 2026-05-25 00:00+0000\n"
+"PO-Revision-Date: 2026-05-25 00:00+0000\n"
 "Last-Translator: TSiSIP Team\n"
 "Language: es_ES\n"
 "MIME-Version: 1.0\n"
@@ -83,3 +83,981 @@ msgstr "Error al cargar datos del grafico"
 
 msgid "D3.js library not loaded"
 msgstr "Biblioteca D3.js no cargada"
+
+msgid "A config entry with this name already exists."
+msgstr "Ya existe una entrada de configuración con este nombre."
+
+msgid "Add Agent"
+msgstr "Agregar Agente"
+
+msgid "Add Alias"
+msgstr "Agregar Alias"
+
+msgid "Add Call Flow"
+msgstr "Agregar Flujo de Llamadas"
+
+msgid "Add Cluster Node"
+msgstr "Agregar Nodo de Cluster"
+
+msgid "Add Config Entry"
+msgstr "Agregar Entrada de Configuración"
+
+msgid "Add Destination"
+msgstr "Agregar Destino"
+
+msgid "Add Gateway"
+msgstr "Agregar Gateway"
+
+msgid "Add Keepalived Instance"
+msgstr "Agregar Instancia Keepalived"
+
+msgid "Add Membership"
+msgstr "Agregar Membresía"
+
+msgid "Add Monit Check"
+msgstr "Agregar Chequeo Monit"
+
+msgid "Add Registration"
+msgstr "Agregar Registro"
+
+msgid "Address"
+msgstr "Dirección"
+
+msgid "Add Routing Rule"
+msgstr "Agregar Regla de Enrutamiento"
+
+msgid "Add RTPProxy Instance"
+msgstr "Agregar Instancia RTPProxy"
+
+msgid "Add Schema"
+msgstr "Agregar Esquema"
+
+msgid "Add SMPP Gateway"
+msgstr "Agregar Gateway SMPP"
+
+msgid "Add Socket"
+msgstr "Agregar Socket"
+
+msgid "Agent agentid is required."
+msgstr "Se requiere el ID de agente."
+
+msgid "Agent created successfully."
+msgstr "Agente creado exitosamente."
+
+msgid "Agent deleted successfully."
+msgstr "Agente eliminado exitosamente."
+
+msgid "Agents"
+msgstr "Agentes"
+
+msgid "Agent updated successfully."
+msgstr "Agente actualizado exitosamente."
+
+msgid "Alert Email"
+msgstr "Correo de Alerta"
+
+msgid "Alias"
+msgstr "Alias"
+
+msgid "Alias created successfully."
+msgstr "Alias creado exitosamente."
+
+msgid "Alias deleted successfully."
+msgstr "Alias eliminado exitosamente."
+
+msgid "Alias Domain"
+msgstr "Dominio del Alias"
+
+msgid "Alias Entries"
+msgstr "Entradas de Alias"
+
+msgid "Aliases"
+msgstr "Alias"
+
+msgid "Alias Username"
+msgstr "Nombre de Usuario del Alias"
+
+msgid "Alias username and target username are required."
+msgstr "Se requiere el nombre de usuario del alias y el nombre de usuario de destino."
+
+msgid "All Categories"
+msgstr "Todas las Categorías"
+
+msgid "All Clusters"
+msgstr "Todos los Clusters"
+
+msgid "All Methods"
+msgstr "Todos los Métodos"
+
+msgid "All Severities"
+msgstr "Todas las Severidades"
+
+msgid "Alternative load balancing destinations"
+msgstr "Destinos alternativos de balanceo de carga"
+
+msgid "A node with this cluster/node ID already exists."
+msgstr "Ya existe un nodo con este ID de cluster/nodo."
+
+msgid "Attrs"
+msgstr "Atributos"
+
+msgid "A UAC registration with this UUID already exists."
+msgstr "Ya existe un registro UAC con este UUID."
+
+msgid "Auth Proxy"
+msgstr "Proxy de Autenticación"
+
+msgid "Available Schemas"
+msgstr "Esquemas Disponibles"
+
+msgid "Backup"
+msgstr "Respaldo"
+
+msgid "Call Center"
+msgstr "Call Center"
+
+msgid "Call Flow"
+msgstr "Flujo de Llamadas"
+
+msgid "Call flow created successfully."
+msgstr "Flujo de llamadas creado exitosamente."
+
+msgid "Call flow deleted successfully."
+msgstr "Flujo de llamadas eliminado exitosamente."
+
+msgid "Call Flows"
+msgstr "Flujos de Llamadas"
+
+msgid "Call flows, agents, and queue management"
+msgstr "Gestión de flujos de llamadas, agentes y colas"
+
+msgid "Call flow updated successfully."
+msgstr "Flujo de llamadas actualizado exitosamente."
+
+msgid "Call-ID"
+msgstr "Call-ID"
+
+msgid "Call-ID..."
+msgstr "Call-ID..."
+
+msgid "Cancel"
+msgstr "Cancelar"
+
+msgid "Category"
+msgstr "Categoría"
+
+msgid "Check Type"
+msgstr "Tipo de Chequeo"
+
+msgid "Clear"
+msgstr "Limpiar"
+
+msgid "Client registration provisioning for OpenSIPS"
+msgstr "Aprovisionamiento de registro de clientes para OpenSIPS"
+
+msgid "Cluster"
+msgstr "Cluster"
+
+msgid "Clusterer"
+msgstr "Clusterer"
+
+msgid "Cluster ID"
+msgstr "ID de Cluster"
+
+msgid "Cluster ID, Node ID, and URL are required."
+msgstr "Se requieren el ID de cluster, el ID de nodo y la URL."
+
+msgid "Cluster node created successfully."
+msgstr "Nodo de cluster creado exitosamente."
+
+msgid "Cluster node deleted successfully."
+msgstr "Nodo de cluster eliminado exitosamente."
+
+msgid "Cluster Nodes"
+msgstr "Nodos de Cluster"
+
+msgid "Cluster node updated successfully."
+msgstr "Nodo de cluster actualizado exitosamente."
+
+msgid "Columns"
+msgstr "Columnas"
+
+msgid "Config entry created successfully."
+msgstr "Entrada de configuración creada exitosamente."
+
+msgid "Config entry deleted successfully."
+msgstr "Entrada de configuración eliminada exitosamente."
+
+msgid "Config entry updated successfully."
+msgstr "Entrada de configuración actualizada exitosamente."
+
+msgid "Config Table"
+msgstr "Tabla de Configuración"
+
+msgid "Configuration Entries"
+msgstr "Entradas de Configuración"
+
+msgid "Create"
+msgstr "Crear"
+
+msgid "Database error: "
+msgstr "Error de base de datos: "
+
+msgid "days"
+msgstr "días"
+
+msgid "Delete?"
+msgstr "¿Eliminar?"
+
+msgid "Delete this agent?"
+msgstr "¿Eliminar este agente?"
+
+msgid "Delete this alias?"
+msgstr "¿Eliminar este alias?"
+
+msgid "Delete this check?"
+msgstr "¿Eliminar este chequeo?"
+
+msgid "Delete this entry?"
+msgstr "¿Eliminar esta entrada?"
+
+msgid "Delete this flow?"
+msgstr "¿Eliminar este flujo?"
+
+msgid "Delete this gateway?"
+msgstr "¿Eliminar este gateway?"
+
+msgid "Delete this instance?"
+msgstr "¿Eliminar esta instancia?"
+
+msgid "Delete this membership?"
+msgstr "¿Eliminar esta membresía?"
+
+msgid "Delete this node?"
+msgstr "¿Eliminar este nodo?"
+
+msgid "Delete this registration?"
+msgstr "¿Eliminar este registro?"
+
+msgid "Delete this rule?"
+msgstr "¿Eliminar esta regla?"
+
+msgid "Delete this schema?"
+msgstr "¿Eliminar este esquema?"
+
+msgid "Delete this socket?"
+msgstr "¿Eliminar este socket?"
+
+msgid "Description"
+msgstr "Descripción"
+
+msgid "Destinations"
+msgstr "Destinos"
+
+msgid "Destination URI"
+msgstr "URI de Destino"
+
+msgid "Details"
+msgstr "Detalles"
+
+msgid "Direction"
+msgstr "Dirección"
+
+msgid "Disable"
+msgstr "Deshabilitar"
+
+msgid "Disabled"
+msgstr "Deshabilitado"
+
+msgid "Domain"
+msgstr "Dominio"
+
+msgid "Dynamic Routing"
+msgstr "Enrutamiento Dinámico"
+
+msgid "Dynamic socket provisioning via database (OCP 9.3.6+)"
+msgstr "Aprovisionamiento dinámico de sockets mediante base de datos (OCP 9.3.6+)"
+
+msgid "Edit Agent"
+msgstr "Editar Agente"
+
+msgid "Edit Call Flow"
+msgstr "Editar Flujo de Llamadas"
+
+msgid "Edit Gateway"
+msgstr "Editar Gateway"
+
+msgid "Edit Keepalived Instance"
+msgstr "Editar Instancia Keepalived"
+
+msgid "Edit Membership"
+msgstr "Editar Membresía"
+
+msgid "Edit Monit Check"
+msgstr "Editar Chequeo Monit"
+
+msgid "Edit Routing Rule"
+msgstr "Editar Regla de Enrutamiento"
+
+msgid "Edit Schema"
+msgstr "Editar Esquema"
+
+msgid "Edit SMPP Gateway"
+msgstr "Editar Gateway SMPP"
+
+msgid "Enable"
+msgstr "Habilitar"
+
+msgid "Enabled"
+msgstr "Habilitado"
+
+msgid "Error"
+msgstr "Error"
+
+msgid "Expires"
+msgstr "Expira"
+
+msgid "Expires (seconds)"
+msgstr "Expira (segundos)"
+
+msgid "FIFO"
+msgstr "FIFO"
+
+msgid "File"
+msgstr "Archivo"
+
+msgid "Filesystem"
+msgstr "Sistema de Archivos"
+
+msgid "Filter"
+msgstr "Filtrar"
+
+msgid "Flags"
+msgstr "Banderas"
+
+msgid "Flow"
+msgstr "Flujo"
+
+msgid "Flow Name"
+msgstr "Nombre del Flujo"
+
+msgid "Flow name is required."
+msgstr "Se requiere el nombre del flujo."
+
+msgid "Flow Type"
+msgstr "Tipo de Flujo"
+
+msgid "From IP"
+msgstr "Desde IP"
+
+msgid "From / Source IP..."
+msgstr "Desde / IP de Origen..."
+
+msgid "Gateway created successfully."
+msgstr "Gateway creado exitosamente."
+
+msgid "Gateway deleted successfully."
+msgstr "Gateway eliminado exitosamente."
+
+msgid "Gateway ID and address are required."
+msgstr "Se requieren el ID y la dirección del gateway."
+
+msgid "Gateway List"
+msgstr "Lista de Gateways"
+
+msgid "Gateway list is required."
+msgstr "Se requiere la lista de gateways."
+
+msgid "Gateways"
+msgstr "Gateways"
+
+msgid "Gateway updated successfully."
+msgstr "Gateway actualizado exitosamente."
+
+msgid "Generic table viewer"
+msgstr "Visor genérico de tablas"
+
+msgid "Group"
+msgstr "Grupo"
+
+msgid "Group-based ACL for SIP subscribers"
+msgstr "ACL basada en grupos para suscriptores SIP"
+
+msgid "Group ID"
+msgstr "ID de Grupo"
+
+msgid "Group ID, destination URI, and resources are required."
+msgstr "Se requieren el ID de grupo, el URI de destino y los recursos."
+
+msgid "Group membership created successfully."
+msgstr "Membresía de grupo creada exitosamente."
+
+msgid "Group membership deleted successfully."
+msgstr "Membresía de grupo eliminada exitosamente."
+
+msgid "Group Memberships"
+msgstr "Membresías de Grupo"
+
+msgid "Group membership updated successfully."
+msgstr "Membresía de grupo actualizada exitosamente."
+
+msgid "Groups"
+msgstr "Grupos"
+
+msgid "GWID"
+msgstr "GWID"
+
+msgid "GW List"
+msgstr "Lista de GW"
+
+msgid "Host"
+msgstr "Host"
+
+msgid "Identifier"
+msgstr "Identificador"
+
+msgid "Inactive"
+msgstr "Inactivo"
+
+msgid "Info"
+msgstr "Información"
+
+msgid "Interface"
+msgstr "Interfaz"
+
+msgid "Invalid CSRF token."
+msgstr "Token CSRF inválido."
+
+msgid "Invalid protocol. Valid: udp, tcp, tls, ws, wss, sctp, hep"
+msgstr "Protocolo inválido. Válidos: udp, tcp, tls, ws, wss, sctp, hep"
+
+msgid "Invalid table name."
+msgstr "Nombre de tabla inválido."
+
+msgid "Invalid virtual IP address."
+msgstr "Dirección IP virtual inválida."
+
+msgid "Keepalived"
+msgstr "Keepalived"
+
+msgid "Keepalived instance created successfully."
+msgstr "Instancia Keepalived creada exitosamente."
+
+msgid "Keepalived instance deleted successfully."
+msgstr "Instancia Keepalived eliminada exitosamente."
+
+msgid "Keepalived Instances"
+msgstr "Instancias Keepalived"
+
+msgid "Keepalived instance updated successfully."
+msgstr "Instancia Keepalived actualizada exitosamente."
+
+msgid "Last Modified"
+msgstr "Última Modificación"
+
+msgid "LCR / dynamic routing gateway and rule management"
+msgstr "Gestión de gateways y reglas de enrutamiento dinámico / LCR"
+
+msgid "Leave blank to keep existing."
+msgstr "Dejar en blanco para mantener el existente."
+
+msgid "Legacy RTP proxy instance management"
+msgstr "Gestión de instancias de proxy RTP heredado"
+
+msgid "LIFO"
+msgstr "LIFO"
+
+msgid "Load Balancer"
+msgstr "Balanceador de Carga"
+
+msgid "Load balancer destination created successfully."
+msgstr "Destino de balanceador de carga creado exitosamente."
+
+msgid "Load balancer destination deleted successfully."
+msgstr "Destino de balanceador de carga eliminado exitosamente."
+
+msgid "Load balancer destination updated successfully."
+msgstr "Destino de balanceador de carga actualizado exitosamente."
+
+msgid "Local Domain"
+msgstr "Dominio Local"
+
+msgid "Local User"
+msgstr "Usuario Local"
+
+msgid "Local Username"
+msgstr "Nombre de Usuario Local"
+
+msgid "Location"
+msgstr "Ubicación"
+
+msgid "Location (SIP URI)"
+msgstr "Ubicación (SIP URI)"
+
+msgid "Logged In"
+msgstr "Conectado"
+
+msgid "Logged Out"
+msgstr "Desconectado"
+
+msgid "Login State"
+msgstr "Estado de Inicio de Sesión"
+
+msgid "Master"
+msgstr "Maestro"
+
+msgid "Method"
+msgstr "Método"
+
+msgid "Modified"
+msgstr "Modificado"
+
+msgid "Monit"
+msgstr "Monit"
+
+msgid "Monit check created successfully."
+msgstr "Chequeo Monit creado exitosamente."
+
+msgid "Monit check deleted successfully."
+msgstr "Chequeo Monit eliminado exitosamente."
+
+msgid "Monit Checks"
+msgstr "Chequeos Monit"
+
+msgid "Monit check updated successfully."
+msgstr "Chequeo Monit actualizado exitosamente."
+
+msgid "Name"
+msgstr "Nombre"
+
+msgid "Name and process name are required."
+msgstr "Se requieren el nombre y el nombre del proceso."
+
+msgid "Name and value are required."
+msgstr "Se requieren el nombre y el valor."
+
+msgid "Name must contain only letters, numbers, and underscores."
+msgstr "El nombre debe contener solo letras, números y guiones bajos."
+
+msgid "Name, SMSC IP and System ID are required."
+msgstr "Se requieren el nombre, la IP del SMSC y el ID del sistema."
+
+msgid "Network"
+msgstr "Red"
+
+msgid "No agents found."
+msgstr "No se encontraron agentes."
+
+msgid "No aliases found."
+msgstr "No se encontraron alias."
+
+msgid "No call flows found."
+msgstr "No se encontraron flujos de llamadas."
+
+msgid "No cluster nodes found."
+msgstr "No se encontraron nodos de cluster."
+
+msgid "No config entries found."
+msgstr "No se encontraron entradas de configuración."
+
+msgid "Node"
+msgstr "Nodo"
+
+msgid "Node ID"
+msgstr "ID de Nodo"
+
+msgid "No destinations found."
+msgstr "No se encontraron destinos."
+
+msgid "No gateways found."
+msgstr "No se encontraron gateways."
+
+msgid "No group memberships found."
+msgstr "No se encontraron membresías de grupo."
+
+msgid "No Keepalived instances found."
+msgstr "No se encontraron instancias Keepalived."
+
+msgid "No monit checks found."
+msgstr "No se encontraron chequeos Monit."
+
+msgid "None"
+msgstr "Ninguno"
+
+msgid "No-Ping Retries"
+msgstr "Reintentos sin Ping"
+
+msgid "No registrations found."
+msgstr "No se encontraron registros."
+
+msgid "No routing rules found."
+msgstr "No se encontraron reglas de enrutamiento."
+
+msgid "No RTPProxy instances found."
+msgstr "No se encontraron instancias RTPProxy."
+
+msgid "No schemas configured."
+msgstr "No hay esquemas configurados."
+
+msgid "No SMPP gateways found."
+msgstr "No se encontraron gateways SMPP."
+
+msgid "No sockets found."
+msgstr "No se encontraron sockets."
+
+msgid "No status reports found."
+msgstr "No se encontraron reportes de estado."
+
+msgid "No trace records found."
+msgstr "No se encontraron registros de traza."
+
+msgid "Off"
+msgstr "Apagado"
+
+msgid "On"
+msgstr "Encendido"
+
+msgid "OpenSIPS built-in clustering provisioning"
+msgstr "Aprovisionamiento de clustering integrado de OpenSIPS"
+
+msgid "OpenSIPS status identifiers (OCP 9.3.3+)"
+msgstr "Identificadores de estado de OpenSIPS (OCP 9.3.3+)"
+
+msgid "Optional"
+msgstr "Opcional"
+
+msgid "Options"
+msgstr "Opciones"
+
+msgid "Passive"
+msgstr "Pasivo"
+
+msgid "Password"
+msgstr "Contraseña"
+
+msgid "Permanently delete old traces?"
+msgstr "¿Eliminar permanentemente las trazas antiguas?"
+
+msgid "Port"
+msgstr "Puerto"
+
+msgid "Prefix"
+msgstr "Prefijo"
+
+msgid "Primary Key"
+msgstr "Clave Primaria"
+
+msgid "Priority"
+msgstr "Prioridad"
+
+msgid "Probe"
+msgstr "Sonda"
+
+msgid "Probe Mode"
+msgstr "Modo de Sonda"
+
+msgid "Probing disabled."
+msgstr "Sondeo deshabilitado."
+
+msgid "Probing enabled."
+msgstr "Sondeo habilitado."
+
+msgid "Process"
+msgstr "Proceso"
+
+msgid "Process monitoring and alerts"
+msgstr "Monitoreo de procesos y alertas"
+
+msgid "Process Name"
+msgstr "Nombre del Proceso"
+
+msgid "Program"
+msgstr "Programa"
+
+msgid "Protocol"
+msgstr "Protocolo"
+
+msgid "Purge"
+msgstr "Purgar"
+
+msgid "Purged %d trace records older than %d days."
+msgstr "Se purgaron %d registros de traza con más de %d días."
+
+msgid "Purge records older than"
+msgstr "Purgar registros anteriores a"
+
+msgid "Random"
+msgstr "Aleatorio"
+
+msgid "Registrations"
+msgstr "Registros"
+
+msgid "Remote Domain"
+msgstr "Dominio Remoto"
+
+msgid "Remote User"
+msgstr "Usuario Remoto"
+
+msgid "Remote Username"
+msgstr "Nombre de Usuario Remoto"
+
+msgid "Resources"
+msgstr "Recursos"
+
+msgid "Round Robin"
+msgstr "Round Robin"
+
+msgid "Route ID"
+msgstr "ID de Ruta"
+
+msgid "Routing rule created successfully."
+msgstr "Regla de enrutamiento creada exitosamente."
+
+msgid "Routing rule deleted successfully."
+msgstr "Regla de enrutamiento eliminada exitosamente."
+
+msgid "Routing Rules"
+msgstr "Reglas de Enrutamiento"
+
+msgid "Routing rule updated successfully."
+msgstr "Regla de enrutamiento actualizada exitosamente."
+
+msgid "RTPProxy"
+msgstr "RTPProxy"
+
+msgid "RTPProxy instance created successfully."
+msgstr "Instancia RTPProxy creada exitosamente."
+
+msgid "RTPProxy instance deleted successfully."
+msgstr "Instancia RTPProxy eliminada exitosamente."
+
+msgid "RTPProxy Instances"
+msgstr "Instancias RTPProxy"
+
+msgid "RTPProxy socket is required."
+msgstr "Se requiere el socket RTPProxy."
+
+msgid "Rule ID"
+msgstr "ID de Regla"
+
+msgid "Runtime configuration via database (cfgutils module)"
+msgstr "Configuración en tiempo de ejecución mediante base de datos (módulo cfgutils)"
+
+msgid "Schema created successfully."
+msgstr "Esquema creado exitosamente."
+
+msgid "Schema deleted successfully."
+msgstr "Esquema eliminado exitosamente."
+
+msgid "Schema updated successfully."
+msgstr "Esquema actualizado exitosamente."
+
+msgid "Search..."
+msgstr "Buscar..."
+
+msgid "Search aliases..."
+msgstr "Buscar alias..."
+
+msgid "Search registrations..."
+msgstr "Buscar registros..."
+
+msgid "Search sockets..."
+msgstr "Buscar sockets..."
+
+msgid "Severity"
+msgstr "Severidad"
+
+msgid "SIP Address"
+msgstr "Dirección SIP"
+
+msgid "SIP alias provisioning for subscribers"
+msgstr "Aprovisionamiento de alias SIP para suscriptores"
+
+msgid "SIP packet capture viewer"
+msgstr "Visor de captura de paquetes SIP"
+
+msgid "SIPtrace"
+msgstr "SIPtrace"
+
+msgid "Skills"
+msgstr "Habilidades"
+
+msgid "SMPP Gateway"
+msgstr "Gateway SMPP"
+
+msgid "SMPP gateway created successfully."
+msgstr "Gateway SMPP creado exitosamente."
+
+msgid "SMPP gateway deleted successfully."
+msgstr "Gateway SMPP eliminado exitosamente."
+
+msgid "SMPP Gateways"
+msgstr "Gateways SMPP"
+
+msgid "SMPP gateway updated successfully."
+msgstr "Gateway SMPP actualizado exitosamente."
+
+msgid "SMSC"
+msgstr "SMSC"
+
+msgid "SMSC IP"
+msgstr "IP del SMSC"
+
+msgid "SMSC Port"
+msgstr "Puerto del SMSC"
+
+msgid "SMS gateway management"
+msgstr "Gestión de gateway SMS"
+
+msgid "Socket"
+msgstr "Socket"
+
+msgid "Socket created successfully."
+msgstr "Socket creado exitosamente."
+
+msgid "Socket Definitions"
+msgstr "Definiciones de Socket"
+
+msgid "Socket deleted successfully."
+msgstr "Socket eliminado exitosamente."
+
+msgid "Sockets Management"
+msgstr "Gestión de Sockets"
+
+msgid "Socket updated successfully."
+msgstr "Socket actualizado exitosamente."
+
+msgid "Source Addr"
+msgstr "Dirección de Origen"
+
+msgid "Source Address"
+msgstr "Dirección de Origen"
+
+msgid "Status"
+msgstr "Estado"
+
+msgid "Status Report"
+msgstr "Reporte de Estado"
+
+msgid "Status Reports"
+msgstr "Reportes de Estado"
+
+msgid "Strip"
+msgstr "Truncar"
+
+msgid "System"
+msgstr "Sistema"
+
+msgid "System ID"
+msgstr "ID del Sistema"
+
+msgid "System Type"
+msgstr "Tipo de Sistema"
+
+msgid "Table Name"
+msgstr "Nombre de Tabla"
+
+msgid "Table name and columns are required."
+msgstr "Se requieren el nombre de la tabla y las columnas."
+
+msgid "Target Domain"
+msgstr "Dominio de Destino"
+
+msgid "Target User"
+msgstr "Usuario de Destino"
+
+msgid "Target Username"
+msgstr "Nombre de Usuario de Destino"
+
+msgid "This socket already exists."
+msgstr "Este socket ya existe."
+
+msgid "This VRRP ID/interface combination already exists."
+msgstr "Esta combinación de ID/interface VRRP ya existe."
+
+msgid "Time"
+msgstr "Hora"
+
+msgid "Time Rec"
+msgstr "Registro de Tiempo"
+
+msgid "Time Recurrence"
+msgstr "Recurrencia de Tiempo"
+
+msgid "Timestamp"
+msgstr "Marca de Tiempo"
+
+msgid "To IP"
+msgstr "Hacia IP"
+
+msgid "To IP..."
+msgstr "Hacia IP..."
+
+msgid "Trace Records"
+msgstr "Registros de Traza"
+
+msgid "TViewer"
+msgstr "TViewer"
+
+msgid "Type"
+msgstr "Tipo"
+
+msgid "UAC Registrant"
+msgstr "Registrante UAC"
+
+msgid "UAC registration created successfully."
+msgstr "Registro UAC creado exitosamente."
+
+msgid "UAC registration deleted successfully."
+msgstr "Registro UAC eliminado exitosamente."
+
+msgid "UAC registration updated successfully."
+msgstr "Registro UAC actualizado exitosamente."
+
+msgid "Unassigned"
+msgstr "Sin Asignar"
+
+msgid "Update"
+msgstr "Actualizar"
+
+msgid "Updated"
+msgstr "Actualizado"
+
+msgid "URL"
+msgstr "URL"
+
+msgid "Username and group name are required."
+msgstr "Se requieren el nombre de usuario y el nombre del grupo."
+
+msgid "UUID"
+msgstr "UUID"
+
+msgid "UUID, local username, remote username, and auth proxy are required."
+msgstr "Se requieren el UUID, el nombre de usuario local, el nombre de usuario remoto y el proxy de autenticación."
+
+msgid "Valid address and port (1-65535) are required."
+msgstr "Se requieren una dirección y un puerto válidos (1-65535)."
+
+msgid "Value"
+msgstr "Valor"
+
+msgid "View"
+msgstr "Ver"
+
+msgid "Viewing: "
+msgstr "Visualizando: "
+
+msgid "Virtual IP"
+msgstr "IP Virtual"
+
+msgid "Virtual IP and high-availability management"
+msgstr "Gestión de IP virtual y alta disponibilidad"
+
+msgid "VRRP ID"
+msgstr "ID VRRP"
+
+msgid "VRRP ID, interface and virtual IP are required."
+msgstr "Se requieren el ID VRRP, la interfaz y la IP virtual."
+
+msgid "Warning"
+msgstr "Advertencia"
