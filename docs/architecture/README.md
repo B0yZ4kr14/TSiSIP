@@ -9,6 +9,19 @@ This directory contains formal Architecture Decision Records (ADRs) for TSiSIP. 
 | [ADR-001](ADR-001-vps-lite-profile.md) | VPS Lite Deployment Profile | Accepted | 2026-05-21 | Infrastructure |
 | [ADR-023](023-adr-subscriber-proxy.md) | Subscriber CRUD Proxy Layer | Accepted | 2026-05-24 | Security / Auth |
 
+## Architecture References
+
+| Document | Description | Last Updated |
+|----------|-------------|--------------|
+| [OCP Gap Analysis](OCP-GAP-ANALYSIS.md) | Gap analysis between TSiSIP OCP and Official OCP v9 | 2026-05-25 |
+
+## Wiki / Control Panel Separation
+
+The TSiSIP Wiki has been separated from the Control Panel as an independent sub-application:
+- **Control Panel**: `https://tsiapp.io/TSiSIP` — OCP v9 with TSiSIP branding
+- **Wiki**: `https://tsiapp.io/TSiSIP/wiki` — Markdown-based documentation with TSiSIP branding
+- Implementation: `web/wiki/` directory with isolated header/footer, nginx `location /TSiSIP/wiki/`
+
 ## Feature-Scoped Architecture Decisions
 
 | Feature | Decision | Location |

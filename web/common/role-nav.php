@@ -137,12 +137,12 @@ $allowedPages = isset($roleNav[$userRole]) ? $roleNav[$userRole] : $roleNav['rea
             <span class="tsisip-nav-heading-text"><?php echo _('Documentation'); ?></span>
         </li>
         <li class="tsisip-nav-item<?php echo $currentPage === 'wiki' && $currentWikiPage === '' ? ' is-active' : ''; ?>" role="none">
-            <a href="wiki.php" class="tsisip-nav-link" role="menuitem"><?php echo _('Wiki Home'); ?></a>
+            <a href="wiki/" class="tsisip-nav-link" role="menuitem"><?php echo _('Wiki Home'); ?></a>
         </li>
         <?php foreach ($allowedPages as $page): ?>
             <?php if (isset($navLabels[$page])): ?>
                 <li class="tsisip-nav-item<?php echo ($currentPage === 'wiki' && $currentWikiPage === $page) ? ' is-active' : ''; ?>" role="none">
-                    <a href="wiki.php?page=<?php echo htmlspecialchars($page, ENT_QUOTES, 'UTF-8'); ?>"
+                    <a href="wiki/?page=<?php echo htmlspecialchars($page, ENT_QUOTES, 'UTF-8'); ?>"
                        class="tsisip-nav-link" role="menuitem">
                         <?php echo htmlspecialchars($navLabels[$page], ENT_QUOTES, 'UTF-8'); ?>
                     </a>

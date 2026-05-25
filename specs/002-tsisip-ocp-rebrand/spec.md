@@ -6,7 +6,16 @@
 **Short name**: tsisip-ocp-rebrand
 **Created**: 2026-05-17
 **Status**: Completed
-**Last Updated**: 2026-05-19
+**Last Updated**: 2026-05-25
+
+### Wiki Separation (2026-05-25)
+
+The Wiki has been separated from the Control Panel to operate as an independent sub-application:
+- **Painel**: `https://tsiapp.io/TSiSIP` — Control Panel (OCP v9)
+- **Wiki**: `https://tsiapp.io/TSiSIP/wiki` — Documentation wiki with TSiSIP branding
+- The wiki maintains the same TSiSIP logo, CSS variables, and theme as the Control Panel
+- Authentication is preserved; unauthenticated users are redirected to `../login.php`
+- Nginx routes `/TSiSIP/wiki/` independently to the OCP container's `wiki/` subdirectory
 
 ### Context
 
