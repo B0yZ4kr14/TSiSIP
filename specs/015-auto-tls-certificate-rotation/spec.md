@@ -1,5 +1,7 @@
 # Feature 015: Automated TLS Certificate Rotation
 
+**Status**: Completed
+
 ## Overview
 
 TSiSIP currently relies on static X.509 certificates stored in `secrets/` and mounted into containers at startup (Feature 007 — TLS/SRTP Encryption). Certificate rotation is a fully manual, operator-driven process involving `docker/ca-tool/cert-rotate.sh`, file copies, and container restarts. This creates operational toil and increases the risk of expired certificates in production.

@@ -7,7 +7,7 @@
 | **Feature** | SIP Trunk Provider Integration |
 | **Short name** | sip-trunk-provider-integration |
 | **Created** | 2026-05-19 |
-| **Status** | Draft |
+| **Status** | Completed |
 | **Last Updated** | 2026-05-19 |
 | **Context** | TSiSIP currently routes all calls internally to tenant-scoped Asterisk backends. There is no outbound PSTN/interconnect capability and no inbound DID routing from external carriers. This feature adds provider-agnostic SIP trunk integration for both inbound (DID) and outbound (LCR/failover) call flows while preserving the existing tenant-scoped Asterisk routing. |
 | **Objective** | Enable TSiSIP to register with, authenticate to, and relay calls through external SIP trunk providers using OpenSIPS 3.6 LTS modules (uac_registrant, uac_auth, uac, drouting), PostgreSQL-backed trunk configuration, per-trunk health probes, rate limiting, and encryption profiles, all coexisting with the existing tenant-to-Asterisk routing model. |

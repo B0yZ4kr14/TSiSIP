@@ -1,5 +1,7 @@
 # Feature 011: OCP Forced Passphrase Change & Session Security
 
+**Status**: Completed
+
 ## Overview
 
 Enhance the TSiSIP Control Panel (OCP) security posture by enforcing a mandatory passphrase change on first login and hardening PHP session cookies against XSS, CSRF, and session fixation attacks.

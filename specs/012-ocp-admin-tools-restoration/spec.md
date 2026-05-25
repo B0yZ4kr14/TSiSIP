@@ -1,5 +1,7 @@
 # Feature 012: OCP Administrative Tools Restoration
 
+**Status**: Completed
+
 ## Overview
 
 The TSiSIP OCP frontend is currently a drastically reduced implementation compared to the OpenSIPS Control Panel v9 baseline. While the rebrand (Feature 002) successfully applied the TSiSIP visual theme, it removed 90%+ of the administrative tools required to operate an OpenSIPS 3.6 LTS edge proxy.
