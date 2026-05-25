@@ -1,0 +1,62 @@
+{
+  "schema_version": "1.0",
+  "pipeline": "EDCR",
+  "phases": {
+    "init": {
+      "status": "completed",
+      "started_at": "2026-05-24T22:57:00Z",
+      "completed_at": "2026-05-24T22:57:00Z",
+      "artifacts": ["evidence/context.json", "evidence/workflow.json"]
+    },
+    "scan": {
+      "status": "pending",
+      "started_at": null,
+      "completed_at": null,
+      "artifacts": []
+    },
+    "discover": {
+      "status": "pending",
+      "started_at": null,
+      "completed_at": null,
+      "artifacts": []
+    },
+    "report": {
+      "status": "pending",
+      "started_at": null,
+      "completed_at": null,
+      "artifacts": []
+    },
+    "assess": {
+      "status": "pending",
+      "started_at": null,
+      "completed_at": null,
+      "artifacts": []
+    },
+    "generate": {
+      "status": "pending",
+      "started_at": null,
+      "completed_at": null,
+      "artifacts": []
+    },
+    "finish": {
+      "status": "pending",
+      "started_at": null,
+      "completed_at": null,
+      "artifacts": []
+    }
+  },
+  "adaptations": {
+    "db_schema_analysis": "auto",
+    "frontend_analysis": "auto",
+    "coverage_source": "proxy"
+  },
+  "notes": [
+    "coverage_report: not-collected (no coverage tool configured; project uses Docker-based integration tests)",
+    "ndepend_export: not-collected (C project with no .NET assemblies)",
+    "db_schema_export: not-collected (PostgreSQL schema is in db/init/ SQL files, not an exported dump)",
+    "flaky_test_history: not-collected (not available)",
+    "defect_export: not-collected (not available)",
+    "entry_point_list: not-collected (not available)",
+    "detect-stack: primary_languages skewed by .ansible-venv/ (4959 files); real project is Docker/C/Python/PHP"
+  ]
+}
