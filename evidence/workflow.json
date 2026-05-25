@@ -6,13 +6,34 @@
       "status": "completed",
       "started_at": "2026-05-24T22:57:00Z",
       "completed_at": "2026-05-24T22:57:00Z",
-      "artifacts": ["evidence/context.json", "evidence/workflow.json"]
+      "artifacts": [
+        "evidence/context.json",
+        "evidence/workflow.json"
+      ]
     },
     "scan": {
-      "status": "pending",
-      "started_at": null,
-      "completed_at": null,
-      "artifacts": []
+      "status": "completed",
+      "started_at": "2026-05-25T02:14:58.840881Z",
+      "completed_at": "2026-05-25T02:14:58.840881Z",
+      "artifacts": [
+        "evidence/discovery/candidates.md",
+        "evidence/discovery/signals/s1-packages.json",
+        "evidence/discovery/signals/s2-schema.json",
+        "evidence/discovery/signals/s3-entrypoints.json",
+        "evidence/discovery/signals/s4-frontend.json",
+        "evidence/security/security-signals.json",
+        "evidence/security/security-dependencies.json",
+        "evidence/security/signals/ss1-static.json",
+        "evidence/security/signals/ss3-config.json",
+        "evidence/security/signals/ss4-data-sensitivity.json",
+        "evidence/qa/qa-signals.json",
+        "evidence/qa/test-inventory.json",
+        "evidence/qa/coverage/coverage-map.json",
+        "evidence/qa/testability/testability-findings.json",
+        "evidence/qa/environments/ci-map.json",
+        "evidence/qa/environments/environment-map.json",
+        "evidence/qa/environments/flaky-tests.json"
+      ]
     },
     "discover": {
       "status": "pending",
@@ -57,6 +78,9 @@
     "flaky_test_history: not-collected (not available)",
     "defect_export: not-collected (not available)",
     "entry_point_list: not-collected (not available)",
-    "detect-stack: primary_languages skewed by .ansible-venv/ (4959 files); real project is Docker/C/Python/PHP"
+    "detect-stack: primary_languages skewed by .ansible-venv/ (4959 files); real project is Docker/C/Python/PHP",
+    "SS2: cve_lookup not-collected (no vulnerability data source wired in)",
+    "QS2: coverage_source=proxy (no coverage report configured)",
+    "QS4: flaky_tests not-collected (inputs.flaky_test_history is null)"
   ]
 }

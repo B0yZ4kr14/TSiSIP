@@ -1,0 +1,67 @@
+{
+  "schema_version": "1.0",
+  "signals": [
+    {
+      "id": "SEC-SS4-001",
+      "classification": "authentication",
+      "entity": "subscriber",
+      "fields": [
+        "username",
+        "ha1",
+        "ha1_sha256",
+        "ha1_sha512t256"
+      ],
+      "source": "db/init/01-stock-opensips-schema.sql",
+      "read_write": [
+        "opensips/opensips.cfg.tpl \u2014 auth_db module"
+      ],
+      "confidence": "HIGH"
+    },
+    {
+      "id": "SEC-SS4-002",
+      "classification": "regulatory",
+      "entity": "tenants",
+      "fields": [
+        "tenant_id",
+        "domain",
+        "settings"
+      ],
+      "source": "db/init/02-tsisip-extensions.sql",
+      "read_write": [
+        "opensips/opensips.cfg.tpl \u2014 domain module"
+      ],
+      "confidence": "MEDIUM"
+    },
+    {
+      "id": "SEC-SS4-003",
+      "classification": "authentication",
+      "entity": "sip_trunks",
+      "fields": [
+        "auth_username",
+        "auth_password",
+        "register_password"
+      ],
+      "source": "db/init/04-trunk-schema.sql",
+      "read_write": [
+        "opensips/opensips.cfg.tpl \u2014 uac_auth"
+      ],
+      "confidence": "HIGH"
+    },
+    {
+      "id": "SEC-SS4-004",
+      "classification": "regulatory",
+      "entity": "auth_audit_log",
+      "fields": [
+        "username",
+        "source_ip",
+        "event_type",
+        "timestamp"
+      ],
+      "source": "db/init/04-ocp-audit-schema.sql",
+      "read_write": [
+        "opensips/opensips.cfg.tpl \u2014 acc module"
+      ],
+      "confidence": "MEDIUM"
+    }
+  ]
+}

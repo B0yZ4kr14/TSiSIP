@@ -1,0 +1,87 @@
+{
+  "schema_version": "1.0",
+  "signals": [
+    {
+      "id": "S2-01-subscriber_auth",
+      "tables": [
+        "subscriber",
+        "version"
+      ],
+      "fk_edges": 1,
+      "suggested_domain": "Subscriber Authentication",
+      "confidence_contribution": "HIGH",
+      "evidence": [
+        "db/init/01-stock-opensips-schema.sql:54",
+        "db/init/01-stock-opensips-schema.sql:6"
+      ]
+    },
+    {
+      "id": "S2-02-routing_dispatcher",
+      "tables": [
+        "dispatcher",
+        "header_routing_rules",
+        "pbx_backends"
+      ],
+      "fk_edges": 2,
+      "suggested_domain": "Routing & Dispatcher",
+      "confidence_contribution": "HIGH",
+      "evidence": [
+        "db/init/01-stock-opensips-schema.sql:22",
+        "db/init/02-tsisip-extensions.sql:31",
+        "db/init/02-tsisip-extensions.sql:50"
+      ]
+    },
+    {
+      "id": "S2-03-tenant_management",
+      "tables": [
+        "address",
+        "cdr",
+        "dialog",
+        "dialplan",
+        "domain",
+        "ocp_login_log",
+        "ocp_password_changes",
+        "ocp_users",
+        "sip_trunk_did_mappings",
+        "sip_trunk_providers",
+        "sip_trunk_registrations",
+        "tenants",
+        "trunk_ips",
+        "userblacklist"
+      ],
+      "fk_edges": 13,
+      "suggested_domain": "Tenant Management",
+      "confidence_contribution": "HIGH",
+      "evidence": [
+        "db/init/01-stock-opensips-schema.sql:39",
+        "db/init/02-tsisip-extensions.sql:128",
+        "db/init/02-tsisip-extensions.sql:149",
+        "db/init/02-tsisip-extensions.sql:165",
+        "db/init/02-tsisip-extensions.sql:182",
+        "db/init/02-tsisip-extensions.sql:7",
+        "db/init/02-tsisip-extensions.sql:83",
+        "db/init/02-tsisip-extensions.sql:99",
+        "db/init/04-ocp-tools-schema.sql:26",
+        "db/init/04-ocp-tools-schema.sql:38",
+        "db/init/04-ocp-tools-schema.sql:7",
+        "db/init/04-trunk-schema.sql:10",
+        "db/init/04-trunk-schema.sql:38",
+        "db/init/04-trunk-schema.sql:59"
+      ]
+    },
+    {
+      "id": "S2-05-audit_ocp",
+      "tables": [
+        "auth_audit_log",
+        "ocp_audit_log"
+      ],
+      "fk_edges": 1,
+      "suggested_domain": "Audit & OCP Tools",
+      "confidence_contribution": "MEDIUM",
+      "evidence": [
+        "db/init/02-tsisip-extensions.sql:64",
+        "db/init/04-ocp-audit-schema.sql:13"
+      ]
+    }
+  ]
+}

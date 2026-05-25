@@ -1,0 +1,13 @@
+{
+  "schema_version": "1.0",
+  "manifests": [
+    {
+      "language": "python",
+      "path": "docker/anomaly-detector/requirements.txt",
+      "size_bytes": 83,
+      "sha1": "48c943bec6c0046e0af3d39fe501daff6971ffa6"
+    }
+  ],
+  "cve_lookup": "not-collected",
+  "cve_lookup_reason": "no vulnerability data source wired in"
+}

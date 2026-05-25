@@ -1,0 +1,37 @@
+{
+  "schema_version": "1.0",
+  "platform": "github-actions",
+  "workflows": [
+    "push",
+    "pull_request",
+    "workflow_dispatch",
+    "REGISTRY",
+    "IMAGE_PREFIX",
+    "TSISIP_IMAGE_TAG",
+    "OPENSIPS_LISTEN_IP",
+    "HOST_PUBLIC_IP",
+    "RTPENGINE_PRIVATE_IP",
+    "RTPENGINE_INTERNAL_IP",
+    "TLS_DOMAIN",
+    "ACME_EMAIL",
+    "validate",
+    "sbom",
+    "provenance",
+    "deploy"
+  ],
+  "stages": [
+    "build",
+    "test",
+    "deploy",
+    "security-scan"
+  ],
+  "test_levels": [
+    "integration"
+  ],
+  "coverage_thresholds": [],
+  "merge_blocking_gates": [
+    "validate",
+    "test-integration",
+    "security-scan"
+  ]
+}

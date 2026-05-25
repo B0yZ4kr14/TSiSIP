@@ -1,0 +1,22 @@
+{
+  "schema_version": "1.0",
+  "signals": [
+    {
+      "id": "S4-ocp",
+      "name": "Operator Control Panel (OCP)",
+      "routes": [
+        "/login.php",
+        "/dashboard.php",
+        "/admin/*",
+        "/reports/*"
+      ],
+      "feature_folder": "web/tsisip/",
+      "confidence_contribution": "MEDIUM",
+      "file_counts": {
+        "php": 38,
+        "js": 10,
+        "css": 9
+      }
+    }
+  ]
+}

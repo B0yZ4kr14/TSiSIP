@@ -1,0 +1,18 @@
+{
+  "schema_version": "1.0",
+  "declared": [
+    "dev",
+    "staging",
+    "prod"
+  ],
+  "ci_configured": [
+    "dev"
+  ],
+  "drift": {
+    "declared_but_absent": [
+      "staging",
+      "prod"
+    ],
+    "present_but_not_declared": []
+  }
+}

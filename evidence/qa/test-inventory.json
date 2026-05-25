@@ -1,0 +1,144 @@
+{
+  "schema_version": "1.0",
+  "count": 23,
+  "tests": [
+    {
+      "file": "tests/integration/test_anomaly_detection.py",
+      "level": "integration",
+      "framework": "pytest",
+      "under_test": []
+    },
+    {
+      "file": "tests/integration/test_backup_rclone.py",
+      "level": "integration",
+      "framework": "pytest",
+      "under_test": []
+    },
+    {
+      "file": "tests/integration/test_backup_restore.py",
+      "level": "integration",
+      "framework": "pytest",
+      "under_test": []
+    },
+    {
+      "file": "tests/integration/test_cdr_billing.py",
+      "level": "integration",
+      "framework": "pytest",
+      "under_test": []
+    },
+    {
+      "file": "tests/integration/test_certificate_rotation.py",
+      "level": "integration",
+      "framework": "pytest",
+      "under_test": []
+    },
+    {
+      "file": "tests/integration/test_circuit_breaker.py",
+      "level": "integration",
+      "framework": "pytest",
+      "under_test": []
+    },
+    {
+      "file": "tests/integration/test_ddos_protection.py",
+      "level": "integration",
+      "framework": "pytest",
+      "under_test": []
+    },
+    {
+      "file": "tests/integration/test_end_to_end_call.py",
+      "level": "e2e",
+      "framework": "pytest",
+      "under_test": []
+    },
+    {
+      "file": "tests/integration/test_graceful_degradation.py",
+      "level": "integration",
+      "framework": "pytest",
+      "under_test": []
+    },
+    {
+      "file": "tests/integration/test_monitoring.py",
+      "level": "integration",
+      "framework": "pytest",
+      "under_test": []
+    },
+    {
+      "file": "tests/integration/test_multi_tenant_routing.py",
+      "level": "integration",
+      "framework": "pytest",
+      "under_test": []
+    },
+    {
+      "file": "tests/integration/test_observability.py",
+      "level": "integration",
+      "framework": "pytest",
+      "under_test": []
+    },
+    {
+      "file": "tests/integration/test_rate_limiting.py",
+      "level": "integration",
+      "framework": "pytest",
+      "under_test": []
+    },
+    {
+      "file": "tests/integration/test_restart_policy.py",
+      "level": "integration",
+      "framework": "pytest",
+      "under_test": []
+    },
+    {
+      "file": "tests/integration/test_sip_trunk_failover.py",
+      "level": "integration",
+      "framework": "unittest",
+      "under_test": []
+    },
+    {
+      "file": "tests/integration/test_sip_trunk_health_probe.py",
+      "level": "integration",
+      "framework": "unittest",
+      "under_test": []
+    },
+    {
+      "file": "tests/integration/test_sip_trunk_inbound.py",
+      "level": "integration",
+      "framework": "unittest",
+      "under_test": []
+    },
+    {
+      "file": "tests/integration/test_sip_trunk_outbound.py",
+      "level": "integration",
+      "framework": "unittest",
+      "under_test": []
+    },
+    {
+      "file": "tests/integration/test_sip_trunk_rate_limit.py",
+      "level": "integration",
+      "framework": "unittest",
+      "under_test": []
+    },
+    {
+      "file": "tests/integration/test_tls_srtp.py",
+      "level": "integration",
+      "framework": "pytest",
+      "under_test": []
+    },
+    {
+      "file": "tests/integration/test_webrtc_support.py",
+      "level": "integration",
+      "framework": "pytest",
+      "under_test": []
+    },
+    {
+      "file": "docs/security/evidence/022-vps-go-live/004-network-segmentation-test.md",
+      "level": "manual",
+      "framework": "manual",
+      "under_test": []
+    },
+    {
+      "file": "docs/security/evidence/022-vps-go-live/018-rollback-restoration-test-v1.md",
+      "level": "manual",
+      "framework": "manual",
+      "under_test": []
+    }
+  ]
+}

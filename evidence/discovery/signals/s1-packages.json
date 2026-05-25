@@ -1,0 +1,195 @@
+{
+  "schema_version": "1.0",
+  "signals": [
+    {
+      "id": "S1-build",
+      "name": "build",
+      "path": "build",
+      "domain_suggestive": false,
+      "reason": "Frontend build tooling",
+      "confidence_contribution": "LOW",
+      "file_count": 5,
+      "loc_estimate": 523
+    },
+    {
+      "id": "S1-ca-offline",
+      "name": "ca-offline",
+      "path": "ca-offline",
+      "domain_suggestive": true,
+      "reason": "PKI certificate authority infrastructure",
+      "confidence_contribution": "MEDIUM",
+      "file_count": 1,
+      "loc_estimate": 28
+    },
+    {
+      "id": "S1-commands",
+      "name": "commands",
+      "path": "commands",
+      "domain_suggestive": false,
+      "reason": "Squad command definitions",
+      "confidence_contribution": "LOW",
+      "file_count": 4,
+      "loc_estimate": 256
+    },
+    {
+      "id": "S1-db",
+      "name": "db",
+      "path": "db",
+      "domain_suggestive": true,
+      "reason": "PostgreSQL schema for subscriber auth and routing",
+      "confidence_contribution": "HIGH",
+      "file_count": 7,
+      "loc_estimate": 732
+    },
+    {
+      "id": "S1-deploy",
+      "name": "deploy",
+      "path": "deploy",
+      "domain_suggestive": true,
+      "reason": "Deployment automation (Ansible, nginx, VPS)",
+      "confidence_contribution": "MEDIUM",
+      "file_count": 28,
+      "loc_estimate": 3359
+    },
+    {
+      "id": "S1-design",
+      "name": "design",
+      "path": "design",
+      "domain_suggestive": false,
+      "reason": "Design tokens and branding",
+      "confidence_contribution": "LOW",
+      "file_count": 6,
+      "loc_estimate": 104
+    },
+    {
+      "id": "S1-docker",
+      "name": "docker",
+      "path": "docker",
+      "domain_suggestive": true,
+      "reason": "Container definitions for all runtime services",
+      "confidence_contribution": "MEDIUM",
+      "file_count": 76,
+      "loc_estimate": 4777
+    },
+    {
+      "id": "S1-docs",
+      "name": "docs",
+      "path": "docs",
+      "domain_suggestive": false,
+      "reason": "Architecture docs and runbooks",
+      "confidence_contribution": "LOW",
+      "file_count": 92,
+      "loc_estimate": 14038
+    },
+    {
+      "id": "S1-docs-canonical",
+      "name": "docs-canonical",
+      "path": "docs-canonical",
+      "domain_suggestive": false,
+      "reason": "Canonical documentation drafts",
+      "confidence_contribution": "LOW",
+      "file_count": 5,
+      "loc_estimate": 446
+    },
+    {
+      "id": "S1-graphify-out",
+      "name": "graphify-out",
+      "path": "graphify-out",
+      "domain_suggestive": false,
+      "reason": "Code graph analysis output",
+      "confidence_contribution": "LOW",
+      "file_count": 74,
+      "loc_estimate": 59651
+    },
+    {
+      "id": "S1-opensips",
+      "name": "opensips",
+      "path": "opensips",
+      "domain_suggestive": true,
+      "reason": "SIP proxy configuration and routing logic",
+      "confidence_contribution": "HIGH",
+      "file_count": 1,
+      "loc_estimate": 970
+    },
+    {
+      "id": "S1-plans",
+      "name": "plans",
+      "path": "plans",
+      "domain_suggestive": false,
+      "reason": "Implementation plans",
+      "confidence_contribution": "LOW",
+      "file_count": 1,
+      "loc_estimate": 442
+    },
+    {
+      "id": "S1-remediation",
+      "name": "remediation",
+      "path": "remediation",
+      "domain_suggestive": false,
+      "reason": "Remediation tracking",
+      "confidence_contribution": "LOW",
+      "file_count": 1,
+      "loc_estimate": 134
+    },
+    {
+      "id": "S1-reports",
+      "name": "reports",
+      "path": "reports",
+      "domain_suggestive": false,
+      "reason": "Audit and scan reports",
+      "confidence_contribution": "LOW",
+      "file_count": 28,
+      "loc_estimate": 3248
+    },
+    {
+      "id": "S1-scripts",
+      "name": "scripts",
+      "path": "scripts",
+      "domain_suggestive": false,
+      "reason": "Utility and build scripts",
+      "confidence_contribution": "LOW",
+      "file_count": 21,
+      "loc_estimate": 1563
+    },
+    {
+      "id": "S1-secrets",
+      "name": "secrets",
+      "path": "secrets",
+      "domain_suggestive": false,
+      "reason": "Runtime secrets (gitignored)",
+      "confidence_contribution": "LOW",
+      "file_count": 15,
+      "loc_estimate": 80
+    },
+    {
+      "id": "S1-specs",
+      "name": "specs",
+      "path": "specs",
+      "domain_suggestive": false,
+      "reason": "Feature specifications",
+      "confidence_contribution": "LOW",
+      "file_count": 202,
+      "loc_estimate": 23257
+    },
+    {
+      "id": "S1-tests",
+      "name": "tests",
+      "path": "tests",
+      "domain_suggestive": false,
+      "reason": "Integration and unit tests",
+      "confidence_contribution": "LOW",
+      "file_count": 40,
+      "loc_estimate": 5226
+    },
+    {
+      "id": "S1-web",
+      "name": "web",
+      "path": "web",
+      "domain_suggestive": true,
+      "reason": "OCP frontend (Operator Control Panel)",
+      "confidence_contribution": "MEDIUM",
+      "file_count": 85,
+      "loc_estimate": 10361
+    }
+  ]
+}

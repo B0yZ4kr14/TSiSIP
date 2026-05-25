@@ -1,0 +1,169 @@
+{
+  "schema_version": "1.0",
+  "source": "find-secrets.sh + manual review",
+  "scanned_files": 25969,
+  "categories": {
+    "credential-storage": [
+      {
+        "pattern": "generic-password-assign",
+        "confidence": "LOW",
+        "file": "docker/entrypoint.sh",
+        "line": 13,
+        "snippet": "DB_PASSWORD=\"$(read_secret /r<REDACTED>)\""
+      },
+      {
+        "pattern": "generic-secret-assign",
+        "confidence": "LOW",
+        "file": "deploy/audit/tests/test-spof-03-token-leak.sh",
+        "line": 10,
+        "snippet": "FAKE_TOKEN=\"g<REDACTED>\""
+      },
+      {
+        "pattern": "private-key-pem",
+        "confidence": "HIGH",
+        "file": "deploy/audit/tests/test-spof-03-token-leak.sh",
+        "line": 23,
+        "snippet": "echo \"-----BEGIN OPENSSH PRIVATE KEY-----\" > \"$T<REDACTED>\""
+      },
+      {
+        "pattern": "private-key-pem",
+        "confidence": "HIGH",
+        "file": "deploy/audit/tests/test-spof-04-ssh-perms.sh",
+        "line": 14,
+        "snippet": "echo \"-----BEGIN OPENSSH PRIVATE KEY-----\" > \"$FAKE_KEY\""
+      },
+      {
+        "pattern": "generic-password-assign",
+        "confidence": "LOW",
+        "file": "docker/backup/backup.sh",
+        "line": 41,
+        "snippet": "PGPASSWORD=\"$(cat \"$PGPASSWORD_FILE\" 2>/dev/null || echo '')\" \\"
+      },
+      {
+        "pattern": "generic-password-assign",
+        "confidence": "LOW",
+        "file": "docker/backup/pitr-restore.sh",
+        "line": 130,
+        "snippet": "PGPASSWORD=\"$DB_PASS\" \\"
+      },
+      {
+        "pattern": "generic-password-assign",
+        "confidence": "LOW",
+        "file": "docker/backup/pitr-restore.sh",
+        "line": 134,
+        "snippet": "PGPASSWORD=\"$DB_PASS\" \\"
+      },
+      {
+        "pattern": "generic-password-assign",
+        "confidence": "LOW",
+        "file": "docker/backup/pitr-restore.sh",
+        "line": 144,
+        "snippet": "PGPASSWORD=\"$DB_PASS\" \\"
+      },
+      {
+        "pattern": "generic-password-assign",
+        "confidence": "LOW",
+        "file": "docker/backup/pitr-restore.sh",
+        "line": 161,
+        "snippet": "if PGPASSWORD=\"$DB_PASS\" \\"
+      },
+      {
+        "pattern": "generic-password-assign",
+        "confidence": "LOW",
+        "file": "docker/backup/validate.sh",
+        "line": 75,
+        "snippet": "PGPASSWORD=\"$(cat \"$PGPASSWORD_FILE\" 2>/dev/null || echo '')\" \\"
+      },
+      {
+        "pattern": "generic-password-assign",
+        "confidence": "LOW",
+        "file": "docker/backup/validate.sh",
+        "line": 79,
+        "snippet": "PGPASSWORD=\"$(cat \"$PGPASSWORD_FILE\" 2>/dev/null || echo '')\" \\"
+      },
+      {
+        "pattern": "generic-password-assign",
+        "confidence": "LOW",
+        "file": "docker/backup/validate.sh",
+        "line": 84,
+        "snippet": "S<REDACTED>\"$(PGPASSWORD=\"$(cat \"$PGPASSWORD_FILE\" 2>/dev/null || echo '')\" psql -h \"$PGHOST\" -p \"$PGPORT\" -U \"$PGUSER\" -d \"$TEMP_DB\" -t -c \"SELECT COUNT(*) FROM subscriber;\" 2>/dev/null | tr..."
+      },
+      {
+        "pattern": "generic-password-assign",
+        "confidence": "LOW",
+        "file": "docker/backup/validate.sh",
+        "line": 85,
+        "snippet": "LOCATION_COUNT=\"$(PGPASSWORD=\"$(cat \"$PGPASSWORD_FILE\" 2>/dev/null || echo '')\" psql -h \"$PGHOST\" -p \"$PGPORT\" -U \"$PGUSER\" -d \"$TEMP_DB\" -t -c \"SELECT COUNT(*) FROM location;\" 2>/dev/null | tr -d ..."
+      },
+      {
+        "pattern": "generic-password-assign",
+        "confidence": "LOW",
+        "file": "docker/backup/validate.sh",
+        "line": 86,
+        "snippet": "D<REDACTED>\"$(PGPASSWORD=\"$(cat \"$PGPASSWORD_FILE\" 2>/dev/null || echo '')\" psql -h \"$PGHOST\" -p \"$PGPORT\" -U \"$PGUSER\" -d \"$TEMP_DB\" -t -c \"SELECT COUNT(*) FROM dispatcher;\" 2>/dev/null | tr..."
+      },
+      {
+        "pattern": "generic-password-assign",
+        "confidence": "LOW",
+        "file": "docker/backup/validate.sh",
+        "line": 91,
+        "snippet": "PGPASSWORD=\"$(cat \"$PGPASSWORD_FILE\" 2>/dev/null || echo '')\" \\"
+      },
+      {
+        "pattern": "generic-password-assign",
+        "confidence": "LOW",
+        "file": "docker/backup/rpo-monitor.sh",
+        "line": 31,
+        "snippet": "ARCHIVER_STATE=\"$(PGPASSWORD=\"$DB_PASS\" \\"
+      },
+      {
+        "pattern": "generic-password-assign",
+        "confidence": "LOW",
+        "file": "docker/backup/rpo-monitor.sh",
+        "line": 52,
+        "snippet": "PGPASSWORD=\"$DB_PASS\" \\"
+      },
+      {
+        "pattern": "generic-password-assign",
+        "confidence": "LOW",
+        "file": "docker/backup/rpo-monitor.sh",
+        "line": 57,
+        "snippet": "ARCHIVER_STATE=\"$(PGPASSWORD=\"$DB_PASS\" \\"
+      },
+      {
+        "pattern": "generic-password-assign",
+        "confidence": "LOW",
+        "file": "docker/ocp/cron/audit-retention.sh",
+        "line": 22,
+        "snippet": "export PGPASSWORD=\"${DB_PASS}\""
+      }
+    ],
+    "auth-authz": [
+      {
+        "pattern": "digest-auth-db_postgres",
+        "file": "opensips/opensips.cfg.tpl",
+        "line": "~120-160",
+        "confidence": "HIGH",
+        "note": "SIP digest auth against PostgreSQL subscriber table"
+      }
+    ],
+    "tls-enforcement": [
+      {
+        "pattern": "tls-mandatory-listen",
+        "file": "opensips/opensips.cfg.tpl",
+        "line": "~55-65",
+        "confidence": "HIGH",
+        "note": "TLS management module loaded; TLS port 5061 exposed"
+      }
+    ],
+    "input-validation": [
+      {
+        "pattern": "topology-hiding-C",
+        "file": "opensips/opensips.cfg.tpl",
+        "line": "~200-220",
+        "confidence": "HIGH",
+        "note": "topology_hiding(C) strips internal headers from outbound messages"
+      }
+    ]
+  }
+}

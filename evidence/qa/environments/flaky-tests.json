@@ -1,0 +1,5 @@
+{
+  "schema_version": "1.0",
+  "source": "not-collected",
+  "reason": "inputs.flaky_test_history is null"
+}

@@ -1,0 +1,461 @@
+{
+  "schema_version": "1.0",
+  "count": 35,
+  "signals": [
+    {
+      "id": "SEC-SS1-001",
+      "source": "SS1",
+      "category": "credential-storage",
+      "severity_hint": "medium",
+      "evidence": [
+        {
+          "file": "docker/entrypoint.sh",
+          "lines": 13
+        }
+      ],
+      "confidence": "LOW"
+    },
+    {
+      "id": "SEC-SS1-002",
+      "source": "SS1",
+      "category": "credential-storage",
+      "severity_hint": "medium",
+      "evidence": [
+        {
+          "file": "deploy/audit/tests/test-spof-03-token-leak.sh",
+          "lines": 10
+        }
+      ],
+      "confidence": "LOW"
+    },
+    {
+      "id": "SEC-SS1-003",
+      "source": "SS1",
+      "category": "credential-storage",
+      "severity_hint": "medium",
+      "evidence": [
+        {
+          "file": "deploy/audit/tests/test-spof-03-token-leak.sh",
+          "lines": 23
+        }
+      ],
+      "confidence": "HIGH"
+    },
+    {
+      "id": "SEC-SS1-004",
+      "source": "SS1",
+      "category": "credential-storage",
+      "severity_hint": "medium",
+      "evidence": [
+        {
+          "file": "deploy/audit/tests/test-spof-04-ssh-perms.sh",
+          "lines": 14
+        }
+      ],
+      "confidence": "HIGH"
+    },
+    {
+      "id": "SEC-SS1-005",
+      "source": "SS1",
+      "category": "credential-storage",
+      "severity_hint": "medium",
+      "evidence": [
+        {
+          "file": "docker/backup/backup.sh",
+          "lines": 41
+        }
+      ],
+      "confidence": "LOW"
+    },
+    {
+      "id": "SEC-SS1-006",
+      "source": "SS1",
+      "category": "credential-storage",
+      "severity_hint": "medium",
+      "evidence": [
+        {
+          "file": "docker/backup/pitr-restore.sh",
+          "lines": 130
+        }
+      ],
+      "confidence": "LOW"
+    },
+    {
+      "id": "SEC-SS1-007",
+      "source": "SS1",
+      "category": "credential-storage",
+      "severity_hint": "medium",
+      "evidence": [
+        {
+          "file": "docker/backup/pitr-restore.sh",
+          "lines": 134
+        }
+      ],
+      "confidence": "LOW"
+    },
+    {
+      "id": "SEC-SS1-008",
+      "source": "SS1",
+      "category": "credential-storage",
+      "severity_hint": "medium",
+      "evidence": [
+        {
+          "file": "docker/backup/pitr-restore.sh",
+          "lines": 144
+        }
+      ],
+      "confidence": "LOW"
+    },
+    {
+      "id": "SEC-SS1-009",
+      "source": "SS1",
+      "category": "credential-storage",
+      "severity_hint": "medium",
+      "evidence": [
+        {
+          "file": "docker/backup/pitr-restore.sh",
+          "lines": 161
+        }
+      ],
+      "confidence": "LOW"
+    },
+    {
+      "id": "SEC-SS1-010",
+      "source": "SS1",
+      "category": "credential-storage",
+      "severity_hint": "medium",
+      "evidence": [
+        {
+          "file": "docker/backup/validate.sh",
+          "lines": 75
+        }
+      ],
+      "confidence": "LOW"
+    },
+    {
+      "id": "SEC-SS1-011",
+      "source": "SS1",
+      "category": "credential-storage",
+      "severity_hint": "medium",
+      "evidence": [
+        {
+          "file": "docker/backup/validate.sh",
+          "lines": 79
+        }
+      ],
+      "confidence": "LOW"
+    },
+    {
+      "id": "SEC-SS1-012",
+      "source": "SS1",
+      "category": "credential-storage",
+      "severity_hint": "medium",
+      "evidence": [
+        {
+          "file": "docker/backup/validate.sh",
+          "lines": 84
+        }
+      ],
+      "confidence": "LOW"
+    },
+    {
+      "id": "SEC-SS1-013",
+      "source": "SS1",
+      "category": "credential-storage",
+      "severity_hint": "medium",
+      "evidence": [
+        {
+          "file": "docker/backup/validate.sh",
+          "lines": 85
+        }
+      ],
+      "confidence": "LOW"
+    },
+    {
+      "id": "SEC-SS1-014",
+      "source": "SS1",
+      "category": "credential-storage",
+      "severity_hint": "medium",
+      "evidence": [
+        {
+          "file": "docker/backup/validate.sh",
+          "lines": 86
+        }
+      ],
+      "confidence": "LOW"
+    },
+    {
+      "id": "SEC-SS1-015",
+      "source": "SS1",
+      "category": "credential-storage",
+      "severity_hint": "medium",
+      "evidence": [
+        {
+          "file": "docker/backup/validate.sh",
+          "lines": 91
+        }
+      ],
+      "confidence": "LOW"
+    },
+    {
+      "id": "SEC-SS1-016",
+      "source": "SS1",
+      "category": "credential-storage",
+      "severity_hint": "medium",
+      "evidence": [
+        {
+          "file": "docker/backup/rpo-monitor.sh",
+          "lines": 31
+        }
+      ],
+      "confidence": "LOW"
+    },
+    {
+      "id": "SEC-SS1-017",
+      "source": "SS1",
+      "category": "credential-storage",
+      "severity_hint": "medium",
+      "evidence": [
+        {
+          "file": "docker/backup/rpo-monitor.sh",
+          "lines": 52
+        }
+      ],
+      "confidence": "LOW"
+    },
+    {
+      "id": "SEC-SS1-018",
+      "source": "SS1",
+      "category": "credential-storage",
+      "severity_hint": "medium",
+      "evidence": [
+        {
+          "file": "docker/backup/rpo-monitor.sh",
+          "lines": 57
+        }
+      ],
+      "confidence": "LOW"
+    },
+    {
+      "id": "SEC-SS1-019",
+      "source": "SS1",
+      "category": "credential-storage",
+      "severity_hint": "medium",
+      "evidence": [
+        {
+          "file": "docker/ocp/cron/audit-retention.sh",
+          "lines": 22
+        }
+      ],
+      "confidence": "LOW"
+    },
+    {
+      "id": "SEC-SS1-001",
+      "source": "SS1",
+      "category": "auth-authz",
+      "severity_hint": "info",
+      "evidence": [
+        {
+          "file": "opensips/opensips.cfg.tpl",
+          "lines": "~120-160"
+        }
+      ],
+      "confidence": "HIGH"
+    },
+    {
+      "id": "SEC-SS1-001",
+      "source": "SS1",
+      "category": "tls-enforcement",
+      "severity_hint": "info",
+      "evidence": [
+        {
+          "file": "opensips/opensips.cfg.tpl",
+          "lines": "~55-65"
+        }
+      ],
+      "confidence": "HIGH"
+    },
+    {
+      "id": "SEC-SS1-001",
+      "source": "SS1",
+      "category": "input-validation",
+      "severity_hint": "info",
+      "evidence": [
+        {
+          "file": "opensips/opensips.cfg.tpl",
+          "lines": "~200-220"
+        }
+      ],
+      "confidence": "HIGH"
+    },
+    {
+      "id": "SEC-SS3-001",
+      "source": "SS3",
+      "category": "exposed-ports",
+      "severity_hint": "info",
+      "evidence": [
+        {
+          "file": "docker-compose.yml",
+          "lines": "5060:5060/udp"
+        }
+      ],
+      "confidence": "HIGH"
+    },
+    {
+      "id": "SEC-SS3-001",
+      "source": "SS3",
+      "category": "exposed-ports",
+      "severity_hint": "info",
+      "evidence": [
+        {
+          "file": "docker-compose.yml",
+          "lines": "5060:5060/tcp"
+        }
+      ],
+      "confidence": "HIGH"
+    },
+    {
+      "id": "SEC-SS3-001",
+      "source": "SS3",
+      "category": "exposed-ports",
+      "severity_hint": "info",
+      "evidence": [
+        {
+          "file": "docker-compose.yml",
+          "lines": "5061:5061/tcp"
+        }
+      ],
+      "confidence": "HIGH"
+    },
+    {
+      "id": "SEC-SS3-001",
+      "source": "SS3",
+      "category": "exposed-ports",
+      "severity_hint": "info",
+      "evidence": [
+        {
+          "file": "docker-compose.yml",
+          "lines": "8080:8080/tcp"
+        }
+      ],
+      "confidence": "HIGH"
+    },
+    {
+      "id": "SEC-SS3-001",
+      "source": "SS3",
+      "category": "exposed-ports",
+      "severity_hint": "info",
+      "evidence": [
+        {
+          "file": "docker-compose.yml",
+          "lines": "4443:4443/tcp"
+        }
+      ],
+      "confidence": "HIGH"
+    },
+    {
+      "id": "SEC-SS3-002",
+      "source": "SS3",
+      "category": "database-security",
+      "severity_hint": "medium",
+      "evidence": [
+        {
+          "file": "docker-compose.yml",
+          "lines": "environment section"
+        }
+      ],
+      "confidence": "HIGH"
+    },
+    {
+      "id": "SEC-SS3-003",
+      "source": "SS3",
+      "category": "network-segmentation",
+      "severity_hint": "info",
+      "evidence": [
+        {
+          "file": "docker-compose.yml",
+          "lines": "networks: sip_edge, sip_internal, db_internal"
+        }
+      ],
+      "confidence": "HIGH"
+    },
+    {
+      "id": "SEC-SS3-004",
+      "source": "SS3",
+      "category": "container-hardening",
+      "severity_hint": "info",
+      "evidence": [
+        {
+          "file": "docker-compose.yml",
+          "lines": "cap_drop: ALL"
+        }
+      ],
+      "confidence": "HIGH"
+    },
+    {
+      "id": "SEC-SS3-005",
+      "source": "SS3",
+      "category": "cors-hsts",
+      "severity_hint": "info",
+      "evidence": [
+        {
+          "file": "opensips/opensips.cfg.tpl",
+          "lines": "N/A"
+        }
+      ],
+      "confidence": "HIGH"
+    },
+    {
+      "id": "SEC-SS4-001",
+      "source": "SS4",
+      "category": "data-sensitivity-authentication",
+      "severity_hint": "high",
+      "evidence": [
+        {
+          "file": "db/init/01-stock-opensips-schema.sql",
+          "lines": ""
+        }
+      ],
+      "confidence": "HIGH"
+    },
+    {
+      "id": "SEC-SS4-002",
+      "source": "SS4",
+      "category": "data-sensitivity-regulatory",
+      "severity_hint": "high",
+      "evidence": [
+        {
+          "file": "db/init/02-tsisip-extensions.sql",
+          "lines": ""
+        }
+      ],
+      "confidence": "MEDIUM"
+    },
+    {
+      "id": "SEC-SS4-003",
+      "source": "SS4",
+      "category": "data-sensitivity-authentication",
+      "severity_hint": "high",
+      "evidence": [
+        {
+          "file": "db/init/04-trunk-schema.sql",
+          "lines": ""
+        }
+      ],
+      "confidence": "HIGH"
+    },
+    {
+      "id": "SEC-SS4-004",
+      "source": "SS4",
+      "category": "data-sensitivity-regulatory",
+      "severity_hint": "high",
+      "evidence": [
+        {
+          "file": "db/init/04-ocp-audit-schema.sql",
+          "lines": ""
+        }
+      ],
+      "confidence": "MEDIUM"
+    }
+  ]
+}

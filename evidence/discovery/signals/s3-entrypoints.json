@@ -1,0 +1,298 @@
+{
+  "schema_version": "1.0",
+  "signals": [
+    {
+      "id": "S3-01-secrets",
+      "name": "Secrets",
+      "entry_points": [
+        {
+          "type": "docker-service",
+          "name": "secrets",
+          "file": "docker-compose.yml"
+        }
+      ],
+      "confidence_contribution": "MEDIUM"
+    },
+    {
+      "id": "S3-sip-signaling",
+      "name": "SIP Signaling",
+      "entry_points": [
+        {
+          "type": "sip",
+          "transport": "UDP",
+          "port": 5060,
+          "file": "opensips/opensips.cfg.tpl:30-40"
+        },
+        {
+          "type": "sip",
+          "transport": "TCP",
+          "port": 5060,
+          "file": "opensips/opensips.cfg.tpl:30-40"
+        },
+        {
+          "type": "sip",
+          "transport": "TLS",
+          "port": 5061,
+          "file": "opensips/opensips.cfg.tpl:55-65"
+        },
+        {
+          "type": "sip",
+          "transport": "WS",
+          "port": 8080,
+          "file": "docker-compose.yml"
+        },
+        {
+          "type": "sip",
+          "transport": "WSS",
+          "port": 4443,
+          "file": "docker-compose.yml"
+        }
+      ],
+      "confidence_contribution": "HIGH"
+    },
+    {
+      "id": "S3-mi-http",
+      "name": "OpenSIPS Management Interface",
+      "entry_points": [
+        {
+          "type": "http",
+          "path": "/mi/*",
+          "port": 8888,
+          "file": "opensips/opensips.cfg.tpl:68-86"
+        }
+      ],
+      "confidence_contribution": "HIGH"
+    },
+    {
+      "id": "S3-script-01",
+      "name": "Build Ocp Theme",
+      "entry_points": [
+        {
+          "type": "cli",
+          "file": "scripts/build-ocp-theme.sh"
+        }
+      ],
+      "confidence_contribution": "LOW"
+    },
+    {
+      "id": "S3-script-02",
+      "name": "Cert Expiry Monitor",
+      "entry_points": [
+        {
+          "type": "cli",
+          "file": "scripts/cert-expiry-monitor.sh"
+        }
+      ],
+      "confidence_contribution": "LOW"
+    },
+    {
+      "id": "S3-script-03",
+      "name": "Cert Rotate",
+      "entry_points": [
+        {
+          "type": "cli",
+          "file": "scripts/cert-rotate.sh"
+        }
+      ],
+      "confidence_contribution": "LOW"
+    },
+    {
+      "id": "S3-script-04",
+      "name": "Ci Scan",
+      "entry_points": [
+        {
+          "type": "cli",
+          "file": "scripts/ci-scan.sh"
+        }
+      ],
+      "confidence_contribution": "LOW"
+    },
+    {
+      "id": "S3-script-05",
+      "name": "Consolidate Security Evidence",
+      "entry_points": [
+        {
+          "type": "cli",
+          "file": "scripts/consolidate-security-evidence.sh"
+        }
+      ],
+      "confidence_contribution": "LOW"
+    },
+    {
+      "id": "S3-script-06",
+      "name": "Generate Trivy Evidence",
+      "entry_points": [
+        {
+          "type": "cli",
+          "file": "scripts/generate-trivy-evidence.sh"
+        }
+      ],
+      "confidence_contribution": "LOW"
+    },
+    {
+      "id": "S3-script-07",
+      "name": "Migrate Fr Ids",
+      "entry_points": [
+        {
+          "type": "cli",
+          "file": "scripts/migrate-fr-ids.py"
+        }
+      ],
+      "confidence_contribution": "LOW"
+    },
+    {
+      "id": "S3-script-08",
+      "name": "Rollback Ocp Theme",
+      "entry_points": [
+        {
+          "type": "cli",
+          "file": "scripts/rollback-ocp-theme.sh"
+        }
+      ],
+      "confidence_contribution": "LOW"
+    },
+    {
+      "id": "S3-script-09",
+      "name": "Secret Age Audit",
+      "entry_points": [
+        {
+          "type": "cli",
+          "file": "scripts/secret-age-audit.sh"
+        }
+      ],
+      "confidence_contribution": "LOW"
+    },
+    {
+      "id": "S3-script-10",
+      "name": "Sip Auth Probe",
+      "entry_points": [
+        {
+          "type": "cli",
+          "file": "scripts/sip-auth-probe.py"
+        }
+      ],
+      "confidence_contribution": "LOW"
+    },
+    {
+      "id": "S3-script-11",
+      "name": "Test Invite 407",
+      "entry_points": [
+        {
+          "type": "cli",
+          "file": "scripts/test-invite-407.sh"
+        }
+      ],
+      "confidence_contribution": "LOW"
+    },
+    {
+      "id": "S3-script-12",
+      "name": "Tls Reload",
+      "entry_points": [
+        {
+          "type": "cli",
+          "file": "scripts/tls-reload.sh"
+        }
+      ],
+      "confidence_contribution": "LOW"
+    },
+    {
+      "id": "S3-script-13",
+      "name": "Validate Ddl Traceability",
+      "entry_points": [
+        {
+          "type": "cli",
+          "file": "scripts/validate-ddl-traceability.py"
+        }
+      ],
+      "confidence_contribution": "LOW"
+    },
+    {
+      "id": "S3-script-14",
+      "name": "Validate Fr Ids",
+      "entry_points": [
+        {
+          "type": "cli",
+          "file": "scripts/validate-fr-ids.py"
+        }
+      ],
+      "confidence_contribution": "LOW"
+    },
+    {
+      "id": "S3-script-15",
+      "name": "Verify All Security",
+      "entry_points": [
+        {
+          "type": "cli",
+          "file": "scripts/verify-all-security.sh"
+        }
+      ],
+      "confidence_contribution": "LOW"
+    },
+    {
+      "id": "S3-script-16",
+      "name": "Verify Health Checks",
+      "entry_points": [
+        {
+          "type": "cli",
+          "file": "scripts/verify-health-checks.sh"
+        }
+      ],
+      "confidence_contribution": "LOW"
+    },
+    {
+      "id": "S3-script-17",
+      "name": "Verify Network Isolation",
+      "entry_points": [
+        {
+          "type": "cli",
+          "file": "scripts/verify-network-isolation.sh"
+        }
+      ],
+      "confidence_contribution": "LOW"
+    },
+    {
+      "id": "S3-script-18",
+      "name": "Verify Nginx Tls",
+      "entry_points": [
+        {
+          "type": "cli",
+          "file": "scripts/verify-nginx-tls.sh"
+        }
+      ],
+      "confidence_contribution": "LOW"
+    },
+    {
+      "id": "S3-script-19",
+      "name": "Verify Port Policy",
+      "entry_points": [
+        {
+          "type": "cli",
+          "file": "scripts/verify-port-policy.sh"
+        }
+      ],
+      "confidence_contribution": "LOW"
+    },
+    {
+      "id": "S3-script-20",
+      "name": "Verify Secrets Audit",
+      "entry_points": [
+        {
+          "type": "cli",
+          "file": "scripts/verify-secrets-audit.sh"
+        }
+      ],
+      "confidence_contribution": "LOW"
+    },
+    {
+      "id": "S3-script-21",
+      "name": "Verify Tls Chain",
+      "entry_points": [
+        {
+          "type": "cli",
+          "file": "scripts/verify-tls-chain.sh"
+        }
+      ],
+      "confidence_contribution": "LOW"
+    }
+  ]
+}

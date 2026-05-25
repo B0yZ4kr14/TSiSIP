@@ -1,0 +1,22 @@
+{
+  "schema_version": "1.0",
+  "sources": {
+    "QS1": {
+      "file": "evidence/qa/test-inventory.json",
+      "count": 23
+    },
+    "QS2": {
+      "file": "evidence/qa/coverage/coverage-map.json",
+      "proxy_coverage": 0.0
+    },
+    "QS3": {
+      "file": "evidence/qa/testability/testability-findings.json",
+      "count": 0
+    },
+    "QS4": {
+      "ci_map": "evidence/qa/environments/ci-map.json",
+      "environment_map": "evidence/qa/environments/environment-map.json",
+      "flaky_tests": "evidence/qa/environments/flaky-tests.json"
+    }
+  }
+}

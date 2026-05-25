@@ -1,0 +1,122 @@
+{
+  "schema_version": "1.0",
+  "signals": [
+    {
+      "id": "SEC-SS3-001",
+      "category": "exposed-ports",
+      "severity_hint": "info",
+      "evidence": [
+        {
+          "file": "docker-compose.yml",
+          "lines": "5060:5060/udp"
+        }
+      ],
+      "confidence": "HIGH",
+      "note": "Host port 5060 mapped to container port 5060/udp"
+    },
+    {
+      "id": "SEC-SS3-001",
+      "category": "exposed-ports",
+      "severity_hint": "info",
+      "evidence": [
+        {
+          "file": "docker-compose.yml",
+          "lines": "5060:5060/tcp"
+        }
+      ],
+      "confidence": "HIGH",
+      "note": "Host port 5060 mapped to container port 5060/tcp"
+    },
+    {
+      "id": "SEC-SS3-001",
+      "category": "exposed-ports",
+      "severity_hint": "info",
+      "evidence": [
+        {
+          "file": "docker-compose.yml",
+          "lines": "5061:5061/tcp"
+        }
+      ],
+      "confidence": "HIGH",
+      "note": "Host port 5061 mapped to container port 5061/tcp"
+    },
+    {
+      "id": "SEC-SS3-001",
+      "category": "exposed-ports",
+      "severity_hint": "info",
+      "evidence": [
+        {
+          "file": "docker-compose.yml",
+          "lines": "8080:8080/tcp"
+        }
+      ],
+      "confidence": "HIGH",
+      "note": "Host port 8080 mapped to container port 8080/tcp"
+    },
+    {
+      "id": "SEC-SS3-001",
+      "category": "exposed-ports",
+      "severity_hint": "info",
+      "evidence": [
+        {
+          "file": "docker-compose.yml",
+          "lines": "4443:4443/tcp"
+        }
+      ],
+      "confidence": "HIGH",
+      "note": "Host port 4443 mapped to container port 4443/tcp"
+    },
+    {
+      "id": "SEC-SS3-002",
+      "category": "database-security",
+      "severity_hint": "medium",
+      "evidence": [
+        {
+          "file": "docker-compose.yml",
+          "lines": "environment section"
+        }
+      ],
+      "confidence": "HIGH",
+      "note": "PostgreSQL credentials via environment variables; secrets should use Docker secrets or env file"
+    },
+    {
+      "id": "SEC-SS3-003",
+      "category": "network-segmentation",
+      "severity_hint": "info",
+      "evidence": [
+        {
+          "file": "docker-compose.yml",
+          "lines": "networks: sip_edge, sip_internal, db_internal"
+        }
+      ],
+      "confidence": "HIGH",
+      "note": "Three isolated Docker networks: sip_edge (public), sip_internal (service mesh), db_internal (data)"
+    },
+    {
+      "id": "SEC-SS3-004",
+      "category": "container-hardening",
+      "severity_hint": "info",
+      "evidence": [
+        {
+          "file": "docker-compose.yml",
+          "lines": "cap_drop: ALL"
+        }
+      ],
+      "confidence": "HIGH",
+      "note": "Containers drop all capabilities; only required caps added back"
+    },
+    {
+      "id": "SEC-SS3-005",
+      "category": "cors-hsts",
+      "severity_hint": "info",
+      "evidence": [
+        {
+          "file": "opensips/opensips.cfg.tpl",
+          "lines": "N/A"
+        }
+      ],
+      "confidence": "HIGH",
+      "note": "No CORS/HSTS configuration needed \u2014 OpenSIPS is a SIP proxy, not a web server"
+    }
+  ]
+}
