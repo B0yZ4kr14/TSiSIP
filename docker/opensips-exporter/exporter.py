@@ -79,18 +79,79 @@ opensips_info = Info(
     registry=registry
 )
 
+opensips_healthcheck_failures = Counter(
+    'opensips_healthcheck_failures_total',
+    'Total health check failures',
+    ['service'],
+    registry=registry
+)
+
+opensips_container_restarts = Counter(
+    'opensips_container_restarts_total',
+    'Total container restarts',
+    ['service'],
+    registry=registry
+)
+
+opensips_dispatcher_circuit_state = Gauge(
+    'opensips_dispatcher_circuit_state',
+    'Dispatcher circuit breaker state (0=closed, 1=open, 2=half_open)',
+    ['target', 'setid'],
+    registry=registry
+)
+
+opensips_tls_certificate_expiry_timestamp = Gauge(
+    'opensips_tls_certificate_expiry_timestamp',
+    'Unix timestamp when the TLS certificate expires',
+    registry=registry
+)
+
+tsisip_trunk_provider_healthy = Gauge(
+    'tsisip_trunk_provider_healthy',
+    'Trunk provider health status from dispatcher probes (1=healthy, 0=unhealthy)',
+    ['trunk_name', 'trunk_host'],
+    registry=registry
+)
+
+tsisip_trunk_calls_total = Counter(
+    'tsisip_trunk_calls_total',
+    'Total trunk-routed calls',
+    ['trunk_name', 'direction'],
+    registry=registry
+)
+
 # Cache
 _cache = {}
 _cache_timestamp = 0
 
 
-def fetch_mi(cmd: str) -> dict:
-    """Fetch data from OpenSIPS MI interface."""
-    url = f"{MI_BASE_URL}/{cmd}"
+def fetch_mi(cmd: str, params=None) -> dict:
+    """Fetch data from OpenSIPS MI JSON-RPC interface."""
+    url = MI_BASE_URL
+    if params is None:
+        params = []
+    payload = {
+        'jsonrpc': '2.0',
+        'method': cmd,
+        'params': params,
+        'id': 1
+    }
     try:
-        req = Request(url, headers={'Accept': 'application/json'})
+        data = json.dumps(payload).encode('utf-8')
+        req = Request(
+            url,
+            data=data,
+            headers={
+                'Accept': 'application/json',
+                'Content-Type': 'application/json'
+            }
+        )
         with urlopen(req, timeout=5) as resp:
-            return json.loads(resp.read().decode('utf-8'))
+            response = json.loads(resp.read().decode('utf-8'))
+            if 'error' in response:
+                logger.error(f"MI command {cmd} returned error: {response['error']}")
+                return {}
+            return response.get('result', {})
     except URLError as e:
         logger.error(f"Failed to fetch MI command {cmd}: {e}")
         return {}
@@ -99,15 +160,16 @@ def fetch_mi(cmd: str) -> dict:
         return {}
 
 
-def get_cached_or_fetch(cmd: str) -> dict:
+def get_cached_or_fetch(cmd: str, params=None) -> dict:
     """Return cached data if fresh, otherwise fetch from MI."""
     global _cache_timestamp
+    cache_key = f"{cmd}:{json.dumps(params) if params else ''}"
     now = time.time()
-    if cmd in _cache and (now - _cache_timestamp) < CACHE_TTL_SECONDS:
-        return _cache[cmd]
+    if cache_key in _cache and (now - _cache_timestamp) < CACHE_TTL_SECONDS:
+        return _cache[cache_key]
     
-    data = fetch_mi(cmd)
-    _cache[cmd] = data
+    data = fetch_mi(cmd, params)
+    _cache[cache_key] = data
     _cache_timestamp = now
     return data
 
@@ -115,18 +177,15 @@ def get_cached_or_fetch(cmd: str) -> dict:
 def update_metrics():
     """Update all Prometheus metrics from OpenSIPS MI data."""
     # Active dialogs
-    dialogs = get_cached_or_fetch('get_statistics')
+    dialogs = get_cached_or_fetch('get_statistics', [['all']])
     if dialogs:
         active = dialogs.get('dialog:active_dialogs', 0)
         opensips_active_dialogs.set(active)
     
     # Registered subscribers
-    usrloc = get_cached_or_fetch('ul_dump')
-    if usrloc and 'Domains' in usrloc:
-        total_regs = sum(
-            len(domain.get('AORs', []))
-            for domain in usrloc['Domains']
-        )
+    usrloc = get_cached_or_fetch('reg_list')
+    if usrloc and 'Records' in usrloc:
+        total_regs = len(usrloc['Records'])
         opensips_registered_subscribers.set(total_regs)
     
     # Dispatcher targets
@@ -137,13 +196,13 @@ def update_metrics():
                 setid = str(set_entry.get('id', '0'))
                 for target in set_entry.get('Destinations', []):
                     target_uri = target.get('URI', 'unknown')
-                    state = target.get('State', 0)
+                    state = target.get('state', target.get('State', 0))
                     opensips_dispatcher_target_state.labels(
                         target=target_uri, setid=setid
                     ).set(state)
     
     # Authentication failures (from statistics)
-    stats = get_cached_or_fetch('get_statistics')
+    stats = get_cached_or_fetch('get_statistics', [['all']])
     if stats:
         auth_failures = stats.get('auth:failed_auths', 0)
         opensips_auth_failures._value.set(auth_failures)
@@ -171,10 +230,10 @@ def update_metrics():
                 if setid == '100':
                     for target in set_entry.get('Destinations', []):
                         target_uri = target.get('URI', 'unknown')
-                        state = target.get('State', 0)
+                        state = target.get('state', target.get('State', 0))
                         # Extract host from SIP URI for labeling
                         host = target_uri.replace('sip:', '').split(':')[0] if target_uri.startswith('sip:') else 'unknown'
-                        desc = target.get('description', 'unknown')
+                        desc = target.get('description', target.get('Description', 'unknown'))
                         # description format: "Trunk: <name>"
                         trunk_name = desc.replace('Trunk: ', '') if desc.startswith('Trunk: ') else desc
                         tsisip_trunk_provider_healthy.labels(
@@ -219,47 +278,3 @@ def main():
 
 if __name__ == '__main__':
     main()
-
-# Health check metrics (added for Feature 004)
-opensips_healthcheck_failures = Counter(
-    'opensips_healthcheck_failures_total',
-    'Total health check failures',
-    ['service'],
-    registry=registry
-)
-
-opensips_container_restarts = Counter(
-    'opensips_container_restarts_total',
-    'Total container restarts',
-    ['service'],
-    registry=registry
-)
-
-opensips_dispatcher_circuit_state = Gauge(
-    'opensips_dispatcher_circuit_state',
-    'Dispatcher circuit breaker state (0=closed, 1=open, 2=half_open)',
-    ['target', 'setid'],
-    registry=registry
-)
-
-# T3.2: TLS certificate expiry metric
-opensips_tls_certificate_expiry_timestamp = Gauge(
-    'opensips_tls_certificate_expiry_timestamp',
-    'Unix timestamp when the TLS certificate expires',
-    registry=registry
-)
-
-# Wave 5: Trunk provider health metrics
-tsisip_trunk_provider_healthy = Gauge(
-    'tsisip_trunk_provider_healthy',
-    'Trunk provider health status from dispatcher probes (1=healthy, 0=unhealthy)',
-    ['trunk_name', 'trunk_host'],
-    registry=registry
-)
-
-tsisip_trunk_calls_total = Counter(
-    'tsisip_trunk_calls_total',
-    'Total trunk-routed calls',
-    ['trunk_name', 'direction'],
-    registry=registry
-)

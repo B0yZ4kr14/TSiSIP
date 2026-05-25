@@ -141,7 +141,7 @@ services:
     - 5060:5060/udp
     - 5060:5060/tcp
     - 5061:5061/tcp
-    - ${OPENSIPS_WS_PORT:-8080}:8080/tcp
+    - ${OPENSIPS_WS_PORT:-8081}:8080/tcp
     - ${OPENSIPS_WSS_PORT:-4443}:4443/tcp
     environment:
       OPENSIPS_LISTEN_IP: ${OPENSIPS_LISTEN_IP}
@@ -329,7 +329,7 @@ services:
     - SETUID
     - SETGID
     healthcheck:
-      test: ["CMD-SHELL", "curl -fsS http://127.0.0.1:8080/index.php > /dev/null || exit 1"]
+      test: ["CMD-SHELL", "curl -fsS http://127.0.0.1:8080/health.php > /dev/null || exit 1"]
       interval: 30s
       timeout: 5s
       retries: 3
@@ -679,7 +679,7 @@ services:
     healthcheck:
       test:
       - CMD-SHELL
-      - /usr/local/bin/healthcheck.sh
+      - pg_isready -h "$PGHOST" -p "$PGPORT" -U "$PGUSER" || exit 1
       interval: 15s
       timeout: 5s
       retries: 3

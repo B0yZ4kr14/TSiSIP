@@ -28,7 +28,7 @@ RUN sed -i 's/Listen 80/Listen 8080/' /etc/apache2/ports.conf \
 
 # Health check — lightweight HTTP probe on internal port
 HEALTHCHECK --interval=30s --timeout=5s --start-period=60s --retries=3 \
-    CMD curl -sS http://127.0.0.1:8080/index.php > /dev/null || exit 1
+    CMD curl -sS http://127.0.0.1:8080/health.php > /dev/null || exit 1
 
 # Security: run as non-root (www-data is default in php-apache)
 # Drop all capabilities except necessary ones at runtime via compose
