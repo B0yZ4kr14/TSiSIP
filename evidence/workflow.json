@@ -51,10 +51,15 @@
       ]
     },
     "report": {
-      "status": "pending",
-      "started_at": null,
-      "completed_at": null,
-      "artifacts": []
+      "status": "completed",
+      "started_at": "2026-05-25T02:27:41.398251Z",
+      "completed_at": "2026-05-25T02:27:41.398251Z",
+      "artifacts": [
+        "evidence/reports/stakeholder-report.md",
+        "evidence/reports/architect-report.md",
+        "evidence/reports/dev-report.md",
+        "evidence/reports/sdet-report.md"
+      ]
     },
     "assess": {
       "status": "pending",
@@ -92,6 +97,7 @@
     "QS2: coverage_source=proxy (no coverage report configured)",
     "QS4: flaky_tests not-collected (inputs.flaky_test_history is null)",
     "D8: TM Forum missing items flagged for stakeholder clarification (billing, product catalog, partner mgmt)",
-    "D3: File coverage 92% (45 capability + 12 infra = 57/62 significant files)"
+    "D3: File coverage 92% (45 capability + 12 infra = 57/62 significant files)",
+    "report: security report skipped \u2014 assess not done"
   ]
 }
