@@ -15,4 +15,7 @@ RUN chmod +x /usr/local/bin/healthcheck.sh
 # Setup cron for daily renewal check at 02:00 UTC
 RUN echo "0 2 * * * /usr/local/bin/certbot renew --quiet --deploy-hook /usr/local/bin/deploy-hook.sh" | crontab -
 
+HEALTHCHECK --interval=30s --timeout=5s --start-period=10s --retries=3 \
+    CMD /usr/local/bin/healthcheck.sh || exit 1
+
 ENTRYPOINT ["/usr/local/bin/entrypoint.sh"]
