@@ -419,7 +419,7 @@ route[AUTH] {
     }
 
     # After 3 failed auths within 60s, return 429 Too Many Requests
-    if (cache_fetch("local", "auth_failures_$var(auth_key)", $avp(auth_fail_count)) && $avp(auth_fail_count) >= 3) {
+    if (cache_fetch("local", "auth_failures_$var(auth_key)", $avp(auth_fail_count)) && $(avp(auth_fail_count){s.int}) >= 3) {
         xlog("L_WARN", "Auth throttled for $var(auth_key) from $si - too many failures\n");
         sl_send_reply(429, "Too Many Requests");
         exit;
@@ -442,7 +442,7 @@ route[AUTH] {
             # T2.1: Increment auth failure counter (60s TTL)
             cache_add("local", "auth_failures_$var(auth_key)", 1, 60);
             # T2.2 / T4.1: Ban source IP after 3 auth failures
-            if (cache_fetch("local", "auth_failures_$var(auth_key)", $avp(auth_fail_count)) && $avp(auth_fail_count) >= 3) {
+            if (cache_fetch("local", "auth_failures_$var(auth_key)", $avp(auth_fail_count)) && $(avp(auth_fail_count){s.int}) >= 3) {
                 xlog("L_WARN", "Auth failure threshold reached for $var(auth_key) from $si - adding to ban_list\n");
                 cache_store("local", "ban_list_$si", "auth_exceeded", 3600);
             }
@@ -465,7 +465,7 @@ route[AUTH] {
         # T2.1: Increment auth failure counter (60s TTL)
         cache_add("local", "auth_failures_$var(auth_key)", 1, 60);
         # T2.2 / T4.1: Ban source IP after 3 auth failures
-        if (cache_fetch("local", "auth_failures_$var(auth_key)", $avp(auth_fail_count)) && $avp(auth_fail_count) >= 3) {
+        if (cache_fetch("local", "auth_failures_$var(auth_key)", $avp(auth_fail_count)) && $(avp(auth_fail_count){s.int}) >= 3) {
             xlog("L_WARN", "Auth failure threshold reached for $var(auth_key) from $si - adding to ban_list\n");
             cache_store("local", "ban_list_$si", "auth_exceeded", 3600);
         }
