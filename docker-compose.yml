@@ -144,8 +144,8 @@ services:
     - 5060:5060/udp
     - 5060:5060/tcp
     - 5061:5061/tcp
-    - 8080:8080/tcp
-    - 4443:4443/tcp
+    - ${OPENSIPS_WS_PORT:-8080}:8080/tcp
+    - ${OPENSIPS_WSS_PORT:-4443}:4443/tcp
     environment:
       OPENSIPS_LISTEN_IP: ${OPENSIPS_LISTEN_IP}
       HOST_PUBLIC_IP: ${HOST_PUBLIC_IP}
