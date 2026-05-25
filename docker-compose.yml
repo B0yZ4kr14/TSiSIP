@@ -93,18 +93,19 @@ services:
         reservations:
           memory: 1G
     ports:
-    - 10000-20000:10000-20000/udp
+    - 10000-10050:10000-10050/udp
     command:
     - --interface=${RTPENGINE_PRIVATE_IP}/${HOST_PUBLIC_IP}
-    - --listen-ng=${RTPENGINE_INTERNAL_IP}:22222
+    - --listen-ng=0.0.0.0:22222
     - --port-min=10000
-    - --port-max=20000
+    - --port-max=10050
     - --log-stderr
     - --foreground
-    - --dtls-cert-file=/certs/live/server.crt
-    - --dtls-key-file=/certs/live/server.key
-    - --dtls-passive
-    - --srtp-ciphers=AES_GCM_256:AES_256_CM_HMAC_SHA1_80
+    # DTLS certs (cert format issue)
+    # - --dtls-cert-file=/certs/live/server.crt
+    # - --dtls-key-file=/certs/live/server.key
+    # - --dtls-passive
+    # - --srtp-ciphers=AES_GCM_256:AES_256_CM_HMAC_SHA1_80
     secrets:
     - server.crt
     - server.key
