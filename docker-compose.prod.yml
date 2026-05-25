@@ -229,6 +229,14 @@ services:
     - SETGID
     security_opt:
     - no-new-privileges:true
+    healthcheck:
+      test:
+      - CMD-SHELL
+      - curl -fsS http://127.0.0.1:8080/health.php > /dev/null || exit 1
+      interval: 30s
+      timeout: 5s
+      retries: 3
+      start_period: 60s
     deploy:
       resources:
         limits:
@@ -333,6 +341,14 @@ services:
     - ALL
     security_opt:
     - no-new-privileges:true
+    healthcheck:
+      test:
+      - CMD-SHELL
+      - curl -fsSL http://localhost:8080/health || exit 1
+      interval: 15s
+      timeout: 5s
+      retries: 3
+      start_period: 10s
     labels:
       tsisip.environment: production
       tsisip.deployed-by: ansible
@@ -342,14 +358,6 @@ services:
           memory: 1G
         reservations:
           memory: 512M
-    healthcheck:
-      test:
-      - CMD-SHELL
-      - curl -fsSL http://localhost:8080/health || exit 1
-      interval: 15s
-      timeout: 5s
-      retries: 3
-      start_period: 10s
   grafana:
     image: ghcr.io/b0yz4kr14/tsisip/grafana:${TSISIP_IMAGE_TAG:?must be set}
     networks:
@@ -448,6 +456,15 @@ services:
     - SETGID
     security_opt:
     - no-new-privileges:true
+    healthcheck:
+      test:
+      - CMD-SHELL
+      - /usr/local/bin/healthcheck.sh
+      interval: 60s
+      timeout: 10s
+      retries: 3
+      start_period: 30s
+      start_interval: 10s
     labels:
       tsisip.environment: production
       tsisip.deployed-by: ansible
