@@ -5,7 +5,7 @@
 **Feature**: 022 — VPS Go-Live Stabilization
 **Short name**: vps-stabilization
 **Created**: 2026-05-23
-**Status**: In Progress
+**Status**: Completed
 
 ### Context
 

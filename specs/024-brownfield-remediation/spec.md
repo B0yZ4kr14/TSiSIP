@@ -5,7 +5,7 @@
 **Feature**: 024 — Brownfield Remediation  
 **Short name**: brownfield-remediation  
 **Created**: 2026-05-24  
-**Status**: Specified
+**Status**: Completed
 
 ### Context
 
@@ -24,16 +24,16 @@ The post-Feature-022 brownfield scan surfaced 12 new findings (B1–B12) spannin
 
 ## Acceptance Criteria
 
-- [ ] AC1: docker/admin-api/Dockerfile uses php image with SHA digest (B1 remediation)
-- [ ] AC2: tests/integration/test_end_to_end_call.py has no hard-coded 172.x.x.x IPs (B2)
-- [ ] AC3: tests/integration/test_sip_trunk_failover.py has no hard-coded 172.x.x.x IPs (B3)
-- [ ] AC4: deploy scripts derive RTPENGINE_PRIVATE_IP and RTPENGINE_INTERNAL_IP dynamically via docker network inspect (B4–B6)
-- [ ] AC5: env-example documents every variable referenced in docker-compose.vps.yml (B7)
-- [ ] AC6: All sleep statements in deploy/scripts/*.sh have inline comments explaining the wait purpose (B8–B10)
-- [ ] AC7: OCP healthcheck passes in docker-compose.vps.yml with userland-proxy=false on host, or compose healthcheck is updated (B11)
-- [ ] AC8: Dockerfiles for admin-api, backup, anomaly-detector, ca-tool, and certbot-exporter contain HEALTHCHECK instructions (B12)
-- [ ] AC9: docker compose config validates without errors after all changes
-- [ ] AC10: Post-fix brownfield scan shows zero HIGH/MEDIUM findings
+- [x] AC1: docker/admin-api/Dockerfile uses php image with SHA digest (B1 remediation)
+- [x] AC2: tests/integration/test_end_to_end_call.py has no hard-coded 172.x.x.x IPs (B2)
+- [x] AC3: tests/integration/test_sip_trunk_failover.py has no hard-coded 172.x.x.x IPs (B3)
+- [x] AC4: deploy scripts derive RTPENGINE_PRIVATE_IP and RTPENGINE_INTERNAL_IP dynamically via docker network inspect (B4–B6)
+- [x] AC5: env-example documents every variable referenced in docker-compose.vps.yml (B7)
+- [x] AC6: All sleep statements in deploy/scripts/*.sh have inline comments explaining the wait purpose (B8–B10)
+- [x] AC7: OCP healthcheck passes in docker-compose.vps.yml with userland-proxy=false on host, or compose healthcheck is updated (B11)
+- [x] AC8: Dockerfiles for admin-api, backup, anomaly-detector, ca-tool, and certbot-exporter contain HEALTHCHECK instructions (B12)
+- [x] AC9: docker compose config validates without errors after all changes
+- [x] AC10: Post-fix brownfield scan shows zero HIGH/MEDIUM findings
 
 ---
 

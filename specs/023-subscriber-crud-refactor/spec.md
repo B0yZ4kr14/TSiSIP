@@ -2,6 +2,8 @@
 
 ## Overview
 
+**Status**: Completed
+
 Feature 020's post-implementation architecture review discovered **ARCH-PRE-001**: `web/subscribers.php` writes directly to the `subscriber` table, violating the Control Plane → Database layer boundary defined in `.specify/memory/architecture_constitution.md`. The OCP (Control Plane) must never write to the `subscriber` table directly; all subscriber mutations must route through the OpenSIPS layer or a dedicated proxy service.
 
 This feature refactors subscriber management so that HA1 generation remains in the OCP (trusted control plane), but all INSERT/UPDATE/DELETE operations on the `subscriber` table are delegated to the OpenSIPS layer.
