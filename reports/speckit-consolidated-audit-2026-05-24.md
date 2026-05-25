@@ -195,7 +195,7 @@ Three durable lessons captured:
 |----|--------|-------|
 | R9 | ~~Add SBOM/VEX~~ ✅ SBOM + SLSA provenance already in CI (R9 partial); VEX still TODO | security-engineer |
 | R10 | Create DDL traceability check in spec-validate gate | database-engineer |
-| R11 | Expand workflow definitions (only 2 exist) | devops-engineer |
+| R11 | ~~Expand workflow definitions~~ ✅ Added brownfield + security-review workflows | devops-engineer |
 
 ---
 
