@@ -1,0 +1,115 @@
+{
+  "BC-001": {
+    "data_sensitivity": [
+      "authentication",
+      "regulatory"
+    ],
+    "auth_required": true,
+    "auth_mechanisms": [
+      "SIP Digest"
+    ],
+    "external_exposure": "public",
+    "criticality": "high",
+    "sensitive_operations": [
+      "SIP registration",
+      "SIP call setup",
+      "media relay negotiation"
+    ],
+    "trust_boundaries_crossed": [
+      "Internet \u2192 sip_edge",
+      "sip_edge \u2192 sip_internal",
+      "sip_edge \u2192 db_internal"
+    ]
+  },
+  "BC-002": {
+    "data_sensitivity": [],
+    "auth_required": false,
+    "auth_mechanisms": [],
+    "external_exposure": "public",
+    "criticality": "medium",
+    "sensitive_operations": [
+      "RTP media relay",
+      "SDP rewriting"
+    ],
+    "trust_boundaries_crossed": [
+      "Internet \u2192 sip_edge (RTP)"
+    ]
+  },
+  "BC-003": {
+    "data_sensitivity": [
+      "authentication"
+    ],
+    "auth_required": true,
+    "auth_mechanisms": [
+      "SIP Digest (via OpenSIPS)"
+    ],
+    "external_exposure": "internal",
+    "criticality": "medium",
+    "sensitive_operations": [
+      "Voice call handling",
+      "Voicemail",
+      "Conferencing"
+    ],
+    "trust_boundaries_crossed": [
+      "sip_internal \u2192 db_internal"
+    ]
+  },
+  "BC-004": {
+    "data_sensitivity": [
+      "authentication",
+      "regulatory"
+    ],
+    "auth_required": true,
+    "auth_mechanisms": [
+      "SIP Digest"
+    ],
+    "external_exposure": "internal",
+    "criticality": "high",
+    "sensitive_operations": [
+      "Subscriber provisioning",
+      "Tenant configuration",
+      "Audit logging"
+    ],
+    "trust_boundaries_crossed": [
+      "db_internal"
+    ]
+  },
+  "BC-005": {
+    "data_sensitivity": [
+      "authentication",
+      "regulatory"
+    ],
+    "auth_required": true,
+    "auth_mechanisms": [
+      "SIP Digest",
+      "Trunk auth credentials"
+    ],
+    "external_exposure": "public",
+    "criticality": "high",
+    "sensitive_operations": [
+      "Trunk provisioning",
+      "Rate limit configuration",
+      "Health probe management"
+    ],
+    "trust_boundaries_crossed": [
+      "Internet \u2192 sip_edge",
+      "sip_edge \u2192 db_internal"
+    ]
+  },
+  "BC-006": {
+    "data_sensitivity": [
+      "regulatory"
+    ],
+    "auth_required": false,
+    "auth_mechanisms": [],
+    "external_exposure": "internal",
+    "criticality": "medium",
+    "sensitive_operations": [
+      "Traffic anomaly detection",
+      "Security alerting"
+    ],
+    "trust_boundaries_crossed": [
+      "sip_edge \u2192 metrics"
+    ]
+  }
+}

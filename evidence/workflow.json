@@ -36,10 +36,19 @@
       ]
     },
     "discover": {
-      "status": "pending",
-      "started_at": null,
-      "completed_at": null,
-      "artifacts": []
+      "status": "completed",
+      "started_at": "2026-05-25T02:21:44.733947Z",
+      "completed_at": "2026-05-25T02:21:44.733947Z",
+      "artifacts": [
+        "evidence/discovery/analysis.md",
+        "evidence/discovery/coverage.md",
+        "evidence/discovery/l1-capabilities.md",
+        "evidence/discovery/l2-capabilities.md",
+        "evidence/discovery/domain-model.md",
+        "evidence/discovery/blueprint-comparison.md",
+        "evidence/discovery/security-context.json",
+        "evidence/qa/qa-context.json"
+      ]
     },
     "report": {
       "status": "pending",
@@ -81,6 +90,8 @@
     "detect-stack: primary_languages skewed by .ansible-venv/ (4959 files); real project is Docker/C/Python/PHP",
     "SS2: cve_lookup not-collected (no vulnerability data source wired in)",
     "QS2: coverage_source=proxy (no coverage report configured)",
-    "QS4: flaky_tests not-collected (inputs.flaky_test_history is null)"
+    "QS4: flaky_tests not-collected (inputs.flaky_test_history is null)",
+    "D8: TM Forum missing items flagged for stakeholder clarification (billing, product catalog, partner mgmt)",
+    "D3: File coverage 92% (45 capability + 12 infra = 57/62 significant files)"
   ]
 }

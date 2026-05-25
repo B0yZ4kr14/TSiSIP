@@ -1,0 +1,237 @@
+{
+  "BC-001": {
+    "test_coverage": {
+      "unit": null,
+      "integration": null,
+      "e2e": null,
+      "source": "proxy",
+      "confidence": "LOW"
+    },
+    "automation_status": {
+      "regression": "partial",
+      "smoke": "partial",
+      "contract": "absent"
+    },
+    "testability": {
+      "rating": "good",
+      "findings_count": 0,
+      "top_issues": []
+    },
+    "defect_profile": {
+      "open_defects": null,
+      "flaky_tests": null,
+      "change_velocity": "medium",
+      "source": "git-log"
+    },
+    "environments": {
+      "coverage": [
+        "dev"
+      ],
+      "missing": [
+        "staging",
+        "prod"
+      ],
+      "parity_issues": []
+    },
+    "test_strategy_gaps": [
+      "No contract tests against Asterisk backend",
+      "No performance tests for 10K+ concurrent calls",
+      "No fuzz testing for SIP parser"
+    ]
+  },
+  "BC-002": {
+    "test_coverage": {
+      "unit": null,
+      "integration": null,
+      "e2e": null,
+      "source": "proxy",
+      "confidence": "LOW"
+    },
+    "automation_status": {
+      "regression": "none",
+      "smoke": "none",
+      "contract": "absent"
+    },
+    "testability": {
+      "rating": "good",
+      "findings_count": 0,
+      "top_issues": []
+    },
+    "defect_profile": {
+      "open_defects": null,
+      "flaky_tests": null,
+      "change_velocity": "low",
+      "source": "git-log"
+    },
+    "environments": {
+      "coverage": [
+        "dev"
+      ],
+      "missing": [
+        "staging",
+        "prod"
+      ],
+      "parity_issues": []
+    },
+    "test_strategy_gaps": [
+      "No RTP media quality tests",
+      "No SDP rewriting validation suite"
+    ]
+  },
+  "BC-003": {
+    "test_coverage": {
+      "unit": null,
+      "integration": null,
+      "e2e": null,
+      "source": "proxy",
+      "confidence": "LOW"
+    },
+    "automation_status": {
+      "regression": "none",
+      "smoke": "none",
+      "contract": "absent"
+    },
+    "testability": {
+      "rating": "good",
+      "findings_count": 0,
+      "top_issues": []
+    },
+    "defect_profile": {
+      "open_defects": null,
+      "flaky_tests": null,
+      "change_velocity": "low",
+      "source": "git-log"
+    },
+    "environments": {
+      "coverage": [
+        "dev"
+      ],
+      "missing": [
+        "staging",
+        "prod"
+      ],
+      "parity_issues": []
+    },
+    "test_strategy_gaps": [
+      "No Asterisk application tests",
+      "No SIP trunk interop tests"
+    ]
+  },
+  "BC-004": {
+    "test_coverage": {
+      "unit": null,
+      "integration": null,
+      "e2e": null,
+      "source": "proxy",
+      "confidence": "LOW"
+    },
+    "automation_status": {
+      "regression": "partial",
+      "smoke": "partial",
+      "contract": "absent"
+    },
+    "testability": {
+      "rating": "good",
+      "findings_count": 0,
+      "top_issues": []
+    },
+    "defect_profile": {
+      "open_defects": null,
+      "flaky_tests": null,
+      "change_velocity": "medium",
+      "source": "git-log"
+    },
+    "environments": {
+      "coverage": [
+        "dev"
+      ],
+      "missing": [
+        "staging",
+        "prod"
+      ],
+      "parity_issues": []
+    },
+    "test_strategy_gaps": [
+      "No schema migration tests",
+      "No HA1 hash algorithm regression tests"
+    ]
+  },
+  "BC-005": {
+    "test_coverage": {
+      "unit": null,
+      "integration": null,
+      "e2e": null,
+      "source": "proxy",
+      "confidence": "LOW"
+    },
+    "automation_status": {
+      "regression": "partial",
+      "smoke": "partial",
+      "contract": "absent"
+    },
+    "testability": {
+      "rating": "good",
+      "findings_count": 0,
+      "top_issues": []
+    },
+    "defect_profile": {
+      "open_defects": null,
+      "flaky_tests": null,
+      "change_velocity": "high",
+      "source": "git-log"
+    },
+    "environments": {
+      "coverage": [
+        "dev"
+      ],
+      "missing": [
+        "staging",
+        "prod"
+      ],
+      "parity_issues": []
+    },
+    "test_strategy_gaps": [
+      "No rate limiting load tests",
+      "No circuit breaker chaos tests"
+    ]
+  },
+  "BC-006": {
+    "test_coverage": {
+      "unit": null,
+      "integration": null,
+      "e2e": null,
+      "source": "proxy",
+      "confidence": "LOW"
+    },
+    "automation_status": {
+      "regression": "none",
+      "smoke": "none",
+      "contract": "absent"
+    },
+    "testability": {
+      "rating": "good",
+      "findings_count": 0,
+      "top_issues": []
+    },
+    "defect_profile": {
+      "open_defects": null,
+      "flaky_tests": null,
+      "change_velocity": "low",
+      "source": "git-log"
+    },
+    "environments": {
+      "coverage": [
+        "dev"
+      ],
+      "missing": [
+        "staging",
+        "prod"
+      ],
+      "parity_issues": []
+    },
+    "test_strategy_gaps": [
+      "No anomaly detection accuracy tests",
+      "No false-positive rate benchmarks"
+    ]
+  }
+}
