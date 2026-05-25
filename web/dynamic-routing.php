@@ -24,14 +24,13 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         $action = $_POST['action'] ?? '';
 
         if ($action === 'create_gw' || $action === 'update_gw') {
-            $id   = $_POST['id'] ?? null;
             $gwid = trim($_POST['gwid'] ?? '');
             $type = intval($_POST['type'] ?? 0);
             $addr = trim($_POST['address'] ?? '');
             $strip= trim($_POST['strip'] ?? '');
             $pri  = trim($_POST['pri_prefix'] ?? '');
             $attrs= trim($_POST['attrs'] ?? '');
-            $probe= trim($_POST['probe_mode'] ?? 'none');
+            $probe= intval($_POST['probe_mode'] ?? 0);
             $desc = trim($_POST['description'] ?? '');
             $enabled = isset($_POST['enabled']) ? 1 : 0;
 
@@ -41,33 +40,34 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                 try {
                     if ($action === 'create_gw') {
                         $stmt = $pdo->prepare(
-                            'INSERT INTO dr_gateways (gwid, type, address, strip, pri_prefix, attrs, probe_mode, description, enabled)
-                             VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)'
+                            'INSERT INTO dr_gateways (type, address, strip, pri_prefix, attrs, probe_mode, description, enabled)
+                             VALUES (?, ?, ?, ?, ?, ?, ?, ?)'
                         );
-                        $stmt->execute([$gwid, $type, $addr, $strip, $pri, $attrs, $probe, $desc, $enabled]);
+                        $stmt->execute([$type, $addr, $strip, $pri, $attrs, $probe, $desc, $enabled]);
                         $success = _('Gateway created successfully.');
-                        logAuditEvent('DR_GW_CREATE', 'dynamic-routing', $gwid, true, ['address' => $addr]);
+                        logAuditEvent('DR_GW_CREATE', 'dynamic-routing', $addr, true);
                     } else {
+                        $oldGwid = $_POST['old_gwid'] ?? '';
                         $stmt = $pdo->prepare(
-                            'UPDATE dr_gateways SET gwid=?, type=?, address=?, strip=?, pri_prefix=?, attrs=?, probe_mode=?, description=?, enabled=? WHERE id=?'
+                            'UPDATE dr_gateways SET type=?, address=?, strip=?, pri_prefix=?, attrs=?, probe_mode=?, description=?, enabled=? WHERE gwid=?'
                         );
-                        $stmt->execute([$gwid, $type, $addr, $strip, $pri, $attrs, $probe, $desc, $enabled, $id]);
+                        $stmt->execute([$type, $addr, $strip, $pri, $attrs, $probe, $desc, $enabled, $oldGwid]);
                         $success = _('Gateway updated successfully.');
-                        logAuditEvent('DR_GW_UPDATE', 'dynamic-routing', $gwid, true);
+                        logAuditEvent('DR_GW_UPDATE', 'dynamic-routing', $addr, true);
                     }
                 } catch (PDOException $e) {
                     $error = _('Database error: ') . $e->getMessage();
                 }
             }
         } elseif ($action === 'delete_gw') {
-            $id = $_POST['id'] ?? '';
+            $gwid = $_POST['gwid'] ?? '';
             try {
-                $stmt = $pdo->prepare('SELECT gwid FROM dr_gateways WHERE id=?');
-                $stmt->execute([$id]);
+                $stmt = $pdo->prepare('SELECT gwid FROM dr_gateways WHERE gwid=?');
+                $stmt->execute([$gwid]);
                 $row = $stmt->fetch(PDO::FETCH_ASSOC);
                 if ($row) {
-                    $stmt = $pdo->prepare('DELETE FROM dr_gateways WHERE id=?');
-                    $stmt->execute([$id]);
+                    $stmt = $pdo->prepare('DELETE FROM dr_gateways WHERE gwid=?');
+                    $stmt->execute([$gwid]);
                     $success = _('Gateway deleted successfully.');
                     logAuditEvent('DR_GW_DELETE', 'dynamic-routing', $row['gwid'], true);
                 }
@@ -75,7 +75,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                 $error = _('Database error: ') . $e->getMessage();
             }
         } elseif ($action === 'create_rule' || $action === 'update_rule') {
-            $id  = $_POST['id'] ?? null;
+            $ruleid = $_POST['ruleid'] ?? null;
             $grp = intval($_POST['group_id'] ?? 0);
             $pri = intval($_POST['priority'] ?? 0);
             $prefix = trim($_POST['prefix'] ?? '');
@@ -92,7 +92,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                 try {
                     if ($action === 'create_rule') {
                         $stmt = $pdo->prepare(
-                            'INSERT INTO dr_rules (group_id, priority, prefix, timerec, routeid, gwlist, attrs, description, enabled)
+                            'INSERT INTO dr_rules (groupid, priority, prefix, timerec, routeid, gwlist, attrs, description, enabled)
                              VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)'
                         );
                         $stmt->execute([$grp, $pri, $prefix, $timet, $routeid, $gwlist, $attrs, $desc, $enabled]);
@@ -100,9 +100,9 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                         logAuditEvent('DR_RULE_CREATE', 'dynamic-routing', "grp=$grp prefix=$prefix", true);
                     } else {
                         $stmt = $pdo->prepare(
-                            'UPDATE dr_rules SET group_id=?, priority=?, prefix=?, timerec=?, routeid=?, gwlist=?, attrs=?, description=?, enabled=? WHERE id=?'
+                            'UPDATE dr_rules SET groupid=?, priority=?, prefix=?, timerec=?, routeid=?, gwlist=?, attrs=?, description=?, enabled=? WHERE ruleid=?'
                         );
-                        $stmt->execute([$grp, $pri, $prefix, $timet, $routeid, $gwlist, $attrs, $desc, $enabled, $id]);
+                        $stmt->execute([$grp, $pri, $prefix, $timet, $routeid, $gwlist, $attrs, $desc, $enabled, $ruleid]);
                         $success = _('Routing rule updated successfully.');
                         logAuditEvent('DR_RULE_UPDATE', 'dynamic-routing', "grp=$grp prefix=$prefix", true);
                     }
@@ -111,16 +111,16 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                 }
             }
         } elseif ($action === 'delete_rule') {
-            $id = $_POST['id'] ?? '';
+            $ruleid = $_POST['ruleid'] ?? '';
             try {
-                $stmt = $pdo->prepare('SELECT id FROM dr_rules WHERE id=?');
-                $stmt->execute([$id]);
+                $stmt = $pdo->prepare('SELECT ruleid FROM dr_rules WHERE ruleid=?');
+                $stmt->execute([$ruleid]);
                 $row = $stmt->fetch(PDO::FETCH_ASSOC);
                 if ($row) {
-                    $stmt = $pdo->prepare('DELETE FROM dr_rules WHERE id=?');
-                    $stmt->execute([$id]);
+                    $stmt = $pdo->prepare('DELETE FROM dr_rules WHERE ruleid=?');
+                    $stmt->execute([$ruleid]);
                     $success = _('Routing rule deleted successfully.');
-                    logAuditEvent('DR_RULE_DELETE', 'dynamic-routing', "id=$id", true);
+                    logAuditEvent('DR_RULE_DELETE', 'dynamic-routing', "id=$ruleid", true);
                 }
             } catch (PDOException $e) {
                 $error = _('Database error: ') . $e->getMessage();
@@ -144,19 +144,19 @@ $rulePage = max(1, intval($_GET['rule_page'] ?? 1));
 $countStmt = $pdo->query('SELECT COUNT(*) FROM dr_rules');
 $ruleTotal = $countStmt->fetchColumn();
 $rulePages = max(1, ceil($ruleTotal / $perPage));
-$stmt = $pdo->prepare('SELECT * FROM dr_rules ORDER BY enabled DESC, group_id, priority DESC LIMIT ? OFFSET ?');
+$stmt = $pdo->prepare('SELECT * FROM dr_rules ORDER BY enabled DESC, groupid, priority DESC LIMIT ? OFFSET ?');
 $stmt->execute([$perPage, ($rulePage - 1) * $perPage]);
 $rules = $stmt->fetchAll(PDO::FETCH_ASSOC);
 
 $editGw = null;
 if (isset($_GET['edit_gw'])) {
-    $stmt = $pdo->prepare('SELECT * FROM dr_gateways WHERE id=?');
+    $stmt = $pdo->prepare('SELECT * FROM dr_gateways WHERE gwid=?');
     $stmt->execute([$_GET['edit_gw']]);
     $editGw = $stmt->fetch(PDO::FETCH_ASSOC);
 }
 $editRule = null;
 if (isset($_GET['edit_rule'])) {
-    $stmt = $pdo->prepare('SELECT * FROM dr_rules WHERE id=?');
+    $stmt = $pdo->prepare('SELECT * FROM dr_rules WHERE ruleid=?');
     $stmt->execute([$_GET['edit_rule']]);
     $editRule = $stmt->fetch(PDO::FETCH_ASSOC);
 }
@@ -204,14 +204,14 @@ require_once __DIR__ . '/common/header.php';
                             <td><code><?php echo htmlspecialchars($g['address']); ?></code></td>
                             <td><?php echo htmlspecialchars($g['strip']); ?></td>
                             <td><?php echo htmlspecialchars($g['pri_prefix']); ?></td>
-                            <td><?php echo htmlspecialchars($g['probe_mode']); ?></td>
+                            <td><?php echo $g['probe_mode'] ? _('On') : _('Off'); ?></td>
                             <td><?php echo $g['enabled'] ? '<span class="tsisip-tag tsisip-tag--success">'._('Enabled').'</span>' : '<span class="tsisip-tag tsisip-tag--muted">'._('Disabled').'</span>'; ?></td>
                             <td>
-                                <a href="?edit_gw=<?php echo $g['id']; ?>" class="tsisip-btn tsisip-btn--sm"><?php echo _('Edit'); ?></a>
+                                <a href="?edit_gw=<?php echo $g['gwid']; ?>" class="tsisip-btn tsisip-btn--sm"><?php echo _('Edit'); ?></a>
                                 <form method="post" style="display:inline">
                                     <input type="hidden" name="csrf_token" value="<?php echo $csrfToken; ?>">
                                     <input type="hidden" name="action" value="delete_gw">
-                                    <input type="hidden" name="id" value="<?php echo $g['id']; ?>">
+                                    <input type="hidden" name="gwid" value="<?php echo $g['gwid']; ?>">
                                     <button type="submit" class="tsisip-btn tsisip-btn--danger tsisip-btn--sm"
                                             onclick="return confirm('<?php echo _('Delete this gateway?'); ?>')">
                                         <?php echo _('Delete'); ?>
@@ -231,11 +231,7 @@ require_once __DIR__ . '/common/header.php';
         <form method="post" class="tsisip-form">
             <input type="hidden" name="csrf_token" value="<?php echo $csrfToken; ?>">
             <input type="hidden" name="action" value="<?php echo $editGw ? 'update_gw' : 'create_gw'; ?>">
-            <?php if ($editGw): ?><input type="hidden" name="id" value="<?php echo $editGw['id']; ?>"><?php endif; ?>
-            <div class="tsisip-form-row">
-                <label class="tsisip-label"><?php echo _('Gateway ID'); ?></label>
-                <input type="text" name="gwid" required value="<?php echo $editGw ? htmlspecialchars($editGw['gwid']) : ''; ?>" class="tsisip-input">
-            </div>
+            <?php if ($editGw): ?><input type="hidden" name="old_gwid" value="<?php echo $editGw['gwid']; ?>"><?php endif; ?>
             <div class="tsisip-form-row">
                 <label class="tsisip-label"><?php echo _('Type'); ?></label>
                 <input type="number" name="type" value="<?php echo $editGw ? intval($editGw['type']) : '0'; ?>" class="tsisip-input">
@@ -259,9 +255,9 @@ require_once __DIR__ . '/common/header.php';
             <div class="tsisip-form-row">
                 <label class="tsisip-label"><?php echo _('Probe Mode'); ?></label>
                 <select name="probe_mode" class="tsisip-select">
-                    <option value="none" <?php echo !$editGw || $editGw['probe_mode'] === 'none' ? 'selected' : ''; ?>><?php echo _('None'); ?></option>
-                    <option value="on" <?php echo $editGw && $editGw['probe_mode'] === 'on' ? 'selected' : ''; ?>><?php echo _('On'); ?></option>
-                    <option value="passive" <?php echo $editGw && $editGw['probe_mode'] === 'passive' ? 'selected' : ''; ?>><?php echo _('Passive'); ?></option>
+                    <option value="0" <?php echo !$editGw || $editGw['probe_mode'] == 0 ? 'selected' : ''; ?>><?php echo _('None'); ?></option>
+                    <option value="1" <?php echo $editGw && $editGw['probe_mode'] == 1 ? 'selected' : ''; ?>><?php echo _('On'); ?></option>
+                    <option value="2" <?php echo $editGw && $editGw['probe_mode'] == 2 ? 'selected' : ''; ?>><?php echo _('Passive'); ?></option>
                 </select>
             </div>
             <div class="tsisip-form-row">
@@ -284,6 +280,7 @@ require_once __DIR__ . '/common/header.php';
         <table class="tsisip-table">
             <thead>
                 <tr>
+                    <th><?php echo _('Rule ID'); ?></th>
                     <th><?php echo _('Group'); ?></th>
                     <th><?php echo _('Priority'); ?></th>
                     <th><?php echo _('Prefix'); ?></th>
@@ -296,11 +293,12 @@ require_once __DIR__ . '/common/header.php';
             </thead>
             <tbody>
                 <?php if (empty($rules)): ?>
-                    <tr><td colspan="8" class="tsisip-empty"><?php echo _('No routing rules found.'); ?></td></tr>
+                    <tr><td colspan="9" class="tsisip-empty"><?php echo _('No routing rules found.'); ?></td></tr>
                 <?php else: ?>
                     <?php foreach ($rules as $r): ?>
                         <tr>
-                            <td><?php echo $r['group_id']; ?></td>
+                            <td><?php echo $r['ruleid']; ?></td>
+                            <td><?php echo htmlspecialchars($r['groupid']); ?></td>
                             <td><?php echo $r['priority']; ?></td>
                             <td><code><?php echo htmlspecialchars($r['prefix']); ?></code></td>
                             <td><?php echo htmlspecialchars($r['timerec']); ?></td>
@@ -308,11 +306,11 @@ require_once __DIR__ . '/common/header.php';
                             <td><code class="tsisip-code--sm"><?php echo htmlspecialchars(substr($r['gwlist'], 0, 40)); ?></code></td>
                             <td><?php echo $r['enabled'] ? '<span class="tsisip-tag tsisip-tag--success">'._('Enabled').'</span>' : '<span class="tsisip-tag tsisip-tag--muted">'._('Disabled').'</span>'; ?></td>
                             <td>
-                                <a href="?edit_rule=<?php echo $r['id']; ?>" class="tsisip-btn tsisip-btn--sm"><?php echo _('Edit'); ?></a>
+                                <a href="?edit_rule=<?php echo $r['ruleid']; ?>" class="tsisip-btn tsisip-btn--sm"><?php echo _('Edit'); ?></a>
                                 <form method="post" style="display:inline">
                                     <input type="hidden" name="csrf_token" value="<?php echo $csrfToken; ?>">
                                     <input type="hidden" name="action" value="delete_rule">
-                                    <input type="hidden" name="id" value="<?php echo $r['id']; ?>">
+                                    <input type="hidden" name="ruleid" value="<?php echo $r['ruleid']; ?>">
                                     <button type="submit" class="tsisip-btn tsisip-btn--danger tsisip-btn--sm"
                                             onclick="return confirm('<?php echo _('Delete this rule?'); ?>')">
                                         <?php echo _('Delete'); ?>
@@ -332,10 +330,10 @@ require_once __DIR__ . '/common/header.php';
         <form method="post" class="tsisip-form">
             <input type="hidden" name="csrf_token" value="<?php echo $csrfToken; ?>">
             <input type="hidden" name="action" value="<?php echo $editRule ? 'update_rule' : 'create_rule'; ?>">
-            <?php if ($editRule): ?><input type="hidden" name="id" value="<?php echo $editRule['id']; ?>"><?php endif; ?>
+            <?php if ($editRule): ?><input type="hidden" name="ruleid" value="<?php echo $editRule['ruleid']; ?>"><?php endif; ?>
             <div class="tsisip-form-row">
                 <label class="tsisip-label"><?php echo _('Group ID'); ?></label>
-                <input type="number" name="group_id" value="<?php echo $editRule ? intval($editRule['group_id']) : '0'; ?>" class="tsisip-input">
+                <input type="number" name="group_id" value="<?php echo $editRule ? intval($editRule['groupid']) : '0'; ?>" class="tsisip-input">
             </div>
             <div class="tsisip-form-row">
                 <label class="tsisip-label"><?php echo _('Priority'); ?></label>
