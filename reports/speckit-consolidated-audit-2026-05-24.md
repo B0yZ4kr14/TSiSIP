@@ -207,8 +207,8 @@ Three durable lessons captured:
 | docker compose config valid | ✅ | Local validation passed |
 | No secrets in diff | ✅ | Feature 024 audit passed |
 | Zero HIGH/MEDIUM brownfield post-fix | ✅ | Feature 024 evidence |
-| HEALTHCHECK coverage | ⚠️ | 13/15 services (86.7%) |
-| Hard-coded IP remediation | ⚠️ | 1 test file still has 13 instances |
+| HEALTHCHECK coverage | ✅ | 15/15 services (100%) |
+| Hard-coded IP remediation | ✅ | 0 test files with hard-coded IPs |
 
 ---
 
