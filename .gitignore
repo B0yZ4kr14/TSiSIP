@@ -84,3 +84,5 @@ docs/memory/INDEX.md.lock
 .agent/
 .copilot/
 
+deploy/nginx/ssl/*.key
+deploy/nginx/ssl/*-selfsigned.*
