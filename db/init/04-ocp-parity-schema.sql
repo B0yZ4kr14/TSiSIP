@@ -357,44 +357,11 @@ ALTER TABLE smpp ADD COLUMN IF NOT EXISTS src_addr VARCHAR(64) DEFAULT NULL;
 -- Schema corrections for PHP stub compatibility
 -- ============================================================================
 
--- dr_gateways: add separate id column, change gwid to VARCHAR
--- Note: This is idempotent only on fresh installs. For existing data, manual migration required.
-DO $$
-BEGIN
-    -- If gwid is SERIAL (existing install), we need to handle carefully
-    IF EXISTS (SELECT 1 FROM information_schema.columns 
-               WHERE table_name='dr_gateways' AND column_name='gwid' 
-               AND data_type='integer' AND column_default LIKE 'nextval%') THEN
-        -- Rename old gwid to old_gwid, add new id and gwid
-        ALTER TABLE dr_gateways RENAME COLUMN gwid TO old_gwid;
-        ALTER TABLE dr_gateways ADD COLUMN id SERIAL PRIMARY KEY;
-        ALTER TABLE dr_gateways ADD COLUMN gwid VARCHAR(64) NOT NULL DEFAULT '';
-        UPDATE dr_gateways SET gwid = 'gw' || old_gwid::text;
-        ALTER TABLE dr_gateways DROP COLUMN old_gwid;
-        ALTER TABLE dr_gateways ADD CONSTRAINT dr_gateways_gwid_unique UNIQUE (gwid);
-    END IF;
-END $$;
-
--- Add enabled to dr_gateways if missing
+-- Add enabled to dr_gateways if missing (PHP stub compatibility)
 ALTER TABLE dr_gateways ADD COLUMN IF NOT EXISTS enabled INTEGER NOT NULL DEFAULT 1;
 
--- Add enabled to dr_rules if missing  
+-- Add enabled to dr_rules if missing (PHP stub compatibility)
 ALTER TABLE dr_rules ADD COLUMN IF NOT EXISTS enabled INTEGER NOT NULL DEFAULT 1;
-
--- Add id to dr_rules if missing (some schemas use ruleid as PK only)
-ALTER TABLE dr_rules ADD COLUMN IF NOT EXISTS id SERIAL;
--- Ensure id is PK if ruleid is not suitable for PHP ORM-style access
-DO $$
-BEGIN
-    IF EXISTS (SELECT 1 FROM information_schema.columns 
-               WHERE table_name='dr_rules' AND column_name='id') THEN
-        -- Only if there's no existing PK on id
-        IF NOT EXISTS (SELECT 1 FROM pg_constraint 
-                       WHERE conrelid='dr_rules'::regclass AND conname LIKE '%id%') THEN
-            ALTER TABLE dr_rules ADD PRIMARY KEY (id);
-        END IF;
-    END IF;
-END $$;
 
 -- ============================================================================
 -- End of corrections
