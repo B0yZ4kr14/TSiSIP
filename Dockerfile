@@ -29,10 +29,12 @@ ENV DEBIAN_FRONTEND=noninteractive
 
 RUN apt-get update \
  && apt-get upgrade -y --no-install-recommends \
- && apt-get install -y --no-install-recommends ca-certificates gettext-base libpq5 libssl3 libmicrohttpd12 libpcre2-8-0 netcat-openbsd procps \
+ && apt-get install -y --no-install-recommends ca-certificates gettext-base libpq5 libssl3 libmicrohttpd12 libpcre2-8-0 netcat-openbsd procps curl \
  && rm -rf /var/lib/apt/lists/*
 
 COPY --from=builder /usr/local/sbin/ /usr/local/sbin/
+COPY docker/opensipsctl /usr/local/sbin/opensipsctl
+RUN chmod +x /usr/local/sbin/opensipsctl
 COPY --from=builder /usr/local/lib64/opensips /usr/local/lib64/opensips
 COPY --from=builder /usr/local/etc/opensips /usr/local/etc/opensips
 COPY --from=builder /usr/local/share/opensips /usr/local/share/opensips
