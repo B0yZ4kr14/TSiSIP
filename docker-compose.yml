@@ -101,11 +101,7 @@ services:
     - --port-max=10050
     - --log-stderr
     - --foreground
-    # DTLS certs (cert format issue)
-    # - --dtls-cert-file=/certs/live/server.crt
-    # - --dtls-key-file=/certs/live/server.key
-    # - --dtls-passive
-    # - --srtp-ciphers=AES_GCM_256:AES_256_CM_HMAC_SHA1_80
+    - --dtls-passive
     secrets:
     - server.crt
     - server.key
