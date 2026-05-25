@@ -47,7 +47,7 @@
 | 024 | brownfield-remediation | ✅ | ✅ | ✅ | ✅ |
 
 **Findings:**
-- **F1.1**: Spec 014 is missing from the sequence (gap between 013 and 015).
+- **F1.1**: Spec 014 was intentionally renumbered → 015, 016, 017 (TLS rotation, OCP audit log, SIP trunk integration). Verified via git log: commit 9063808 "refactor(specs): renumber colliding 014 features → 015/016/017".
 - **F1.2**: Early specs 001–007 and several later ones (011, 013, 015–018, 021) lack blueprints. These may predate the blueprint requirement or need backfill.
 
 ---
@@ -178,7 +178,7 @@ Three durable lessons captured:
 | R1 | Add HEALTHCHECK to docker/prometheus/Dockerfile | devops-engineer |
 | R2 | Add HEALTHCHECK to docker/tailscale-cert/Dockerfile | devops-engineer |
 | R3 | Parameterize test IPs in test_sip_trunk_health_probe.py | qa-engineer |
-| R4 | Investigate spec 014 gap (deleted? merged? renumber?) | scribe |
+| R4 | ~~Investigate spec 014 gap~~ ✅ Resolved: renumbered to 015/016/017 | scribe |
 
 ### Medium Priority
 
