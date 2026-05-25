@@ -32,7 +32,7 @@ RUN apt-get update \
  && apt-get install -y --no-install-recommends ca-certificates gettext-base libpq5 libssl3 libmicrohttpd12 libpcre2-8-0 netcat-openbsd procps \
  && rm -rf /var/lib/apt/lists/*
 
-COPY --from=builder /usr/local/sbin/opensips /usr/local/sbin/opensips
+COPY --from=builder /usr/local/sbin/ /usr/local/sbin/
 COPY --from=builder /usr/local/lib64/opensips /usr/local/lib64/opensips
 COPY --from=builder /usr/local/etc/opensips /usr/local/etc/opensips
 COPY --from=builder /usr/local/share/opensips /usr/local/share/opensips

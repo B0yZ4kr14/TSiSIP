@@ -34,8 +34,8 @@ class TestWebRTCSupport:
         """Docker Compose exposes WebSocket ports."""
         with open("docker-compose.yml") as f:
             compose = f.read()
-        assert '"8080:8080/tcp"' in compose
-        assert '"4443:4443/tcp"' in compose
+        assert '8080:8080/tcp' in compose
+        assert '4443:4443/tcp' in compose
 
     def test_rtpengine_ice_support(self):
         """RTPengine config includes ICE-related flags for WebRTC."""
