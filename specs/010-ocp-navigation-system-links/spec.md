@@ -5,7 +5,7 @@
 **Feature**: OCP Navigation System Links  
 **Short name**: ocp-navigation-system-links  
 **Created**: 2026-05-19  
-**Status**: Implemented
+**Status**: Completed
 
 ### Context
 

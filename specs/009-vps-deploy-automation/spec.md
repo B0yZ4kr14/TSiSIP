@@ -5,7 +5,7 @@
 **Feature**: VPS Deploy Automation Pipeline
 **Short name**: vps-deploy-automation
 **Created**: 2026-05-19
-**Status**: Implemented — Deploy Pipeline Operational with Known Limitations
+**Status**: Completed
 
 ### Context
 
