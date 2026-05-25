@@ -7,7 +7,7 @@
 | **Feature** | SIP-Layer Rate Limiting and DDoS Protection |
 | **Short name** | rate-limiting-ddos-protection |
 | **Created** | 2026-05-16 |
-| **Status** | In Progress (50% — pike/anomaly done; auth limits, ban lists, global throttle pending) |
+| **Status** | Completed |
 | **Last Updated** | 2026-05-19 |
 | **Context** | The TSiSIP SIP edge service is the public SIP signaling endpoint on 5060/udp and 5060/tcp. It uses OpenSIPS 3.6 LTS internally and is exposed to internet-originated SIP flooding, brute-force registration attempts, and toll fraud scan campaigns once upstream ACLs permit public SIP traffic. |
 | **Objective** | Protect the TSiSIP stack from SIP-layer abuse by implementing per-source IP throttling, subscriber auth rate limits, dispatcher failover under load, dynamic ban lists with expiration, and traffic anomaly detection. |
