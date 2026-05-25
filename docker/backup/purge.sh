@@ -48,5 +48,16 @@ done < <(find "$WAL_DIR" -name '*.gz*' -type f 2>/dev/null)
 # Clean empty directories
 find "$WAL_DIR" -type d -empty -delete 2>/dev/null || true
 
+# Purge old OCP audit log entries
+OCP_AUDIT_RETENTION_DAYS="${OCP_AUDIT_RETENTION_DAYS:-90}"
+if command -v psql >/dev/null 2>&1 && [ -n "${PGHOST:-}" ] && [ -n "${PGDATABASE:-}" ] && [ -n "${PGUSER:-}" ]; then
+    log "Purging OCP audit logs older than ${OCP_AUDIT_RETENTION_DAYS} days..."
+    AUDIT_DELETED=$(psql -h "$PGHOST" -d "$PGDATABASE" -U "$PGUSER" -t -c \
+        "SELECT ocp_audit_log_retention_purge(${OCP_AUDIT_RETENTION_DAYS});" 2>/dev/null || echo "0")
+    log "Audit log purge completed - Rows deleted: $(echo "$AUDIT_DELETED" | tr -d ' ')"
+else
+    log "Skipping audit log purge: PostgreSQL connection unavailable"
+fi
+
 log "Purge completed - Backups deleted: $BACKUP_DELETED, WAL deleted: $WAL_DELETED"
 exit 0

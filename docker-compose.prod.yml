@@ -549,6 +549,7 @@ services:
       PGDATABASE: opensips
       PGUSER: opensips
       PGPASSWORD_FILE: /run/secrets/db_password
+      OCP_AUDIT_RETENTION_DAYS: ${OCP_AUDIT_RETENTION_DAYS:-90}
       ENCRYPTION_KEY_FILE: /run/secrets/backup_encryption_key
       RCLONE_S3_PROVIDER: ${RCLONE_S3_PROVIDER:-}
       RCLONE_S3_REGION: ${RCLONE_S3_REGION:-us-east-1}

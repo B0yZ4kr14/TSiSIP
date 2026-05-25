@@ -386,6 +386,7 @@ services:
       PGUSER: opensips
       PGDATABASE: opensips
       PGPASSWORD_FILE: /run/secrets/db_password
+      OCP_AUDIT_RETENTION_DAYS: ${OCP_AUDIT_RETENTION_DAYS:-90}
       BACKUP_DIR: /backup/daily
       WAL_DIR: /backup/wal
       BACKUP_RETENTION_DAYS: "30"
