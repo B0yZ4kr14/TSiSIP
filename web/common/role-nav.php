@@ -1,61 +1,88 @@
 <?php
 /**
  * TSiSIP Control Panel — Role-Based Navigation Sidebar
- * Separated into: Dashboard, Monitoring, Configuration, System, Operations, Documentation, Account
+ * Full OCP v9.3.6 parity: 32 modules across 6 groups
  */
 
 $currentPage = basename($_SERVER['PHP_SELF'], '.php');
 $currentWikiPage = isset($_GET['page']) ? $_GET['page'] : '';
 
-// ---------------------------------------------------------------
-// 1. MONITORING (read-only dashboards)
-// ---------------------------------------------------------------
-$monitoringPages = [];
-if ($userRole === 'admin' || $userRole === 'devops') {
-    $monitoringPages = [
-        'statistics'      => _('Statistics'),
-        'dialog'          => _('Active Dialogs'),
-        'trunk-status'    => _('Trunk Status'),
-        'cdr-viewer'      => _('CDR Viewer'),
-        'audit-log'       => _('Audit Log'),
-    ];
-}
+// Role hierarchy for access checks
+$isAdmin   = ($userRole === 'admin');
+$isDevOps  = ($userRole === 'devops');
+$isDentist = ($userRole === 'dentist');
+$isAssist  = ($userRole === 'assistant');
+$isUser    = ($userRole === 'user');
+$isReadOnly = ($userRole === 'readonly');
 
-// ---------------------------------------------------------------
-// 2. CONFIGURATION (CRUD on OpenSIPS tables)
-// ---------------------------------------------------------------
-$configPages = [];
-if ($userRole === 'admin' || $userRole === 'devops') {
-    $configPages = [
-        'subscribers'     => _('Subscribers'),
-        'tenants'         => _('Tenants'),
-        'domains'         => _('Domains'),
-        'dialplan'        => _('Dialplan'),
-        'dispatcher'      => _('Dispatcher Targets'),
-        'trunk-providers' => _('Trunk Providers'),
-        'trunk-dids'      => _('DID Mappings'),
-        'header-routing'  => _('Header Routing'),
-        'userblacklist'   => _('User Blacklist'),
-        'address'         => _('IP Whitelist'),
-    ];
-}
+// -------------------------------------------------------------
+// 1. SIP USERS (subscriber management)
+// -------------------------------------------------------------
+$sipUserPages = [
+    'subscribers' => _('Subscribers'),
+    'aliases'     => _('Aliases'),
+    'groups'      => _('Groups'),
+];
+// Role filter: readonly sees list only (handled in each module)
+$sipUserVisible = ($isAdmin || $isDevOps || $isDentist || $isAssist || $isUser || $isReadOnly);
 
-// ---------------------------------------------------------------
-// 3. SYSTEM (runtime control, certs, MI)
-// ---------------------------------------------------------------
-$systemPages = [];
-if ($userRole === 'admin' || $userRole === 'devops') {
-    $systemPages = [
-        'rtpengine'       => _('RTPengine Sessions'),
-        'mi-commands'     => _('MI Commands'),
-        'tls-management'  => _('TLS Certificates'),
-        'users'           => _('OCP Users'),
-    ];
-}
+// -------------------------------------------------------------
+// 2. SYSTEM (OpenSIPS provisioning & monitoring)
+// -------------------------------------------------------------
+$systemPages = [
+    'dashboard'         => _('Dashboard'),
+    'addresses'         => _('Addresses'),
+    'call-center'       => _('Call Center'),
+    'cdr-viewer'        => _('CDR Viewer'),
+    'clusterer'         => _('Clusterer'),
+    'config-table'      => _('Config Table'),
+    'dialog'            => _('Active Dialogs'),
+    'dialplan'          => _('Dialplan'),
+    'dispatcher'        => _('Dispatcher'),
+    'domains'           => _('Domains'),
+    'dynamic-routing'   => _('Dynamic Routing'),
+    'keepalived'        => _('Keepalived'),
+    'load-balancer'     => _('Load Balancer'),
+    'mi-commands'       => _('MI Commands'),
+    'monit'             => _('Monit'),
+    'rtpengine'         => _('RTPEngine'),
+    'rtpproxy'          => _('RTPProxy'),
+    'siptrace'          => _('SIPtrace'),
+    'smpp-gateway'      => _('SMPP Gateway'),
+    'sockets-management'=> _('Sockets Management'),
+    'tviewer'           => _('TViewer'),
+    'statistics'        => _('Statistics'),
+    'status-report'     => _('Status Report'),
+    'tls-management'    => _('TLS Certificates'),
+    'uac-registrant'    => _('UAC Registrant'),
+];
+// MI Commands restricted to devops/admin
+$systemVisible = ($isAdmin || $isDevOps || $isDentist || $isAssist || $isUser || $isReadOnly);
 
-// ---------------------------------------------------------------
-// 4. WIKI / DOCUMENTATION (role-scoped)
-// ---------------------------------------------------------------
+// -------------------------------------------------------------
+// 3. TRUNKING (TSiSIP-specific)
+// -------------------------------------------------------------
+$trunkPages = [
+    'trunk-providers' => _('Trunk Providers'),
+    'trunk-dids'      => _('DID Mappings'),
+    'trunk-status'    => _('Trunk Status'),
+];
+$trunkVisible = ($isAdmin || $isDevOps || $isDentist || $isAssist);
+
+// -------------------------------------------------------------
+// 4. ADMINISTRATION (tenants, routing, users, audit, wiki)
+// -------------------------------------------------------------
+$adminPages = [
+    'tenants'        => _('Tenants'),
+    'header-routing' => _('Header Routing'),
+    'users'          => _('Admin Users'),
+    'audit-log'      => _('Audit Log'),
+];
+$adminVisible = ($isAdmin || $isDevOps);
+
+// -------------------------------------------------------------
+// 5. WIKI / DOCUMENTATION (role-scoped)
+// -------------------------------------------------------------
 $roleNav = [
     'admin'     => ['system-overview', 'administrators', 'devops-sip', 'runbooks-troubleshooting', 'security-compliance', 'developers'],
     'devops'    => ['system-overview', 'devops-sip', 'runbooks-troubleshooting', 'security-compliance'],
@@ -82,32 +109,17 @@ $allowedPages = isset($roleNav[$userRole]) ? $roleNav[$userRole] : $roleNav['rea
 <nav id="sidebar" class="tsisip-sidebar" aria-label="<?php echo _('Main navigation'); ?>">
     <ul class="tsisip-nav-list" role="menubar">
 
-        <!-- Dashboard -->
+        <!-- Dashboard (always visible) -->
         <li class="tsisip-nav-item<?php echo $currentPage === 'dashboard' ? ' is-active' : ''; ?>" role="none">
             <a href="dashboard.php" class="tsisip-nav-link" role="menuitem"><?php echo _('Dashboard'); ?></a>
         </li>
 
-        <!-- Monitoring -->
-        <?php if (!empty($monitoringPages)): ?>
+        <!-- SIP Users -->
+        <?php if ($sipUserVisible && !empty($sipUserPages)): ?>
             <li class="tsisip-nav-heading" role="none">
-                <span class="tsisip-nav-heading-text"><?php echo _('Monitoring'); ?></span>
+                <span class="tsisip-nav-heading-text"><?php echo _('SIP Users'); ?></span>
             </li>
-            <?php foreach ($monitoringPages as $page => $label): ?>
-                <li class="tsisip-nav-item<?php echo $currentPage === $page ? ' is-active' : ''; ?>" role="none">
-                    <a href="<?php echo htmlspecialchars($page, ENT_QUOTES, 'UTF-8'); ?>.php"
-                       class="tsisip-nav-link" role="menuitem">
-                        <?php echo htmlspecialchars($label, ENT_QUOTES, 'UTF-8'); ?>
-                    </a>
-                </li>
-            <?php endforeach; ?>
-        <?php endif; ?>
-
-        <!-- Configuration -->
-        <?php if (!empty($configPages)): ?>
-            <li class="tsisip-nav-heading" role="none">
-                <span class="tsisip-nav-heading-text"><?php echo _('Configuration'); ?></span>
-            </li>
-            <?php foreach ($configPages as $page => $label): ?>
+            <?php foreach ($sipUserPages as $page => $label): ?>
                 <li class="tsisip-nav-item<?php echo $currentPage === $page ? ' is-active' : ''; ?>" role="none">
                     <a href="<?php echo htmlspecialchars($page, ENT_QUOTES, 'UTF-8'); ?>.php"
                        class="tsisip-nav-link" role="menuitem">
@@ -118,11 +130,45 @@ $allowedPages = isset($roleNav[$userRole]) ? $roleNav[$userRole] : $roleNav['rea
         <?php endif; ?>
 
         <!-- System -->
-        <?php if (!empty($systemPages)): ?>
+        <?php if ($systemVisible && !empty($systemPages)): ?>
             <li class="tsisip-nav-heading" role="none">
                 <span class="tsisip-nav-heading-text"><?php echo _('System'); ?></span>
             </li>
             <?php foreach ($systemPages as $page => $label): ?>
+                <?php
+                // MI Commands restricted
+                if ($page === 'mi-commands' && !($isAdmin || $isDevOps)) continue;
+                ?>
+                <li class="tsisip-nav-item<?php echo $currentPage === $page ? ' is-active' : ''; ?>" role="none">
+                    <a href="<?php echo htmlspecialchars($page, ENT_QUOTES, 'UTF-8'); ?>.php"
+                       class="tsisip-nav-link" role="menuitem">
+                        <?php echo htmlspecialchars($label, ENT_QUOTES, 'UTF-8'); ?>
+                    </a>
+                </li>
+            <?php endforeach; ?>
+        <?php endif; ?>
+
+        <!-- Trunking -->
+        <?php if ($trunkVisible && !empty($trunkPages)): ?>
+            <li class="tsisip-nav-heading" role="none">
+                <span class="tsisip-nav-heading-text"><?php echo _('Trunking'); ?></span>
+            </li>
+            <?php foreach ($trunkPages as $page => $label): ?>
+                <li class="tsisip-nav-item<?php echo $currentPage === $page ? ' is-active' : ''; ?>" role="none">
+                    <a href="<?php echo htmlspecialchars($page, ENT_QUOTES, 'UTF-8'); ?>.php"
+                       class="tsisip-nav-link" role="menuitem">
+                        <?php echo htmlspecialchars($label, ENT_QUOTES, 'UTF-8'); ?>
+                    </a>
+                </li>
+            <?php endforeach; ?>
+        <?php endif; ?>
+
+        <!-- Administration -->
+        <?php if ($adminVisible && !empty($adminPages)): ?>
+            <li class="tsisip-nav-heading" role="none">
+                <span class="tsisip-nav-heading-text"><?php echo _('Administration'); ?></span>
+            </li>
+            <?php foreach ($adminPages as $page => $label): ?>
                 <li class="tsisip-nav-item<?php echo $currentPage === $page ? ' is-active' : ''; ?>" role="none">
                     <a href="<?php echo htmlspecialchars($page, ENT_QUOTES, 'UTF-8'); ?>.php"
                        class="tsisip-nav-link" role="menuitem">
