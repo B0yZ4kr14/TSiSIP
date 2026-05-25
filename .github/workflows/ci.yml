@@ -50,7 +50,7 @@ jobs:
           grep -q 'loadmodule "proto_wss.so"' /tmp/test.cfg || (echo "proto_wss module missing"; exit 1)
           grep -q 'loadmodule "acc.so"' /tmp/test.cfg || (echo "acc module missing"; exit 1)
           grep -q 'header_routing_rules' /tmp/test.cfg || (echo "Feature 002 routing missing"; exit 1)
-          grep -q 'setflag(1)' /tmp/test.cfg || (echo "CDR flag missing"; exit 1)
+          grep -q 'do_accounting("db", "cdr")' /tmp/test.cfg || (echo "CDR accounting missing"; exit 1)
           echo "OpenSIPS config structure valid"
 
       - name: Validate Nginx config
