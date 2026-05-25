@@ -200,10 +200,10 @@ TSiSIP/
 │   │   └── entrypoint.sh
 │   ├── grafana/
 │   │   └── Dockerfile
-│   ├── opensips-exporter/
+│   ├── opensips_exporter/
 │   │   ├── Dockerfile
 │   │   └── exporter.py
-│   ├── anomaly-detector/
+│   ├── anomaly_detector/
 │   │   ├── Dockerfile
 │   │   ├── detector.py
 │   │   └── baseline.py
@@ -227,16 +227,16 @@ TSiSIP/
 │   │   ├── ca-init.sh
 │   │   ├── cert-gen.sh
 │   │   └── cert-rotate.sh
-│   ├── admin-api/
+│   ├── admin_api/
 │   │   └── Dockerfile                  # Admin API proxy container
 │   ├── certbot/
 │   │   ├── Dockerfile
 │   │   ├── deploy-hook.sh
 │   │   └── healthcheck.sh
-│   ├── certbot-exporter/
+│   ├── certbot_exporter/
 │   │   ├── Dockerfile
 │   │   └── exporter.py
-│   ├── tailscale-cert/
+│   ├── tailscale_cert/
 │   │   └── Dockerfile
 │   └── healthcheck/                    # Shared healthcheck scripts
 ├── db/init/                            # PostgreSQL initialization scripts
@@ -805,7 +805,7 @@ GitHub Actions `.github/workflows/ci.yml` runs:
 1. `validate` — Docker Compose syntax, OpenSIPS config structure, committed-secrets scan, Ansible syntax-check, Nginx config validation
 2. `build-opensips` — Docker image build
 3. `build-ocp` — OCP image build + smoke test
-4. `build-supporting` — Matrix build of Prometheus, Grafana, exporter, backup, CA-tool, anomaly-detector
+4. `build-supporting` — Matrix build of Prometheus, Grafana, exporter, backup, CA-tool, anomaly_detector
 5. `test-integration` — Stack startup, health checks, config validation, pytest suite
 6. `speckit-scan` — Brownfield + version-guard + memorylint
 7. `security-scan` — Trivy vulnerability scanner
@@ -964,7 +964,7 @@ Last scan: 2026-05-20. Reports: `reports/brownfield-scan-2026-05-20.md`, `report
 | B12 | LOW | Rephrased "sanity check" to "validation check" in comment | `evidence/remediation/ciclo-5/` |
 | B13 | LOW | Removed `latest` fallback from production compose files; `.env.example` now documents pinning | `evidence/remediation/ciclo-5/` |
 | B14 | MEDIUM | Fixed residual `ALLOW_UNENCRYPTED_BACKUPS` reference in `docker/backup/backup.sh` (Feature 013) | `evidence/remediation/feature-013/` |
-| B15 | MEDIUM | Added healthchecks to `backup` and `anomaly-detector` services across all compose profiles | `evidence/remediation/feature-013/` |
+| B15 | MEDIUM | Added healthchecks to `backup` and `anomaly_detector` services across all compose profiles | `evidence/remediation/feature-013/` |
 | B16 | LOW | Documented CI `:latest` tag policy in deploy workflow; tagged releases preferred | `evidence/remediation/feature-013/` |
 
 > **16/16 findings addressed**. Zero outstanding brownfield items.
@@ -1068,7 +1068,7 @@ All OCP tools follow the same security baseline:
 ## Recent Changes
 
 - 2026-05-24 — Feature 020: OCP Critical Tool Gap Closure — Added 6 admin tools (Dialog, MI Commands, Statistics, Dialplan, Domains, TLS Management), MI HTTP integration, i18n for 16 modules, security headers, session hardening
-- 2026-05-24 — Feature 023: Subscriber CRUD Refactor — ARCH-PRE-001 resolved (subscriber mutations routed through admin-api microservice)
+- 2026-05-24 — Feature 023: Subscriber CRUD Refactor — ARCH-PRE-001 resolved (subscriber mutations routed through admin_api microservice)
 - 2026-05-24 — OpenSIPS canon-drift remediation — reply route renamed to REPLY_MANAGE, failure route renamed to FAILURE_MANAGE, ICE=remove added to all rtpengine_offer() calls, persistent_state=1 added to dispatcher
 - 2026-05-24 — CI scan passes — test resilience improved, audit accuracy fixed
 - 2026-05-19 — Production deploy to VPS tsiapp.io — full stack operational
