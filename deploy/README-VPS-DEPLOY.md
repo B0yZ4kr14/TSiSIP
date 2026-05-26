@@ -165,6 +165,37 @@ docker run --rm --network tsisip_metrics_host alpine wget -qO- http://backup:910
 # Via Nginx: https://tsiapp.io/TSiSIP/
 ```
 
+### Backup Offsite (rclone/S3)
+
+Para habilitar replicação offsite, configure o `.env` com as credenciais S3:
+
+```bash
+RCLONE_S3_ENDPOINT=https://s3.tsiapp.io
+RCLONE_S3_PROVIDER=AWS
+RCLONE_S3_REGION=us-east-1
+RCLONE_BW_LIMIT=10M
+```
+
+Coloque as credenciais em `secrets/` (nunca commitar):
+
+```bash
+echo "SEU_ACCESS_KEY" > secrets/rclone_s3_access_key
+echo "SEU_SECRET_KEY" > secrets/rclone_s3_secret_key
+```
+
+Reinicie o container backup para aplicar:
+
+```bash
+docker compose -f docker-compose.vps.yml up -d backup
+```
+
+Verifique a conectividade:
+
+```bash
+docker compose -f docker-compose.vps.yml exec backup \
+  rclone ls --config /etc/rclone/rclone.conf remote:tsisip-backups
+```
+
 ## Troubleshooting
 
 | Sintoma | Causa provável | Solução |
