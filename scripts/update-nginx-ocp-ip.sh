@@ -31,6 +31,12 @@ CONFIGURED_WS_IP=$(grep -ohP 'proxy_pass\s+http://\K172\.18\.0\.[0-9]+' "${NGINX
 OPENSIPS_IP=$(docker inspect "${OPENSIPS_CONTAINER}" \
     --format "{{range \$k, \$v := .NetworkSettings.Networks}}{{if eq \$k \"${OPENSIPS_NETWORK}\"}}{{\$v.IPAddress}}{{end}}{{end}}" 2>/dev/null || true)
 
+# Docker 29.x may return the literal string "invalid IP" when the address
+# is not yet assigned (e.g. container just started). Treat it as empty.
+if [ "${OPENSIPS_IP}" = "invalid IP" ]; then
+    OPENSIPS_IP=""
+fi
+
 if [ -z "${OPENSIPS_IP}" ]; then
     echo "WARNING: Could not resolve IP for ${OPENSIPS_CONTAINER} on ${OPENSIPS_NETWORK}" >&2
     # Continue anyway — OCP IP update is the critical path
