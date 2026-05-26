@@ -9,7 +9,10 @@ define('DB_NAME', getenv('DB_NAME') ?: 'opensips');
 define('DB_USER', getenv('DB_USER') ?: 'opensips');
 
 function getDbPassword(): string {
-    $secretPath = '/run/secrets/db_password';
+    $secretPath = '/tmp/db_password';
+    if (!file_exists($secretPath)) {
+        $secretPath = '/run/secrets/db_password';
+    }
     if (file_exists($secretPath)) {
         return trim(file_get_contents($secretPath));
     }
@@ -17,7 +20,10 @@ function getDbPassword(): string {
 }
 
 function getServiceSecret(): string {
-    $secretPath = '/run/secrets/proxy_api_secret';
+    $secretPath = '/tmp/proxy_api_secret';
+    if (!file_exists($secretPath)) {
+        $secretPath = '/run/secrets/proxy_api_secret';
+    }
     if (file_exists($secretPath)) {
         return trim(file_get_contents($secretPath));
     }

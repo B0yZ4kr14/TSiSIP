@@ -17,7 +17,13 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
 RUN a2enmod rewrite
 
 # Copy application
-COPY docker/admin-api/src/ /var/www/html/
+COPY docker/admin_api/src/ /var/www/html/
+
+# Copy entrypoint for secret permission fix
+COPY docker/admin_api/entrypoint.sh /usr/local/bin/admin-api-entrypoint.sh
+RUN chmod +x /usr/local/bin/admin-api-entrypoint.sh
+
+ENTRYPOINT ["/usr/local/bin/admin-api-entrypoint.sh"]
 
 # Internal port only — not published in compose
 EXPOSE 8080
