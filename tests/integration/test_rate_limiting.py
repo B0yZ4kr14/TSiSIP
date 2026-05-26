@@ -1,4 +1,5 @@
 #!/usr/bin/env python3
+# @req FR-006
 """
 Integration tests for Feature 006: Rate Limiting & DDoS Protection.
 """

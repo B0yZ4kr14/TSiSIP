@@ -1,5 +1,6 @@
 /**
- * T017: D3.js + jQuery Coexistence Falsification Test
+ * D3.js + jQuery Coexistence Falsification Test — Test ID: TESTID-JS-001
+ * @req FR-002-001 (Feature 002 OCP rebrand — ES module chart loader)
  * Verifies tsisip-charts.js loads as ES module without global pollution.
  */
 
@@ -34,7 +35,7 @@ assert.ok(chartsSource.includes('window.d3'),
 assert.ok(chartsSource.includes('tsisip-chart--'),
   'tsisip-charts.js must use tsisip-chart-- prefix for containers');
 
-console.log('T017: D3.js + jQuery coexistence test PASSED');
+console.log('TESTID-JS-001: D3.js + jQuery coexistence test PASSED');
 console.log('  - No global window assignments');
 console.log('  - No eval() usage');
 console.log('  - ES module exports verified');

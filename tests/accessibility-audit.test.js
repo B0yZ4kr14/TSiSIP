@@ -1,5 +1,7 @@
 /**
- * T026: Accessibility Audit (axe-core substitute)
+ * Accessibility Audit (axe-core substitute) — Test ID: ACC-001
+ * @req FR-020 (OCP Critical Tool Gap Closure — admin tool pages)
+ * @req SC-020 (Accessibility compliance for OCP admin tools)
  * Manual WCAG 2.1 AA checks for primary user paths.
  */
 
@@ -84,7 +86,7 @@ for (const color of requiredColors) {
 }
 
 assert.strictEqual(violations, 0, `Accessibility audit found ${violations} violations`);
-console.log('T026: Accessibility audit PASSED');
+console.log('ACC-001: Accessibility audit PASSED');
 console.log('  - All HTML files have lang attribute');
 console.log('  - All HTML files have viewport meta');
 console.log('  - All images have alt text');

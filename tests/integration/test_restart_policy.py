@@ -1,4 +1,5 @@
 #!/usr/bin/env python3
+# @req FR-004
 """
 Integration test for Docker restart policies with exponential backoff.
 Validates: restart delay increases monotonically up to 60s cap.

@@ -1,0 +1,367 @@
+{
+  "generated_at": "2026-05-26T06:35:08.239980+00:00",
+  "threshold": 0.5,
+  "top_n": 5,
+  "cache": {
+    "I want to create a specification for a new SIP trunk failover feature": [
+      {
+        "score": 0.6,
+        "capability": {
+          "id": "claude-agent:specification",
+          "name": "Specification",
+          "type": "claude-agent",
+          "source": "./.claude/agents/sparc/specification.md",
+          "triggers": [
+            "specification"
+          ],
+          "capabilities": [
+            "claude-agent-definition"
+          ]
+        }
+      },
+      {
+        "score": 0.52,
+        "capability": {
+          "id": "skill:speckit-specify",
+          "name": "speckit-specify",
+          "type": "skill",
+          "source": "./.agents/skills/speckit-specify/SKILL.md",
+          "triggers": [
+            "speckit specify"
+          ],
+          "capabilities": [
+            "skill-execution"
+          ]
+        }
+      },
+      {
+        "score": 0.52,
+        "capability": {
+          "id": "opencode:speckit.specify",
+          "name": "speckit.specify",
+          "type": "opencode-command",
+          "source": "./.opencode/commands/speckit.specify.md",
+          "triggers": [
+            "speckit specify",
+            "speckit.specify"
+          ],
+          "capabilities": [
+            "opencode-command"
+          ]
+        }
+      }
+    ],
+    "Scan the codebase for security vulnerabilities and configuration issues": [
+      {
+        "score": 0.66,
+        "capability": {
+          "id": "extension:\"security-review\"",
+          "name": "\"Security Review\"",
+          "type": "extension",
+          "source": "./.specify/extensions/security-review/extension.yml",
+          "triggers": [
+            "security review"
+          ],
+          "capabilities": [
+            "extension-command"
+          ]
+        }
+      },
+      {
+        "score": 0.6133,
+        "capability": {
+          "id": "workflow:\"security-review\"",
+          "name": "\"Security Review Cycle\"",
+          "type": "workflow",
+          "source": "./.specify/workflows/security-review/workflow.yml",
+          "triggers": [
+            "security review"
+          ],
+          "capabilities": [
+            "workflow-execution"
+          ]
+        }
+      },
+      {
+        "score": 0.5933,
+        "capability": {
+          "id": "skill:omk-security-review",
+          "name": "omk-security-review",
+          "type": "skill",
+          "source": "./.agents/skills/omk-security-review/SKILL.md",
+          "triggers": [
+            "omk security review"
+          ],
+          "capabilities": [
+            "skill-execution"
+          ]
+        }
+      },
+      {
+        "score": 0.5467,
+        "capability": {
+          "id": "skill:speckit-security-review-apply",
+          "name": "speckit-security-review-apply",
+          "type": "skill",
+          "source": "./.agents/skills/speckit-security-review-apply/SKILL.md",
+          "triggers": [
+            "speckit security review apply"
+          ],
+          "capabilities": [
+            "skill-execution"
+          ]
+        }
+      },
+      {
+        "score": 0.5467,
+        "capability": {
+          "id": "skill:speckit-security-review-audit",
+          "name": "speckit-security-review-audit",
+          "type": "skill",
+          "source": "./.agents/skills/speckit-security-review-audit/SKILL.md",
+          "triggers": [
+            "speckit security review audit"
+          ],
+          "capabilities": [
+            "skill-execution"
+          ]
+        }
+      }
+    ],
+    "Generate an implementation plan for TLS certificate rotation": [
+      {
+        "score": 0.6,
+        "capability": {
+          "id": "claude-agent:planner",
+          "name": "Planner",
+          "type": "claude-agent",
+          "source": "./.claude/agents/core/planner.md",
+          "triggers": [
+            "planner"
+          ],
+          "capabilities": [
+            "claude-agent-definition"
+          ]
+        }
+      },
+      {
+        "score": 0.52,
+        "capability": {
+          "id": "skill:speckit-implement",
+          "name": "\"speckit-implement\"",
+          "type": "skill",
+          "source": "./.agents/skills/speckit-implement/SKILL.md",
+          "triggers": [
+            "speckit implement"
+          ],
+          "capabilities": [
+            "skill-execution"
+          ]
+        }
+      },
+      {
+        "score": 0.52,
+        "capability": {
+          "id": "skill:speckit-plan",
+          "name": "speckit-plan",
+          "type": "skill",
+          "source": "./.agents/skills/speckit-plan/SKILL.md",
+          "triggers": [
+            "speckit plan"
+          ],
+          "capabilities": [
+            "skill-execution"
+          ]
+        }
+      },
+      {
+        "score": 0.52,
+        "capability": {
+          "id": "opencode:speckit.implement",
+          "name": "speckit.implement",
+          "type": "opencode-command",
+          "source": "./.opencode/commands/speckit.implement.md",
+          "triggers": [
+            "speckit implement",
+            "speckit.implement"
+          ],
+          "capabilities": [
+            "opencode-command"
+          ]
+        }
+      },
+      {
+        "score": 0.52,
+        "capability": {
+          "id": "opencode:speckit.plan",
+          "name": "speckit.plan",
+          "type": "opencode-command",
+          "source": "./.opencode/commands/speckit.plan.md",
+          "triggers": [
+            "speckit plan",
+            "speckit.plan"
+          ],
+          "capabilities": [
+            "opencode-command"
+          ]
+        }
+      }
+    ],
+    "Run brownfield scan on the OpenSIPS configuration": [
+      {
+        "score": 0.6433,
+        "capability": {
+          "id": "skill:speckit-brownfield-scan",
+          "name": "speckit-brownfield-scan",
+          "type": "skill",
+          "source": "./.agents/skills/speckit-brownfield-scan/SKILL.md",
+          "triggers": [
+            "speckit brownfield scan"
+          ],
+          "capabilities": [
+            "skill-execution"
+          ]
+        }
+      },
+      {
+        "score": 0.6433,
+        "capability": {
+          "id": "opencode:speckit.brownfield.scan",
+          "name": "speckit.brownfield.scan",
+          "type": "opencode-command",
+          "source": "./.opencode/commands/speckit.brownfield.scan.md",
+          "triggers": [
+            "speckit brownfield scan",
+            "speckit.brownfield.scan"
+          ],
+          "capabilities": [
+            "opencode-command"
+          ]
+        }
+      },
+      {
+        "score": 0.615,
+        "capability": {
+          "id": "extension:brownfield",
+          "name": "\"Brownfield Bootstrap\"",
+          "type": "extension",
+          "source": "./.specify/extensions/brownfield/extension.yml",
+          "triggers": [
+            "brownfield"
+          ],
+          "capabilities": [
+            "extension-command"
+          ]
+        }
+      },
+      {
+        "score": 0.535,
+        "capability": {
+          "id": "extension:\"review\"",
+          "name": "\"Review Extension\"",
+          "type": "extension",
+          "source": "./.specify/extensions/review/extension.yml",
+          "triggers": [
+            "review"
+          ],
+          "capabilities": [
+            "extension-command"
+          ]
+        }
+      },
+      {
+        "score": 0.535,
+        "capability": {
+          "id": "skill:speckit-review-run",
+          "name": "speckit-review-run",
+          "type": "skill",
+          "source": "./.agents/skills/speckit-review-run/SKILL.md",
+          "triggers": [
+            "speckit review run"
+          ],
+          "capabilities": [
+            "skill-execution"
+          ]
+        }
+      }
+    ],
+    "Set up the project constitution and architecture rules": [
+      {
+        "score": 0.6433,
+        "capability": {
+          "id": "skill:omk-project-rules",
+          "name": "omk-project-rules",
+          "type": "skill",
+          "source": "./.agents/skills/omk-project-rules/SKILL.md",
+          "triggers": [
+            "omk project rules"
+          ],
+          "capabilities": [
+            "skill-execution"
+          ]
+        }
+      },
+      {
+        "score": 0.615,
+        "capability": {
+          "id": "claude-agent:architecture",
+          "name": "Architecture",
+          "type": "claude-agent",
+          "source": "./.claude/agents/sparc/architecture.md",
+          "triggers": [
+            "architecture"
+          ],
+          "capabilities": [
+            "claude-agent-definition"
+          ]
+        }
+      },
+      {
+        "score": 0.535,
+        "capability": {
+          "id": "skill:speckit-constitution",
+          "name": "\"speckit-constitution\"",
+          "type": "skill",
+          "source": "./.agents/skills/speckit-constitution/SKILL.md",
+          "triggers": [
+            "speckit constitution"
+          ],
+          "capabilities": [
+            "skill-execution"
+          ]
+        }
+      },
+      {
+        "score": 0.535,
+        "capability": {
+          "id": "opencode:speckit.constitution",
+          "name": "speckit.constitution",
+          "type": "opencode-command",
+          "source": "./.opencode/commands/speckit.constitution.md",
+          "triggers": [
+            "speckit constitution",
+            "speckit.constitution"
+          ],
+          "capabilities": [
+            "opencode-command"
+          ]
+        }
+      },
+      {
+        "score": 0.5017,
+        "capability": {
+          "id": "skill:speckit-sf-constitution",
+          "name": "speckit-sf-constitution",
+          "type": "skill",
+          "source": "./.agents/skills/speckit-sf-constitution/SKILL.md",
+          "triggers": [
+            "speckit sf constitution"
+          ],
+          "capabilities": [
+            "skill-execution"
+          ]
+        }
+      }
+    ]
+  }
+}

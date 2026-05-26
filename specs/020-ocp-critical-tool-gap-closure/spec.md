@@ -111,3 +111,48 @@ Active dialogs are never mutated via the web UI. The dialog page is strictly rea
 - docs/TSiSIP-CANONICAL-SPEC.md (Section 8: Routing Logic)
 - web/subscribers.php (reference implementation pattern — **see Architecture Debt ARCH-PRE-001**: direct subscriber table writes violate Control Plane → Database layer boundary; scheduled for refactor)
 - web/dispatcher.php (reference implementation pattern)
+
+---
+
+## User Scenarios & Testing
+
+### Scenario 1: Operator views active SIP dialogs
+- **Given** the operator is authenticated with devops role
+- **When** they navigate to the Dialog Viewer page
+- **Then** they see a read-only list of active dialogs
+
+### Scenario 2: Administrator reloads TLS certificates
+- **Given** the administrator is authenticated with admin role
+- **When** they trigger a TLS reload from the web UI
+- **Then** the tls_reload MI command is executed and logged
+
+---
+
+## Requirements
+
+### Functional Requirements
+
+- **FR-020-001**: Dialog Viewer — read-only web UI for active SIP dialogs
+- **FR-020-002**: MI Commands Runner — execute whitelisted MI commands via web UI
+- **FR-020-003**: Statistics Monitor — display OpenSIPS metrics with D3.js charts
+- **FR-020-004**: Dialplan Manager — full CRUD for dialplan rules
+- **FR-020-005**: Domains Manager — full CRUD for SIP domains
+- **FR-020-006**: TLS Management UI — view certs and trigger hot reloads
+- **FR-020-007**: Security & Access Control — RBAC, CSRF, audit logging
+
+---
+
+## Success Criteria
+
+| ID | Criterion | Measurement | Target |
+|---|---|---|---|
+| SC-020-001 | Dialog Viewer lists active dialogs | Manual UI test | 100% visible |
+| SC-020-002 | MI Commands execute whitelisted commands | Negative test | Zero non-whitelisted accepted |
+| SC-020-003 | Statistics Monitor displays 6+ metrics | UI inspection | All required metrics rendered |
+| SC-020-004 | Dialplan CRUD fully functional | End-to-end form test | CREATE/READ/UPDATE/DELETE pass |
+| SC-020-005 | Domains CRUD fully functional | End-to-end form test | CREATE/READ/UPDATE/DELETE pass |
+| SC-020-006 | TLS Management triggers reload | UI test + audit log | Reload logged, cert info displayed |
+| SC-020-007 | RBAC enforced on all new pages | Role-based access test | Devops minimum, admin for TLS |
+| SC-020-008 | CSRF tokens on all mutating forms | Form submission test | 403 without valid token |
+| SC-020-009 | Security assessment exists | Document review | Assessment approved |
+| SC-020-010 | MI error handling sanitized | Negative test | No stack traces leaked |

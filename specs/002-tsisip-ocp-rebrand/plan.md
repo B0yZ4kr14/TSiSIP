@@ -1,5 +1,29 @@
 # Implementation Plan: TSiSIP Control Panel — Full OCP v9.3.6 Parity
 
+## Summary
+
+This plan implements the feature described in the companion spec.md. It covers infrastructure changes, application code, validation gates, and deployment steps required to deliver the capability in a Docker-first, PostgreSQL-only TSiSIP environment.
+
+## Technical Context
+
+**Language/Version**: Bash, Docker, Docker Compose, Python 3 (for tests), PHP 8.2 (for OCP features), OpenSIPS 3.6 LTS config
+**Primary Dependencies**: OpenSIPS 3.6 LTS, PostgreSQL 16, Docker Engine + Compose V2
+**Testing**: pytest integration tests, shell-based health probes, PHP syntax validation
+**Target Platform**: Docker containers (local dev + VPS production)
+**Project Type**: Infrastructure / DevSecOps / SIP edge proxy
+
+## Project Structure
+
+```
+specs/002-tsisip-ocp-rebrand/
+├── spec.md              # Feature specification
+├── plan.md              # This implementation plan
+├── tasks.md             # Actionable task breakdown
+└── checklists/          # Quality checklists (if present)
+```
+
+
+
 ## Overview
 
 This plan translates the feature specification into an executable implementation roadmap for achieving **100% functional parity** with the official OpenSIPS Control Panel v9.3.6.

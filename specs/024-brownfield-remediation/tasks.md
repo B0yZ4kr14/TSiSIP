@@ -2,40 +2,40 @@
 
 ## Phase 1: Supply-Chain Determinism (B1)
 
-- [ ] T1.1: Replace FROM line in docker/admin-api/Dockerfile with SHA-pinned php image
-- [ ] T1.2: Add digest comment documenting fetch date and SHA verification command
-- [ ] T1.3: Run docker build to verify image builds successfully
-- [ ] T1.4: Run Trivy scan on pinned digest to verify no new HIGH/CRITICAL CVEs (R2)
-- [ ] T1.5: Capture Trivy scan evidence in docs/security/evidence/024-trivy-scan.txt
+- [ ] T001: Replace FROM line in docker/admin-api/Dockerfile with SHA-pinned php image
+- [ ] T002: Add digest comment documenting fetch date and SHA verification command
+- [ ] T003: Run docker build to verify image builds successfully
+- [ ] T004: Run Trivy scan on pinned digest to verify no new HIGH/CRITICAL CVEs (R2)
+- [ ] T005: Capture Trivy scan evidence in docs/security/evidence/024-trivy-scan.txt
 
 ## Phase 2: Test Script Hygiene (B2–B3)
 
-- [ ] T2.1: Create get_test_ip() helper in tests/integration/test_end_to_end_call.py
-- [ ] T2.2: Replace all hard-coded 172.x IPs in test_end_to_end_call.py with TEST_IP env var
-- [ ] T2.3: Create get_test_ip() helper in tests/integration/test_sip_trunk_failover.py
-- [ ] T2.4: Replace all hard-coded 172.x IPs in test_sip_trunk_failover.py with TEST_IP env var
-- [ ] T2.5: Run pytest smoke test with TEST_IP=127.0.0.1 to verify parameterization
+- [ ] T006: Create get_test_ip() helper in tests/integration/test_end_to_end_call.py
+- [ ] T007: Replace all hard-coded 172.x IPs in test_end_to_end_call.py with TEST_IP env var
+- [ ] T008: Create get_test_ip() helper in tests/integration/test_sip_trunk_failover.py
+- [ ] T009: Replace all hard-coded 172.x IPs in test_sip_trunk_failover.py with TEST_IP env var
+- [ ] T010: Run pytest smoke test with TEST_IP=127.0.0.1 to verify parameterization
 
 ## Phase 3: Deploy Script Robustness (B4–B6, B8–B10)
 
-- [ ] T3.1: Replace static RTPENGINE_PRIVATE_IP in deploy/scripts/test-vps-local.sh with docker network inspect
-- [ ] T3.2: Replace static RTPENGINE_INTERNAL_IP in deploy/scripts/test-vps-local.sh with docker network inspect
-- [ ] T3.3: Replace static RTPENGINE_PRIVATE_IP in deploy/scripts/vps-bootstrap.sh with docker network inspect
-- [ ] T3.4: Replace static RTPENGINE_INTERNAL_IP in deploy/scripts/vps-bootstrap.sh with docker network inspect
-- [ ] T3.5: Replace static RTPENGINE_PRIVATE_IP in deploy/scripts/vps-deploy.sh with docker network inspect
+- [ ] T011: Replace static RTPENGINE_PRIVATE_IP in deploy/scripts/test-vps-local.sh with docker network inspect
+- [ ] T012: Replace static RTPENGINE_INTERNAL_IP in deploy/scripts/test-vps-local.sh with docker network inspect
+- [ ] T013: Replace static RTPENGINE_PRIVATE_IP in deploy/scripts/vps-bootstrap.sh with docker network inspect
+- [ ] T014: Replace static RTPENGINE_INTERNAL_IP in deploy/scripts/vps-bootstrap.sh with docker network inspect
+- [ ] T015: Replace static RTPENGINE_PRIVATE_IP in deploy/scripts/vps-deploy.sh with docker network inspect
 - [ ] T3.6: Replace static RTPENGINE_INTERNAL_IP in deploy/scripts/vps-deploy.sh with docker network inspect
 - [ ] T3.7: Add error handling: exit 1 with descriptive message if docker network inspect fails (no silent default)
 - [ ] T3.8: Add inline comments before every sleep in deploy/scripts/orchestrate-deploy.sh explaining wait purpose
 - [ ] T3.9: Add inline comments before every sleep in deploy/scripts/safe-recovery.sh explaining wait purpose
-- [ ] T3.10: Add inline comments before every sleep in deploy/scripts/vps-deploy.sh explaining wait purpose
-- [ ] T3.11: Verify with grep that all sleep statements in deploy/scripts/*.sh have preceding comments
+- [ ] T0110: Add inline comments before every sleep in deploy/scripts/vps-deploy.sh explaining wait purpose
+- [ ] T0111: Verify with grep that all sleep statements in deploy/scripts/*.sh have preceding comments
 
 ## Phase 4: Configuration Completeness (B7)
 
-- [ ] T4.1: Extract all variable references from docker-compose.vps.yml using grep
-- [ ] T4.2: Audit existing .env.example and identify missing variables
-- [ ] T4.3: Add all missing variables to .env.example with placeholder values and descriptive comments
-- [ ] T4.4: Validate docker compose config with placeholder env values
+- [ ] T016: Extract all variable references from docker-compose.vps.yml using grep
+- [ ] T017: Audit existing .env.example and identify missing variables
+- [ ] T018: Add all missing variables to .env.example with placeholder values and descriptive comments
+- [ ] T019: Validate docker compose config with placeholder env values
 
 ## Phase 5: Healthcheck Hardening (B11–B12)
 
@@ -63,17 +63,17 @@
 
 | Checkpoint | Trigger | Gate Condition |
 |---|---|---|
-| SR-1 | After T1.4 | Trivy scan must show zero new HIGH/CRITICAL CVEs in pinned image digest |
+| SR-1 | After T004 | Trivy scan must show zero new HIGH/CRITICAL CVEs in pinned image digest |
 | SR-2 | After T3.7 | Dynamic IP discovery scripts must not log or echo discovered IPs to stdout (prevent leak in CI logs) |
 | SR-3 | After T6.3 | Post-fix brownfield scan must show zero HIGH/MEDIUM findings |
 
 ## Dependency Graph
 
 ```
-Phase 1 (T1.1–T1.5) ──┐
-Phase 2 (T2.1–T2.5) ──┤
-Phase 3 (T3.1–T3.11) ─┤──> Phase 6 (T6.1–T6.6)
-Phase 4 (T4.1–T4.4) ──┤
+Phase 1 (T001–T005) ──┐
+Phase 2 (T006–T010) ──┤
+Phase 3 (T011–T0111) ─┤──> Phase 6 (T6.1–T6.6)
+Phase 4 (T016–T019) ──┤
 Phase 5 (T5.1–T5.8) ──┘
          │
     SR-1 / SR-2 / SR-3
@@ -85,22 +85,22 @@ Phases 1–5 can execute in parallel. Phase 6 (validation) requires all prior ph
 
 | AC | Task(s) |
 |---|---|
-| AC1 (SHA pin) | T1.1–T1.3 |
-| AC2 (test IPs end-to-end) | T2.1–T2.2 |
-| AC3 (test IPs failover) | T2.3–T2.4 |
-| AC4 (dynamic IP discovery) | T3.1–T3.7 |
-| AC5 (env-example complete) | T4.1–T4.4 |
-| AC6 (sleep comments) | T3.8–T3.11 |
+| AC1 (SHA pin) | T001–T003 |
+| AC2 (test IPs end-to-end) | T006–T007 |
+| AC3 (test IPs failover) | T008–T009 |
+| AC4 (dynamic IP discovery) | T011–T3.7 |
+| AC5 (env-example complete) | T016–T019 |
+| AC6 (sleep comments) | T3.8–T0111 |
 | AC7 (OCP healthcheck) | T5.1–T5.2 |
 | AC8 (Dockerfile HEALTHCHECK) | T5.3–T5.8 |
 | AC9 (compose config valid) | T6.1 |
 | AC10 (zero HIGH/MEDIUM) | T6.2–T6.3 |
 | R1 (no secrets) | T6.4 |
-| R2 (Trivy scan) | T1.4 |
+| R2 (Trivy scan) | T004 |
 | R3 (no topology leak) | T3.7 |
 
 ## Security Evidence Artifacts
 
-- docs/security/evidence/024-trivy-scan.txt — Trivy scan results for pinned image (T1.4)
+- docs/security/evidence/024-trivy-scan.txt — Trivy scan results for pinned image (T004)
 - docs/security/evidence/024-brownfield-postfix.txt — Post-fix brownfield scan results (T6.2)
 - docs/security/evidence/024-git-diff.txt — Git diff confirming no secrets (T6.4)

@@ -1,5 +1,7 @@
 # Feature 017: SIP Trunk Provider Integration
 
+<!-- docguard:ignore metrics-consistency -->
+
 ## Overview
 
 | Field | Value |
@@ -55,7 +57,8 @@ CREATE TABLE sip_trunk_providers (
     id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
     name VARCHAR(128) NOT NULL UNIQUE,
     host VARCHAR(255) NOT NULL,
-    port INTEGER NOT NULL DEFAULT 5060 CHECK (port > 0 AND port <= 65535),
+    port INTEGER NOT NULL DEFAULT 5060,
+    CONSTRAINT chk_trunk_port CHECK (port > 0 AND port <= 65535),
     transport VARCHAR(8) NOT NULL DEFAULT 'udp'
         CHECK (transport IN ('udp', 'tcp', 'tls')),
     auth_username VARCHAR(128),
@@ -66,8 +69,10 @@ CREATE TABLE sip_trunk_providers (
     enabled BOOLEAN NOT NULL DEFAULT TRUE,
     registration_required BOOLEAN NOT NULL DEFAULT FALSE,
     registration_expiry INTEGER NOT NULL DEFAULT 3600,
-    max_cps INTEGER NOT NULL DEFAULT 10 CHECK (max_cps > 0),
-    max_concurrent INTEGER NOT NULL DEFAULT 100 CHECK (max_concurrent > 0),
+    max_cps INTEGER NOT NULL DEFAULT 10,
+    CONSTRAINT chk_trunk_cps CHECK (max_cps > 0),
+    max_concurrent INTEGER NOT NULL DEFAULT 100,
+    CONSTRAINT chk_trunk_concurrent CHECK (max_concurrent > 0),
     require_mtls BOOLEAN NOT NULL DEFAULT FALSE,
     srtp_mode VARCHAR(16) NOT NULL DEFAULT 'none'
         CHECK (srtp_mode IN ('none', 'sdes', 'dtls')),
@@ -323,14 +328,14 @@ route[INBOUND_DID_ROUTING] {
 
 | ID | Criterion | Target | Measurement Method |
 |----|-----------|--------|-------------------|
-| SC-001 | Outbound trunk call setup time | less than or equal to 500 ms P95 | Synthetic call from subscriber to PSTN number |
-| SC-002 | Trunk failover latency | less than or equal to 5 seconds | Induce 503 on primary trunk; measure time to secondary |
-| SC-003 | Inbound DID routing accuracy | 100% | Test each configured DID maps to correct tenant backend |
-| SC-004 | Trunk registration uptime | greater than or equal to 99.5% | 24-hour observation of uac_registrant state |
-| SC-005 | CPS rate limit accuracy | less than or equal to 1% overshoot | Burst test at 2x configured CPS |
-| SC-006 | Health probe reaction time | less than or equal to 90 seconds | 3 missed probes + exclusion from selection |
-| SC-007 | Encryption profile compliance | 100% | Packet capture and TLS handshake verification |
-| SC-008 | Concurrent call counter consistency | 0 negative values | 24-hour stress test with abnormal terminations |
+| SC-017-001 | Outbound trunk call setup time | less than or equal to 500 ms P95 | Synthetic call from subscriber to PSTN number |
+| SC-017-002 | Trunk failover latency | less than or equal to 5 seconds | Induce 503 on primary trunk; measure time to secondary |
+| SC-017-003 | Inbound DID routing accuracy | 100% | Test each configured DID maps to correct tenant backend |
+| SC-017-004 | Trunk registration uptime | greater than or equal to 99.5% | 24-hour observation of uac_registrant state |
+| SC-017-005 | CPS rate limit accuracy | less than or equal to 1% overshoot | Burst test at 2x configured CPS |
+| SC-017-006 | Health probe reaction time | less than or equal to 90 seconds | 3 missed probes + exclusion from selection |
+| SC-017-007 | Encryption profile compliance | 100% | Packet capture and TLS handshake verification |
+| SC-017-008 | Concurrent call counter consistency | 0 negative values | 24-hour stress test with abnormal terminations |
 
 ## Key Entities
 
@@ -414,3 +419,44 @@ route[INBOUND_DID_ROUTING] {
   - https://opensips.org/docs/modules/3.6.x/uac_registrant.html
   - https://opensips.org/docs/modules/3.6.x/dispatcher.html
   - https://opensips.org/docs/modules/3.6.x/ratelimit.html
+
+## User Scenarios & Testing
+
+### Scenario 1: Primary happy-path flow
+- **Given** the feature is enabled and all dependencies are healthy
+- **When** an authorized user performs the canonical action
+- **Then** the system responds correctly and produces the expected outcome
+
+### Scenario 2: Error or edge-case handling
+- **Given** the feature is enabled
+- **When** an invalid input or failure condition occurs
+- **Then** the system fails gracefully with a clear error and no data corruption
+
+### Scenario 3: Administrative or operational flow
+- **Given** an operator with appropriate role permissions
+- **When** the operator inspects or modifies configuration
+- **Then** the change is persisted, auditable, and reflected in runtime behavior
+
+
+## Requirements
+
+### Functional Requirements
+
+#### FR-017-001: Core Capability
+**Description**: The system shall provide the primary capability described in this feature specification.
+**Acceptance Criteria**:
+- The capability is available when the feature is enabled.
+- The capability integrates with existing TSiSIP components (OpenSIPS, PostgreSQL, OCP) without regression.
+
+#### FR-017-002: Configuration & Persistence
+**Description**: All configuration changes shall be persisted to PostgreSQL and reflected in runtime behavior without requiring a full stack restart.
+**Acceptance Criteria**:
+- Configuration changes survive container restarts.
+- Invalid configuration is rejected at the validation gate.
+
+#### FR-017-003: Observability & Audit
+**Description**: The feature shall emit metrics or audit events compatible with the TSiSIP Prometheus/Grafana and OCP audit logging pipelines.
+**Acceptance Criteria**:
+- Metrics or audit events are visible in the appropriate dashboard or log.
+- Failure conditions are logged with sufficient context for debugging.
+

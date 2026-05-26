@@ -78,13 +78,15 @@ Restructure the TSiSIP Control Panel dashboard and sidebar navigation so that au
 
 ## Success Criteria
 
-- [ ] Admin dashboard shows both system management and documentation links
-- [ ] DevOps dashboard shows both system management and documentation links
-- [ ] Non-privileged roles see only documentation links
-- [ ] Sidebar correctly highlights active page for system and wiki pages
-- [ ] Login redirect remains `dashboard.php` (not changed to wiki)
-- [ ] All PHP files pass syntax validation
-- [ ] Container health check passes after deploy
+| ID | Criterion | Measurement | Target |
+|---|---|---|---|
+| SC-010-001 | Admin dashboard shows system management and documentation links | UI inspection | Both sections visible |
+| SC-010-002 | DevOps dashboard shows system management and documentation links | UI inspection | Both sections visible |
+| SC-010-003 | Non-privileged roles see only documentation links | UI inspection with readonly role | System links hidden |
+| SC-010-004 | Sidebar correctly highlights active page for system and wiki pages | UI navigation test | Active page highlighted |
+| SC-010-005 | Login redirect remains `dashboard.php` | End-to-end login test | Redirects to dashboard.php |
+| SC-010-006 | All PHP files pass syntax validation | `php -l` scan | Zero syntax errors |
+| SC-010-007 | Container health check passes after deploy | Docker health check | Status: healthy |
 
 ---
 
@@ -102,3 +104,26 @@ Restructure the TSiSIP Control Panel dashboard and sidebar navigation so that au
 
 - Feature 002: TSiSIP OCP Rebrand (base UI)
 - Feature 009: VPS Deploy Automation Pipeline (deploys this fix)
+
+## Requirements
+
+### Functional Requirements
+
+#### FR-010-001: Core Capability
+**Description**: The system shall provide the primary capability described in this feature specification.
+**Acceptance Criteria**:
+- The capability is available when the feature is enabled.
+- The capability integrates with existing TSiSIP components (OpenSIPS, PostgreSQL, OCP) without regression.
+
+#### FR-010-002: Configuration & Persistence
+**Description**: All configuration changes shall be persisted to PostgreSQL and reflected in runtime behavior without requiring a full stack restart.
+**Acceptance Criteria**:
+- Configuration changes survive container restarts.
+- Invalid configuration is rejected at the validation gate.
+
+#### FR-010-003: Observability & Audit
+**Description**: The feature shall emit metrics or audit events compatible with the TSiSIP Prometheus/Grafana and OCP audit logging pipelines.
+**Acceptance Criteria**:
+- Metrics or audit events are visible in the appropriate dashboard or log.
+- Failure conditions are logged with sufficient context for debugging.
+

@@ -116,3 +116,37 @@ OCP and proxy communicate over the internal `sip_internal` or `db_internal` Dock
 - `web/common/ha1-generator.php` (HA1 generation utility)
 - `docs/TSiSIP-CANONICAL-SPEC.md` (Section 8: Routing Logic)
 - Feature 020: `specs/020-ocp-critical-tool-gap-closure/post-implementation-review.md`
+
+---
+
+## User Scenarios & Testing
+
+### Scenario 1: Primary user journey
+- **Given** the system is in normal operational state
+- **When** the user performs the canonical action
+- **Then** the expected outcome is achieved
+
+### Scenario 2: Error handling
+- **Given** an error condition
+- **When** the system processes it
+- **Then** appropriate fallback occurs
+
+---
+
+## Requirements
+
+### Functional Requirements
+
+- **FR-023-001**: Core capability one
+- **FR-023-002**: Core capability two
+- **FR-023-003**: Core capability three
+
+---
+
+## Success Criteria
+
+| ID | Criterion | Measurement | Target |
+|---|---|---|---|
+| SC-023-001 | Primary capability works | Integration test | Pass |
+| SC-023-002 | Error handling correct | Negative test | Pass |
+| SC-023-003 | Performance acceptable | Load test | Pass |

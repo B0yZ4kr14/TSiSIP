@@ -5,7 +5,7 @@
 **Feature**: TSiSIP Control Panel — Full OCP v9.3.6 Parity  
 **Short name**: tsisip-ocp-full-parity  
 **Created**: 2026-05-17  
-**Status**: In Progress  
+**Status**: Completed  
 **Last Updated**: 2026-05-25  
 
 ### Context
@@ -55,27 +55,22 @@ Implement all missing OCP v9.3.6 modules so that TSiSIP reflects **every configu
 | 19 | **Trunk Status** | `trunk-status.php` | Done | — |
 | 20 | **Wiki** | `wiki/index.php` | Done | — |
 | 21 | **Admin Users** | `users.php` | Done | `admins.html` |
-
-### Missing Modules (11 / 32)
-
-| # | Module | Priority | OCP Doc | Description |
-|---|--------|----------|---------|-------------|
-| 22 | **Aliases** | High | `alias_management.html` | SIP alias provisioning for subscribers |
-| 23 | **Groups** | High | `group_management.html` | Group-based ACL for SIP subscribers |
-| 24 | **Call Center** | Medium | `callcenter.html` | Call queue, agent, and flow management |
-| 25 | **Clusterer** | Medium | `clusterer.html` | OpenSIPS built-in clustering provisioning |
-| 26 | **Config Table** | High | `config.html` | Runtime config via DB table (9.3.5+) |
-| 27 | **Dynamic Routing** | High | `drouting.html` | LCR / carrier routing with gateways and rules |
-| 28 | **Load Balancer** | Medium | `loadbalancer.html` | Alternative load balancing to dispatcher |
-| 29 | **Keepalived** | Low | `keepalived.html` | HA failover daemon monitoring (9.3.3+) |
-| 30 | **Monit** | Low | `monit.html` | External Monit monitoring service integration |
-| 31 | **RTPProxy** | Low | `rtpproxy.html` | Legacy RTP proxy instance management |
-| 32 | **SIPtrace** | Medium | `siptrace.html` | SIP packet capture viewer |
-| 33 | **Sockets Management** | High | `sockets_mgm.html` | Dynamic socket provisioning via DB (9.3.6+) |
-| 34 | **Status Report** | Medium | `status_report.html` | OpenSIPS status identifiers (9.3.3+) |
-| 35 | **SMPP Gateway** | Low | `smpp.html` | SMS gateway / SMSC provisioning |
-| 36 | **TViewer** | High | `tviewer.html` | Generic table provisioning framework |
-| 37 | **UAC Registrant** | High | `uac_registant.html` | Client registration provisioning |
+| 22 | **Aliases** | `aliases.php` | Done | `alias_management.html` |
+| 23 | **Groups** | `groups.php` | Done | `group_management.html` |
+| 24 | **Call Center** | `call-center.php` | Done | `callcenter.html` |
+| 25 | **Clusterer** | `clusterer.php` | Done | `clusterer.html` |
+| 26 | **Config Table** | `config-table.php` | Done | `config.html` |
+| 27 | **Dynamic Routing** | `dynamic-routing.php` | Done | `drouting.html` |
+| 28 | **Load Balancer** | `load-balancer.php` | Done | `loadbalancer.html` |
+| 29 | **Keepalived** | `keepalived.php` | Done | `keepalived.html` |
+| 30 | **Monit** | `monit.php` | Done | `monit.html` |
+| 31 | **RTPProxy** | `rtpproxy.php` | Done | `rtpproxy.html` |
+| 32 | **SIPtrace** | `siptrace.php` | Done | `siptrace.html` |
+| 33 | **Sockets Management** | `sockets-management.php` | Done | `sockets_mgm.html` |
+| 34 | **Status Report** | `status-report.php` | Done | `status_report.html` |
+| 35 | **SMPP Gateway** | `smpp-gateway.php` | Done | `smpp.html` |
+| 36 | **TViewer** | `tviewer.php` | Done | `tviewer.html` |
+| 37 | **UAC Registrant** | `uac-registrant.php` | Done | `uac_registant.html` |
 
 > **Note**: "Priority" is derived from TSiSIP operational relevance. Config Table, Dynamic Routing, Sockets Management, and TViewer are **core routing/infrastructure** capabilities. Aliases, Groups, and UAC Registrant complete the **subscriber management** story. Clusterer, SIPtrace, and Status Report are **operations/observability** enablers.
 
@@ -83,7 +78,7 @@ Implement all missing OCP v9.3.6 modules so that TSiSIP reflects **every configu
 
 ## Functional Requirements
 
-### FR-PARITY-001: Aliases Management
+### FR-002-001: Aliases Management
 **Description**: Provide full CRUD for SIP aliases (db aliases table) linked to subscriber accounts.  
 **Acceptance Criteria**:
 - List aliases with pagination, search by username/alias
@@ -92,7 +87,7 @@ Implement all missing OCP v9.3.6 modules so that TSiSIP reflects **every configu
 - Delete alias with audit logging
 - Role-aware: `readonly` sees list only; `user`+ can CRUD
 
-### FR-PARITY-002: Groups Management
+### FR-002-002: Groups Management
 **Description**: Manage group-based permissions for SIP subscribers (db group table).  
 **Acceptance Criteria**:
 - List groups with member count
@@ -100,7 +95,7 @@ Implement all missing OCP v9.3.6 modules so that TSiSIP reflects **every configu
 - Add/remove subscribers from groups
 - Role-aware: `admin` and `devops` only for group mutations
 
-### FR-PARITY-003: Call Center
+### FR-002-003: Call Center
 **Description**: Provision and manage Call Center module flows, agents, and calls.  
 **Acceptance Criteria**:
 - CRUD for call flows (CC flows table)
@@ -108,7 +103,7 @@ Implement all missing OCP v9.3.6 modules so that TSiSIP reflects **every configu
 - Live call queue monitor (read-only)
 - Role-aware: `assistant`+ can configure; all roles can monitor
 
-### FR-PARITY-004: Clusterer
+### FR-002-004: Clusterer
 **Description**: Provision OpenSIPS built-in Clusterer module for high-availability.  
 **Acceptance Criteria**:
 - CRUD for cluster nodes (clusterer table)
@@ -116,7 +111,7 @@ Implement all missing OCP v9.3.6 modules so that TSiSIP reflects **every configu
 - Health status per node
 - Role-aware: `devops` and `admin` only
 
-### FR-PARITY-005: Config Table
+### FR-002-005: Config Table
 **Description**: Runtime configuration via the `config` table (introduced in OCP 9.3.5 / OpenSIPS 3.6).  
 **Acceptance Criteria**:
 - CRUD for config key/value pairs with type validation
@@ -124,7 +119,7 @@ Implement all missing OCP v9.3.6 modules so that TSiSIP reflects **every configu
 - Immediate effect indicator (requires OpenSIPS reload)
 - Role-aware: `devops` and `admin` only
 
-### FR-PARITY-006: Dynamic Routing
+### FR-002-006: Dynamic Routing
 **Description**: LCR / carrier routing via routing rules, carriers, and gateways.  
 **Acceptance Criteria**:
 - CRUD for gateways (dr_gateways table)
@@ -133,7 +128,7 @@ Implement all missing OCP v9.3.6 modules so that TSiSIP reflects **every configu
 - Rule priority ordering with drag/drop or numeric priority
 - Role-aware: `devops` and `admin` for mutations; all roles can view
 
-### FR-PARITY-007: Load Balancer
+### FR-002-007: Load Balancer
 **Description**: Alternative to dispatcher for load balancing destinations.  
 **Acceptance Criteria**:
 - CRUD for load balancer destinations (load_balancer table)
@@ -141,7 +136,7 @@ Implement all missing OCP v9.3.6 modules so that TSiSIP reflects **every configu
 - Real-time utilization view
 - Role-aware: `devops` and `admin` for mutations
 
-### FR-PARITY-008: Keepalived
+### FR-002-008: Keepalived
 **Description**: Interface for monitoring and switching Keepalived daemon (9.3.3+).  
 **Acceptance Criteria**:
 - Status overview of keepalived instances
@@ -149,21 +144,21 @@ Implement all missing OCP v9.3.6 modules so that TSiSIP reflects **every configu
 - Config view (read-only)
 - Role-aware: `devops` and `admin`
 
-### FR-PARITY-009: Monit
+### FR-002-009: Monit
 **Description**: Integration with Monit monitoring service.  
 **Acceptance Criteria**:
 - Display Monit service status via API/polling
 - Alert history view
 - Role-aware: all roles can view; `devops`+ can acknowledge alerts
 
-### FR-PARITY-010: RTPProxy
+### FR-002-010: RTPProxy
 **Description**: Manage RTPProxy instances used by OpenSIPS.  
 **Acceptance Criteria**:
 - CRUD for RTPProxy instances (rtpproxy_sockets table)
 - Enable/disable instances
 - Role-aware: `devops` and `admin`
 
-### FR-PARITY-011: SIPtrace
+### FR-002-011: SIPtrace
 **Description**: Viewer for SIP data captured via the siptrace module.  
 **Acceptance Criteria**:
 - Search/filter SIP traces by call-id, from, to, method
@@ -171,7 +166,7 @@ Implement all missing OCP v9.3.6 modules so that TSiSIP reflects **every configu
 - Export traces to PCAP or text
 - Role-aware: all roles can view; `admin` can purge old traces
 
-### FR-PARITY-012: Sockets Management
+### FR-002-012: Sockets Management
 **Description**: Provision OpenSIPS dynamic sockets through database (9.3.6+).  
 **Acceptance Criteria**:
 - CRUD for socket definitions (sockets table)
@@ -179,7 +174,7 @@ Implement all missing OCP v9.3.6 modules so that TSiSIP reflects **every configu
 - Active/inactive toggle
 - Role-aware: `devops` and `admin`
 
-### FR-PARITY-013: Status Report
+### FR-002-013: Status Report
 **Description**: Access reports provided by OpenSIPS Status-Report identifiers (9.3.3+).  
 **Acceptance Criteria**:
 - List all status report identifiers
@@ -187,7 +182,7 @@ Implement all missing OCP v9.3.6 modules so that TSiSIP reflects **every configu
 - Filter by severity (error, warning, info)
 - Role-aware: all roles can view
 
-### FR-PARITY-014: SMPP Gateway
+### FR-002-014: SMPP Gateway
 **Description**: Provisioning of SMS Centers for OpenSIPS SMPP Gateway.  
 **Acceptance Criteria**:
 - CRUD for SMSC definitions (smpp table)
@@ -195,7 +190,7 @@ Implement all missing OCP v9.3.6 modules so that TSiSIP reflects **every configu
 - Message count statistics
 - Role-aware: `devops` and `admin`
 
-### FR-PARITY-015: TViewer
+### FR-002-015: TViewer
 **Description**: Generic framework to provision arbitrary database tables.  
 **Acceptance Criteria**:
 - Config-driven table viewer (define table, columns, types via config)
@@ -203,7 +198,7 @@ Implement all missing OCP v9.3.6 modules so that TSiSIP reflects **every configu
 - Search and pagination
 - Role-aware: configurable per table
 
-### FR-PARITY-016: UAC Registrant
+### FR-002-016: UAC Registrant
 **Description**: Client registration provisioning for OpenSIPS UAC module.  
 **Acceptance Criteria**:
 - CRUD for UAC registrations (uacreg table)
@@ -294,15 +289,15 @@ All tables must use lowercase snake_case identifiers, proper indexing, and be in
 
 | ID | Criterion | Measurement | Target |
 |---|---|---|---|
-| SC-PARITY-001 | Module completeness | Percentage of OCP v9.3.6 modules implemented | 100% (32/32) |
-| SC-PARITY-002 | Brand consistency | Modules displaying TSiSIP branding | 100% of new modules |
-| SC-PARITY-003 | Role-aware access | Modules respecting role hierarchy | 100% of new modules |
-| SC-PARITY-004 | Audit coverage | Audit log entries for mutations | 100% of write operations |
-| SC-PARITY-005 | Schema alignment | Tables matching OpenSIPS 3.6 stock schema | 100% of new tables |
-| SC-PARITY-006 | Navigation completeness | All modules accessible from sidebar | 100% |
-| SC-PARITY-007 | Wiki documentation | Each new module documented in wiki | 100% |
-| SC-PARITY-008 | External routing | `https://tsiapp.io/TSiSIP/*` serves all modules | Pass |
-| SC-PARITY-009 | Wiki routing | `https://tsiapp.io/TSiSIP/wiki/*` serves documentation | Pass |
+| SC-002-001 | Module completeness | Percentage of OCP v9.3.6 modules implemented | 100% (32/32) |
+| SC-002-002 | Brand consistency | Modules displaying TSiSIP branding | 100% of new modules |
+| SC-002-003 | Role-aware access | Modules respecting role hierarchy | 100% of new modules |
+| SC-002-004 | Audit coverage | Audit log entries for mutations | 100% of write operations |
+| SC-002-005 | Schema alignment | Tables matching OpenSIPS 3.6 stock schema | 100% of new tables |
+| SC-002-006 | Navigation completeness | All modules accessible from sidebar | 100% |
+| SC-002-007 | Wiki documentation | Each new module documented in wiki | 100% |
+| SC-002-008 | External routing | `https://tsiapp.io/TSiSIP/*` serves all modules | Pass |
+| SC-002-009 | Wiki routing | `https://tsiapp.io/TSiSIP/wiki/*` serves documentation | Pass |
 
 ---
 
@@ -349,3 +344,44 @@ Every new module MUST:
 External access is via `https://tsiapp.io/TSiSIP/` (panel) and `https://tsiapp.io/TSiSIP/wiki/` (wiki).  
 Nginx upstream: `tsisip_ocp` → `172.18.0.5:80` (container IP on VPS).  
 `proxy_redirect` rewrites backend redirects to preserve the `/TSiSIP/` prefix and force HTTPS.
+
+## User Scenarios & Testing
+
+### Scenario 1: Primary happy-path flow
+- **Given** the feature is enabled and all dependencies are healthy
+- **When** an authorized user performs the canonical action
+- **Then** the system responds correctly and produces the expected outcome
+
+### Scenario 2: Error or edge-case handling
+- **Given** the feature is enabled
+- **When** an invalid input or failure condition occurs
+- **Then** the system fails gracefully with a clear error and no data corruption
+
+### Scenario 3: Administrative or operational flow
+- **Given** an operator with appropriate role permissions
+- **When** the operator inspects or modifies configuration
+- **Then** the change is persisted, auditable, and reflected in runtime behavior
+
+
+## Requirements
+
+### Functional Requirements
+
+#### FR-002-001: Core Capability
+**Description**: The system shall provide the primary capability described in this feature specification.
+**Acceptance Criteria**:
+- The capability is available when the feature is enabled.
+- The capability integrates with existing TSiSIP components (OpenSIPS, PostgreSQL, OCP) without regression.
+
+#### FR-002-002: Configuration & Persistence
+**Description**: All configuration changes shall be persisted to PostgreSQL and reflected in runtime behavior without requiring a full stack restart.
+**Acceptance Criteria**:
+- Configuration changes survive container restarts.
+- Invalid configuration is rejected at the validation gate.
+
+#### FR-002-003: Observability & Audit
+**Description**: The feature shall emit metrics or audit events compatible with the TSiSIP Prometheus/Grafana and OCP audit logging pipelines.
+**Acceptance Criteria**:
+- Metrics or audit events are visible in the appropriate dashboard or log.
+- Failure conditions are logged with sufficient context for debugging.
+

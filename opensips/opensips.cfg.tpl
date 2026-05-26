@@ -890,7 +890,7 @@ route[INBOUND_DID_ROUTING] {
 
     # Query DID mapping for the called number (RURI user part)
     $var(did_setid) = 0;
-    sql_query_one("SELECT tenant_id, dispatcher_setid FROM sip_trunk_did_mappings WHERE did_number = '$rU' AND enabled = true LIMIT 1", "$var(tenant_id);$var(did_setid)");
+    sql_query_one("SELECT tenant_id::VARCHAR(36), dispatcher_setid FROM sip_trunk_did_mappings WHERE did_number = '$rU' AND enabled = true LIMIT 1", "$var(tenant_id);$var(did_setid)");
     if ($rc == -1) {
         xlog("L_ERR", "INBOUND_DID_ROUTING: DB error during DID lookup for $rU\n");
         sl_send_reply(480, "Temporarily Unavailable");

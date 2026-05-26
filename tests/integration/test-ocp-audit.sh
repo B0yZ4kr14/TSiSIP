@@ -1,4 +1,5 @@
 #!/bin/bash
+# @req FR-010
 # TSiSIP OCP Audit Log — End-to-End Integration Test
 # Tests: insert pipeline, immutability trigger, retention purge,
 #        hash chain integrity, CSV/JSON export endpoints.

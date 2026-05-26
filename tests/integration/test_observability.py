@@ -1,4 +1,5 @@
 #!/usr/bin/env python3
+# @req FR-003
 """
 Integration tests for TSiSIP Observability Platform
 Validates: Prometheus scrape, Grafana dashboards, Alertmanager alerts

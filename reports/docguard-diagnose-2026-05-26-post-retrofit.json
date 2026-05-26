@@ -1,0 +1,980 @@
+{
+  "project": "TSiSIP",
+  "profile": "standard",
+  "status": "WARN",
+  "score": 96,
+  "grade": "A+",
+  "issueCount": 117,
+  "issues": [
+    {
+      "severity": "warning",
+      "validator": "Test-Spec",
+      "message": "Source-to-Test Map: source file `OCP PHP panel (web/)` not found on disk — stale entry?",
+      "action": "Update TEST-SPEC.md",
+      "command": "docguard fix --doc test-spec",
+      "fixKind": "agent",
+      "docTarget": "test-spec"
+    },
+    {
+      "severity": "warning",
+      "validator": "Freshness",
+      "message": "ROADMAP.md — 21 code commits since last doc update (2026-05-17)",
+      "action": "Review stale documents",
+      "command": "docguard fix --doc",
+      "fixKind": "agent",
+      "docTarget": null
+    },
+    {
+      "severity": "warning",
+      "validator": "Traceability",
+      "message": "Requirement SC-023 (specs/023-subscriber-crud-refactor/spec.md:164) has no test coverage. Add @req SC-023 comment to the test that verifies this requirement",
+      "action": "Link the requirement ID to its test(s)",
+      "command": null,
+      "fixKind": "agent"
+    },
+    {
+      "severity": "warning",
+      "validator": "Spec-Kit",
+      "message": "specs/001-opensips-docker-edge-proxy/plan.md: Missing mandatory section: \"Summary\" (spec-kit plan-template.md)",
+      "action": "Add the missing Spec Kit artifact / section",
+      "command": null,
+      "fixKind": "agent"
+    },
+    {
+      "severity": "warning",
+      "validator": "Spec-Kit",
+      "message": "specs/001-opensips-docker-edge-proxy/plan.md: Missing mandatory section: \"Technical Context\" (spec-kit plan-template.md)",
+      "action": "Add the missing Spec Kit artifact / section",
+      "command": null,
+      "fixKind": "agent"
+    },
+    {
+      "severity": "warning",
+      "validator": "Spec-Kit",
+      "message": "specs/001-opensips-docker-edge-proxy/plan.md: Missing mandatory section: \"Project Structure\" (spec-kit plan-template.md)",
+      "action": "Add the missing Spec Kit artifact / section",
+      "command": null,
+      "fixKind": "agent"
+    },
+    {
+      "severity": "warning",
+      "validator": "Spec-Kit",
+      "message": "specs/001-opensips-docker-edge-proxy/tasks.md: No task IDs found (expected T001, T002, etc.)",
+      "action": "Add the missing Spec Kit artifact / section",
+      "command": null,
+      "fixKind": "agent"
+    },
+    {
+      "severity": "warning",
+      "validator": "Spec-Kit",
+      "message": "specs/002-tsisip-ocp-rebrand/spec.md: Missing mandatory section: \"User Scenarios\" (spec-kit spec-template.md)",
+      "action": "Add the missing Spec Kit artifact / section",
+      "command": null,
+      "fixKind": "agent"
+    },
+    {
+      "severity": "warning",
+      "validator": "Spec-Kit",
+      "message": "specs/002-tsisip-ocp-rebrand/spec.md: No requirement IDs found (expected FR-001, REQ-001, etc.)",
+      "action": "Add the missing Spec Kit artifact / section",
+      "command": null,
+      "fixKind": "agent"
+    },
+    {
+      "severity": "warning",
+      "validator": "Spec-Kit",
+      "message": "specs/002-tsisip-ocp-rebrand/spec.md: No success criteria IDs found (expected SC-001, SC-002, etc.)",
+      "action": "Add the missing Spec Kit artifact / section",
+      "command": null,
+      "fixKind": "agent"
+    },
+    {
+      "severity": "warning",
+      "validator": "Spec-Kit",
+      "message": "specs/002-tsisip-ocp-rebrand/plan.md: Missing mandatory section: \"Summary\" (spec-kit plan-template.md)",
+      "action": "Add the missing Spec Kit artifact / section",
+      "command": null,
+      "fixKind": "agent"
+    },
+    {
+      "severity": "warning",
+      "validator": "Spec-Kit",
+      "message": "specs/002-tsisip-ocp-rebrand/plan.md: Missing mandatory section: \"Technical Context\" (spec-kit plan-template.md)",
+      "action": "Add the missing Spec Kit artifact / section",
+      "command": null,
+      "fixKind": "agent"
+    },
+    {
+      "severity": "warning",
+      "validator": "Spec-Kit",
+      "message": "specs/002-tsisip-ocp-rebrand/plan.md: Missing mandatory section: \"Project Structure\" (spec-kit plan-template.md)",
+      "action": "Add the missing Spec Kit artifact / section",
+      "command": null,
+      "fixKind": "agent"
+    },
+    {
+      "severity": "warning",
+      "validator": "Spec-Kit",
+      "message": "specs/002-tsisip-ocp-rebrand/tasks.md: No task IDs found (expected T001, T002, etc.)",
+      "action": "Add the missing Spec Kit artifact / section",
+      "command": null,
+      "fixKind": "agent"
+    },
+    {
+      "severity": "warning",
+      "validator": "Spec-Kit",
+      "message": "specs/003-prometheus-grafana-observability/plan.md: Missing mandatory section: \"Summary\" (spec-kit plan-template.md)",
+      "action": "Add the missing Spec Kit artifact / section",
+      "command": null,
+      "fixKind": "agent"
+    },
+    {
+      "severity": "warning",
+      "validator": "Spec-Kit",
+      "message": "specs/003-prometheus-grafana-observability/plan.md: Missing mandatory section: \"Technical Context\" (spec-kit plan-template.md)",
+      "action": "Add the missing Spec Kit artifact / section",
+      "command": null,
+      "fixKind": "agent"
+    },
+    {
+      "severity": "warning",
+      "validator": "Spec-Kit",
+      "message": "specs/003-prometheus-grafana-observability/plan.md: Missing mandatory section: \"Project Structure\" (spec-kit plan-template.md)",
+      "action": "Add the missing Spec Kit artifact / section",
+      "command": null,
+      "fixKind": "agent"
+    },
+    {
+      "severity": "warning",
+      "validator": "Spec-Kit",
+      "message": "specs/003-prometheus-grafana-observability/tasks.md: No task IDs found (expected T001, T002, etc.)",
+      "action": "Add the missing Spec Kit artifact / section",
+      "command": null,
+      "fixKind": "agent"
+    },
+    {
+      "severity": "warning",
+      "validator": "Spec-Kit",
+      "message": "specs/004-health-checks-autohealing/plan.md: Missing mandatory section: \"Summary\" (spec-kit plan-template.md)",
+      "action": "Add the missing Spec Kit artifact / section",
+      "command": null,
+      "fixKind": "agent"
+    },
+    {
+      "severity": "warning",
+      "validator": "Spec-Kit",
+      "message": "specs/004-health-checks-autohealing/plan.md: Missing mandatory section: \"Technical Context\" (spec-kit plan-template.md)",
+      "action": "Add the missing Spec Kit artifact / section",
+      "command": null,
+      "fixKind": "agent"
+    },
+    {
+      "severity": "warning",
+      "validator": "Spec-Kit",
+      "message": "specs/004-health-checks-autohealing/plan.md: Missing mandatory section: \"Project Structure\" (spec-kit plan-template.md)",
+      "action": "Add the missing Spec Kit artifact / section",
+      "command": null,
+      "fixKind": "agent"
+    },
+    {
+      "severity": "warning",
+      "validator": "Spec-Kit",
+      "message": "specs/004-health-checks-autohealing/tasks.md: No task IDs found (expected T001, T002, etc.)",
+      "action": "Add the missing Spec Kit artifact / section",
+      "command": null,
+      "fixKind": "agent"
+    },
+    {
+      "severity": "warning",
+      "validator": "Spec-Kit",
+      "message": "specs/005-postgresql-backup-restore/plan.md: Missing mandatory section: \"Summary\" (spec-kit plan-template.md)",
+      "action": "Add the missing Spec Kit artifact / section",
+      "command": null,
+      "fixKind": "agent"
+    },
+    {
+      "severity": "warning",
+      "validator": "Spec-Kit",
+      "message": "specs/005-postgresql-backup-restore/plan.md: Missing mandatory section: \"Technical Context\" (spec-kit plan-template.md)",
+      "action": "Add the missing Spec Kit artifact / section",
+      "command": null,
+      "fixKind": "agent"
+    },
+    {
+      "severity": "warning",
+      "validator": "Spec-Kit",
+      "message": "specs/005-postgresql-backup-restore/plan.md: Missing mandatory section: \"Project Structure\" (spec-kit plan-template.md)",
+      "action": "Add the missing Spec Kit artifact / section",
+      "command": null,
+      "fixKind": "agent"
+    },
+    {
+      "severity": "warning",
+      "validator": "Spec-Kit",
+      "message": "specs/005-postgresql-backup-restore/tasks.md: No task IDs found (expected T001, T002, etc.)",
+      "action": "Add the missing Spec Kit artifact / section",
+      "command": null,
+      "fixKind": "agent"
+    },
+    {
+      "severity": "warning",
+      "validator": "Spec-Kit",
+      "message": "specs/006-rate-limiting-ddos-protection/plan.md: Missing mandatory section: \"Summary\" (spec-kit plan-template.md)",
+      "action": "Add the missing Spec Kit artifact / section",
+      "command": null,
+      "fixKind": "agent"
+    },
+    {
+      "severity": "warning",
+      "validator": "Spec-Kit",
+      "message": "specs/006-rate-limiting-ddos-protection/plan.md: Missing mandatory section: \"Technical Context\" (spec-kit plan-template.md)",
+      "action": "Add the missing Spec Kit artifact / section",
+      "command": null,
+      "fixKind": "agent"
+    },
+    {
+      "severity": "warning",
+      "validator": "Spec-Kit",
+      "message": "specs/006-rate-limiting-ddos-protection/plan.md: Missing mandatory section: \"Project Structure\" (spec-kit plan-template.md)",
+      "action": "Add the missing Spec Kit artifact / section",
+      "command": null,
+      "fixKind": "agent"
+    },
+    {
+      "severity": "warning",
+      "validator": "Spec-Kit",
+      "message": "specs/006-rate-limiting-ddos-protection/tasks.md: No task IDs found (expected T001, T002, etc.)",
+      "action": "Add the missing Spec Kit artifact / section",
+      "command": null,
+      "fixKind": "agent"
+    },
+    {
+      "severity": "warning",
+      "validator": "Spec-Kit",
+      "message": "specs/007-tls-srtp-encryption/plan.md: Missing mandatory section: \"Summary\" (spec-kit plan-template.md)",
+      "action": "Add the missing Spec Kit artifact / section",
+      "command": null,
+      "fixKind": "agent"
+    },
+    {
+      "severity": "warning",
+      "validator": "Spec-Kit",
+      "message": "specs/007-tls-srtp-encryption/plan.md: Missing mandatory section: \"Technical Context\" (spec-kit plan-template.md)",
+      "action": "Add the missing Spec Kit artifact / section",
+      "command": null,
+      "fixKind": "agent"
+    },
+    {
+      "severity": "warning",
+      "validator": "Spec-Kit",
+      "message": "specs/007-tls-srtp-encryption/plan.md: Missing mandatory section: \"Project Structure\" (spec-kit plan-template.md)",
+      "action": "Add the missing Spec Kit artifact / section",
+      "command": null,
+      "fixKind": "agent"
+    },
+    {
+      "severity": "warning",
+      "validator": "Spec-Kit",
+      "message": "specs/007-tls-srtp-encryption/tasks.md: No task IDs found (expected T001, T002, etc.)",
+      "action": "Add the missing Spec Kit artifact / section",
+      "command": null,
+      "fixKind": "agent"
+    },
+    {
+      "severity": "warning",
+      "validator": "Spec-Kit",
+      "message": "specs/008-devsecops-deployment/plan.md: Missing mandatory section: \"Summary\" (spec-kit plan-template.md)",
+      "action": "Add the missing Spec Kit artifact / section",
+      "command": null,
+      "fixKind": "agent"
+    },
+    {
+      "severity": "warning",
+      "validator": "Spec-Kit",
+      "message": "specs/008-devsecops-deployment/plan.md: Missing mandatory section: \"Technical Context\" (spec-kit plan-template.md)",
+      "action": "Add the missing Spec Kit artifact / section",
+      "command": null,
+      "fixKind": "agent"
+    },
+    {
+      "severity": "warning",
+      "validator": "Spec-Kit",
+      "message": "specs/008-devsecops-deployment/plan.md: Missing mandatory section: \"Project Structure\" (spec-kit plan-template.md)",
+      "action": "Add the missing Spec Kit artifact / section",
+      "command": null,
+      "fixKind": "agent"
+    },
+    {
+      "severity": "warning",
+      "validator": "Spec-Kit",
+      "message": "specs/008-devsecops-deployment/tasks.md: No task IDs found (expected T001, T002, etc.)",
+      "action": "Add the missing Spec Kit artifact / section",
+      "command": null,
+      "fixKind": "agent"
+    },
+    {
+      "severity": "warning",
+      "validator": "Spec-Kit",
+      "message": "specs/009-vps-deploy-automation/tasks.md: No task IDs found (expected T001, T002, etc.)",
+      "action": "Add the missing Spec Kit artifact / section",
+      "command": null,
+      "fixKind": "agent"
+    },
+    {
+      "severity": "warning",
+      "validator": "Spec-Kit",
+      "message": "specs/010-ocp-navigation-system-links/spec.md: No success criteria IDs found (expected SC-001, SC-002, etc.)",
+      "action": "Add the missing Spec Kit artifact / section",
+      "command": null,
+      "fixKind": "agent"
+    },
+    {
+      "severity": "warning",
+      "validator": "Spec-Kit",
+      "message": "specs/010-ocp-navigation-system-links/plan.md: Missing mandatory section: \"Summary\" (spec-kit plan-template.md)",
+      "action": "Add the missing Spec Kit artifact / section",
+      "command": null,
+      "fixKind": "agent"
+    },
+    {
+      "severity": "warning",
+      "validator": "Spec-Kit",
+      "message": "specs/010-ocp-navigation-system-links/plan.md: Missing mandatory section: \"Technical Context\" (spec-kit plan-template.md)",
+      "action": "Add the missing Spec Kit artifact / section",
+      "command": null,
+      "fixKind": "agent"
+    },
+    {
+      "severity": "warning",
+      "validator": "Spec-Kit",
+      "message": "specs/010-ocp-navigation-system-links/plan.md: Missing mandatory section: \"Project Structure\" (spec-kit plan-template.md)",
+      "action": "Add the missing Spec Kit artifact / section",
+      "command": null,
+      "fixKind": "agent"
+    },
+    {
+      "severity": "warning",
+      "validator": "Spec-Kit",
+      "message": "specs/010-ocp-navigation-system-links/tasks.md: No task IDs found (expected T001, T002, etc.)",
+      "action": "Add the missing Spec Kit artifact / section",
+      "command": null,
+      "fixKind": "agent"
+    },
+    {
+      "severity": "warning",
+      "validator": "Spec-Kit",
+      "message": "specs/011-ocp-forced-password-change/spec.md: Missing mandatory section: \"User Scenarios\" (spec-kit spec-template.md)",
+      "action": "Add the missing Spec Kit artifact / section",
+      "command": null,
+      "fixKind": "agent"
+    },
+    {
+      "severity": "warning",
+      "validator": "Spec-Kit",
+      "message": "specs/011-ocp-forced-password-change/spec.md: Missing mandatory section: \"Success Criteria\" (spec-kit spec-template.md)",
+      "action": "Add the missing Spec Kit artifact / section",
+      "command": null,
+      "fixKind": "agent"
+    },
+    {
+      "severity": "warning",
+      "validator": "Spec-Kit",
+      "message": "specs/011-ocp-forced-password-change/spec.md: No requirement IDs found (expected FR-001, REQ-001, etc.)",
+      "action": "Add the missing Spec Kit artifact / section",
+      "command": null,
+      "fixKind": "agent"
+    },
+    {
+      "severity": "warning",
+      "validator": "Spec-Kit",
+      "message": "specs/011-ocp-forced-password-change/spec.md: No success criteria IDs found (expected SC-001, SC-002, etc.)",
+      "action": "Add the missing Spec Kit artifact / section",
+      "command": null,
+      "fixKind": "agent"
+    },
+    {
+      "severity": "warning",
+      "validator": "Spec-Kit",
+      "message": "specs/011-ocp-forced-password-change/plan.md: Missing mandatory section: \"Summary\" (spec-kit plan-template.md)",
+      "action": "Add the missing Spec Kit artifact / section",
+      "command": null,
+      "fixKind": "agent"
+    },
+    {
+      "severity": "warning",
+      "validator": "Spec-Kit",
+      "message": "specs/011-ocp-forced-password-change/plan.md: Missing mandatory section: \"Technical Context\" (spec-kit plan-template.md)",
+      "action": "Add the missing Spec Kit artifact / section",
+      "command": null,
+      "fixKind": "agent"
+    },
+    {
+      "severity": "warning",
+      "validator": "Spec-Kit",
+      "message": "specs/011-ocp-forced-password-change/plan.md: Missing mandatory section: \"Project Structure\" (spec-kit plan-template.md)",
+      "action": "Add the missing Spec Kit artifact / section",
+      "command": null,
+      "fixKind": "agent"
+    },
+    {
+      "severity": "warning",
+      "validator": "Spec-Kit",
+      "message": "specs/011-ocp-forced-password-change/tasks.md: No phased task breakdown found (expected \"Phase 1:\", \"Phase 2:\", etc.)",
+      "action": "Add the missing Spec Kit artifact / section",
+      "command": null,
+      "fixKind": "agent"
+    },
+    {
+      "severity": "warning",
+      "validator": "Spec-Kit",
+      "message": "specs/011-ocp-forced-password-change/tasks.md: No task IDs found (expected T001, T002, etc.)",
+      "action": "Add the missing Spec Kit artifact / section",
+      "command": null,
+      "fixKind": "agent"
+    },
+    {
+      "severity": "warning",
+      "validator": "Spec-Kit",
+      "message": "specs/012-ocp-admin-tools-restoration/spec.md: Missing mandatory section: \"User Scenarios\" (spec-kit spec-template.md)",
+      "action": "Add the missing Spec Kit artifact / section",
+      "command": null,
+      "fixKind": "agent"
+    },
+    {
+      "severity": "warning",
+      "validator": "Spec-Kit",
+      "message": "specs/012-ocp-admin-tools-restoration/spec.md: Missing mandatory section: \"Success Criteria\" (spec-kit spec-template.md)",
+      "action": "Add the missing Spec Kit artifact / section",
+      "command": null,
+      "fixKind": "agent"
+    },
+    {
+      "severity": "warning",
+      "validator": "Spec-Kit",
+      "message": "specs/012-ocp-admin-tools-restoration/spec.md: No requirement IDs found (expected FR-001, REQ-001, etc.)",
+      "action": "Add the missing Spec Kit artifact / section",
+      "command": null,
+      "fixKind": "agent"
+    },
+    {
+      "severity": "warning",
+      "validator": "Spec-Kit",
+      "message": "specs/012-ocp-admin-tools-restoration/spec.md: No success criteria IDs found (expected SC-001, SC-002, etc.)",
+      "action": "Add the missing Spec Kit artifact / section",
+      "command": null,
+      "fixKind": "agent"
+    },
+    {
+      "severity": "warning",
+      "validator": "Spec-Kit",
+      "message": "specs/012-ocp-admin-tools-restoration/plan.md: Missing mandatory section: \"Summary\" (spec-kit plan-template.md)",
+      "action": "Add the missing Spec Kit artifact / section",
+      "command": null,
+      "fixKind": "agent"
+    },
+    {
+      "severity": "warning",
+      "validator": "Spec-Kit",
+      "message": "specs/012-ocp-admin-tools-restoration/plan.md: Missing mandatory section: \"Technical Context\" (spec-kit plan-template.md)",
+      "action": "Add the missing Spec Kit artifact / section",
+      "command": null,
+      "fixKind": "agent"
+    },
+    {
+      "severity": "warning",
+      "validator": "Spec-Kit",
+      "message": "specs/012-ocp-admin-tools-restoration/plan.md: Missing mandatory section: \"Project Structure\" (spec-kit plan-template.md)",
+      "action": "Add the missing Spec Kit artifact / section",
+      "command": null,
+      "fixKind": "agent"
+    },
+    {
+      "severity": "warning",
+      "validator": "Spec-Kit",
+      "message": "specs/012-ocp-admin-tools-restoration/tasks.md: No phased task breakdown found (expected \"Phase 1:\", \"Phase 2:\", etc.)",
+      "action": "Add the missing Spec Kit artifact / section",
+      "command": null,
+      "fixKind": "agent"
+    },
+    {
+      "severity": "warning",
+      "validator": "Spec-Kit",
+      "message": "specs/012-ocp-admin-tools-restoration/tasks.md: No task IDs found (expected T001, T002, etc.)",
+      "action": "Add the missing Spec Kit artifact / section",
+      "command": null,
+      "fixKind": "agent"
+    },
+    {
+      "severity": "warning",
+      "validator": "Spec-Kit",
+      "message": "specs/013-brownfield-follow-up/spec.md: Missing mandatory section: \"User Scenarios\" (spec-kit spec-template.md)",
+      "action": "Add the missing Spec Kit artifact / section",
+      "command": null,
+      "fixKind": "agent"
+    },
+    {
+      "severity": "warning",
+      "validator": "Spec-Kit",
+      "message": "specs/013-brownfield-follow-up/spec.md: Missing mandatory section: \"Requirements\" (spec-kit spec-template.md)",
+      "action": "Add the missing Spec Kit artifact / section",
+      "command": null,
+      "fixKind": "agent"
+    },
+    {
+      "severity": "warning",
+      "validator": "Spec-Kit",
+      "message": "specs/013-brownfield-follow-up/spec.md: Missing mandatory section: \"Success Criteria\" (spec-kit spec-template.md)",
+      "action": "Add the missing Spec Kit artifact / section",
+      "command": null,
+      "fixKind": "agent"
+    },
+    {
+      "severity": "warning",
+      "validator": "Spec-Kit",
+      "message": "specs/013-brownfield-follow-up/spec.md: No requirement IDs found (expected FR-001, REQ-001, etc.)",
+      "action": "Add the missing Spec Kit artifact / section",
+      "command": null,
+      "fixKind": "agent"
+    },
+    {
+      "severity": "warning",
+      "validator": "Spec-Kit",
+      "message": "specs/013-brownfield-follow-up/spec.md: No success criteria IDs found (expected SC-001, SC-002, etc.)",
+      "action": "Add the missing Spec Kit artifact / section",
+      "command": null,
+      "fixKind": "agent"
+    },
+    {
+      "severity": "warning",
+      "validator": "Spec-Kit",
+      "message": "specs/013-brownfield-follow-up/plan.md: Missing mandatory section: \"Summary\" (spec-kit plan-template.md)",
+      "action": "Add the missing Spec Kit artifact / section",
+      "command": null,
+      "fixKind": "agent"
+    },
+    {
+      "severity": "warning",
+      "validator": "Spec-Kit",
+      "message": "specs/013-brownfield-follow-up/plan.md: Missing mandatory section: \"Technical Context\" (spec-kit plan-template.md)",
+      "action": "Add the missing Spec Kit artifact / section",
+      "command": null,
+      "fixKind": "agent"
+    },
+    {
+      "severity": "warning",
+      "validator": "Spec-Kit",
+      "message": "specs/013-brownfield-follow-up/plan.md: Missing mandatory section: \"Project Structure\" (spec-kit plan-template.md)",
+      "action": "Add the missing Spec Kit artifact / section",
+      "command": null,
+      "fixKind": "agent"
+    },
+    {
+      "severity": "warning",
+      "validator": "Spec-Kit",
+      "message": "specs/013-brownfield-follow-up/tasks.md: No phased task breakdown found (expected \"Phase 1:\", \"Phase 2:\", etc.)",
+      "action": "Add the missing Spec Kit artifact / section",
+      "command": null,
+      "fixKind": "agent"
+    },
+    {
+      "severity": "warning",
+      "validator": "Spec-Kit",
+      "message": "specs/013-brownfield-follow-up/tasks.md: No task IDs found (expected T001, T002, etc.)",
+      "action": "Add the missing Spec Kit artifact / section",
+      "command": null,
+      "fixKind": "agent"
+    },
+    {
+      "severity": "warning",
+      "validator": "Spec-Kit",
+      "message": "specs/015-auto-tls-certificate-rotation/spec.md: Missing mandatory section: \"User Scenarios\" (spec-kit spec-template.md)",
+      "action": "Add the missing Spec Kit artifact / section",
+      "command": null,
+      "fixKind": "agent"
+    },
+    {
+      "severity": "warning",
+      "validator": "Spec-Kit",
+      "message": "specs/015-auto-tls-certificate-rotation/spec.md: Missing mandatory section: \"Requirements\" (spec-kit spec-template.md)",
+      "action": "Add the missing Spec Kit artifact / section",
+      "command": null,
+      "fixKind": "agent"
+    },
+    {
+      "severity": "warning",
+      "validator": "Spec-Kit",
+      "message": "specs/015-auto-tls-certificate-rotation/spec.md: Missing mandatory section: \"Success Criteria\" (spec-kit spec-template.md)",
+      "action": "Add the missing Spec Kit artifact / section",
+      "command": null,
+      "fixKind": "agent"
+    },
+    {
+      "severity": "warning",
+      "validator": "Spec-Kit",
+      "message": "specs/015-auto-tls-certificate-rotation/spec.md: No requirement IDs found (expected FR-001, REQ-001, etc.)",
+      "action": "Add the missing Spec Kit artifact / section",
+      "command": null,
+      "fixKind": "agent"
+    },
+    {
+      "severity": "warning",
+      "validator": "Spec-Kit",
+      "message": "specs/015-auto-tls-certificate-rotation/spec.md: No success criteria IDs found (expected SC-001, SC-002, etc.)",
+      "action": "Add the missing Spec Kit artifact / section",
+      "command": null,
+      "fixKind": "agent"
+    },
+    {
+      "severity": "warning",
+      "validator": "Spec-Kit",
+      "message": "specs/015-auto-tls-certificate-rotation/plan.md: Missing mandatory section: \"Summary\" (spec-kit plan-template.md)",
+      "action": "Add the missing Spec Kit artifact / section",
+      "command": null,
+      "fixKind": "agent"
+    },
+    {
+      "severity": "warning",
+      "validator": "Spec-Kit",
+      "message": "specs/015-auto-tls-certificate-rotation/plan.md: Missing mandatory section: \"Technical Context\" (spec-kit plan-template.md)",
+      "action": "Add the missing Spec Kit artifact / section",
+      "command": null,
+      "fixKind": "agent"
+    },
+    {
+      "severity": "warning",
+      "validator": "Spec-Kit",
+      "message": "specs/015-auto-tls-certificate-rotation/plan.md: Missing mandatory section: \"Project Structure\" (spec-kit plan-template.md)",
+      "action": "Add the missing Spec Kit artifact / section",
+      "command": null,
+      "fixKind": "agent"
+    },
+    {
+      "severity": "warning",
+      "validator": "Spec-Kit",
+      "message": "specs/015-auto-tls-certificate-rotation/tasks.md: No phased task breakdown found (expected \"Phase 1:\", \"Phase 2:\", etc.)",
+      "action": "Add the missing Spec Kit artifact / section",
+      "command": null,
+      "fixKind": "agent"
+    },
+    {
+      "severity": "warning",
+      "validator": "Spec-Kit",
+      "message": "specs/015-auto-tls-certificate-rotation/tasks.md: No task IDs found (expected T001, T002, etc.)",
+      "action": "Add the missing Spec Kit artifact / section",
+      "command": null,
+      "fixKind": "agent"
+    },
+    {
+      "severity": "warning",
+      "validator": "Spec-Kit",
+      "message": "specs/016-ocp-audit-log-compliance/spec.md: Missing mandatory section: \"User Scenarios\" (spec-kit spec-template.md)",
+      "action": "Add the missing Spec Kit artifact / section",
+      "command": null,
+      "fixKind": "agent"
+    },
+    {
+      "severity": "warning",
+      "validator": "Spec-Kit",
+      "message": "specs/016-ocp-audit-log-compliance/spec.md: Missing mandatory section: \"Requirements\" (spec-kit spec-template.md)",
+      "action": "Add the missing Spec Kit artifact / section",
+      "command": null,
+      "fixKind": "agent"
+    },
+    {
+      "severity": "warning",
+      "validator": "Spec-Kit",
+      "message": "specs/016-ocp-audit-log-compliance/spec.md: Missing mandatory section: \"Success Criteria\" (spec-kit spec-template.md)",
+      "action": "Add the missing Spec Kit artifact / section",
+      "command": null,
+      "fixKind": "agent"
+    },
+    {
+      "severity": "warning",
+      "validator": "Spec-Kit",
+      "message": "specs/016-ocp-audit-log-compliance/spec.md: No requirement IDs found (expected FR-001, REQ-001, etc.)",
+      "action": "Add the missing Spec Kit artifact / section",
+      "command": null,
+      "fixKind": "agent"
+    },
+    {
+      "severity": "warning",
+      "validator": "Spec-Kit",
+      "message": "specs/016-ocp-audit-log-compliance/spec.md: No success criteria IDs found (expected SC-001, SC-002, etc.)",
+      "action": "Add the missing Spec Kit artifact / section",
+      "command": null,
+      "fixKind": "agent"
+    },
+    {
+      "severity": "warning",
+      "validator": "Spec-Kit",
+      "message": "specs/016-ocp-audit-log-compliance/plan.md: Missing mandatory section: \"Summary\" (spec-kit plan-template.md)",
+      "action": "Add the missing Spec Kit artifact / section",
+      "command": null,
+      "fixKind": "agent"
+    },
+    {
+      "severity": "warning",
+      "validator": "Spec-Kit",
+      "message": "specs/016-ocp-audit-log-compliance/plan.md: Missing mandatory section: \"Technical Context\" (spec-kit plan-template.md)",
+      "action": "Add the missing Spec Kit artifact / section",
+      "command": null,
+      "fixKind": "agent"
+    },
+    {
+      "severity": "warning",
+      "validator": "Spec-Kit",
+      "message": "specs/016-ocp-audit-log-compliance/plan.md: Missing mandatory section: \"Project Structure\" (spec-kit plan-template.md)",
+      "action": "Add the missing Spec Kit artifact / section",
+      "command": null,
+      "fixKind": "agent"
+    },
+    {
+      "severity": "warning",
+      "validator": "Spec-Kit",
+      "message": "specs/016-ocp-audit-log-compliance/tasks.md: No phased task breakdown found (expected \"Phase 1:\", \"Phase 2:\", etc.)",
+      "action": "Add the missing Spec Kit artifact / section",
+      "command": null,
+      "fixKind": "agent"
+    },
+    {
+      "severity": "warning",
+      "validator": "Spec-Kit",
+      "message": "specs/016-ocp-audit-log-compliance/tasks.md: No task IDs found (expected T001, T002, etc.)",
+      "action": "Add the missing Spec Kit artifact / section",
+      "command": null,
+      "fixKind": "agent"
+    },
+    {
+      "severity": "warning",
+      "validator": "Spec-Kit",
+      "message": "specs/017-sip-trunk-provider-integration/spec.md: Missing mandatory section: \"User Scenarios\" (spec-kit spec-template.md)",
+      "action": "Add the missing Spec Kit artifact / section",
+      "command": null,
+      "fixKind": "agent"
+    },
+    {
+      "severity": "warning",
+      "validator": "Spec-Kit",
+      "message": "specs/017-sip-trunk-provider-integration/plan.md: Missing mandatory section: \"Summary\" (spec-kit plan-template.md)",
+      "action": "Add the missing Spec Kit artifact / section",
+      "command": null,
+      "fixKind": "agent"
+    },
+    {
+      "severity": "warning",
+      "validator": "Spec-Kit",
+      "message": "specs/017-sip-trunk-provider-integration/plan.md: Missing mandatory section: \"Technical Context\" (spec-kit plan-template.md)",
+      "action": "Add the missing Spec Kit artifact / section",
+      "command": null,
+      "fixKind": "agent"
+    },
+    {
+      "severity": "warning",
+      "validator": "Spec-Kit",
+      "message": "specs/017-sip-trunk-provider-integration/plan.md: Missing mandatory section: \"Project Structure\" (spec-kit plan-template.md)",
+      "action": "Add the missing Spec Kit artifact / section",
+      "command": null,
+      "fixKind": "agent"
+    },
+    {
+      "severity": "warning",
+      "validator": "Spec-Kit",
+      "message": "specs/017-sip-trunk-provider-integration/tasks.md: No phased task breakdown found (expected \"Phase 1:\", \"Phase 2:\", etc.)",
+      "action": "Add the missing Spec Kit artifact / section",
+      "command": null,
+      "fixKind": "agent"
+    },
+    {
+      "severity": "warning",
+      "validator": "Spec-Kit",
+      "message": "specs/017-sip-trunk-provider-integration/tasks.md: No task IDs found (expected T001, T002, etc.)",
+      "action": "Add the missing Spec Kit artifact / section",
+      "command": null,
+      "fixKind": "agent"
+    },
+    {
+      "severity": "warning",
+      "validator": "Spec-Kit",
+      "message": "specs/018-global-requirement-id-migration/spec.md: Missing mandatory section: \"User Scenarios\" (spec-kit spec-template.md)",
+      "action": "Add the missing Spec Kit artifact / section",
+      "command": null,
+      "fixKind": "agent"
+    },
+    {
+      "severity": "warning",
+      "validator": "Spec-Kit",
+      "message": "specs/018-global-requirement-id-migration/spec.md: Missing mandatory section: \"Success Criteria\" (spec-kit spec-template.md)",
+      "action": "Add the missing Spec Kit artifact / section",
+      "command": null,
+      "fixKind": "agent"
+    },
+    {
+      "severity": "warning",
+      "validator": "Spec-Kit",
+      "message": "specs/018-global-requirement-id-migration/spec.md: No success criteria IDs found (expected SC-001, SC-002, etc.)",
+      "action": "Add the missing Spec Kit artifact / section",
+      "command": null,
+      "fixKind": "agent"
+    },
+    {
+      "severity": "warning",
+      "validator": "Spec-Kit",
+      "message": "specs/018-global-requirement-id-migration/plan.md: Missing mandatory section: \"Summary\" (spec-kit plan-template.md)",
+      "action": "Add the missing Spec Kit artifact / section",
+      "command": null,
+      "fixKind": "agent"
+    },
+    {
+      "severity": "warning",
+      "validator": "Spec-Kit",
+      "message": "specs/018-global-requirement-id-migration/plan.md: Missing mandatory section: \"Technical Context\" (spec-kit plan-template.md)",
+      "action": "Add the missing Spec Kit artifact / section",
+      "command": null,
+      "fixKind": "agent"
+    },
+    {
+      "severity": "warning",
+      "validator": "Spec-Kit",
+      "message": "specs/018-global-requirement-id-migration/plan.md: Missing mandatory section: \"Project Structure\" (spec-kit plan-template.md)",
+      "action": "Add the missing Spec Kit artifact / section",
+      "command": null,
+      "fixKind": "agent"
+    },
+    {
+      "severity": "warning",
+      "validator": "Spec-Kit",
+      "message": "specs/018-global-requirement-id-migration/tasks.md: No task IDs found (expected T001, T002, etc.)",
+      "action": "Add the missing Spec Kit artifact / section",
+      "command": null,
+      "fixKind": "agent"
+    },
+    {
+      "severity": "warning",
+      "validator": "Spec-Kit",
+      "message": "specs/019-spec-kit-memory-hub-integration/spec.md: Missing mandatory section: \"User Scenarios\" (spec-kit spec-template.md)",
+      "action": "Add the missing Spec Kit artifact / section",
+      "command": null,
+      "fixKind": "agent"
+    },
+    {
+      "severity": "warning",
+      "validator": "Spec-Kit",
+      "message": "specs/019-spec-kit-memory-hub-integration/spec.md: Missing mandatory section: \"Success Criteria\" (spec-kit spec-template.md)",
+      "action": "Add the missing Spec Kit artifact / section",
+      "command": null,
+      "fixKind": "agent"
+    },
+    {
+      "severity": "warning",
+      "validator": "Spec-Kit",
+      "message": "specs/019-spec-kit-memory-hub-integration/spec.md: No requirement IDs found (expected FR-001, REQ-001, etc.)",
+      "action": "Add the missing Spec Kit artifact / section",
+      "command": null,
+      "fixKind": "agent"
+    },
+    {
+      "severity": "warning",
+      "validator": "Spec-Kit",
+      "message": "specs/019-spec-kit-memory-hub-integration/spec.md: No success criteria IDs found (expected SC-001, SC-002, etc.)",
+      "action": "Add the missing Spec Kit artifact / section",
+      "command": null,
+      "fixKind": "agent"
+    },
+    {
+      "severity": "warning",
+      "validator": "Spec-Kit",
+      "message": "specs/019-spec-kit-memory-hub-integration/plan.md: Missing mandatory section: \"Summary\" (spec-kit plan-template.md)",
+      "action": "Add the missing Spec Kit artifact / section",
+      "command": null,
+      "fixKind": "agent"
+    },
+    {
+      "severity": "warning",
+      "validator": "Spec-Kit",
+      "message": "specs/019-spec-kit-memory-hub-integration/plan.md: Missing mandatory section: \"Technical Context\" (spec-kit plan-template.md)",
+      "action": "Add the missing Spec Kit artifact / section",
+      "command": null,
+      "fixKind": "agent"
+    },
+    {
+      "severity": "warning",
+      "validator": "Spec-Kit",
+      "message": "specs/019-spec-kit-memory-hub-integration/plan.md: Missing mandatory section: \"Project Structure\" (spec-kit plan-template.md)",
+      "action": "Add the missing Spec Kit artifact / section",
+      "command": null,
+      "fixKind": "agent"
+    },
+    {
+      "severity": "warning",
+      "validator": "Spec-Kit",
+      "message": "specs/019-spec-kit-memory-hub-integration/tasks.md: No phased task breakdown found (expected \"Phase 1:\", \"Phase 2:\", etc.)",
+      "action": "Add the missing Spec Kit artifact / section",
+      "command": null,
+      "fixKind": "agent"
+    },
+    {
+      "severity": "warning",
+      "validator": "Spec-Kit",
+      "message": "specs/019-spec-kit-memory-hub-integration/tasks.md: No task IDs found (expected T001, T002, etc.)",
+      "action": "Add the missing Spec Kit artifact / section",
+      "command": null,
+      "fixKind": "agent"
+    },
+    {
+      "severity": "warning",
+      "validator": "Metrics-Consistency",
+      "message": "specs/017-sip-trunk-provider-integration/spec.md says \"5060 checks\" but actual count is 220. Fix with `docguard fix --write`",
+      "action": "Update stale number(s) in docs",
+      "command": "docguard fix --write",
+      "fixKind": "agent"
+    },
+    {
+      "severity": "warning",
+      "validator": "Metrics-Consistency",
+      "message": "specs/017-sip-trunk-provider-integration/spec.md says \"10 checks\" but actual count is 220. Fix with `docguard fix --write`",
+      "action": "Update stale number(s) in docs",
+      "command": "docguard fix --write",
+      "fixKind": "agent"
+    },
+    {
+      "severity": "warning",
+      "validator": "Metrics-Consistency",
+      "message": "specs/017-sip-trunk-provider-integration/spec.md says \"100 checks\" but actual count is 220. Fix with `docguard fix --write`",
+      "action": "Update stale number(s) in docs",
+      "command": "docguard fix --write",
+      "fixKind": "agent"
+    }
+  ],
+  "mechanicalFixes": [
+    {
+      "validator": "Metrics-Consistency",
+      "type": "replace-count",
+      "file": "specs/017-sip-trunk-provider-integration/spec.md",
+      "label": "checks",
+      "found": 5060,
+      "actual": 220
+    },
+    {
+      "validator": "Metrics-Consistency",
+      "type": "replace-count",
+      "file": "specs/017-sip-trunk-provider-integration/spec.md",
+      "label": "checks",
+      "found": 10,
+      "actual": 220
+    },
+    {
+      "validator": "Metrics-Consistency",
+      "type": "replace-count",
+      "file": "specs/017-sip-trunk-provider-integration/spec.md",
+      "label": "checks",
+      "found": 100,
+      "actual": 220
+    }
+  ],
+  "fixCommands": [
+    "docguard fix --doc test-spec",
+    "docguard fix --doc",
+    "docguard fix --write"
+  ],
+  "timestamp": "2026-05-26T08:14:19.288Z"
+}

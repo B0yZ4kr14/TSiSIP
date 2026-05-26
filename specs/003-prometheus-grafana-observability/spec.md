@@ -180,3 +180,26 @@ Deliver a real-time observability platform that exposes TSiSIP infrastructure me
 > **Cross-feature dependency**: Dashboard color palette consistency depends on Feature 002 (TSiSIP OCP Rebrand) `theme.json`. Ensure Feature 002 SC-002 (100% branding coverage) is completed before implementing dashboard theming.
 - Consider `prometheus-node-exporter` for host-level metrics (CPU, memory, disk) on the OpenSIPS and RTPengine containers.
 - Falsification hypothesis: If Prometheus scrape adds >5ms latency per SIP message, pivot to asynchronous metric buffering.
+
+## Requirements
+
+### Functional Requirements
+
+#### FR-003-001: Core Capability
+**Description**: The system shall provide the primary capability described in this feature specification.
+**Acceptance Criteria**:
+- The capability is available when the feature is enabled.
+- The capability integrates with existing TSiSIP components (OpenSIPS, PostgreSQL, OCP) without regression.
+
+#### FR-003-002: Configuration & Persistence
+**Description**: All configuration changes shall be persisted to PostgreSQL and reflected in runtime behavior without requiring a full stack restart.
+**Acceptance Criteria**:
+- Configuration changes survive container restarts.
+- Invalid configuration is rejected at the validation gate.
+
+#### FR-003-003: Observability & Audit
+**Description**: The feature shall emit metrics or audit events compatible with the TSiSIP Prometheus/Grafana and OCP audit logging pipelines.
+**Acceptance Criteria**:
+- Metrics or audit events are visible in the appropriate dashboard or log.
+- Failure conditions are logged with sufficient context for debugging.
+

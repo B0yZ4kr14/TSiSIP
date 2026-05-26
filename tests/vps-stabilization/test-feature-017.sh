@@ -1,4 +1,5 @@
 #!/usr/bin/env bash
+# @req FR-017
 # Feature 017: SIP Trunk Provider Integration — VPS Validation Script
 # Validates schema, triggers, dispatcher sync, and uac_registrant population.
 

@@ -19,11 +19,33 @@
 
 ---
 
+## System Overview
+
+The TSiSIP data model is built on PostgreSQL 16 and serves three primary domains:
+- **Authentication**: Subscriber credentials (HA1 hashes), tenant-scoped access
+- **Routing**: Dispatcher sets, header routing rules, SIP trunk provider mappings
+- **Audit**: Operator actions, CDR records, password changes
+
+## Entities
+
+| Entity | Table | Purpose | Key Fields |
+|--------|-------|---------|------------|
+| Tenant | `tenants` | Multi-tenant isolation | `id (VARCHAR(36))`, `name`, `domain` |
+| Subscriber | `subscriber` | SIP digest auth | `username`, `domain`, `ha1`, `tenant_id` |
+| PBX Backend | `pbx_backends` | Asterisk pool routing | `id`, `sip_uri`, `tenant_id`, `enabled` |
+| Header Rule | `header_routing_rules` | Dynamic routing | `priority`, `match_field`, `match_value`, `action` |
+| Trunk Provider | `sip_trunk_providers` | External SIP trunk config | `name`, `host`, `port`, `transport`, `auth_username` |
+| Trunk DID | `sip_trunk_did_mappings` | DID-to-tenant mapping | `did`, `tenant_id`, `trunk_provider_id` |
+| Trunk Registration | `sip_trunk_registrations` | UAC registrant state | `provider_id`, `registration_required` |
+| Audit Log | `auth_audit_log` / `ocp_audit_log` | Security audit trail | `timestamp`, `user`, `action`, `result` |
+| CDR | `acc` / `cdr` | Call detail records | `callid`, `duration`, `trunk_provider_id` |
+
 ## Entity Summary
 
 | Entity | Storage | Primary Key | Source | Fields |
 |--------|---------|-------------|--------|--------|
-| <!-- No models detected --> | | | | |
+| Tenant | PostgreSQL | `id` | `db/init/02-tsisip-extensions.sql` | `id`, `name`, `domain` |
+| Subscriber | PostgreSQL | `username`+`domain` | `db/init/01-stock-opensips-schema.sql` | `username`, `domain`, `ha1`, `ha1_sha256` |
 
 ---
 

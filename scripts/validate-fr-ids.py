@@ -1,4 +1,6 @@
 #!/usr/bin/env python3
+# @req FR-002
+# @req FR-018
 """FR-ID Validation Script for Feature 018.
 
 Validates that all specs use feature-scoped FR-NNN-XXX IDs.

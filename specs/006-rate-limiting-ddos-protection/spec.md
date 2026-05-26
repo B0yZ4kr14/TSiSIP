@@ -136,3 +136,26 @@ Requests originate from thousands of IPs, each under the individual threshold. T
 > **Constitution Reference**: See `.specify/memory/constitution.md` §3 — The `sanity` module is forbidden in OpenSIPS 3.6 LTS. Use `maxfwd`, `uri`, and `t_check_trans` for minimal request validation.
 - All `htable` names must use lowercase snake_case (e.g., `ip_throttle`, `auth_failures`, `ban_list`).
 - Ban list TTLs must be short enough to avoid permanent lockout but long enough to deter brute force (default 300s).
+
+## Requirements
+
+### Functional Requirements
+
+#### FR-006-001: Core Capability
+**Description**: The system shall provide the primary capability described in this feature specification.
+**Acceptance Criteria**:
+- The capability is available when the feature is enabled.
+- The capability integrates with existing TSiSIP components (OpenSIPS, PostgreSQL, OCP) without regression.
+
+#### FR-006-002: Configuration & Persistence
+**Description**: All configuration changes shall be persisted to PostgreSQL and reflected in runtime behavior without requiring a full stack restart.
+**Acceptance Criteria**:
+- Configuration changes survive container restarts.
+- Invalid configuration is rejected at the validation gate.
+
+#### FR-006-003: Observability & Audit
+**Description**: The feature shall emit metrics or audit events compatible with the TSiSIP Prometheus/Grafana and OCP audit logging pipelines.
+**Acceptance Criteria**:
+- Metrics or audit events are visible in the appropriate dashboard or log.
+- Failure conditions are logged with sufficient context for debugging.
+

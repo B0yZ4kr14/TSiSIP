@@ -32,3 +32,54 @@ Post-remediation validation scan identified 3 new findings after the 5-cycle bro
 
 - reports/brownfield-scan-2026-05-20-post-remediation.md
 - evidence/remediation/ciclo-3/b8-backup-encryption-fix.md
+
+## User Scenarios & Testing
+
+### Scenario 1: Primary happy-path flow
+- **Given** the feature is enabled and all dependencies are healthy
+- **When** an authorized user performs the canonical action
+- **Then** the system responds correctly and produces the expected outcome
+
+### Scenario 2: Error or edge-case handling
+- **Given** the feature is enabled
+- **When** an invalid input or failure condition occurs
+- **Then** the system fails gracefully with a clear error and no data corruption
+
+### Scenario 3: Administrative or operational flow
+- **Given** an operator with appropriate role permissions
+- **When** the operator inspects or modifies configuration
+- **Then** the change is persisted, auditable, and reflected in runtime behavior
+
+
+## Requirements
+
+### Functional Requirements
+
+#### FR-013-001: Core Capability
+**Description**: The system shall provide the primary capability described in this feature specification.
+**Acceptance Criteria**:
+- The capability is available when the feature is enabled.
+- The capability integrates with existing TSiSIP components (OpenSIPS, PostgreSQL, OCP) without regression.
+
+#### FR-013-002: Configuration & Persistence
+**Description**: All configuration changes shall be persisted to PostgreSQL and reflected in runtime behavior without requiring a full stack restart.
+**Acceptance Criteria**:
+- Configuration changes survive container restarts.
+- Invalid configuration is rejected at the validation gate.
+
+#### FR-013-003: Observability & Audit
+**Description**: The feature shall emit metrics or audit events compatible with the TSiSIP Prometheus/Grafana and OCP audit logging pipelines.
+**Acceptance Criteria**:
+- Metrics or audit events are visible in the appropriate dashboard or log.
+- Failure conditions are logged with sufficient context for debugging.
+
+
+## Success Criteria
+
+| ID | Criterion | Measurement | Target |
+|---|---|---|---|
+| SC-013-001 | Feature functional completeness | End-to-end validation test pass rate | 100% |
+| SC-013-002 | Configuration persistence | Restart test with prior configuration | Pass |
+| SC-013-003 | Zero regression in existing flows | Existing integration tests pass rate | 100% |
+| SC-013-004 | Observability coverage | Metrics/audit events present | 100% of mutating actions |
+

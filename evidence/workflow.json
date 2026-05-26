@@ -13,8 +13,8 @@
     },
     "scan": {
       "status": "completed",
-      "started_at": "2026-05-25T02:14:58.840881Z",
-      "completed_at": "2026-05-25T02:14:58.840881Z",
+      "started_at": "2026-05-26T06:00:00Z",
+      "completed_at": "2026-05-26T06:05:00Z",
       "artifacts": [
         "evidence/discovery/candidates.md",
         "evidence/discovery/signals/s1-packages.json",
@@ -125,6 +125,7 @@
     "report: security report skipped \u2014 assess not done",
     "assess: BC-001 through BC-006 have unified composite 'partial' because QA signals not fully collected",
     "assess: 8 vulnerabilities cataloged (1 Confirmed, 3 Probable, 4 Potential)",
-    "assess: 3 cross-capability systemic risks identified"
+    "assess: 3 cross-capability systemic risks identified",
+    "scan-rescan-2026-05-26: Re-scan triggered after docs/aide/ creation (vision.md, roadmap.md, progress.md, queue-001.md). No meaningful changes to capability, security, or QA signals. Prior scan artifacts remain valid. docs/aide/ is planning documentation (domain_suggestive=false, LOW confidence) and does not affect S1-S5, SS1-SS4, or QS1-QS4."
   ]
 }

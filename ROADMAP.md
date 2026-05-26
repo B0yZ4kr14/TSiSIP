@@ -1,7 +1,7 @@
 # Roadmap
 
 Current public version: v1.1.13
-Last updated: 2026-05-13
+Last updated: 2026-05-26
 
 ## v1.1.9 reality
 

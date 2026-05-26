@@ -1,3 +1,19 @@
+## Summary
+
+This feature implements the specified capability for the TSiSIP SIP edge-proxy platform.
+
+## Technical Context
+
+- **OpenSIPS 3.6 LTS**: Core SIP proxy and signaling edge
+- **PostgreSQL**: Database backend for configuration and state
+- **Docker & Docker Compose**: Container orchestration and deployment
+- **RTPengine**: Media relay for RTP/RTCP
+- **Asterisk**: Backend PBX for voice applications
+
+## Project Structure
+
+Relevant directories and files for this feature are located under `specs/$spec/` and integrated into the main project tree.
+
 # Implementation Plan: TSiSIP Observability Platform with Prometheus and Grafana
 
 ## Overview

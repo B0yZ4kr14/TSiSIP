@@ -1,28 +1,28 @@
 # Feature 022 Tasks
 
-## Wave 0: Baseline Setup
-- [x] T1.1: Validate Docker/Compose versions on VPS
-- [x] T1.2: Verify disk/CPU/RAM availability
-- [x] T1.3: Inventory all secret files in secrets/ (must be 100% present)
-- [x] T1.4: Verify .env file completeness against .env.example
-- [x] T1.5: Capture baseline evidence (task-1-baseline.txt)
+## Phase 0: Baseline Setup
+- [x] T001: Validate Docker/Compose versions on VPS
+- [x] T002: Verify disk/CPU/RAM availability
+- [x] T003: Inventory all secret files in secrets/ (must be 100% present)
+- [x] T004: Verify .env file completeness against .env.example
+- [x] T005: Capture baseline evidence (task-1-baseline.txt)
 - [x] T1.6: Configure DNS A record for tsiapp.io → 179.190.15.116 at DNS provider
 
-## Wave 1: RED Tests + Rollback Prep
-- [x] T2.1: Write container health RED test (expect failure before fixes)
-- [x] T2.2: Capture RED evidence (task-2-red-health.txt)
-- [x] T3.1: Write SIP OPTIONS RED test (expect failure/no response)
-- [x] T3.2: Write SIP INVITE RED test (expect 407 or no response)
-- [x] T3.3: Capture RED evidence (task-3-red-sip.txt)
-- [x] T4.1: Write OCP endpoint RED test (curl expect failure)
-- [x] T4.2: Capture RED evidence (task-4-red-ocp.txt)
+## Phase 1: RED Tests + Rollback Prep
+- [x] T006: Write container health RED test (expect failure before fixes)
+- [x] T007: Capture RED evidence (task-2-red-health.txt)
+- [x] T011: Write SIP OPTIONS RED test (expect failure/no response)
+- [x] T012: Write SIP INVITE RED test (expect 407 or no response)
+- [x] T013: Capture RED evidence (task-3-red-sip.txt)
+- [x] T016: Write OCP endpoint RED test (curl expect failure)
+- [x] T017: Capture RED evidence (task-4-red-ocp.txt)
 - [x] T5.1: Draft rollback runbook per service
 - [x] T5.2: Define abort triggers and rollback dry-run steps
 - [x] T5.3: Capture rollback evidence (task-5-rollback-dryrun.txt)
 - [x] T5.4: Verify backup integrity before rollback (checksum test on latest pg_dump)
 - [x] T5.5: Execute full rollback restoration test — restore from latest pg_dump backup to isolated PostgreSQL container and verify subscriber table integrity (row count, schema version)
 
-## Wave 2: GREEN Implementation
+## Phase 2: GREEN Implementation
 - [x] T6.1: Fix docker-compose.vps.yml runtime issues (restart loops, missing env)
 - [x] T6.2: Verify stable docker compose up -d execution
 - [x] T6.3: Capture GREEN evidence (task-6-green-runtime.txt)
@@ -41,7 +41,7 @@
 - [x] T10.3: Capture port audit evidence (task-10-port-policy.txt)
 - [x] T10.4: Validate container hardening — verify cap_drop: [ALL] and minimal cap_add on all vps-lite services
 
-## Wave 3: REFACTOR
+## Phase 3: REFACTOR
 - [x] T11.1: Standardize healthcheck params (interval/timeout/retries/start_period)
 - [x] T11.2: Verify no false positives over 10-minute window
 - [x] T11.3: Capture healthcheck evidence (task-11-healthcheck-config.txt)
@@ -71,7 +71,7 @@
 - [x] A4: Verify cap_drop: [ALL] and security_opt on all services
 - [x] A5: Confirm PostgreSQL has no host-published ports
 
-## Wave FINAL: Verification
+## Phase FINAL: Verification
 - [x] F1: Plan compliance audit
 - [x] F2: Code/config quality review
 - [x] F3: Automated E2E QA execution

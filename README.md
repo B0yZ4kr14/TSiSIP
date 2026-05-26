@@ -1,7 +1,7 @@
 # TSiSIP — Docker-First SIP Edge Proxy Platform
 
-TSiSIP is a Docker-image-first SIP edge-proxy platform. Its SIP engine is based on **OpenSIPS 3.6 LTS**.
-It acts as the only public SIP signaling entry point and security boundary for a private, multi-tenant Asterisk PBX backend cluster.
+TSiSIP provides a Docker-image-first SIP edge-proxy platform. OpenSIPS 3.6 LTS powers the SIP engine.
+TSiSIP serves as the sole public SIP signaling entry point and security boundary for a private, multi-tenant Asterisk PBX backend cluster.
 
 ## Features
 
@@ -31,7 +31,7 @@ It acts as the only public SIP signaling entry point and security boundary for a
 | **023 — Subscriber CRUD Refactor** | Completed | Proxy layer, HA1 delegation, ARCH-PRE-001 resolution |
 | **024 — Brownfield Remediation** | Completed | SHA pinning, dynamic IP discovery, Dockerfile healthchecks |
 
-## Quick Start
+## Installation
 
 ```bash
 # Clone and enter directory
@@ -44,12 +44,22 @@ echo "your-topology-secret-32-chars!!" > secrets/topology_secret
 
 # Build everything
 make build
+```
 
+## Usage
+
+```bash
 # Start the stack
 make up
 
 # Run tests
 make test
+
+# View logs
+make logs
+
+# Stop the stack
+make down
 ```
 
 ## Architecture
@@ -129,7 +139,7 @@ location /ws {
 }
 ```
 
-Clients connect via `wss://your-domain/ws` for secure WebRTC signaling.
+Connect clients via `wss://your-domain/ws` for secure WebRTC signaling.
 
 ## Security
 

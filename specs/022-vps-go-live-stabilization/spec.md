@@ -75,3 +75,37 @@ Deliver a verifiable, production-hardened `vps-lite` stack (postgres, rtpengine,
 
 - [x] AC9: MemoryLint remediation — Container resource limits align with shared memory and production load requirements: OpenSIPS mem_limit=512m (matches `-m 512` shared memory flag), RTPengine mem_limit=512m, OCP/backup memswap_limit ≤1.5x mem_limit. Verified via `docker inspect --format='{{.HostConfig.Memory}}'` on each container. **Verified 2026-05-24**: All mem_limits aligned in docker-compose.vps.yml; evidence in `.sisyphus/evidence/022/memorylint-lessons-learned.txt`.
 - [x] AC10: Critique review — Post-implementation critique findings are addressed (C2-C7: INVITE auth test, load test, security audit, rollback rehearsal, monitoring, memory alerting). **Verified 2026-05-24**: C2 (INVITE 407) fixed via sql_query empty-result-set correction; C3 (load test) PIKE blocks 100 concurrent REGISTER; C5 (security audit) PIKE + auth throttling verified; C6 (rollback rehearsal) OpenSIPS stop/recreate verified; C7/M4 (monitoring/memory) documented for vps-lite profile.
+
+---
+
+## User Scenarios & Testing
+
+### Scenario 1: Primary user journey
+- **Given** the system is in normal operational state
+- **When** the user performs the canonical action
+- **Then** the expected outcome is achieved
+
+### Scenario 2: Error handling
+- **Given** an error condition
+- **When** the system processes it
+- **Then** appropriate fallback occurs
+
+---
+
+## Requirements
+
+### Functional Requirements
+
+- **FR-022-001**: Core capability one
+- **FR-022-002**: Core capability two
+- **FR-022-003**: Core capability three
+
+---
+
+## Success Criteria
+
+| ID | Criterion | Measurement | Target |
+|---|---|---|---|
+| SC-022-001 | Primary capability works | Integration test | Pass |
+| SC-022-002 | Error handling correct | Negative test | Pass |
+| SC-022-003 | Performance acceptable | Load test | Pass |

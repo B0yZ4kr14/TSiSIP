@@ -172,3 +172,26 @@ If a restore is already in progress on a given target (e.g., the ephemeral valid
 - Retention policy must respect LGPD (Lei 13.709/2018); the default 30 days is a baseline and may be increased per deployment if required by specific data processing agreements.
 - Backup container expoe metricas Prometheus em `/backup/metrics` (RPO lag, RTO ultimo, status do backup). Alertas de falha sao roteados pelo Alertmanager ja presente no stack TSiSIP.
 - Validation test containers must be destroyed immediately after test completion to free resources.
+
+## Requirements
+
+### Functional Requirements
+
+#### FR-005-001: Core Capability
+**Description**: The system shall provide the primary capability described in this feature specification.
+**Acceptance Criteria**:
+- The capability is available when the feature is enabled.
+- The capability integrates with existing TSiSIP components (OpenSIPS, PostgreSQL, OCP) without regression.
+
+#### FR-005-002: Configuration & Persistence
+**Description**: All configuration changes shall be persisted to PostgreSQL and reflected in runtime behavior without requiring a full stack restart.
+**Acceptance Criteria**:
+- Configuration changes survive container restarts.
+- Invalid configuration is rejected at the validation gate.
+
+#### FR-005-003: Observability & Audit
+**Description**: The feature shall emit metrics or audit events compatible with the TSiSIP Prometheus/Grafana and OCP audit logging pipelines.
+**Acceptance Criteria**:
+- Metrics or audit events are visible in the appropriate dashboard or log.
+- Failure conditions are logged with sufficient context for debugging.
+

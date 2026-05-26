@@ -1,4 +1,5 @@
 #!/usr/bin/env python3
+# @req FR-006
 """
 Integration test for SIP-Layer Rate Limiting and DDoS Protection (Feature 006).
 Validates: pike IP throttling, ratelimit auth throttling, userblacklist ban,

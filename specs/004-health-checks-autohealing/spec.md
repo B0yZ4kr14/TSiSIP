@@ -138,3 +138,26 @@ If the health status dashboard (e.g., Prometheus/Grafana) is down, health probes
 > **Constitution Reference**: See `.specify/memory/constitution.md` §3 — The `sanity` module is forbidden in OpenSIPS 3.6 LTS.
 - Store any probe credentials (e.g., MI authentication) as Docker secrets, never in the image layer.
 - All service names and network names must use lowercase snake_case (e.g., `sip_edge`, `sip_internal`, `db_internal`).
+
+## Requirements
+
+### Functional Requirements
+
+#### FR-004-001: Core Capability
+**Description**: The system shall provide the primary capability described in this feature specification.
+**Acceptance Criteria**:
+- The capability is available when the feature is enabled.
+- The capability integrates with existing TSiSIP components (OpenSIPS, PostgreSQL, OCP) without regression.
+
+#### FR-004-002: Configuration & Persistence
+**Description**: All configuration changes shall be persisted to PostgreSQL and reflected in runtime behavior without requiring a full stack restart.
+**Acceptance Criteria**:
+- Configuration changes survive container restarts.
+- Invalid configuration is rejected at the validation gate.
+
+#### FR-004-003: Observability & Audit
+**Description**: The feature shall emit metrics or audit events compatible with the TSiSIP Prometheus/Grafana and OCP audit logging pipelines.
+**Acceptance Criteria**:
+- Metrics or audit events are visible in the appropriate dashboard or log.
+- Failure conditions are logged with sufficient context for debugging.
+

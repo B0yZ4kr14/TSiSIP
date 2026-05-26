@@ -1,4 +1,7 @@
 #!/bin/bash
+# @req FR-009
+# @req FR-022
+# @req SC-022
 # T2 — TDD RED/GREEN: VPS container health verification
 # Usage: ./test-vps-health.sh [vps|local]
 set -uo pipefail

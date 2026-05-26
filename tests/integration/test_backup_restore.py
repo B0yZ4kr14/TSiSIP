@@ -1,4 +1,5 @@
 #!/usr/bin/env python3
+# @req FR-005
 """
 Integration test for PostgreSQL backup and restore (Feature 005).
 Validates: backup scripts presence, encryption roundtrip, purge retention,

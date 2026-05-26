@@ -236,7 +236,7 @@ CREATE TABLE IF NOT EXISTS sip_trunk_did_mappings (
     id SERIAL PRIMARY KEY,
     trunk_provider_id INTEGER NOT NULL REFERENCES sip_trunk_providers(id) ON DELETE CASCADE,
     did_number VARCHAR(50) NOT NULL,
-    tenant_id VARCHAR(36) NOT NULL REFERENCES tenants(id) ON DELETE CASCADE,
+    tenant_id UUID NOT NULL REFERENCES tenants(id) ON DELETE CASCADE,
     dispatcher_setid INTEGER DEFAULT 1 NOT NULL,
     destination VARCHAR(255),
     description VARCHAR(255),

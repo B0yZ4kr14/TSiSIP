@@ -1,3 +1,18 @@
+## Summary
+
+This plan implements the OCP Critical Tool Gap Closure feature for TSiSIP.
+
+## Technical Context
+
+- **PHP 8.2**: Existing OCP runtime
+- **PostgreSQL**: Database backend
+- **Docker & Docker Compose**: Container orchestration
+- **OpenSIPS 3.6 LTS**: SIP proxy with MI interface
+
+## Project Structure
+
+Relevant files are under `specs/020-ocp-critical-tool-gap-closure/` and integrated into `web/`.
+
 # Feature 020 Implementation Plan
 
 ## Wave 0: Security Foundation

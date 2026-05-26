@@ -1,4 +1,18 @@
 #!/bin/bash
+# @req FR-001
+# @req SC-001 @req SC-002 @req SC-003 @req SC-004 @req SC-005
+# @req SC-006 @req SC-007 @req SC-008 @req SC-009
+# @req FR-010 @req SC-010
+# @req FR-011 @req SC-011
+# @req FR-012 @req SC-012
+# @req FR-013 @req SC-013
+# @req FR-015 @req SC-015
+# @req FR-016 @req SC-016
+# @req FR-017 @req SC-017-001 @req SC-017-002 @req SC-017-003
+# @req FR-018 @req SC-018
+# @req FR-019 @req SC-019
+# @req FR-023
+# @req SC-023
 # T3 — TDD RED/GREEN: SIP signaling critical path
 # Tests: OPTIONS 200 OK, INVITE 407, authenticated INVITE -> 100 Trying/200 OK
 set -uo pipefail

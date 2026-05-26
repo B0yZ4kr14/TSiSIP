@@ -1,0 +1,250 @@
+{
+  "project": "TSiSIP",
+  "profile": "standard",
+  "status": "WARN",
+  "score": 96,
+  "grade": "A+",
+  "issueCount": 29,
+  "issues": [
+    {
+      "severity": "warning",
+      "validator": "Test-Spec",
+      "message": "Source-to-Test Map: source file `OCP PHP panel (web/*.php)` not found on disk — stale entry?",
+      "action": "Update TEST-SPEC.md",
+      "command": "docguard fix --doc test-spec",
+      "fixKind": "agent",
+      "docTarget": "test-spec"
+    },
+    {
+      "severity": "warning",
+      "validator": "Freshness",
+      "message": "ROADMAP.md — 21 code commits since last doc update (2026-05-17)",
+      "action": "Review stale documents",
+      "command": "docguard fix --doc",
+      "fixKind": "agent",
+      "docTarget": null
+    },
+    {
+      "severity": "warning",
+      "validator": "Traceability",
+      "message": "Requirement SC-010 (specs/010-ocp-navigation-system-links/spec.md:83) has no test coverage. Add @req SC-010 comment to the test that verifies this requirement",
+      "action": "Link the requirement ID to its test(s)",
+      "command": null,
+      "fixKind": "agent"
+    },
+    {
+      "severity": "warning",
+      "validator": "Traceability",
+      "message": "Requirement FR-10 (specs/010-ocp-navigation-system-links/spec.md:112) has no test coverage. Add @req FR-10 comment to the test that verifies this requirement",
+      "action": "Link the requirement ID to its test(s)",
+      "command": null,
+      "fixKind": "agent"
+    },
+    {
+      "severity": "warning",
+      "validator": "Traceability",
+      "message": "Requirement FR-11 (specs/011-ocp-forced-password-change/spec.md:106) has no test coverage. Add @req FR-11 comment to the test that verifies this requirement",
+      "action": "Link the requirement ID to its test(s)",
+      "command": null,
+      "fixKind": "agent"
+    },
+    {
+      "severity": "warning",
+      "validator": "Traceability",
+      "message": "Requirement SC-11 (specs/011-ocp-forced-password-change/spec.md:129) has no test coverage. Add @req SC-11 comment to the test that verifies this requirement",
+      "action": "Link the requirement ID to its test(s)",
+      "command": null,
+      "fixKind": "agent"
+    },
+    {
+      "severity": "warning",
+      "validator": "Traceability",
+      "message": "Requirement FR-12 (specs/012-ocp-admin-tools-restoration/spec.md:123) has no test coverage. Add @req FR-12 comment to the test that verifies this requirement",
+      "action": "Link the requirement ID to its test(s)",
+      "command": null,
+      "fixKind": "agent"
+    },
+    {
+      "severity": "warning",
+      "validator": "Traceability",
+      "message": "Requirement SC-12 (specs/012-ocp-admin-tools-restoration/spec.md:146) has no test coverage. Add @req SC-12 comment to the test that verifies this requirement",
+      "action": "Link the requirement ID to its test(s)",
+      "command": null,
+      "fixKind": "agent"
+    },
+    {
+      "severity": "warning",
+      "validator": "Traceability",
+      "message": "Requirement FR-13 (specs/013-brownfield-follow-up/spec.md:58) has no test coverage. Add @req FR-13 comment to the test that verifies this requirement",
+      "action": "Link the requirement ID to its test(s)",
+      "command": null,
+      "fixKind": "agent"
+    },
+    {
+      "severity": "warning",
+      "validator": "Traceability",
+      "message": "Requirement SC-13 (specs/013-brownfield-follow-up/spec.md:81) has no test coverage. Add @req SC-13 comment to the test that verifies this requirement",
+      "action": "Link the requirement ID to its test(s)",
+      "command": null,
+      "fixKind": "agent"
+    },
+    {
+      "severity": "warning",
+      "validator": "Traceability",
+      "message": "Requirement FR-15 (specs/015-auto-tls-certificate-rotation/spec.md:333) has no test coverage. Add @req FR-15 comment to the test that verifies this requirement",
+      "action": "Link the requirement ID to its test(s)",
+      "command": null,
+      "fixKind": "agent"
+    },
+    {
+      "severity": "warning",
+      "validator": "Traceability",
+      "message": "Requirement SC-15 (specs/015-auto-tls-certificate-rotation/spec.md:356) has no test coverage. Add @req SC-15 comment to the test that verifies this requirement",
+      "action": "Link the requirement ID to its test(s)",
+      "command": null,
+      "fixKind": "agent"
+    },
+    {
+      "severity": "warning",
+      "validator": "Traceability",
+      "message": "Requirement FR-16 (specs/016-ocp-audit-log-compliance/spec.md:422) has no test coverage. Add @req FR-16 comment to the test that verifies this requirement",
+      "action": "Link the requirement ID to its test(s)",
+      "command": null,
+      "fixKind": "agent"
+    },
+    {
+      "severity": "warning",
+      "validator": "Traceability",
+      "message": "Requirement SC-16 (specs/016-ocp-audit-log-compliance/spec.md:445) has no test coverage. Add @req SC-16 comment to the test that verifies this requirement",
+      "action": "Link the requirement ID to its test(s)",
+      "command": null,
+      "fixKind": "agent"
+    },
+    {
+      "severity": "warning",
+      "validator": "Traceability",
+      "message": "Requirement FR-17 (specs/017-sip-trunk-provider-integration/spec.md:445) has no test coverage. Add @req FR-17 comment to the test that verifies this requirement",
+      "action": "Link the requirement ID to its test(s)",
+      "command": null,
+      "fixKind": "agent"
+    },
+    {
+      "severity": "warning",
+      "validator": "Traceability",
+      "message": "Requirement SC-18 (specs/018-global-requirement-id-migration/spec.md:77) has no test coverage. Add @req SC-18 comment to the test that verifies this requirement",
+      "action": "Link the requirement ID to its test(s)",
+      "command": null,
+      "fixKind": "agent"
+    },
+    {
+      "severity": "warning",
+      "validator": "Traceability",
+      "message": "Requirement FR-19 (specs/019-spec-kit-memory-hub-integration/spec.md:125) has no test coverage. Add @req FR-19 comment to the test that verifies this requirement",
+      "action": "Link the requirement ID to its test(s)",
+      "command": null,
+      "fixKind": "agent"
+    },
+    {
+      "severity": "warning",
+      "validator": "Traceability",
+      "message": "Requirement SC-19 (specs/019-spec-kit-memory-hub-integration/spec.md:148) has no test coverage. Add @req SC-19 comment to the test that verifies this requirement",
+      "action": "Link the requirement ID to its test(s)",
+      "command": null,
+      "fixKind": "agent"
+    },
+    {
+      "severity": "warning",
+      "validator": "Spec-Kit",
+      "message": "specs/002-tsisip-ocp-rebrand/spec.md: No requirement IDs found (expected FR-001, REQ-001, etc.)",
+      "action": "Add the missing Spec Kit artifact / section",
+      "command": null,
+      "fixKind": "agent"
+    },
+    {
+      "severity": "warning",
+      "validator": "Spec-Kit",
+      "message": "specs/002-tsisip-ocp-rebrand/spec.md: No success criteria IDs found (expected SC-001, SC-002, etc.)",
+      "action": "Add the missing Spec Kit artifact / section",
+      "command": null,
+      "fixKind": "agent"
+    },
+    {
+      "severity": "warning",
+      "validator": "Spec-Kit",
+      "message": "specs/002-tsisip-ocp-rebrand/tasks.md: No task IDs found (expected T001, T002, etc.)",
+      "action": "Add the missing Spec Kit artifact / section",
+      "command": null,
+      "fixKind": "agent"
+    },
+    {
+      "severity": "warning",
+      "validator": "Spec-Kit",
+      "message": "specs/011-ocp-forced-password-change/tasks.md: No phased task breakdown found (expected \"Phase 1:\", \"Phase 2:\", etc.)",
+      "action": "Add the missing Spec Kit artifact / section",
+      "command": null,
+      "fixKind": "agent"
+    },
+    {
+      "severity": "warning",
+      "validator": "Spec-Kit",
+      "message": "specs/012-ocp-admin-tools-restoration/tasks.md: No phased task breakdown found (expected \"Phase 1:\", \"Phase 2:\", etc.)",
+      "action": "Add the missing Spec Kit artifact / section",
+      "command": null,
+      "fixKind": "agent"
+    },
+    {
+      "severity": "warning",
+      "validator": "Spec-Kit",
+      "message": "specs/013-brownfield-follow-up/tasks.md: No phased task breakdown found (expected \"Phase 1:\", \"Phase 2:\", etc.)",
+      "action": "Add the missing Spec Kit artifact / section",
+      "command": null,
+      "fixKind": "agent"
+    },
+    {
+      "severity": "warning",
+      "validator": "Spec-Kit",
+      "message": "specs/015-auto-tls-certificate-rotation/tasks.md: No phased task breakdown found (expected \"Phase 1:\", \"Phase 2:\", etc.)",
+      "action": "Add the missing Spec Kit artifact / section",
+      "command": null,
+      "fixKind": "agent"
+    },
+    {
+      "severity": "warning",
+      "validator": "Spec-Kit",
+      "message": "specs/016-ocp-audit-log-compliance/tasks.md: No phased task breakdown found (expected \"Phase 1:\", \"Phase 2:\", etc.)",
+      "action": "Add the missing Spec Kit artifact / section",
+      "command": null,
+      "fixKind": "agent"
+    },
+    {
+      "severity": "warning",
+      "validator": "Spec-Kit",
+      "message": "specs/017-sip-trunk-provider-integration/tasks.md: No phased task breakdown found (expected \"Phase 1:\", \"Phase 2:\", etc.)",
+      "action": "Add the missing Spec Kit artifact / section",
+      "command": null,
+      "fixKind": "agent"
+    },
+    {
+      "severity": "warning",
+      "validator": "Spec-Kit",
+      "message": "specs/018-global-requirement-id-migration/tasks.md: No task IDs found (expected T001, T002, etc.)",
+      "action": "Add the missing Spec Kit artifact / section",
+      "command": null,
+      "fixKind": "agent"
+    },
+    {
+      "severity": "warning",
+      "validator": "Spec-Kit",
+      "message": "specs/019-spec-kit-memory-hub-integration/tasks.md: No phased task breakdown found (expected \"Phase 1:\", \"Phase 2:\", etc.)",
+      "action": "Add the missing Spec Kit artifact / section",
+      "command": null,
+      "fixKind": "agent"
+    }
+  ],
+  "mechanicalFixes": [],
+  "fixCommands": [
+    "docguard fix --doc test-spec",
+    "docguard fix --doc"
+  ],
+  "timestamp": "2026-05-26T08:24:02.831Z"
+}

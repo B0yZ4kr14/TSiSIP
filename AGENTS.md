@@ -1,6 +1,7 @@
 # TSiSIP — Agent Onboarding Guide
 
 > Read this first. This file is the single source of context for AI coding agents working on the TSiSIP repository.
+> **Note:** For project-specific architectural rules, design patterns, coding standards, and constitution enforcement gates, refer to `.specify/memory/constitution.md`.
 
 ---
 
@@ -42,6 +43,17 @@ The project follows **Spec-Driven Development (SDD)** via Speckit, with 24 track
   - Environment template: `.env.example`
   - This file (`AGENTS.md`)
 
+### Git Workflow
+
+| Convention | Rule |
+|---|---|
+| Canonical branch | `master` |
+| Feature branches | Branch from `master`; name should align with the spec directory (e.g., `specs/020-ocp-critical-tool-gap-closure/` → `feature/020-ocp-critical-tool-gap-closure`) |
+| Commit messages | Descriptive; reference feature ID when applicable (e.g., `Feature 020: add TLS management tool`) |
+| Git mutations | Require explicit user confirmation; never auto-commit |
+
+**Safety:** `secrets/` and `.env*` are gitignored. Never stage or commit them.
+
 ---
 
 ## 3. Technology Stack
@@ -66,6 +78,8 @@ The project follows **Spec-Driven Development (SDD)** via Speckit, with 24 track
 - OCP (internal/Nginx-proxied): `8084/tcp` on loopback (VPS) or `80/tcp` (container)
 
 **Non-negotiable rules:**
+> These baseline constraints are formally enforced by the Architecture Constitution (see `.specify/memory/constitution.md`).
+
 - OpenSIPS 3.6 LTS is the **only** SIP proxy baseline. Changing it requires a documented architecture decision.
 - PostgreSQL is the **only** database. Do not introduce MySQL, MariaDB, or `db_mysql` variants.
 - OpenSIPS must be delivered through a **project-owned Docker image**, never bare-metal or VM-first install instructions.
@@ -609,6 +623,8 @@ rg -n "OpenSIPS|PostgreSQL|RTPengine|Asterisk|db_postgres|sanity" docs .github A
 
 ## 7. Code Style and Naming Conventions
 
+> These conventions define the project's coding standards and domain-specific constraints. High-level architecture gates and enforcement policies are defined in `.specify/memory/constitution.md`.
+
 ### Names to Preserve Exactly
 - `TSiSIP` (capitalization)
 - `OpenSIPS 3.6 LTS`
@@ -724,6 +740,8 @@ Completion gate:
 ---
 
 ## 10. Rejected Patterns
+
+> The following patterns are explicitly forbidden in TSiSIP implementation. These prohibitions are backed by Architecture Constitution gates; see `.specify/memory/constitution.md`.
 
 The following are **explicitly rejected** in TSiSIP documentation, configs, and implementation:
 
@@ -925,7 +943,7 @@ When editing files in this repo, the hooks may trigger automatically. If you enc
 
 ---
 
-*Last updated: 2026-05-20. This file must be updated whenever new build tooling, manifests, or canonical architecture decisions are committed.*
+*Last updated: 2026-05-24. This file must be updated whenever new build tooling, manifests, or canonical architecture decisions are committed.*
 
 <!-- SPECKIT START -->
 For additional context about technologies to be used, project structure,

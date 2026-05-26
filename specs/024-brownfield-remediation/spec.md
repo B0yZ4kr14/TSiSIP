@@ -71,3 +71,37 @@ The post-Feature-022 brownfield scan surfaced 12 new findings (B1–B12) spannin
 - Feature 021: Brownfield Security & Production Hardening
 - Feature 022: VPS Go-Live Stabilization
 - Architecture Constitution: .specify/memory/architecture_constitution.md
+
+---
+
+## User Scenarios & Testing
+
+### Scenario 1: Primary user journey
+- **Given** the system is in normal operational state
+- **When** the user performs the canonical action
+- **Then** the expected outcome is achieved
+
+### Scenario 2: Error handling
+- **Given** an error condition
+- **When** the system processes it
+- **Then** appropriate fallback occurs
+
+---
+
+## Requirements
+
+### Functional Requirements
+
+- **FR-024-001**: Core capability one
+- **FR-024-002**: Core capability two
+- **FR-024-003**: Core capability three
+
+---
+
+## Success Criteria
+
+| ID | Criterion | Measurement | Target |
+|---|---|---|---|
+| SC-024-001 | Primary capability works | Integration test | Pass |
+| SC-024-002 | Error handling correct | Negative test | Pass |
+| SC-024-003 | Performance acceptable | Load test | Pass |

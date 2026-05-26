@@ -1,4 +1,5 @@
 #!/usr/bin/env python3
+# @req FR-008
 """
 Integration tests for Feature 007: Certificate Rotation.
 """

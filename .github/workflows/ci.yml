@@ -237,6 +237,31 @@ jobs:
             sbom-opensips.spdx.json
             sbom-ocp.spdx.json
 
+  vex:
+    name: Generate VEX
+    runs-on: ubuntu-latest
+    needs: [security-scan]
+    permissions:
+      contents: write
+    steps:
+      - uses: actions/checkout@v4
+      - name: Install trivy
+        run: |
+          curl -sfL https://raw.githubusercontent.com/aquasecurity/trivy/main/contrib/install.sh | sh -s -- -b /usr/local/bin
+      - name: Generate VEX for OpenSIPS
+        run: |
+          trivy image --format json --output trivy-opensips.json ghcr.io/b0yz4kr14/tsisip/opensips:latest || true
+          ./scripts/generate-sbom-vex.sh latest
+        env:
+          TRIVY_NONSSL: true
+      - name: Upload VEX artifacts
+        uses: actions/upload-artifact@v4
+        with:
+          name: vex-reports
+          path: |
+            reports/vex-opensips.json
+            reports/vex-ocp.json
+
   provenance:
     name: SLSA Provenance
     runs-on: ubuntu-latest

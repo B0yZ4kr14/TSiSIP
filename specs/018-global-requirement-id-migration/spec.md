@@ -51,3 +51,31 @@ A validation script SHALL check for duplicate `FR-NNN-XXX` across all specs in C
 ## References
 - `docs/architecture/global-requirement-id-scheme.md`
 - `reports/speckit-analyze-cross-project-2026-05-21.md` (A4)
+
+## User Scenarios & Testing
+
+### Scenario 1: Primary happy-path flow
+- **Given** the feature is enabled and all dependencies are healthy
+- **When** an authorized user performs the canonical action
+- **Then** the system responds correctly and produces the expected outcome
+
+### Scenario 2: Error or edge-case handling
+- **Given** the feature is enabled
+- **When** an invalid input or failure condition occurs
+- **Then** the system fails gracefully with a clear error and no data corruption
+
+### Scenario 3: Administrative or operational flow
+- **Given** an operator with appropriate role permissions
+- **When** the operator inspects or modifies configuration
+- **Then** the change is persisted, auditable, and reflected in runtime behavior
+
+
+## Success Criteria
+
+| ID | Criterion | Measurement | Target |
+|---|---|---|---|
+| SC-018-001 | Feature functional completeness | End-to-end validation test pass rate | 100% |
+| SC-018-002 | Configuration persistence | Restart test with prior configuration | Pass |
+| SC-018-003 | Zero regression in existing flows | Existing integration tests pass rate | 100% |
+| SC-018-004 | Observability coverage | Metrics/audit events present | 100% of mutating actions |
+

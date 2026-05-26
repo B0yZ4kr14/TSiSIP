@@ -1,3 +1,17 @@
+## Summary
+
+This plan implements the feature for the TSiSIP SIP edge-proxy platform.
+
+## Technical Context
+
+- **OpenSIPS 3.6 LTS**: Core SIP proxy and signaling edge
+- **PostgreSQL**: Database backend for configuration and state
+- **Docker & Docker Compose**: Container orchestration and deployment
+
+## Project Structure
+
+Relevant directories and files for this feature are located under specs/021-brownfield-security-production-hardening/.
+
 # Feature 021 — Implementation Plan
 
 ## Tech Stack

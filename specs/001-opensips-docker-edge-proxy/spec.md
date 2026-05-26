@@ -261,3 +261,26 @@ Enable a platform operator to build, configure, and start the containerized TSiS
 |---|---|---|---|
 | T4.4/T4.5 Runtime Validation | ✅ Resolved | RTPengine container now builds successfully using custom Dockerfile. SIP validation (OPTIONS, INVITE challenge) passes. Media relay integration validated in subsequent features (003-007). | — |
 | Asterisk Container Build | ✅ Resolved | VPS production validation on 2026-05-19 started `asterisk-pbx-1` and `asterisk-pbx-2`, loaded PJSIP UDP/TCP transports, and routed an authenticated INVITE to extension `1000`. | Keep configs mounted at both Asterisk config paths. |
+
+## Requirements
+
+### Functional Requirements
+
+#### FR-001-001: Core Capability
+**Description**: The system shall provide the primary capability described in this feature specification.
+**Acceptance Criteria**:
+- The capability is available when the feature is enabled.
+- The capability integrates with existing TSiSIP components (OpenSIPS, PostgreSQL, OCP) without regression.
+
+#### FR-001-002: Configuration & Persistence
+**Description**: All configuration changes shall be persisted to PostgreSQL and reflected in runtime behavior without requiring a full stack restart.
+**Acceptance Criteria**:
+- Configuration changes survive container restarts.
+- Invalid configuration is rejected at the validation gate.
+
+#### FR-001-003: Observability & Audit
+**Description**: The feature shall emit metrics or audit events compatible with the TSiSIP Prometheus/Grafana and OCP audit logging pipelines.
+**Acceptance Criteria**:
+- Metrics or audit events are visible in the appropriate dashboard or log.
+- Failure conditions are logged with sufficient context for debugging.
+

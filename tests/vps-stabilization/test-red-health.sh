@@ -1,4 +1,8 @@
 #!/bin/bash
+# @req FR-021
+# @req SC-021
+# @req FR-024
+# @req SC-024
 # T2.1 — RED Health Test
 # Expects: containers are NOT healthy before fixes
 # Should FAIL (RED) initially, then PASS (GREEN) after stabilization
