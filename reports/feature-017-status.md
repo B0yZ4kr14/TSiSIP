@@ -53,3 +53,8 @@
 - `8f13c87` — feat(feature-017): add OCP trunk management pages from VPS
 - `35498c6` — fix(feature-017): correct E_DISPATCHER_STATUS param name and add trunk registration trigger
 - `00f7389` — db(schema): sync production trunk schema and ocp_password_changes
+
+## Operational Notes
+
+- `db_postgres` may emit `unhandled data type column (tenant_id) type id (2950)` when querying `sip_trunk_did_mappings` via `sql_query_one`. This is expected because `sip_trunk_did_mappings.tenant_id` remains `UUID` (to preserve the FK to `tenants.id`). OpenSIPS falls back to `DB_STRING` and the query functions correctly.
+- Test providers should never be committed to `db/init/03-seed-data.sql`. Use the mock trunk scripts for validation.
