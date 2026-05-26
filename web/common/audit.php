@@ -178,8 +178,6 @@ function logAuditEvent(
 function verifyAuditLogIntegrity(): array {
     try {
         $pdo = getDb();
-        $rows = $pdo->query('SELECT * FROM ocp_audit_log ORDER BY id ASC')
-                     ->fetchAll(PDO::FETCH_ASSOC);
     } catch (Throwable $e) {
         error_log('Audit log integrity check failed: ' . $e->getMessage());
         return ['error' => $e->getMessage()];
@@ -187,36 +185,52 @@ function verifyAuditLogIntegrity(): array {
 
     $results = [];
     $prevHash = null;
+    $lastId = 0;
+    $chunkSize = 1000;
 
-    foreach ($rows as $row) {
-        $expectedHash = hash('sha256', _auditCanonicalHash(
-            $row['event_time'],
-            $row['username'],
-            $row['action'],
-            $row['resource_type'] ?? null,
-            $row['resource_id']   ?? null,
-            $row['ip_address'],
-            $row['user_agent']    ?? null,
-            _auditBoolToString($row['success']) === '1',
-            $row['details'] ?? null,
-            $prevHash
-        ));
+    do {
+        try {
+            $stmt = $pdo->prepare('SELECT * FROM ocp_audit_log WHERE id > :last_id ORDER BY id ASC LIMIT :limit');
+            $stmt->bindValue(':last_id', $lastId, PDO::PARAM_INT);
+            $stmt->bindValue(':limit', $chunkSize, PDO::PARAM_INT);
+            $stmt->execute();
+            $rows = $stmt->fetchAll(PDO::FETCH_ASSOC);
+        } catch (Throwable $e) {
+            error_log('Audit log integrity check failed: ' . $e->getMessage());
+            return ['error' => $e->getMessage()];
+        }
 
-        $hashValid = ($expectedHash === $row['hash']);
-        $chainValid = ($prevHash === null) || ($row['prev_hash'] === $prevHash);
-        $valid = $hashValid && $chainValid;
+        foreach ($rows as $row) {
+            $expectedHash = hash('sha256', _auditCanonicalHash(
+                $row['event_time'],
+                $row['username'],
+                $row['action'],
+                $row['resource_type'] ?? null,
+                $row['resource_id']   ?? null,
+                $row['ip_address'],
+                $row['user_agent']    ?? null,
+                _auditBoolToString($row['success']) === '1',
+                $row['details'] ?? null,
+                $prevHash
+            ));
 
-        $results[] = [
-            'id'            => (int) $row['id'],
-            'valid'         => $valid,
-            'expected_hash' => $expectedHash,
-            'actual_hash'   => $row['hash'],
-            'chain_valid'   => $chainValid,
-            'hash_valid'    => $hashValid,
-        ];
+            $hashValid = ($expectedHash === $row['hash']);
+            $chainValid = ($prevHash === null) || ($row['prev_hash'] === $prevHash);
+            $valid = $hashValid && $chainValid;
 
-        $prevHash = $row['hash'];
-    }
+            $results[] = [
+                'id'            => (int) $row['id'],
+                'valid'         => $valid,
+                'expected_hash' => $expectedHash,
+                'actual_hash'   => $row['hash'],
+                'chain_valid'   => $chainValid,
+                'hash_valid'    => $hashValid,
+            ];
+
+            $prevHash = $row['hash'];
+            $lastId = (int) $row['id'];
+        }
+    } while (count($rows) === $chunkSize);
 
     return $results;
 }

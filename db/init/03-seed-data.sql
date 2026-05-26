@@ -77,14 +77,15 @@ VALUES
 ON CONFLICT (tenant_id, label) DO NOTHING;
 
 -- OCP Administrative User: Admin
--- Password hash generated via pgcrypto crypt() with bcrypt (bf) salt.
--- IMPORTANT: Change default password immediately after first login.
--- The plaintext password is intentionally NOT documented here for security.
+-- Password hash is generated from random bytes (no plaintext exposure).
+-- The initial password is unrecoverable; use psql or an external init script
+-- to set a known password before first login, or reset via the database.
+-- force_password_change=true ensures the admin must change it on first use.
 INSERT INTO ocp_users (username, email, password_hash, role, enabled, force_password_change)
 VALUES (
     'Admin',
     'admin@tsisip.local',
-    crypt('admin123!', gen_salt('bf', 12)),
+    crypt(encode(gen_random_bytes(32), 'base64'), gen_salt('bf', 12)),
     'admin',
     true,
     true

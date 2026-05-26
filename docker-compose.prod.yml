@@ -445,7 +445,7 @@ services:
         reservations:
           memory: 256M
   certbot:
-    image: tsisip/certbot:${TSISIP_IMAGE_TAG:?must be set}
+    image: ghcr.io/b0yz4kr14/tsisip/certbot:${TSISIP_IMAGE_TAG:?must be set}
     networks:
     - sip_internal
     restart: unless-stopped

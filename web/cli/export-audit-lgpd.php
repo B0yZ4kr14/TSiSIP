@@ -6,6 +6,9 @@
  * Generates a machine-readable JSON export of all audit events
  * for a given subscriber (username) or SIP URI.
  *
+ * Uses chunked queries (LIMIT/OFFSET) and streams JSON output
+ * to avoid loading large result sets into memory.
+ *
  * Usage:
  *   php export-audit-lgpd.php --subscriber=test@example.com [--output=/path/to/export.json]
  */
@@ -34,58 +37,94 @@ if (empty($subscriber)) {
     exit(1);
 }
 
+const CHUNK_SIZE = 10000;
+
+/**
+ * Stream query results through a generator to keep memory bounded.
+ */
+function streamQueryRows(PDO $pdo, string $sql, string $subscriber): Generator {
+    $offset = 0;
+    do {
+        $stmt = $pdo->prepare($sql);
+        $stmt->execute([':subscriber' => $subscriber, ':offset' => $offset]);
+        $rows = $stmt->fetchAll(PDO::FETCH_ASSOC);
+        foreach ($rows as $row) {
+            yield $row;
+        }
+        $offset += CHUNK_SIZE;
+    } while (count($rows) === CHUNK_SIZE);
+}
+
+/**
+ * Write a JSON array to a stream, consuming a generator.
+ */
+function writeJsonArrayFromGenerator($fp, Generator $gen, int &$count): void {
+    $first = true;
+    fwrite($fp, '[');
+    foreach ($gen as $row) {
+        if (!$first) {
+            fwrite($fp, ',');
+        }
+        $first = false;
+        fwrite($fp, "\n" . json_encode($row, JSON_UNESCAPED_UNICODE));
+        $count++;
+    }
+    fwrite($fp, "\n]");
+}
+
 try {
     $pdo = getDb();
 
-    $cdrStmt = $pdo->prepare(
-        "SELECT id, call_id, call_start, call_end, duration, from_user, to_user,
-                call_status, setup_time_ms, tenant_id, backend_label, created_at
-         FROM cdr
-         WHERE from_user = :subscriber OR to_user = :subscriber
-         ORDER BY call_start DESC"
-    );
-    $cdrStmt->execute([':subscriber' => $subscriber]);
-    $cdrs = $cdrStmt->fetchAll(PDO::FETCH_ASSOC);
-
-    $ocpAuditStmt = $pdo->prepare(
-        "SELECT id, event_time, username, action, resource_type, resource_id, success, details, ip_address
-         FROM ocp_audit_log
-         WHERE username = :subscriber
-            OR details->>'subscriber' = :subscriber
-            OR resource_id = :subscriber
-         ORDER BY event_time DESC"
-    );
-    $ocpAuditStmt->execute([':subscriber' => $subscriber]);
-    $ocpAudits = $ocpAuditStmt->fetchAll(PDO::FETCH_ASSOC);
-
-    $authAuditStmt = $pdo->prepare(
-        "SELECT id, event_time, username, domain, source_ip, sip_method, result, call_id
-         FROM auth_audit_log
-         WHERE username = :subscriber
-         ORDER BY event_time DESC"
-    );
-    $authAuditStmt->execute([':subscriber' => $subscriber]);
-    $authAudits = $authAuditStmt->fetchAll(PDO::FETCH_ASSOC);
-
-    $export = [
-        'export_type' => 'lgpd_right_of_access',
-        'subscriber' => $subscriber,
-        'generated_at' => date('c'),
-        'cdrs' => $cdrs,
-        'ocp_audit_events' => $ocpAudits,
-        'auth_audit_events' => $authAudits,
-    ];
-
-    $json = json_encode($export, JSON_PRETTY_PRINT | JSON_UNESCAPED_UNICODE);
-    if ($json === false) {
-        throw new RuntimeException('JSON encode failed: ' . json_last_error_msg());
+    $fp = fopen($outputPath, 'w');
+    if ($fp === false) {
+        throw new RuntimeException("Cannot open output: {$outputPath}");
     }
 
-    file_put_contents($outputPath, $json);
+    $cdrSql = "SELECT id, call_id, call_start, call_end, duration, from_user, to_user,
+                      call_status, setup_time_ms, tenant_id, backend_label, created_at
+               FROM cdr
+               WHERE from_user = :subscriber OR to_user = :subscriber
+               ORDER BY call_start DESC
+               LIMIT " . CHUNK_SIZE . " OFFSET :offset";
 
-    $countCdr = count($cdrs);
-    $countOcp = count($ocpAudits);
-    $countAuth = count($authAudits);
+    $ocpAuditSql = "SELECT id, event_time, username, action, resource_type, resource_id, success, details, ip_address
+                    FROM ocp_audit_log
+                    WHERE username = :subscriber
+                       OR details->>'subscriber' = :subscriber
+                       OR resource_id = :subscriber
+                    ORDER BY event_time DESC
+                    LIMIT " . CHUNK_SIZE . " OFFSET :offset";
+
+    $authAuditSql = "SELECT id, event_time, username, domain, source_ip, sip_method, result, call_id
+                     FROM auth_audit_log
+                     WHERE username = :subscriber
+                     ORDER BY event_time DESC
+                     LIMIT " . CHUNK_SIZE . " OFFSET :offset";
+
+    $countCdr = 0;
+    $countOcp = 0;
+    $countAuth = 0;
+
+    fwrite($fp, "{\n");
+    fwrite($fp, '  "export_type": "lgpd_right_of_access",' . "\n");
+    fwrite($fp, '  "subscriber": ' . json_encode($subscriber) . "," . "\n");
+    fwrite($fp, '  "generated_at": ' . json_encode(date('c')) . "," . "\n");
+
+    fwrite($fp, '  "cdrs": ');
+    writeJsonArrayFromGenerator($fp, streamQueryRows($pdo, $cdrSql, $subscriber), $countCdr);
+    fwrite($fp, "," . "\n");
+
+    fwrite($fp, '  "ocp_audit_events": ');
+    writeJsonArrayFromGenerator($fp, streamQueryRows($pdo, $ocpAuditSql, $subscriber), $countOcp);
+    fwrite($fp, "," . "\n");
+
+    fwrite($fp, '  "auth_audit_events": ');
+    writeJsonArrayFromGenerator($fp, streamQueryRows($pdo, $authAuditSql, $subscriber), $countAuth);
+    fwrite($fp, "\n");
+
+    fwrite($fp, "}\n");
+    fclose($fp);
+
     fwrite(STDERR, "Exported {$countCdr} CDRs, {$countOcp} OCP audit events, and {$countAuth} auth events for {$subscriber}.\n");
 
     logAuditEvent('LGPD_EXPORT', 'subscriber', $subscriber, true, [

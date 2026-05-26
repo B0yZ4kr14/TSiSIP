@@ -304,7 +304,7 @@ services:
       start_period: 60s
 
   certbot:
-    image: tsisip/certbot:${TSISIP_IMAGE_TAG:?must be set}
+    image: ghcr.io/b0yz4kr14/tsisip/certbot:${TSISIP_IMAGE_TAG:?must be set}
     pull_policy: if_not_present
     networks: [sip_internal]
     restart: unless-stopped

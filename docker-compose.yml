@@ -582,7 +582,7 @@ services:
   certbot:
     build:
       context: ./docker/certbot
-    image: tsisip/certbot:${TSISIP_IMAGE_TAG:?must be set}
+    image: ghcr.io/b0yz4kr14/tsisip/certbot:${TSISIP_IMAGE_TAG:?must be set}
     profiles:
     - certbot
     networks:

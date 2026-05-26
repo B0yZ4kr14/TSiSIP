@@ -1,6 +1,6 @@
 FROM debian:bookworm-slim@sha256:67b30a61dc87758f0caf819646104f29ecbda97d920aaf5edc834128ac8493d3 AS builder
 
-ARG OPENSIPS_VERSION=3.6
+ARG OPENSIPS_VERSION=3.6.6
 ENV DEBIAN_FRONTEND=noninteractive
 
 RUN apt-get update \
