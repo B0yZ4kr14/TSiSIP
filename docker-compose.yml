@@ -338,6 +338,7 @@ services:
     cap_add:
     - SETUID
     - SETGID
+    - DAC_OVERRIDE
     security_opt:
     - no-new-privileges:true
     healthcheck:
