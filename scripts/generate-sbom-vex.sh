@@ -78,14 +78,35 @@ generate_vex() {
   "statements": [
 VEXEOF
 
+        # Add intentional design decisions as VEX statements
         local first=true
-        while IFS= read -r cve; do
+        for decision in "db_mysql-absent" "sanity-absent" "db_sqlite-absent"; do
             if [[ "${first}" == "true" ]]; then
                 first=false
             else
                 echo "," >> "${output_file}"
             fi
             cat >> "${output_file}" << VEXEOF
+    {
+      "vulnerability": {
+        "name": "${decision}"
+      },
+      "products": [
+        {
+          "at_id": "pkg:oci/${image_name}"
+        }
+      ],
+      "status": "not_affected",
+      "justification": "inline_mitigations_already_exist",
+      "impact_statement": "Intentional architectural decision per TSiSIP CANONICAL-SPEC Section 10: PostgreSQL-only backend; db_mysql, db_sqlite, and sanity modules are explicitly rejected."
+    }
+VEXEOF
+        done
+
+        while IFS= read -r cve; do
+            if [[ -n "${cve}" ]]; then
+                echo "," >> "${output_file}"
+                cat >> "${output_file}" << VEXEOF
     {
       "vulnerability": {
         "name": "${cve}"
@@ -99,6 +120,7 @@ VEXEOF
       "justification": "component_not_present"
     }
 VEXEOF
+            fi
         done < <(jq -r '.Results[]?.Vulnerabilities[]?.VulnerabilityID' "${output_file}.tmp" 2>/dev/null | sort -u || true)
 
         cat >> "${output_file}" << VEXEOF

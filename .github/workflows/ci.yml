@@ -262,6 +262,39 @@ jobs:
             reports/vex-opensips.json
             reports/vex-ocp.json
 
+  vex-validate:
+    name: Validate VEX Documents
+    runs-on: ubuntu-latest
+    needs: [vex]
+    steps:
+      - uses: actions/checkout@v4
+      - name: Download VEX artifacts
+        uses: actions/download-artifact@v4
+        with:
+          name: vex-reports
+          path: reports/
+      - name: Install cyclonedx-cli
+        run: |
+          curl -sSL https://github.com/CycloneDX/cyclonedx-cli/releases/download/v0.25.0/cyclonedx-linux-x64 -o /usr/local/bin/cyclonedx
+          chmod +x /usr/local/bin/cyclonedx
+      - name: Validate VEX JSON structure
+        run: |
+          for vex in reports/vex-*.json; do
+            echo "Validating $(basename "$vex") ..."
+            jq empty "$vex" || { echo "FAIL: $vex is not valid JSON"; exit 1; }
+            # Verify required OpenVEX fields
+            jq -e '.at_context and .at_id and .author and .timestamp and .version and .statements' "$vex" || { echo "FAIL: $vex missing required OpenVEX fields"; exit 1; }
+            echo "OK $(basename "$vex")"
+          done
+      - name: Verify intentional design decisions are documented
+        run: |
+          for vex in reports/vex-*.json; do
+            echo "Checking design decisions in $(basename "$vex") ..."
+            jq -e '.statements[] | select(.vulnerability.name == "db_mysql-absent" and .status == "not_affected")' "$vex" || { echo "FAIL: db_mysql-absent not documented in $vex"; exit 1; }
+            jq -e '.statements[] | select(.vulnerability.name == "sanity-absent" and .status == "not_affected")' "$vex" || { echo "FAIL: sanity-absent not documented in $vex"; exit 1; }
+            echo "OK design decisions in $(basename "$vex")"
+          done
+
   provenance:
     name: SLSA Provenance
     runs-on: ubuntu-latest
