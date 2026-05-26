@@ -7,7 +7,14 @@ set -euo pipefail
 
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 PROJECT_DIR="$(dirname "$SCRIPT_DIR")"
-COMPOSE_FILE="${COMPOSE_FILE:-$PROJECT_DIR/docker-compose.yml}"
+# Auto-detect compose file: VPS production first, then default
+if [ -n "${COMPOSE_FILE:-}" ]; then
+    COMPOSE_FILE="$COMPOSE_FILE"
+elif [ -f "$PROJECT_DIR/docker-compose.vps.yml" ]; then
+    COMPOSE_FILE="$PROJECT_DIR/docker-compose.vps.yml"
+else
+    COMPOSE_FILE="$PROJECT_DIR/docker-compose.yml"
+fi
 
 STAGING=0
 while [[ $# -gt 0 ]]; do
@@ -59,17 +66,22 @@ else
         STAGING_ARG="--staging"
     fi
 
-    # Check if certificate already exists
-    if docker compose -f "$COMPOSE_FILE" run --rm certbot /usr/local/bin/certbot certificates 2>/dev/null | grep -q "$TLS_DOMAIN"; then
+    # Check if certificate already exists (prefer exec if certbot container is running)
+    _certbot_cmd() {
+        if docker compose -f "$COMPOSE_FILE" ps certbot 2>/dev/null | grep -qi 'running\|up'; then
+            docker compose -f "$COMPOSE_FILE" exec -T certbot sh -c "$1"
+        else
+            docker compose -f "$COMPOSE_FILE" run --rm certbot sh -c "$1"
+        fi
+    }
+
+    if _certbot_cmd '/usr/local/bin/certbot certificates' 2>/dev/null | grep -q "$TLS_DOMAIN"; then
         echo "[CERT-ROTATE] Existing certificate found. Forcing renewal..."
-        docker compose -f "$COMPOSE_FILE" run --rm certbot /usr/local/bin/certbot renew \
-            --force-renewal $STAGING_ARG --deploy-hook /usr/local/bin/deploy-hook.sh
+        _certbot_cmd "/usr/local/bin/certbot renew --force-renewal ${STAGING_ARG} --deploy-hook /usr/local/bin/deploy-hook.sh"
     else
         echo "[CERT-ROTATE] Performing initial certificate issuance..."
         # Default to standalone; operator must map port 80 if using standalone
-        docker compose -f "$COMPOSE_FILE" run --rm certbot /usr/local/bin/certbot certonly --standalone \
-            -d "$TLS_DOMAIN" --email "$ACME_EMAIL" --agree-tos --non-interactive \
-            $STAGING_ARG --deploy-hook /usr/local/bin/deploy-hook.sh
+        _certbot_cmd "/usr/local/bin/certbot certonly --standalone -d ${TLS_DOMAIN} --email ${ACME_EMAIL} --agree-tos --non-interactive ${STAGING_ARG} --deploy-hook /usr/local/bin/deploy-hook.sh"
     fi
 fi
 
@@ -79,8 +91,16 @@ VALIDATION_CONTAINER="certbot"
 if [ "$TAILSCALE_CERT_ENABLED" = "1" ]; then
     VALIDATION_CONTAINER="tailscale_cert"
 fi
-if ! docker compose -f "$COMPOSE_FILE" run --rm "$VALIDATION_CONTAINER" openssl x509 \
-    -in /certs/live/server.crt -noout -checkend 86400 >/dev/null 2>&1; then
+_validate_cert() {
+    if docker compose -f "$COMPOSE_FILE" ps "$VALIDATION_CONTAINER" 2>/dev/null | grep -qi 'running\|up'; then
+        docker compose -f "$COMPOSE_FILE" exec -T "$VALIDATION_CONTAINER" openssl x509 \
+            -in /certs/live/server.crt -noout -checkend 86400 >/dev/null 2>&1
+    else
+        docker compose -f "$COMPOSE_FILE" run --rm "$VALIDATION_CONTAINER" openssl x509 \
+            -in /certs/live/server.crt -noout -checkend 86400 >/dev/null 2>&1
+    fi
+}
+if ! _validate_cert; then
     echo "[CERT-ROTATE] ERROR: Certificate validation failed"
     exit 1
 fi

@@ -8,6 +8,21 @@
 set -euo pipefail
 
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+PROJECT_DIR="$(dirname "$SCRIPT_DIR")"
+
+# Auto-detect certificate path: VPS host path first, then container default
+if [ -n "${CERT_PATH:-}" ]; then
+    export CERT_PATH
+elif [ -f "/opt/tsisip/secrets/server.crt" ]; then
+    export CERT_PATH="/opt/tsisip/secrets/server.crt"
+fi
+
+# Auto-detect compose file: VPS production first, then default
+if [ -n "${COMPOSE_FILE:-}" ]; then
+    export COMPOSE_FILE
+elif [ -f "$PROJECT_DIR/docker-compose.vps.yml" ]; then
+    export COMPOSE_FILE="$PROJECT_DIR/docker-compose.vps.yml"
+fi
 
 WARN_DAYS="${WARN_DAYS:-30}"
 STAGING=0

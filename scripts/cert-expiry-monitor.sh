@@ -5,7 +5,14 @@
 
 set -eu
 
-CERT_PATH="${CERT_PATH:-/run/secrets/server.crt}"
+# Auto-detect certificate path: VPS host path first, then container default
+if [ -n "${CERT_PATH:-}" ]; then
+    CERT_PATH="$CERT_PATH"
+elif [ -f "/opt/tsisip/secrets/server.crt" ]; then
+    CERT_PATH="/opt/tsisip/secrets/server.crt"
+else
+    CERT_PATH="/run/secrets/server.crt"
+fi
 WARN_DAYS="${WARN_DAYS:-30}"
 
 if [ ! -f "$CERT_PATH" ]; then
