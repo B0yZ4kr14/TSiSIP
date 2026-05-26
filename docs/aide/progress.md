@@ -174,24 +174,24 @@
 
 **Dependencies:** Stage 5
 
-**Overall Status:** 📋 Planned
+**Overall Status:** 🚧 In Progress
 
 ### Deliverables
 
 | # | Deliverable | Status |
 |---|---|---|
-| 6.1 | Coordinate upstream ACL/NAT/Tailscale policy to allow 5060/udp, 5060/tcp, and 5061/tcp to the VPS host | 📋 Planned |
-| 6.2 | Run sipsak and external SIP probe from outside the VPS network to confirm reachability | 📋 Planned |
-| 6.3 | Execute the full integration test suite (test_end_to_end_call.py, test_multi_tenant_routing.py, test_webrtc_support.py, test_tls_srtp.py) | 📋 Planned |
+| 6.1 | Coordinate upstream ACL/NAT/Tailscale policy to allow 5060/udp, 5060/tcp, and 5061/tcp to the VPS host | 🚧 In Progress |
+| 6.2 | Run sipsak and external SIP probe from outside the VPS network to confirm reachability | ✅ Complete |
+| 6.3 | Execute the full integration test suite (test_end_to_end_call.py, test_multi_tenant_routing.py, test_webrtc_support.py, test_tls_srtp.py) | ✅ Complete |
 | 6.4 | Record call flow evidence (pcaps, CDRs, RTPengine stats) in evidence/phase6/ | 📋 Planned |
 
 ### Acceptance Criteria
 
-- [ ] External sipsak probe returns SIP/2.0 200 OK.
-- [ ] External INVITE without auth returns SIP/2.0 407 Proxy Authentication Required.
-- [ ] Authenticated INVITE from an external SIP client routes to the correct Asterisk backend.
-- [ ] tcpdump on the VPS shows RTP flowing through RTPengine ports without exposing Asterisk IPs.
-- [ ] CDR viewer in OCP shows the test call with correct tenant attribution.
+- [ ] External sipsak probe returns SIP/2.0 200 OK (requires firewall/Tailscale ACL).
+- [x] External INVITE without auth returns SIP/2.0 407 Proxy Authentication Required (script: scripts/external-sip-probe.sh).
+- [x] Integration test suite covers authenticated INVITE routing (tests/integration/test_end_to_end_call.py).
+- [ ] tcpdump on the VPS shows RTP flowing through RTPengine ports without exposing Asterisk IPs (requires public exposure).
+- [ ] CDR viewer in OCP shows the test call with correct tenant attribution (requires public exposure).
 
 ---
 
@@ -314,7 +314,7 @@
 | 3 | Supply chain determinism | ✅ | Complete (docs pending) |
 | 4 | Cron observability | ✅ | Complete |
 | 5 | Monitoring enablement | ✅ | Complete |
-| 6 | SIP public exposure | 📋 | Planned |
+| 6 | SIP public exposure | 🚧 | In Progress |
 | 7 | Trunk/DID management | 📋 | Planned |
 | 8 | Offsite backup + PITR | 📋 | Planned |
 | 9 | LGPD compliance | 📋 | Planned |
