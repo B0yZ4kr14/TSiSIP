@@ -120,6 +120,8 @@ services:
 
   opensips:
     image: ghcr.io/b0yz4kr14/tsisip/opensips:${TSISIP_IMAGE_TAG:?must be set}
+    # VPS tuning: 640MB shm + 80MB pkg per child (container limit 1G)
+    command: ["/usr/local/sbin/opensips", "-F", "-f", "/etc/opensips/opensips.cfg", "-m", "640", "-M", "80"]
     pull_policy: missing
     networks: [sip_edge, sip_internal, db_internal]
     restart: unless-stopped

@@ -102,6 +102,8 @@ services:
           memory: 1G
   opensips:
     image: ghcr.io/b0yz4kr14/tsisip/opensips:${TSISIP_IMAGE_TAG:?must be set}
+    # Production tuning: 1GB shm + 128MB pkg per child (container limit 2G)
+    command: ["/usr/local/sbin/opensips", "-F", "-f", "/etc/opensips/opensips.cfg", "-m", "1024", "-M", "128"]
     networks:
     - sip_edge
     - sip_internal
