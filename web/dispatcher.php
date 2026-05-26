@@ -7,6 +7,7 @@
 require_once __DIR__ . '/common/config.php';
 require_once __DIR__ . '/common/csrf.php';
 require_once __DIR__ . '/common/pagination.php';
+require_once __DIR__ . '/common/mi-http.php';
 
 requireAuth();
 checkPasswordChange();
@@ -156,6 +157,85 @@ require_once __DIR__ . '/common/header.php';
     <?php if ($success): ?>
         <div class="tsisip-badge tsisip-badge-success" role="status"><?php echo htmlspecialchars($success); ?></div>
     <?php endif; ?>
+
+    <!-- Live dispatcher status via MI HTTP -->
+    <section class="tsisip-section">
+        <h2 class="tsisip-section-title"><?php echo _('Live Dispatcher Status'); ?></h2>
+        <?php
+        $miDs = miHttpCall('ds_list');
+        if (!$miDs['success']):
+        ?>
+            <div class="tsisip-badge tsisip-badge--warning" role="alert">
+                <?php echo _('MI unavailable: ') . htmlspecialchars($miDs['error']); ?>
+            </div>
+        <?php else:
+            $rawDs = $miDs['data'] ?? [];
+            $dsData = [];
+            if (is_array($rawDs)) {
+                foreach ($rawDs as $key => $setEntries) {
+                    if (is_array($setEntries)) {
+                        foreach ($setEntries as $entry) {
+                            if (is_array($entry)) {
+                                $setId = 'N/A';
+                                if (is_numeric($key)) {
+                                    $setId = $key;
+                                } elseif (preg_match('/\d+/', (string)$key, $m)) {
+                                    $setId = $m[0];
+                                }
+                                $entry['setid'] = $entry['setid'] ?? $entry['SET'] ?? $setId;
+                                $dsData[] = $entry;
+                            }
+                        }
+                    }
+                }
+                if (empty($dsData) && isset($rawDs[0]) && is_array($rawDs[0])) {
+                    $dsData = $rawDs;
+                }
+            }
+            if (empty($dsData)):
+        ?>
+            <div class="tsisip-badge tsisip-badge--info"><?php echo _('No live dispatcher data returned by OpenSIPS.'); ?></div>
+        <?php else: ?>
+            <table class="tsisip-table dataTable">
+                <thead>
+                    <tr>
+                        <th><?php echo _('Set ID'); ?></th>
+                        <th><?php echo _('Destination'); ?></th>
+                        <th><?php echo _('State'); ?></th>
+                        <th><?php echo _('Weight'); ?></th>
+                        <th><?php echo _('Probing'); ?></th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <?php foreach ($dsData as $d): ?>
+                        <tr>
+                            <td><?php echo htmlspecialchars((string) ($d['setid'] ?? $d['SET'] ?? 'N/A')); ?></td>
+                            <td><code><?php echo htmlspecialchars($d['destination'] ?? $d['URI'] ?? $d['TARGET'] ?? 'N/A'); ?></code></td>
+                            <td>
+                                <?php
+                                $flags = $d['state'] ?? $d['FLAGS'] ?? '';
+                                $isActive = is_string($flags) ? (stripos($flags, 'A') !== false || stripos($flags, 'P') !== false) : (bool)$flags;
+                                ?>
+                                <span class="tsisip-badge tsisip-badge--<?php echo $isActive ? 'success' : 'danger'; ?>">
+                                    <?php echo $isActive ? _('Active') : _('Inactive'); ?>
+                                </span>
+                            </td>
+                            <td><?php echo htmlspecialchars((string) ($d['weight'] ?? $d['WEIGHT'] ?? '—')); ?></td>
+                            <td>
+                                <?php
+                                $probing = $d['probing'] ?? $d['PROBING'] ?? '';
+                                $isProbing = is_string($probing) ? (stripos($probing, 'Yes') !== false || stripos($probing, 'On') !== false) : (bool)$probing;
+                                ?>
+                                <span class="tsisip-badge tsisip-badge--<?php echo $isProbing ? 'warning' : 'neutral'; ?>">
+                                    <?php echo $isProbing ? _('Yes') : _('No'); ?>
+                                </span>
+                            </td>
+                        </tr>
+                    <?php endforeach; ?>
+                </tbody>
+            </table>
+        <?php endif; endif; ?>
+    </section>
 
     <!-- Create Form -->
     <div class="tsisip-dashboard-section">

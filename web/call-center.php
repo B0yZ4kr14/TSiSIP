@@ -332,6 +332,48 @@ require_once __DIR__ . '/common/header.php';
             <?php if ($editAgent): ?><a href="call-center.php" class="tsisip-btn tsisip-btn--secondary"><?php echo _('Cancel'); ?></a><?php endif; ?>
         </form>
     </section>
+
+    <section class="tsisip-section">
+        <h2 class="tsisip-section-title"><?php echo _('Live Call Center Agents'); ?></h2>
+        <?php
+        $miAgents = miHttpCall('cc_list_agents');
+        if (!$miAgents['success']):
+        ?>
+            <div class="tsisip-badge tsisip-badge--warning" role="alert">
+                <?php echo _('MI unavailable: ') . htmlspecialchars($miAgents['error']); ?>
+            </div>
+        <?php else:
+            $agentData = $miAgents['data'] ?? [];
+            if (!is_array($agentData)) {
+                $agentData = [];
+            }
+            if (empty($agentData)):
+        ?>
+            <div class="tsisip-badge tsisip-badge--info"><?php echo _('No live call center data returned by OpenSIPS.'); ?></div>
+        <?php else: ?>
+            <table class="tsisip-table">
+                <thead>
+                    <tr>
+                        <th><?php echo _('Agent ID'); ?></th>
+                        <th><?php echo _('Location'); ?></th>
+                        <th><?php echo _('State'); ?></th>
+                        <th><?php echo _('Skills'); ?></th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <?php foreach ($agentData as $a): ?>
+                        <?php if (!is_array($a)) continue; ?>
+                        <tr>
+                            <td><?php echo htmlspecialchars($a['agentid'] ?? $a['id'] ?? 'N/A'); ?></td>
+                            <td><code><?php echo htmlspecialchars($a['location'] ?? 'N/A'); ?></code></td>
+                            <td><?php echo htmlspecialchars(strtoupper($a['logstate'] ?? 'N/A')); ?></td>
+                            <td><?php echo htmlspecialchars($a['skills'] ?? '—'); ?></td>
+                        </tr>
+                    <?php endforeach; ?>
+                </tbody>
+            </table>
+        <?php endif; endif; ?>
+    </section>
 </div>
 
 <?php require_once __DIR__ . '/common/footer.php'; ?>

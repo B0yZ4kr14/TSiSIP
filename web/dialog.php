@@ -7,6 +7,7 @@
 require_once __DIR__ . '/common/config.php';
 require_once __DIR__ . '/common/csrf.php';
 require_once __DIR__ . '/common/pagination.php';
+require_once __DIR__ . '/common/mi-http.php';
 
 requireAuth();
 checkPasswordChange();
@@ -80,6 +81,68 @@ require_once __DIR__ . '/common/header.php';
     <div class="tsisip-dashboard-section">
         <p class="tsisip-text-muted"><?php echo _('This is a read-only view of active SIP dialogs.'); ?></p>
     </div>
+
+    <!-- Live active dialogs via MI HTTP -->
+    <section class="tsisip-section">
+        <h2 class="tsisip-section-title"><?php echo _('Live Active Dialogs'); ?></h2>
+        <?php
+        $miDlg = miHttpCall('dlg_list');
+        if (!$miDlg['success']):
+        ?>
+            <div class="tsisip-badge tsisip-badge--warning" role="alert">
+                <?php echo _('MI unavailable: ') . htmlspecialchars($miDlg['error']); ?>
+            </div>
+        <?php else:
+            $dlgData = $miDlg['data'] ?? [];
+            if (!is_array($dlgData)) {
+                $dlgData = [];
+            }
+            if (isset($dlgData['Dialogs']) && is_array($dlgData['Dialogs'])) {
+                $dlgData = $dlgData['Dialogs'];
+            }
+            if (empty($dlgData)):
+        ?>
+            <div class="tsisip-badge tsisip-badge--info"><?php echo _('No live dialog data returned by OpenSIPS.'); ?></div>
+        <?php else: ?>
+            <table class="tsisip-table dataTable">
+                <thead>
+                    <tr>
+                        <th><?php echo _('Call-ID'); ?></th>
+                        <th><?php echo _('From'); ?></th>
+                        <th><?php echo _('To'); ?></th>
+                        <th><?php echo _('State'); ?></th>
+                        <th><?php echo _('Start Time'); ?></th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <?php foreach ($dlgData as $dlg): ?>
+                        <?php if (!is_array($dlg)) continue; ?>
+                        <tr>
+                            <td><?php echo htmlspecialchars($dlg['callid'] ?? $dlg['call_id'] ?? $dlg['CALLID'] ?? 'N/A'); ?></td>
+                            <td><?php echo htmlspecialchars($dlg['from_uri'] ?? $dlg['from'] ?? $dlg['FROM'] ?? 'N/A'); ?></td>
+                            <td><?php echo htmlspecialchars($dlg['to_uri'] ?? $dlg['to'] ?? $dlg['TO'] ?? 'N/A'); ?></td>
+                            <td>
+                                <?php
+                                $state = $dlg['state'] ?? $dlg['STATE'] ?? 'N/A';
+                                $stateLabel = is_numeric($state) ? dialogStateLabel((int)$state) : htmlspecialchars((string)$state);
+                                $badgeClass = 'tsisip-badge';
+                                if (is_numeric($state)) {
+                                    if ((int)$state === 2) $badgeClass = 'tsisip-badge tsisip-badge-success';
+                                    elseif ((int)$state === 1) $badgeClass = 'tsisip-badge tsisip-badge-warning';
+                                    elseif ((int)$state === 3 || (int)$state === 4) $badgeClass = 'tsisip-badge tsisip-badge-error';
+                                }
+                                ?>
+                                <span class="<?php echo htmlspecialchars($badgeClass, ENT_QUOTES, 'UTF-8'); ?>">
+                                    <?php echo $stateLabel; ?>
+                                </span>
+                            </td>
+                            <td><?php echo htmlspecialchars($dlg['start_time'] ?? $dlg['startTime'] ?? $dlg['START_TIME'] ?? '—'); ?></td>
+                        </tr>
+                    <?php endforeach; ?>
+                </tbody>
+            </table>
+        <?php endif; endif; ?>
+    </section>
 
     <div class="tsisip-dashboard-section">
         <h3><?php echo _('Active Dialogs'); ?> (<?php echo $totalItems; ?>)</h3>

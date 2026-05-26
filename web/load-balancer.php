@@ -231,6 +231,54 @@ require_once __DIR__ . '/common/header.php';
             <button type="submit" class="tsisip-btn tsisip-btn--primary"><?php echo _('Create'); ?></button>
         </form>
     </section>
+
+    <section class="tsisip-section">
+        <h2 class="tsisip-section-title"><?php echo _('Live Load Balancer Status'); ?></h2>
+        <?php
+        $miLb = miHttpCall('lb_list');
+        if (!$miLb['success']):
+        ?>
+            <div class="tsisip-badge tsisip-badge--warning" role="alert">
+                <?php echo _('MI unavailable: ') . htmlspecialchars($miLb['error']); ?>
+            </div>
+        <?php else:
+            $lbData = $miLb['data'] ?? [];
+            if (!is_array($lbData)) {
+                $lbData = [];
+            }
+            if (empty($lbData)):
+        ?>
+            <div class="tsisip-badge tsisip-badge--info"><?php echo _('No live load balancer data returned by OpenSIPS.'); ?></div>
+        <?php else: ?>
+            <table class="tsisip-table">
+                <thead>
+                    <tr>
+                        <th><?php echo _('ID'); ?></th>
+                        <th><?php echo _('Group'); ?></th>
+                        <th><?php echo _('Destination'); ?></th>
+                        <th><?php echo _('Resources'); ?></th>
+                        <th><?php echo _('Status'); ?></th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <?php foreach ($lbData as $lb): ?>
+                        <?php if (!is_array($lb)) continue; ?>
+                        <tr>
+                            <td><?php echo htmlspecialchars($lb['id'] ?? $lb['ID'] ?? 'N/A'); ?></td>
+                            <td><?php echo htmlspecialchars($lb['group'] ?? $lb['group_id'] ?? 'N/A'); ?></td>
+                            <td><code><?php echo htmlspecialchars($lb['destination'] ?? $lb['dst_uri'] ?? 'N/A'); ?></code></td>
+                            <td><?php echo htmlspecialchars($lb['resources'] ?? '—'); ?></td>
+                            <td>
+                                <span class="tsisip-badge tsisip-badge--<?php echo ($lb['status'] ?? $lb['probe_mode'] ?? 0) ? 'success' : 'neutral'; ?>">
+                                    <?php echo ($lb['status'] ?? $lb['probe_mode'] ?? 0) ? _('Active') : _('Inactive'); ?>
+                                </span>
+                            </td>
+                        </tr>
+                    <?php endforeach; ?>
+                </tbody>
+            </table>
+        <?php endif; endif; ?>
+    </section>
 </div>
 
 <?php require_once __DIR__ . '/common/footer.php'; ?>
