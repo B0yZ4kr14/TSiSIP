@@ -71,7 +71,7 @@ services:
     ports:
     - 10000-20000:10000-20000/udp
     command:
-    - --interface=${RTPENGINE_PRIVATE_IP}/${HOST_PUBLIC_IP}
+    - --interface=${RTPENGINE_PRIVATE_IP}!${HOST_PUBLIC_IP}
     - --listen-ng=${RTPENGINE_INTERNAL_IP}:22222
     - --port-min=10000
     - --port-max=20000

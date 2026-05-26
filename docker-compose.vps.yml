@@ -102,7 +102,7 @@ services:
       RTPENGINE_NG_PORT: 22222
     command:
       - rtpengine
-      - --interface=${RTPENGINE_PRIVATE_IP:-127.0.0.1}/${HOST_PUBLIC_IP:-127.0.0.1}
+      - --interface=${RTPENGINE_PRIVATE_IP:-127.0.0.1}!${HOST_PUBLIC_IP:-127.0.0.1}
       - --listen-ng=${RTPENGINE_INTERNAL_IP}:22222
       - --port-min=10000
       - --port-max=10999

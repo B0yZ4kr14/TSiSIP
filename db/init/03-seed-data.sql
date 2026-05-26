@@ -15,8 +15,8 @@ ON CONFLICT (sip_domain) DO NOTHING;
 -- Set 1 = default PBX pool
 INSERT INTO dispatcher (setid, destination, state, weight, priority, attrs, description)
 VALUES
-    (1, 'sip:asterisk-pbx-1:5060', 0, 50, 0, '', 'PBX Node 1'),
-    (1, 'sip:asterisk-pbx-2:5060', 0, 50, 0, '', 'PBX Node 2')
+    (1, 'sip:asterisk_pbx_1:5060', 0, 50, 0, '', 'PBX Node 1'),
+    (1, 'sip:asterisk_pbx_2:5060', 0, 50, 0, '', 'PBX Node 2')
 ON CONFLICT DO NOTHING;
 
 -- Insert a development subscriber with precomputed HA1 hashes
