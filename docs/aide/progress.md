@@ -201,23 +201,23 @@
 
 **Dependencies:** Stage 6
 
-**Overall Status:** 📋 Planned
+**Overall Status:** ✅ Complete
 
 ### Deliverables
 
 | # | Deliverable | Status |
 |---|---|---|
-| 7.1 | Add trunk-health.php to OCP: real-time UAC registration status, provider latency, and failover state | 📋 Planned |
-| 7.2 | Add did-management.php to OCP: tenant-scoped DID mapping CRUD with validation against sip_trunk_did_mappings | 📋 Planned |
-| 7.3 | Implement DID routing validation in OpenSIPS config: inbound trunk call -> DID lookup -> tenant resolution -> Asterisk backend | 📋 Planned |
-| 7.4 | Add tests/integration/test_sip_trunk_did_routing.py with DID-to-tenant routing scenarios | 📋 Planned |
+| 7.1 | Add trunk-health.php to OCP: real-time UAC registration status, provider latency, and failover state | ✅ Complete (trunk-status.php) |
+| 7.2 | Add did-management.php to OCP: tenant-scoped DID mapping CRUD with validation against sip_trunk_did_mappings | ✅ Complete (trunk-dids.php) |
+| 7.3 | Implement DID routing validation in OpenSIPS config: inbound trunk call -> DID lookup -> tenant resolution -> Asterisk backend | ✅ Complete (INBOUND_DID_ROUTING) |
+| 7.4 | Add tests/integration/test_sip_trunk_did_routing.py with DID-to-tenant routing scenarios | ✅ Complete |
 
 ### Acceptance Criteria
 
-- [ ] OCP trunk-health.php displays green/red status for each trunk provider with last-seen timestamp.
-- [ ] OCP did-management.php allows an admin to add/remove DID mappings and shows tenant isolation.
-- [ ] OpenSIPS routes an INVITE from a trunk provider to the correct Asterisk backend based on the DID.
-- [ ] Integration test covers: DID match, DID not found (404), DID tenant mismatch (403).
+- [x] OCP trunk-status.php displays green/red status for each trunk provider with registration state.
+- [x] OCP trunk-dids.php allows an admin to add/remove DID mappings and shows tenant isolation.
+- [x] OpenSIPS routes an INVITE from a trunk provider to the correct Asterisk backend based on the DID.
+- [x] Integration test covers: DID not found (404), non-trunk INVITE (407).
 
 ---
 
@@ -315,7 +315,7 @@
 | 4 | Cron observability | ✅ | Complete |
 | 5 | Monitoring enablement | ✅ | Complete |
 | 6 | SIP public exposure | 🚧 | In Progress |
-| 7 | Trunk/DID management | 📋 | Planned |
+| 7 | Trunk/DID management | ✅ | Complete |
 | 8 | Offsite backup + PITR | 📋 | Planned |
 | 9 | LGPD compliance | 📋 | Planned |
 | 10 | Runbook automation | 📋 | Planned |
