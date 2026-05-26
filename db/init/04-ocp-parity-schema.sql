@@ -252,6 +252,10 @@ CREATE TABLE IF NOT EXISTS smpp (
     ip          VARCHAR(128) NOT NULL,
     port        INTEGER NOT NULL,
     system_id   VARCHAR(64) NOT NULL,
+    -- SECURITY NOTE: This column stores the SMPP gateway password.
+    -- It is required by the OpenSIPS smpp module and must keep the name 'password'.
+    -- Populate ONLY via an API that hashes or encrypts the credential before storage.
+    -- Never insert plaintext passwords directly into this table.
     password    VARCHAR(64) NOT NULL,
     system_type VARCHAR(64) DEFAULT NULL,
     src_ton     INTEGER DEFAULT 0,
@@ -277,6 +281,10 @@ CREATE TABLE IF NOT EXISTS uacreg (
     r_domain    VARCHAR(64) NOT NULL,
     realm       VARCHAR(64) NOT NULL DEFAULT '',
     auth_username VARCHAR(64) NOT NULL DEFAULT '',
+    -- SECURITY NOTE: This column stores the UAC registrant authentication password.
+    -- It is required by the OpenSIPS uac_registrant module and must keep the name 'auth_password'.
+    -- Populate ONLY via an API that hashes or encrypts the credential before storage.
+    -- Never insert plaintext passwords directly into this table.
     auth_password VARCHAR(64) NOT NULL DEFAULT '',
     auth_proxy  VARCHAR(128) NOT NULL,
     expires     INTEGER NOT NULL DEFAULT 3600,

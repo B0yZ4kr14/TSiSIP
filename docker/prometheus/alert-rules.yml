@@ -83,6 +83,30 @@ groups:
           description: "Available memory on {{ $labels.instance }} is {{ $value | humanizePercentage }}. OOM kills imminent."
           runbook_url: "https://docs.tsiapp.io/runbooks/host-memory-critical"
 
+      # Container memory high (warning)
+      - alert: ContainerMemoryHigh
+        expr: (container_memory_working_set_bytes / container_spec_memory_limit_bytes) > 0.85
+        for: 5m
+        labels:
+          severity: warning
+          service: infrastructure
+        annotations:
+          summary: "Container {{ $labels.name }} memory usage above 85%"
+          description: "Container {{ $labels.name }} on {{ $labels.instance }} is using {{ $value | humanizePercentage }} of its limit"
+          runbook_url: "https://docs.tsiapp.io/runbooks/container-memory-high"
+
+      # Container memory critical (OOM imminent)
+      - alert: ContainerMemoryCritical
+        expr: (container_memory_working_set_bytes / container_spec_memory_limit_bytes) > 0.95
+        for: 2m
+        labels:
+          severity: critical
+          service: infrastructure
+        annotations:
+          summary: "Container {{ $labels.name }} memory usage above 95%"
+          description: "Container {{ $labels.name }} on {{ $labels.instance }} is using {{ $value | humanizePercentage }} of its limit. OOM kill imminent."
+          runbook_url: "https://docs.tsiapp.io/runbooks/container-memory-critical"
+
       # Prometheus disk full
       - alert: PrometheusDiskFull
         expr: (prometheus_tsdb_storage_blocks_bytes / prometheus_tsdb_retention_limit_bytes) > 0.85

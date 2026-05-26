@@ -220,6 +220,36 @@ services:
       - --path.rootfs=/host/root
       - --collector.filesystem.mount-points-exclude=^/(sys|proc|dev|host|etc)($$|/)
 
+  cadvisor:
+    image: gcr.io/cadvisor/cadvisor:v0.49.1@sha256:3cde6faf0791ebf7b41d6f8ae7145466fed712ea6f252c935294d2608b1af388
+    networks:
+      - metrics_host
+    restart: on-failure
+    deploy:
+      resources:
+        limits:
+          memory: 256M
+        reservations:
+          memory: 128M
+    volumes:
+      - /:/rootfs:ro
+      - /var/run:/var/run:ro
+      - /sys:/sys:ro
+      - /var/lib/docker/:/var/lib/docker:ro
+    cap_drop: [ALL]
+    cap_add: [SYS_TIME, DAC_READ_SEARCH]
+    security_opt: [no-new-privileges:true]
+    command:
+      - --housekeeping_interval=15s
+      - --docker_only=true
+      - --store_container_labels=true
+    healthcheck:
+      test: ["CMD-SHELL", "wget -qO- http://localhost:8080/healthz | grep -q 'ok'"]
+      interval: 15s
+      timeout: 5s
+      retries: 3
+      start_period: 15s
+
 volumes:
   prometheus_data:
   alertmanager_data:

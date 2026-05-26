@@ -57,6 +57,13 @@ scrape_configs:
       - targets: ['backup:9101']
     metrics_path: /
 
+  # cAdvisor — per-container resource metrics
+  - job_name: 'cadvisor'
+    scrape_interval: 15s
+    static_configs:
+      - targets: ['cadvisor:8080']
+    metrics_path: /metrics
+
   # Prometheus self-monitoring
   - job_name: 'prometheus'
     scrape_interval: 15s
