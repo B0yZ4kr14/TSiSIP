@@ -291,6 +291,7 @@ services:
       - db_password
       - proxy_api_secret
     cap_drop: [ALL]
+    cap_add: [DAC_OVERRIDE]
     depends_on:
       postgres:
         condition: service_healthy
