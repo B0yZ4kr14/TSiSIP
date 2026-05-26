@@ -14,7 +14,7 @@ CREATE TABLE IF NOT EXISTS tenants (
 
 -- Extend subscriber with tenant context and routing group
 ALTER TABLE subscriber
-    ADD COLUMN IF NOT EXISTS tenant_id UUID NOT NULL DEFAULT '00000000-0000-0000-0000-000000000000',
+    ADD COLUMN IF NOT EXISTS tenant_id VARCHAR(36) NOT NULL DEFAULT '00000000-0000-0000-0000-000000000000',
     ADD COLUMN IF NOT EXISTS routing_group INTEGER NOT NULL DEFAULT 1,
     ADD COLUMN IF NOT EXISTS enabled BOOLEAN NOT NULL DEFAULT TRUE;
 
@@ -30,7 +30,7 @@ CREATE INDEX IF NOT EXISTS idx_subscriber_tenant_domain
 -- header_routing_rules: tenant-scoped header-based routing metadata
 CREATE TABLE IF NOT EXISTS header_routing_rules (
     id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
-    tenant_id UUID NOT NULL,
+    tenant_id VARCHAR(36) NOT NULL,
     header_name VARCHAR(64) NOT NULL,
     match_value VARCHAR(255) NOT NULL,
     match_type VARCHAR(16) NOT NULL DEFAULT 'exact'
@@ -49,7 +49,7 @@ CREATE INDEX IF NOT EXISTS idx_header_routing_lookup
 -- pbx_backends: tenant-owned PBX metadata linking to dispatcher sets
 CREATE TABLE IF NOT EXISTS pbx_backends (
     id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
-    tenant_id UUID NOT NULL,
+    tenant_id VARCHAR(36) NOT NULL,
     dispatcher_setid INTEGER NOT NULL CHECK (dispatcher_setid > 0),
     label VARCHAR(128) NOT NULL,
     enabled BOOLEAN NOT NULL DEFAULT TRUE,
