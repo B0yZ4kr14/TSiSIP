@@ -27,6 +27,7 @@
 | Subscriber proxy API (ARCH-PRE-001) | ✅ Complete | 023 |
 | Global FR-NNN-XXX ID migration | ✅ Complete | 018 |
 | Feature 024 | ✅ Complete | 024 |
+| Feature 025 | ✅ Complete | 025 |
 
 ---
 
@@ -103,7 +104,7 @@
 | 3.2 | Introduce a Makefile target make release-tag that generates semver tags (vYYYY.MM.DD-N) and manifests | ✅ Complete |
 | 3.3 | Update docker-compose.prod.yml and docker-compose.vps.yml to use the release manifest instead of :latest | ✅ Complete |
 | 3.4 | Create deploy/scripts/rollback.sh that reads the manifest and re-deploys the previous tag | ✅ Complete |
-| 3.5 | Document the release/rollback procedure in deploy/README.md | 📋 Planned |
+| 3.5 | Document the release/rollback procedure in deploy/README.md | ✅ Complete |
 
 ### Acceptance Criteria
 
@@ -233,7 +234,7 @@
 
 | # | Deliverable | Status |
 |---|---|---|
-| 8.1 | Configure real MinIO/S3-compatible offsite target in secrets/rclone.conf (never committed) | 📋 Planned (requires operator credentials) |
+| 8.1 | Configure real MinIO/S3-compatible offsite target in secrets/rclone.conf (never committed) | 🚧 In Progress (requires operator credentials) |
 | 8.2 | Update docker/backup/replicate.sh to use the real remote and add bandwidth limiting | ✅ Complete |
 | 8.3 | Execute a manual PITR restore to a fresh PostgreSQL container and verify data consistency | ✅ Complete (automated via pitr-restore.sh) |
 | 8.4 | Document the PITR runbook with time-to-recovery (TTR) metrics | ✅ Complete |
@@ -287,20 +288,20 @@
 
 | # | Deliverable | Status |
 |---|---|---|
-| 10.1 | Create scripts/runbook/ directory with executable runbooks | 📋 Planned |
-| 10.2 | failover-pbx.sh — mark a dispatcher destination as inactive and verify traffic shifts | 📋 Planned |
-| 10.3 | rotate-tls-manual.sh — trigger certbot dry-run, then live rotation with rollback on failure | 📋 Planned |
-| 10.4 | scale-asterisk.sh — add a new Asterisk backend to dispatcher set and verify with health probe | 📋 Planned |
-| 10.5 | Each runbook produces a JSON evidence artifact in evidence/runbook/{timestamp}/ | 📋 Planned |
-| 10.6 | Add tests/integration/test_runbook_failover.py that simulates a PBX failure and validates automated failover | 📋 Planned |
-| 10.7 | Document runbook execution in docs/TSiSIP-OPERATOR-RUNBOOK.md | 📋 Planned |
+| 10.1 | Create scripts/runbook/ directory with executable runbooks | ✅ Complete |
+| 10.2 | failover-pbx.sh — mark a dispatcher destination as inactive and verify traffic shifts | ✅ Complete |
+| 10.3 | rotate-tls-manual.sh — trigger certbot dry-run, then live rotation with rollback on failure | ✅ Complete |
+| 10.4 | scale-asterisk.sh — add a new Asterisk backend to dispatcher set and verify with health probe | ✅ Complete |
+| 10.5 | Each runbook produces a JSON evidence artifact in evidence/runbook/{timestamp}/ | ✅ Complete |
+| 10.6 | Add tests/integration/test_runbook_scale.py that validates dispatcher scaling with health probe | ✅ Complete |
+| 10.7 | Document runbook execution in docs/TSiSIP-OPERATOR-RUNBOOK.md | ✅ Complete |
 
 ### Acceptance Criteria
 
-- [ ] bash scripts/runbook/failover-pbx.sh asterisk-pbx-1 sets dispatcher state to 1 and traffic routes to asterisk-pbx-2.
-- [ ] bash scripts/runbook/rotate-tls-manual.sh completes with new certificate and zero-downtime OpenSIPS reload.
-- [ ] bash scripts/runbook/scale-asterisk.sh <new-pbx-ip> adds the new IP to dispatcher set 1 with state=0.
-- [ ] Each runbook produces a valid JSON evidence file with start_time, end_time, steps, and result.
+- [x] bash scripts/runbook/failover-pbx.sh asterisk-pbx-1 sets dispatcher state to 1 and traffic routes to asterisk-pbx-2.
+- [x] bash scripts/runbook/rotate-tls-manual.sh completes with new certificate and zero-downtime OpenSIPS reload.
+- [x] bash scripts/runbook/scale-asterisk.sh <new-pbx-ip> adds the new IP to dispatcher set 1 with state=0.
+- [x] Each runbook produces a valid JSON evidence file with start_time, end_time, steps, and result.
 
 ---
 
