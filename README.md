@@ -115,12 +115,30 @@ TSiSIP edge
 | Admin Panel | OCP v9 + TSiSIP Theme (PHP 8.2 / Apache) |
 | Packaging | Docker + Docker Compose |
 
+## WebSocket & WebRTC
+
+WebSocket transport is enabled on OpenSIPS port 8080 (WS) and 4443 (WSS).
+For production, use the Nginx reverse proxy:
+
+```nginx
+location /ws {
+    proxy_pass http://opensips:8080;
+    proxy_http_version 1.1;
+    proxy_set_header Upgrade $http_upgrade;
+    proxy_set_header Connection "upgrade";
+}
+```
+
+Clients connect via `wss://your-domain/ws` for secure WebRTC signaling.
+
 ## Security
 
 - SIP Digest authentication with HA1 hashes only (no plaintext passwords)
 - Private Docker networks for Asterisk and PostgreSQL (no published ports)
 - Runtime secrets injected via Docker secrets or envsubst
 - Capability-dropped containers with `no-new-privileges`
+- MI HTTP circuit breaker prevents cascading failures on OpenSIPS overload
+- Automatic audit log purge (90-day retention) via backup job
 
 ## License
 
