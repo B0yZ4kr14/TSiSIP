@@ -154,6 +154,54 @@ Pre-provisioned dashboards (loaded from `docker/grafana/provisioning/dashboards/
 - `TSiSIP Trunk Provider Health` — provider latency and failover state
 - `TSiSIP Deployment Validation` — CI/CD pipeline health
 
+## Release Tagging & Rollback
+
+TSiSIP uses immutable image references (SHA256-digested base images) and
+versioned release manifests.  No `:latest` tag is used in production.
+
+### Tag a New Release
+
+```bash
+# Semver tag: v2026.05.26-0, with optional suffix
+make release-tag ARGS="--suffix hotfix-001"
+```
+
+This produces:
+- Git tag `v2026.05.26-0-hotfix-001`
+- Manifest `deploy/releases/release-manifest-v2026.05.26-0-hotfix-001.json`
+  mapping each service image to its pinned digest.
+
+### Rollback to Previous Release
+
+```bash
+# Rollback to the previous manifest tag
+make rollback ARGS="v2026.05.25-2"
+```
+
+The rollback script:
+1. Reads the manifest JSON for the requested tag.
+2. Re-tags images locally if they still exist, or pulls them from GHCR.
+3. Updates running containers via `docker compose up -d` without touching data volumes.
+4. Validates health checks pass before declaring success.
+
+**Target time**: < 60 seconds for a full stack rollback.
+
+### Release Manifest Format
+
+```json
+{
+  "tag": "v2026.05.26-0",
+  "timestamp": "2026-05-26T16:00:00Z",
+  "images": {
+    "ghcr.io/b0yz4kr14/tsisip/opensips": "sha256:abc123...",
+    "ghcr.io/b0yz4kr14/tsisip/backup": "sha256:def456..."
+  }
+}
+```
+
+> **Note**: Locally-built images show digest `unknown` until pushed to GHCR.
+> The manifest is still valid for rollback on the same host where images exist.
+
 ## Makefile Targets
 
 | Target | Description |
@@ -165,6 +213,8 @@ Pre-provisioned dashboards (loaded from `docker/grafana/provisioning/dashboards/
 | `make validate` | Run all validation checks |
 | `make audit` | Run security audit |
 | `make monitoring-up` | Start Prometheus/Grafana/Alertmanager overlay |
+| `make release-tag` | Tag a new immutable release with manifest |
+| `make rollback` | Rollback to a previous release manifest |
 | `make clean` | Remove temporary files |
 
 ## Security Considerations

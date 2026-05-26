@@ -311,7 +311,7 @@
 | Completed | Foundation (001–024) | ✅ | 18/18 capabilities |
 | 1 | Brownfield gap closure | ✅ | Complete |
 | 2 | VEX in CI | ✅ | Complete |
-| 3 | Supply chain determinism | ✅ | Complete (docs pending) |
+| 3 | Supply chain determinism | ✅ | Complete |
 | 4 | Cron observability | ✅ | Complete |
 | 5 | Monitoring enablement | ✅ | Complete |
 | 6 | SIP public exposure | 🚧 | In Progress |
