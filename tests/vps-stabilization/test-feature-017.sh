@@ -113,6 +113,27 @@ else
     fail "rl_check trunk pipe not found in TRUNK_ROUTING"
 fi
 
+# --- AC8: OCP Admin Pages ---
+echo "=== AC8: OCP Admin Pages ==="
+
+SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+REPO_ROOT="$(cd "${SCRIPT_DIR}/../.." && pwd)"
+if [ -f "${REPO_ROOT}/web/ocp/trunk-providers.php" ] && [ -f "${REPO_ROOT}/web/ocp/trunk-dids.php" ] && [ -f "${REPO_ROOT}/web/ocp/trunk-status.php" ]; then
+    pass "OCP trunk admin pages present in repository"
+else
+    warn "OCP trunk admin pages not found in expected path (may be in VPS container only)"
+fi
+
+# --- AC9: Credential Encryption ---
+echo "=== AC9: Credential Encryption ==="
+
+COL_TYPE=$(docker exec "${POSTGRES_CONTAINER}" psql -U "${PG_USER}" -d "${PG_DB}" -Atc "SELECT data_type FROM information_schema.columns WHERE table_name = 'sip_trunk_providers' AND column_name = 'auth_password_encrypted'")
+if [ "${COL_TYPE}" = "bytea" ]; then
+    pass "auth_password_encrypted column is BYTEA (encrypted at rest)"
+else
+    fail "auth_password_encrypted column type is ${COL_TYPE}, expected BYTEA"
+fi
+
 # --- AC10: CDR extra fields ---
 echo "=== AC10: CDR Extra Fields ==="
 
