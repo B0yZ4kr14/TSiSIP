@@ -113,8 +113,9 @@ def test_invite_407():
     return False
 
 def test_invite_authenticated():
+    import os
     username = 'devuser'
-    password = 'devpass'
+    password = os.environ.get('TSISIP_TEST_PASSWORD', 'devpass')
     domain = 'dev.tsisip.local'
     to_user = '1000'
 

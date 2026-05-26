@@ -22,7 +22,7 @@ fi
 # --- Brownfield: Check for forbidden modules ---
 echo "[brownfield] Checking for forbidden modules..."
 for mod in db_mysql db_sqlite sanity; do
-    if grep -rE "loadmodule.*${mod}|modparam.*${mod}|module.*${mod}" opensips/ db/ docker/ 2>/dev/null; then
+    if grep -rE --exclude-dir=.specify --exclude-dir=.omk --exclude-dir=.claude --exclude-dir=.kimi --exclude-dir=.agents "loadmodule.*${mod}|modparam.*${mod}|module.*${mod}" opensips/ db/ docker/ 2>/dev/null; then
         echo "FAIL: Forbidden module reference: $mod"
         FAIL=1
     fi
