@@ -14,6 +14,9 @@ socket=wss:${OPENSIPS_LISTEN_IP}:4443
 # Global ceiling + timeouts prevent Slowloris-style connection exhaustion.
 # Per-source TCP connection limiting (100/IP) is enforced at host firewall
 # (iptables connlimit) when container runs with --cap-add=NET_ADMIN.
+# Fixed children count for predictable memory sizing inside containers
+children = 8
+
 tcp_max_connections = 4096
 tcp_connection_lifetime = 300
 tcp_connect_timeout = 5

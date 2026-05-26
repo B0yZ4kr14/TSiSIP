@@ -4,13 +4,13 @@ services:
     networks:
     - db_internal
     restart: unless-stopped
-    shm_size: 2gb
+    shm_size: 3gb
     command:
     - postgres
     - -c
     - shared_buffers=2GB
     - -c
-    - work_mem=32MB
+    - work_mem=16MB
     - -c
     - maintenance_work_mem=512MB
     - -c
@@ -111,7 +111,7 @@ services:
   opensips:
     image: ghcr.io/b0yz4kr14/tsisip/opensips:${TSISIP_IMAGE_TAG:?must be set}
     # Production tuning: 1GB shm + 128MB pkg per child (container limit 2G)
-    command: ["/usr/local/sbin/opensips", "-F", "-f", "/etc/opensips/opensips.cfg", "-m", "1024", "-M", "128"]
+    command: ["/usr/local/sbin/opensips", "-F", "-f", "/etc/opensips/opensips.cfg", "-m", "1024", "-M", "96"]
     networks:
     - sip_edge
     - sip_internal

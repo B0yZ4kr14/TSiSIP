@@ -8,7 +8,7 @@ RUN apt-get update && apt-get install -y --no-install-recommends openssl curl &&
 # Install dependencies
 RUN pip install --no-cache-dir \
     prometheus-client==0.20.0 \
-    requests==2.31.0
+    requests==2.32.3
 
 # Create non-root user
 RUN groupadd -r exporter && useradd -r -g exporter exporter

@@ -4,7 +4,7 @@
 # Base image pinned to SHA256 digest for supply-chain determinism.
 # Fetched: 2026-05-24
 # Verify: docker inspect php:8.2-apache --format='{{index .RepoDigests 0}}'
-FROM php:8.2-apache@sha256:bc7a503572236c4f5fa40a83e6e8a53eb71d502909d6c4d5641b93e34a728303
+FROM php:8.2-apache-bookworm@sha256:5e0eabeab4ac6d58b3fb9af50bd7c57c89aacb8ed7090e31b28c1e9056dd94fb
 
 # Install PDO PostgreSQL extension
 RUN apt-get update && apt-get install -y --no-install-recommends \

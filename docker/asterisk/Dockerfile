@@ -66,6 +66,7 @@ RUN chmod +x /usr/local/bin/healthcheck.sh
 HEALTHCHECK --interval=15s --timeout=5s --start-period=25s --start-interval=5s --retries=3 \
     CMD /usr/local/bin/healthcheck.sh || exit 1
 
-EXPOSE 5060/udp 5060/tcp 5038/tcp
+# 5038/tcp is AMI management — internal use only, must not be exposed externally
+EXPOSE 5060/udp 5060/tcp
 
 CMD ["asterisk", "-f", "-vvv"]

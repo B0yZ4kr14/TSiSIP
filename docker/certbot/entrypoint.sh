@@ -1,5 +1,5 @@
 #!/bin/sh
-set -e
+set -eu
 
 CERT_DIR="/etc/letsencrypt"
 LIVE_DIR="/certs/live"

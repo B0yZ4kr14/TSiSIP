@@ -42,7 +42,7 @@ services:
     - -c
     - effective_cache_size=3GB
     - -c
-    - work_mem=16MB
+    - work_mem=8MB
     - -c
     - maintenance_work_mem=256MB
     - -c

@@ -125,3 +125,43 @@ Strip before forwarding: Authorization, Proxy-Authorization.
 - Sections added: 19 (Wiki System)
 - Contradictions fixed: 9
 - Cross-references added: 6
+
+## Audit Consolidation (2026-05-26)
+
+**Commit:** `523c5ef`
+**Tests:** 44/44 PASS | **DocGuard:** 235/235 A+
+
+### New Reports
+- `reports/brownfield-scan-2026-05-26.md` — 0 CRITICAL, 1 HIGH, 5 MEDIUM, 6 LOW
+- `reports/version-guard-2026-05-26.md` — 48 passes, 6 HIGH failures
+- `reports/memorylint-2026-05-26.md` — 3 CRITICAL, 4 HIGH, 5 MEDIUM, 2 LOW
+- `reports/gitnexus-analysis-2026-05-26.md` — 647 files, 7,539 symbols, 15 flows
+- `reports/CONSOLIDATED-AUDIT-2026-05-26.md` — master action plan
+
+### Critical Pre-Production Blockers
+
+| ID | Finding | Fix |
+|---|---|---|
+| M1 | OpenSIPS memory exceeds container limits in all profiles | Set children=8, recalc -m/-M |
+| M2 | PostgreSQL prod theoretical max exceeds 8 GB limit | Reduce work_mem to 16 MB or raise limit |
+| M3 | PostgreSQL prod shm_size insufficient | Increase to 3gb |
+
+### High-Priority Actions
+- B17: Update stale `.github/copilot-instructions.md`
+- F1: Fix `.env.example` floating `latest` default
+- D9/V7: Align admin_api PHP base image with OCP
+- A2/V19: Pin rtpengine APT package
+- PY8/V21: Align Python requests version across containers
+- M5-M6: Paginate unbounded PHP queries (LGPD export, audit integrity)
+- M4: Rebalance dev PostgreSQL memory reservation
+
+### Blocked External Dependencies
+- Stage 6: SIP Public Exposure — awaiting firewall/Tailscale ACL
+- Stage 8.1: S3 Backup — awaiting operator config in secrets dir
+
+### TSi-Vault Notes Created
+- `audit/2026-05-26-consolidated.md`
+- `audit/memory-critical-oom.md`
+- `audit/brownfield-findings.md`
+- `audit/version-guard-failures.md`
+- `architecture/gitnexus-insights.md`

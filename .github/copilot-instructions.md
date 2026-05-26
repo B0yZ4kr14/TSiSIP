@@ -2,9 +2,62 @@
 
 ## Repository state
 
-This repository is currently greenfield: no source files, manifests, README, test configuration, or build system are present yet. Do not invent build, test, lint, or single-test commands until the corresponding tooling exists in the repository.
+This repository is a mature, documentation-first greenfield with foundation committed. All core source files, manifests, tests, build systems, and CI workflows are present and actively maintained.
 
-When project files are introduced, update this file with the exact commands from the committed manifests, such as `package.json`, `pyproject.toml`, `Makefile`, `docker-compose.yml`, or CI workflows.
+## Build, Test, and Deploy Commands
+
+### Canonical Build Commands
+```bash
+# Build the OpenSIPS image from source
+docker build -t tsisip-opensips:latest .
+
+# Validate rendered Compose configuration
+docker compose config
+
+# Validate OpenSIPS config syntax inside the built image
+docker run --rm \
+  -e DB_HOST=postgres -e DB_NAME=opensips -e DB_USER=opensips \
+  -e HOST_PUBLIC_IP=127.0.0.1 -e OPENSIPS_LISTEN_IP=0.0.0.0 \
+  -e RTPENGINE_HOST=rtpengine \
+  -v $(pwd)/secrets/db_password:/run/secrets/db_password:ro \
+  -v $(pwd)/secrets/auth_secret:/run/secrets/auth_secret:ro \
+  -v $(pwd)/secrets/topology_secret:/run/secrets/topology_secret:ro \
+  tsisip-opensips:latest \
+  /entrypoint.sh /usr/local/sbin/opensips -c -f /etc/opensips/opensips.cfg
+
+# Build all services
+docker compose build
+
+# Start the full stack
+docker compose up -d
+```
+
+### Integration Tests
+```bash
+# Run the full integration suite
+pytest tests/integration/ -v
+
+# Individual test modules
+pytest tests/integration/test_end_to_end_call.py -v
+pytest tests/integration/test_rate_limiting.py -v
+pytest tests/integration/test_ddos_protection.py -v
+pytest tests/integration/test_anomaly_detection.py -v
+pytest tests/integration/test_cdr_billing.py -v
+```
+
+### CI/CD
+- GitHub Actions workflows: `.github/workflows/ci.yml`, `.github/workflows/deploy.yml`
+- Trivy vulnerability scanning, SLSA provenance attestation, SBOM generation
+- Secret leak detection in CI
+
+### Project Structure
+- `opensips/opensips.cfg.tpl` — OpenSIPS 3.6 LTS edge proxy configuration
+- `docker-compose*.yml` — Docker Compose profiles (dev, prod, vps, monitoring)
+- `db/init/` — PostgreSQL initialization scripts
+- `docker/` — Container support files and Dockerfiles for all services
+- `tests/` — Integration tests (pytest) and frontend tests
+- `docs/` — Canonical architecture specification and runbooks
+- `reports/` — Audit reports (brownfield, version-guard, memory-lint)
 
 ## Project context
 

@@ -48,7 +48,7 @@ EXPOSE 5060/udp 5060/tcp 5061/tcp
 # MI HTTP port (internal Docker networks only — not published to host by default)
 EXPOSE 8888/tcp
 ENTRYPOINT ["/entrypoint.sh"]
-CMD ["/usr/local/sbin/opensips", "-F", "-f", "/etc/opensips/opensips.cfg", "-m", "512", "-M", "64"]
+CMD ["/usr/local/sbin/opensips", "-F", "-f", "/etc/opensips/opensips.cfg", "-m", "512", "-M", "48"]
 
 # --- Health Check ---
 COPY docker/healthcheck/opensips-health.sh /usr/local/bin/healthcheck.sh
