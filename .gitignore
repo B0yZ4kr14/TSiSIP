@@ -47,7 +47,7 @@ web/tsisip/asset-manifest.json
 coverage/
 tests/visual-regression/
 tests/accessibility/
-tests/performance/
+tests/performance/results/
 
 # Python cache
 __pycache__/
