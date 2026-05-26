@@ -44,6 +44,7 @@ def create_mock_env(tmpdir: Path) -> dict:
         "PGPASSWORD_FILE": str(tmpdir / "db_password"),
         "ENCRYPTION_KEY_FILE": str(tmpdir / "backup_encryption_key"),
         "BACKUP_RETENTION_DAYS": "30",
+        "LGPD_RETENTION_DAYS": "30",
         "OCP_AUDIT_RETENTION_DAYS": "90",
         "FULL_VALIDATE": "false",
     })

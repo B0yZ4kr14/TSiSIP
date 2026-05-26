@@ -12,14 +12,6 @@ BACKUP_RETENTION_DAYS="${BACKUP_RETENTION_DAYS:-30}"
 WAL_RETENTION_DAYS="${WAL_RETENTION_DAYS:-37}"
 LGPD_RETENTION_DAYS="${LGPD_RETENTION_DAYS:-365}"
 
-# LGPD compliance: never purge backups younger than LGPD retention window
-if [ "$BACKUP_RETENTION_DAYS" -lt "$LGPD_RETENTION_DAYS" ]; then
-    EFFECTIVE_BACKUP_RETENTION="$LGPD_RETENTION_DAYS"
-    log "LGPD override: backup retention extended from ${BACKUP_RETENTION_DAYS}d to ${LGPD_RETENTION_DAYS}d"
-else
-    EFFECTIVE_BACKUP_RETENTION="$BACKUP_RETENTION_DAYS"
-fi
-
 # Timestamped job log
 JOB_DATE=$(date +%Y-%m-%d)
 JOB_TIME=$(date +%H%M%S)
@@ -30,6 +22,14 @@ mkdir -p "$JOB_LOG_DIR"
 log() {
     echo "[$(date '+%Y-%m-%d %H:%M:%S')] $*" | tee -a "$JOB_LOG"
 }
+
+# LGPD compliance: never purge backups younger than LGPD retention window
+if [ "$BACKUP_RETENTION_DAYS" -lt "$LGPD_RETENTION_DAYS" ]; then
+    EFFECTIVE_BACKUP_RETENTION="$LGPD_RETENTION_DAYS"
+    log "LGPD override: backup retention extended from ${BACKUP_RETENTION_DAYS}d to ${LGPD_RETENTION_DAYS}d"
+else
+    EFFECTIVE_BACKUP_RETENTION="$BACKUP_RETENTION_DAYS"
+fi
 
 JOB_START=$(date +%s)
 log "Starting purge - Effective backup retention: ${EFFECTIVE_BACKUP_RETENTION}d (LGPD=${LGPD_RETENTION_DAYS}d), WAL retention: ${WAL_RETENTION_DAYS}d"
