@@ -8,6 +8,14 @@ services:
     command:
     - postgres
     - -c
+    - shared_buffers=2GB
+    - -c
+    - work_mem=32MB
+    - -c
+    - maintenance_work_mem=512MB
+    - -c
+    - max_connections=300
+    - -c
     - archive_mode=on
     - -c
     - archive_command=test ! -f /backup/wal/%f.gz && gzip < %p > /backup/wal/%f.gz
