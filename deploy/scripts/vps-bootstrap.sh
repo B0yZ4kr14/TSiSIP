@@ -55,6 +55,9 @@ ufw allow 5060/udp
 ufw allow 5060/tcp
 ufw allow 5061/tcp
 ufw allow 10000:20000/udp
+# WebSocket/WSS ports (optional — only needed for direct access without Nginx proxy)
+# ufw allow 8081/tcp
+# ufw allow 4443/tcp
 ufw --force enable
 
 systemctl enable fail2ban
