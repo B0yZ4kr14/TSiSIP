@@ -104,3 +104,17 @@ Key rejections:
 - **Decision**: dialog.php is strictly read-only; dlg_end_dlg requires admin role in mi-commands.php
 - **Consequences**: Two-step process to terminate calls (MI Commands page + admin role)
 - **Status**: Active (L3 Decision)
+
+### AD-024-4: VARCHAR(36) for tenant_id Foreign Keys
+- **Date**: 2026-05-26
+- **Context**: Brownfield scan B19 identified that subscriber, header_routing_rules, and pbx_backends use VARCHAR(36) for tenant_id instead of UUID as specified in canonical spec Section 12.
+- **Decision**: Accept VARCHAR(36) as a pragmatic deviation. The stock OpenSIPS schema (01-stock-opensips-schema.sql) runs before the tenants table is created, making a strict UUID foreign key impossible during bootstrap without reordering init scripts or using ALTER TABLE after tenant creation.
+- **Consequences**: tenant_id remains VARCHAR(36) with default '00000000-0000-0000-0000-000000000000' in subscriber; UUID is used where bootstrap ordering permits (sip_trunk_did_mappings, trunk_ips). This deviation is documented and does not affect runtime correctness.
+- **Status**: Accepted (L3 Decision)
+
+### AD-024-5: OCP v9 Parity Schema Credential Columns
+- **Date**: 2026-05-26
+- **Context**: Brownfield scan B20 flagged that smpp.password and uacreg.auth_password columns may store plaintext credentials.
+- **Decision**: Retain column names as required by OpenSIPS modules (smpp, uac_registrant). Populate ONLY via APIs that encrypt or hash credentials before storage. Never insert plaintext directly. Security comments are embedded in the SQL schema file.
+- **Consequences**: Column names cannot be changed to password_hash without breaking OpenSIPS module compatibility. Credential protection is enforced at the API/OCP layer, not the DDL layer.
+- **Status**: Accepted (L3 Decision)
