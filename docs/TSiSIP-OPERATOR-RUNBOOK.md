@@ -1497,3 +1497,56 @@ URL: `http://<grafana-host>/d/tsisip-sip-trunk-providers`
 ---
 
 *Last Updated: 2026-05-20*
+
+## Automated Runbooks (Feature 025)
+
+Executable runbooks live in `scripts/runbook/` and produce JSON evidence
+artifacts in `evidence/runbook/{timestamp}/`.
+
+### PBX Failover
+
+Mark a dispatcher destination as inactive and verify traffic shifts:
+
+```bash
+./scripts/runbook/failover-pbx.sh asterisk-pbx-1 1
+```
+
+Evidence artifact: `evidence/runbook/YYYYMMDD_HHMMSS_failover-{label}/evidence.json`
+
+### TLS Certificate Rotation
+
+Trigger certbot dry-run, then live rotation with automatic rollback on failure:
+
+```bash
+./scripts/runbook/rotate-tls-manual.sh tsiapp.io
+```
+
+Evidence artifact: `evidence/runbook/YYYYMMDD_HHMMSS_tls-rotate-{domain}/evidence.json`
+
+### Scale Asterisk Backend
+
+Add a new Asterisk backend to the dispatcher set and verify with health probe:
+
+```bash
+./scripts/runbook/scale-asterisk.sh 10.0.0.50 1 "asterisk-pbx-3"
+```
+
+Evidence artifact: `evidence/runbook/YYYYMMDD_HHMMSS_scale-{description}/evidence.json`
+
+### Evidence Schema
+
+Each evidence file follows this structure:
+
+```json
+{
+  "runbook": "failover-pbx",
+  "start_time": "2026-05-26T16:00:00Z",
+  "end_time": "2026-05-26T16:00:15Z",
+  "result": "success",
+  "steps": [
+    {"step": "identify_pbx", "status": "PASS", "detail": "Found destination id=3", "timestamp": "2026-05-26T16:00:01Z"},
+    {"step": "mark_inactive", "status": "PASS", "detail": "State updated to 1", "timestamp": "2026-05-26T16:00:05Z"},
+    {"step": "verify_shift", "status": "PASS", "detail": "2 active destinations remain", "timestamp": "2026-05-26T16:00:10Z"}
+  ]
+}
+```

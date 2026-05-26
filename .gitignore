@@ -86,3 +86,5 @@ docs/memory/INDEX.md.lock
 
 deploy/nginx/ssl/*.key
 deploy/nginx/ssl/*-selfsigned.*
+evidence/
+.docguard/
