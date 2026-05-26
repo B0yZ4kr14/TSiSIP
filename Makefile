@@ -1,7 +1,7 @@
 # TSiSIP Project Makefile
 # Orchestrates common development and operations tasks.
 
-.PHONY: all build test up down lint brownfield release-tag rollback monitoring-up clean ocp-build ocp-rollback help
+.PHONY: all build test up down lint brownfield release-tag rollback monitoring-up clean ocp-build ocp-rollback health-checks runbook-scale pitr-verify help
 
 all: build test
 
@@ -17,6 +17,9 @@ help:
 	@echo "  make release-tag  - Tag a new release with semver + manifest"
 	@echo "  make rollback     - Roll back to a previous release manifest"
 	@echo "  make monitoring-up - Start the monitoring stack overlay (Prometheus/Grafana/Alertmanager)"
+	@echo "  make health-checks - Validate healthcheck stanzas across all compose files"
+	@echo "  make runbook-scale - Example: scale a new Asterisk backend (set IP=... SETID=...)"
+	@echo "  make pitr-verify   - Verify PITR restore to a temp database"
 	@echo "  make ocp-build    - Build OCP theme assets only"
 	@echo "  make ocp-rollback - Rollback OCP theme to original OCP v9"
 	@echo "  make clean        - Remove generated artifacts and Docker volumes"
@@ -100,6 +103,23 @@ ocp-build:
 # Rollback OCP theme
 ocp-rollback:
 	./scripts/rollback-ocp-theme.sh
+
+# Health check validation
+health-checks:
+	@echo "Validating healthcheck stanzas..."
+	@bash scripts/verify-health-checks.sh
+
+# Runbook: scale a new Asterisk backend
+runbook-scale:
+	@echo "Usage: make runbook-scale IP=192.0.2.99 SETID=1 DESC=new-pbx"
+	@test -n "$(IP)" || (echo "ERROR: IP is required"; exit 1)
+	@bash scripts/runbook/scale-asterisk.sh $(IP) $(SETID) "$(DESC)"
+
+# PITR verification
+pitr-verify:
+	@echo "Verifying PITR restore to temp database..."
+	@docker compose -f docker-compose.vps.yml exec backup \
+		/usr/local/bin/pitr-restore.sh --target $$(date -u +%Y-%m-%dT%H:%M:%SZ) --verify-only
 
 # Clean generated artifacts
 clean:
