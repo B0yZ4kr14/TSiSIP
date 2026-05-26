@@ -1,7 +1,7 @@
 # TSiSIP Project Makefile
 # Orchestrates common development and operations tasks.
 
-.PHONY: all build test up down lint brownfield clean ocp-build ocp-rollback help
+.PHONY: all build test up down lint brownfield release-tag rollback clean ocp-build ocp-rollback help
 
 all: build test
 
@@ -13,6 +13,9 @@ help:
 	@echo "  make up           - Start the full Docker Compose stack"
 	@echo "  make down         - Stop the Docker Compose stack"
 	@echo "  make lint         - Validate Docker Compose and OpenSIPS config"
+	@echo "  make brownfield   - Run brownfield hygiene scan"
+	@echo "  make release-tag  - Tag a new release with semver + manifest"
+	@echo "  make rollback     - Roll back to a previous release manifest"
 	@echo "  make ocp-build    - Build OCP theme assets only"
 	@echo "  make ocp-rollback - Rollback OCP theme to original OCP v9"
 	@echo "  make clean        - Remove generated artifacts and Docker volumes"
@@ -73,6 +76,16 @@ brownfield:
 	@echo "  [B6] Checking for published ports on internal services..."
 	@! awk '/asterisk|postgres/{found=1} found && /ports:/{print; exit}' docker-compose.yml || echo "  PASS: Internal services have no published ports"
 	@echo "  Brownfield scan complete."
+
+# Release tag with semver + manifest
+release-tag:
+	@echo "Tagging release..."
+	@./deploy/scripts/release-tag.sh $(ARGS)
+
+# Rollback to a previous release manifest
+rollback:
+	@echo "Rolling back..."
+	@./deploy/scripts/rollback.sh $(ARGS)
 
 # Build OCP theme only
 ocp-build:
