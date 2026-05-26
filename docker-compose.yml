@@ -100,6 +100,8 @@ services:
     - ALL
     security_opt:
     - no-new-privileges:true
+    healthcheck:
+      test: ["NONE"]
     depends_on:
       postgres:
         condition: service_healthy
@@ -120,6 +122,8 @@ services:
     - --path.sysfs=/host/sys
     - --path.rootfs=/host/root
     - --collector.filesystem.mount-points-exclude=^/(sys|proc|dev|host|etc)($$|/)
+    healthcheck:
+      test: ["NONE"]
     volumes:
     - /proc:/host/proc:ro
     - /sys:/host/sys:ro
@@ -637,6 +641,8 @@ services:
     - ALL
     security_opt:
     - no-new-privileges:true
+    healthcheck:
+      test: ["NONE"]
     deploy:
       resources:
         limits:

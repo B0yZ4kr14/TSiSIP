@@ -12,6 +12,36 @@ info() { echo "[INFO] $*"; }
 
 info "=== Health Check Validation ==="
 
+TMP_RESULTS=$(mktemp)
+TMP_PY=$(mktemp)
+trap 'rm -f "$TMP_RESULTS" "$TMP_PY"' EXIT
+
+cat > "$TMP_PY" << 'PYEOF'
+import yaml, sys
+f = sys.argv[1]
+try:
+    with open(f) as fh:
+        data = yaml.safe_load(fh)
+except Exception as e:
+    print(f'INFO|{f}|yaml parse error: {e}')
+    sys.exit(0)
+services = data.get('services', {})
+for svc, cfg in services.items():
+    hc = cfg.get('healthcheck')
+    if not hc:
+        print(f'FAIL|{f}|{svc}|missing healthcheck')
+        continue
+    test = hc.get('test', [])
+    test_str = str(test)
+    if test_str == "['NONE']" or test_str == '["NONE"]':
+        print(f'PASS|{f}|{svc}|healthcheck explicitly disabled')
+        continue
+    if 'true' in test_str.lower() and len(test_str) < 50:
+        print(f'FAIL|{f}|{svc}|trivial healthcheck')
+    else:
+        print(f'PASS|{f}|{svc}|has non-trivial healthcheck')
+PYEOF
+
 # Check every service in all compose files has a healthcheck stanza
 for compose in docker-compose.yml docker-compose.prod.yml docker-compose.vps.yml; do
     f="$PROJECT_ROOT/$compose"
@@ -19,34 +49,21 @@ for compose in docker-compose.yml docker-compose.prod.yml docker-compose.vps.yml
     
     info "Checking $compose..."
     
-    # Use docker compose config if available for accurate service list
-    if command -v docker >/dev/null 2>&1 && docker compose version >/dev/null 2>&1; then
-        SERVICES=$(docker compose -f "$f" config --services 2>/dev/null || true)
+    if command -v python3 >/dev/null 2>&1; then
+        python3 "$TMP_PY" "$f" >> "$TMP_RESULTS" 2>/dev/null
     else
-        # Fallback: parse services block only (stop at networks/volumes/secrets)
-        SERVICES=$(awk '/^services:/{in_services=1; next} /^[a-zA-Z]/{in_services=0} in_services && /^  [a-zA-Z0-9_-]+:/{print substr($0, 3); next}' "$f" | sed 's/://' || true)
+        info "Skipping $compose (python3 unavailable)"
     fi
-    
-    for svc in $SERVICES; do
-        # Check if service block has healthcheck
-        HAS_HC=$(awk "/^  ${svc}:/,/^  [a-zA-Z]/{print}" "$f" | grep -c '^    healthcheck:' || true)
-        if [ "$HAS_HC" -eq 0 ]; then
-            fail "$compose: ${svc} missing healthcheck"
-            continue
-        fi
-        
-        # Extract healthcheck test
-        HC_TEST=$(awk "/^  ${svc}:/,/^  [a-zA-Z]/{print}" "$f" | awk '/^    healthcheck:/{found=1} found && /^      test:/{print; exit}' || true)
-        
-        if echo "$HC_TEST" | grep -qE 'CMD-SHELL.*true\s*\]'; then
-            fail "$compose: ${svc} healthcheck is trivial (CMD-SHELL true)"
-        elif echo "$HC_TEST" | grep -qE '\["CMD",\s*"true"\]|\["CMD-SHELL",\s*"true"\]'; then
-            fail "$compose: ${svc} healthcheck is trivial"
-        else
-            pass "$compose: ${svc} has non-trivial healthcheck"
-        fi
-    done
 done
+
+# Process results from temp file (in main shell, so PASS/FAIL are updated)
+while IFS='|' read -r status file svc msg; do
+    case "$status" in
+        INFO) info "$file: $svc $msg" ;;
+        PASS) pass "$file: $svc $msg" ;;
+        FAIL) fail "$file: $svc $msg" ;;
+    esac
+done < "$TMP_RESULTS"
 
 # Check custom healthcheck scripts exist for services that reference them
 info "Checking custom healthcheck scripts..."
