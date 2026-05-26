@@ -20,13 +20,13 @@ fi
 
 # Ensure volume directories exist and that Postgres can write WAL archives.
 # The shared /backup volume is commonly root-owned on first boot.
-mkdir -p "${BACKUP_DIR:-/backup/daily}" "${WAL_DIR:-/backup/wal}" "${METRICS_DIR:-/backup/metrics}" /backup/validate /tmp/backup
+mkdir -p "${BACKUP_DIR:-/backup/daily}" "${WAL_DIR:-/backup/wal}" "${METRICS_DIR:-/backup/metrics}" "${JOBS_DIR:-/backup/jobs}" /backup/validate /tmp/backup
 POSTGRES_UID="${POSTGRES_UID:-999}"
 POSTGRES_GID="${POSTGRES_GID:-999}"
 chown -R "${POSTGRES_UID}:${POSTGRES_GID}" "${WAL_DIR:-/backup/wal}" 2>/dev/null || true
 chmod 750 "${WAL_DIR:-/backup/wal}" 2>/dev/null || true
 # Ensure tsisip-backup user can write to its directories
-chown -R tsisip-backup:tsisip-backup "${BACKUP_DIR:-/backup/daily}" "${METRICS_DIR:-/backup/metrics}" /backup/validate /tmp/backup 2>/dev/null || true
+chown -R tsisip-backup:tsisip-backup "${BACKUP_DIR:-/backup/daily}" "${METRICS_DIR:-/backup/metrics}" "${JOBS_DIR:-/backup/jobs}" /backup/validate /tmp/backup 2>/dev/null || true
 
 # Setup cron jobs
 CRON_FILE="/tmp/crontab"

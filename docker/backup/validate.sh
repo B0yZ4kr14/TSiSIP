@@ -13,9 +13,17 @@ PGPORT="${PGPORT:-5432}"
 PGUSER="${PGUSER:-opensips}"
 PGDATABASE="${PGDATABASE:-opensips}"
 METRICS_DIR="${METRICS_DIR:-/backup/metrics}"
+JOBS_DIR="${JOBS_DIR:-/backup/jobs}"
+
+# Timestamped job log
+JOB_DATE=$(date +%Y-%m-%d)
+JOB_TIME=$(date +%H%M%S)
+JOB_LOG_DIR="${JOBS_DIR}/${JOB_DATE}"
+JOB_LOG="${JOB_LOG_DIR}/validate_${JOB_TIME}.log"
+mkdir -p "$JOB_LOG_DIR"
 
 log() {
-    echo "[$(date '+%Y-%m-%d %H:%M:%S')] $*"
+    echo "[$(date '+%Y-%m-%d %H:%M:%S')] $*" | tee -a "$JOB_LOG"
 }
 
 # Find latest backup
@@ -34,6 +42,7 @@ if [ -z "$LATEST_BACKUP" ] || [ ! -f "$LATEST_BACKUP" ]; then
     exit 0
 fi
 
+JOB_START=$(date +%s)
 log "Validating backup: $LATEST_BACKUP"
 
 # Start RTO timer
@@ -104,7 +113,22 @@ log "RTO (restore duration): ${RTO_SECONDS}s"
 mkdir -p "$METRICS_DIR"
 echo "$RTO_SECONDS" > "${METRICS_DIR}/rto_last_seconds"
 
-# Write success metric for Prometheus
+# Write job success metrics
+JOB_END=$(date +%s)
+JOB_DURATION=$((JOB_END - JOB_START))
+mkdir -p "$METRICS_DIR"
+cat > "${METRICS_DIR}/job_validate_last_success.prom" <<METRICS
+# HELP backup_job_last_success Unix timestamp of last successful job run
+# TYPE backup_job_last_success gauge
+backup_job_last_success{job="validate"} ${JOB_END}
+METRICS
+cat > "${METRICS_DIR}/job_validate_last_duration.prom" <<METRICS
+# HELP backup_job_last_duration Duration of last job run in seconds
+# TYPE backup_job_last_duration gauge
+backup_job_last_duration{job="validate"} ${JOB_DURATION}
+METRICS
+
+# Write legacy validation status metric
 mkdir -p /backup/metrics
 echo "# HELP backup_validation_status Validation status: 0=skipped, 1=success, 2=failed" > /backup/metrics/validation_status.prom
 echo "# TYPE backup_validation_status gauge" >> /backup/metrics/validation_status.prom

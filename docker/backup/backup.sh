@@ -8,6 +8,8 @@ TIMESTAMP=$(date +%Y%m%d_%H%M%S)
 BACKUP_FILE="opensips_${TIMESTAMP}.dump"
 BACKUP_DIR="${BACKUP_DIR:-/backup/daily}"
 WAL_DIR="${WAL_DIR:-/backup/wal}"
+JOBS_DIR="${JOBS_DIR:-/backup/jobs}"
+METRICS_DIR="${METRICS_DIR:-/backup/metrics}"
 ENCRYPTION_KEY_FILE="${ENCRYPTION_KEY_FILE:-/run/secrets/backup_encryption_key}"
 PGPASSWORD_FILE="${PGPASSWORD_FILE:-/run/secrets/db_password}"
 RETENTION_DAYS="${BACKUP_RETENTION_DAYS:-30}"
@@ -18,9 +20,18 @@ mkdir -p "$BACKUP_DIR" "$WAL_DIR"
 mkdir -p /tmp/backup
 umask 077
 
+# Timestamped job log
+JOB_DATE=$(date +%Y-%m-%d)
+JOB_TIME=$(date +%H%M%S)
+JOB_LOG_DIR="${JOBS_DIR}/${JOB_DATE}"
+JOB_LOG="${JOB_LOG_DIR}/backup_${JOB_TIME}.log"
+mkdir -p "$JOB_LOG_DIR"
+
 log() {
-    echo "[$(date '+%Y-%m-%d %H:%M:%S')] $*"
+    echo "[$(date '+%Y-%m-%d %H:%M:%S')] $*" | tee -a "$JOB_LOG"
 }
+
+JOB_START=$(date +%s)
 
 if [ ! -f "$PGPASSWORD_FILE" ] || [ ! -s "$PGPASSWORD_FILE" ]; then
     log "ERROR: PostgreSQL password file missing or empty: $PGPASSWORD_FILE"
@@ -66,6 +77,21 @@ log "Backup encrypted: ${BACKUP_DIR}/${BACKUP_FILE}.gz.enc"
 ln -sfn "${BACKUP_FILE}.gz.enc" "${BACKUP_DIR}/latest"
 
 log "Backup completed successfully"
+
+# Write job success metrics
+JOB_END=$(date +%s)
+JOB_DURATION=$((JOB_END - JOB_START))
+mkdir -p "$METRICS_DIR"
+cat > "${METRICS_DIR}/job_backup_last_success.prom" <<METRICS
+# HELP backup_job_last_success Unix timestamp of last successful job run
+# TYPE backup_job_last_success gauge
+backup_job_last_success{job="daily"} ${JOB_END}
+METRICS
+cat > "${METRICS_DIR}/job_backup_last_duration.prom" <<METRICS
+# HELP backup_job_last_duration Duration of last job run in seconds
+# TYPE backup_job_last_duration gauge
+backup_job_last_duration{job="daily"} ${JOB_DURATION}
+METRICS
 
 # ---------------------------------------------------------------------------
 # T6.1 — Offsite replication (Wave 2)

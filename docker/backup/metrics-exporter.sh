@@ -60,8 +60,24 @@ generate_metrics() {
 
         echo "# HELP backup_success_total Total number of successful backups"
         echo "# TYPE backup_success_total counter"
-        SUCCESS_COUNT="$(find /backup/daily \( -name '*.dump.gz.enc' -o -name '*.dump.gz' \) -type f 2>/dev/null | wc -l)"
+        SUCCESS_COUNT="$(find /backup/daily \( -name '*.dump.gz.enc' -o -name '*.dump.gz' \) -type f 2>/dev/null | wc -l)" || SUCCESS_COUNT=0
         echo "backup_success_total ${SUCCESS_COUNT}"
+
+        echo "# HELP backup_job_last_success Unix timestamp of last successful job run"
+        echo "# TYPE backup_job_last_success gauge"
+        for job_file in "${METRICS_DIR}"/job_*_last_success.prom; do
+            if [ -f "$job_file" ]; then
+                grep "^backup_job_last_success{" "$job_file" 2>/dev/null || true
+            fi
+        done
+
+        echo "# HELP backup_job_last_duration Duration of last job run in seconds"
+        echo "# TYPE backup_job_last_duration gauge"
+        for job_file in "${METRICS_DIR}"/job_*_last_duration.prom; do
+            if [ -f "$job_file" ]; then
+                grep "^backup_job_last_duration{" "$job_file" 2>/dev/null || true
+            fi
+        done
 
         echo "# HELP backup_exporter_info Metrics exporter info"
         echo "# TYPE backup_exporter_info gauge"

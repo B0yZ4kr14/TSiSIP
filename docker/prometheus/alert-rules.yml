@@ -178,3 +178,40 @@ groups:
           summary: "Certificate renewal failed"
           description: "Certificate renewal from {{ $labels.source }} has recorded new failures in the last hour"
           runbook_url: "https://docs.tsiapp.io/runbooks/certbot-renewal-failed"
+
+  - name: tsisip-backup
+    interval: 60s
+    rules:
+      # CRON-005: Backup job staleness alert (>25h without success)
+      - alert: BackupJobStale
+        expr: time() - backup_job_last_success{job="daily"} > 25 * 3600
+        for: 5m
+        labels:
+          severity: critical
+          service: backup
+        annotations:
+          summary: "Daily backup job has not succeeded in >25 hours"
+          description: "Last successful backup was {{ $value | humanizeDuration }} ago"
+          runbook_url: "https://docs.tsiapp.io/runbooks/backup-stale"
+
+      - alert: PurgeJobStale
+        expr: time() - backup_job_last_success{job="purge"} > 25 * 3600
+        for: 5m
+        labels:
+          severity: warning
+          service: backup
+        annotations:
+          summary: "Purge job has not succeeded in >25 hours"
+          description: "Last successful purge was {{ $value | humanizeDuration }} ago"
+          runbook_url: "https://docs.tsiapp.io/runbooks/backup-stale"
+
+      - alert: ValidateJobStale
+        expr: time() - backup_job_last_success{job="validate"} > 25 * 3600
+        for: 5m
+        labels:
+          severity: warning
+          service: backup
+        annotations:
+          summary: "Validation job has not succeeded in >25 hours"
+          description: "Last successful validation was {{ $value | humanizeDuration }} ago"
+          runbook_url: "https://docs.tsiapp.io/runbooks/backup-stale"

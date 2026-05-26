@@ -120,23 +120,23 @@
 
 **Dependencies:** Stage 3
 
-**Overall Status:** 📋 Planned
+**Overall Status:** ✅ Complete
 
 ### Deliverables
 
 | # | Deliverable | Status |
 |---|---|---|
-| 4.1 | Add a jobs/ directory with timestamped logs for backup (02:00 UTC), purge (03:00 UTC), and validate (04:00 UTC) | 📋 Planned |
-| 4.2 | Expose cron job health via the backup metrics exporter (backup_job_last_success, backup_job_last_duration) | 📋 Planned |
-| 4.3 | Create tests/integration/test_backup_cron.py that simulates a cron window and asserts metrics emission | 📋 Planned |
-| 4.4 | Add an Alertmanager rule that fires if any backup job has not succeeded within 25 hours | 📋 Planned |
+| 4.1 | Add a jobs/ directory with timestamped logs for backup (02:00 UTC), purge (03:00 UTC), and validate (04:00 UTC) | ✅ Complete |
+| 4.2 | Expose cron job health via the backup metrics exporter (backup_job_last_success, backup_job_last_duration) | ✅ Complete |
+| 4.3 | Create tests/integration/test_backup_cron.py that simulates a cron window and asserts metrics emission | ✅ Complete |
+| 4.4 | Add an Alertmanager rule that fires if any backup job has not succeeded within 25 hours | ✅ Complete |
 
 ### Acceptance Criteria
 
-- [ ] After 24 hours of runtime, /backup/logs/ contains timestamped stdout/stderr for each job.
-- [ ] curl http://backup:9101/metrics returns backup_job_last_success{job="daily"} > 0.
-- [ ] Integration test passes in CI using a mocked cron trigger.
-- [ ] Alertmanager rule evaluates without syntax errors.
+- [x] After job execution, /backup/jobs/YYYY-MM-DD/ contains timestamped logs for backup, purge, and validate.
+- [x] curl http://backup:9101/metrics returns backup_job_last_success{job="daily"} and backup_job_last_duration{job="daily"}.
+- [x] Integration test passes in CI using a mocked cron trigger.
+- [x] Alertmanager rule evaluates without syntax errors.
 
 ---
 
@@ -311,7 +311,7 @@
 | 1 | Brownfield gap closure | ✅ | Complete |
 | 2 | VEX in CI | ✅ | Complete |
 | 3 | Supply chain determinism | ✅ | Complete (docs pending) |
-| 4 | Cron observability | 📋 | Planned |
+| 4 | Cron observability | ✅ | Complete |
 | 5 | Monitoring enablement | 📋 | Planned |
 | 6 | SIP public exposure | 📋 | Planned |
 | 7 | Trunk/DID management | 📋 | Planned |

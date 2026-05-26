@@ -6,13 +6,23 @@ set -euo pipefail
 
 BACKUP_DIR="${BACKUP_DIR:-/backup/daily}"
 WAL_DIR="${WAL_DIR:-/backup/wal}"
+JOBS_DIR="${JOBS_DIR:-/backup/jobs}"
+METRICS_DIR="${METRICS_DIR:-/backup/metrics}"
 BACKUP_RETENTION_DAYS="${BACKUP_RETENTION_DAYS:-30}"
 WAL_RETENTION_DAYS="${WAL_RETENTION_DAYS:-37}"
 
+# Timestamped job log
+JOB_DATE=$(date +%Y-%m-%d)
+JOB_TIME=$(date +%H%M%S)
+JOB_LOG_DIR="${JOBS_DIR}/${JOB_DATE}"
+JOB_LOG="${JOB_LOG_DIR}/purge_${JOB_TIME}.log"
+mkdir -p "$JOB_LOG_DIR"
+
 log() {
-    echo "[$(date '+%Y-%m-%d %H:%M:%S')] $*"
+    echo "[$(date '+%Y-%m-%d %H:%M:%S')] $*" | tee -a "$JOB_LOG"
 }
 
+JOB_START=$(date +%s)
 log "Starting purge - Backup retention: ${BACKUP_RETENTION_DAYS}d, WAL retention: ${WAL_RETENTION_DAYS}d"
 
 # Find oldest backup to determine WAL retention cutoff
@@ -60,4 +70,20 @@ else
 fi
 
 log "Purge completed - Backups deleted: $BACKUP_DELETED, WAL deleted: $WAL_DELETED"
+
+# Write job success metrics
+JOB_END=$(date +%s)
+JOB_DURATION=$((JOB_END - JOB_START))
+mkdir -p "$METRICS_DIR"
+cat > "${METRICS_DIR}/job_purge_last_success.prom" <<METRICS
+# HELP backup_job_last_success Unix timestamp of last successful job run
+# TYPE backup_job_last_success gauge
+backup_job_last_success{job="purge"} ${JOB_END}
+METRICS
+cat > "${METRICS_DIR}/job_purge_last_duration.prom" <<METRICS
+# HELP backup_job_last_duration Duration of last job run in seconds
+# TYPE backup_job_last_duration gauge
+backup_job_last_duration{job="purge"} ${JOB_DURATION}
+METRICS
+
 exit 0
