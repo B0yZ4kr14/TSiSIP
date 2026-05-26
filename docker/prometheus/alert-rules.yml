@@ -59,6 +59,30 @@ groups:
   - name: tsisip-infrastructure
     interval: 15s
     rules:
+      # OpenSIPS exporter / MI HTTP unavailable
+      - alert: OpenSIPSExporterDown
+        expr: up{job="opensips"} == 0
+        for: 2m
+        labels:
+          severity: critical
+          service: opensips
+        annotations:
+          summary: "OpenSIPS exporter is down"
+          description: "Prometheus cannot scrape the OpenSIPS exporter for more than 2 minutes. MI HTTP may be unavailable."
+          runbook_url: "https://docs.tsiapp.io/runbooks/opensips-exporter-down"
+
+      # Host memory critically low (OOM risk)
+      - alert: HostMemoryCritical
+        expr: (node_memory_MemAvailable_bytes / node_memory_MemTotal_bytes) < 0.05
+        for: 2m
+        labels:
+          severity: critical
+          service: infrastructure
+        annotations:
+          summary: "Host memory critically low (< 5%)"
+          description: "Available memory on {{ $labels.instance }} is {{ $value | humanizePercentage }}. OOM kills imminent."
+          runbook_url: "https://docs.tsiapp.io/runbooks/host-memory-critical"
+
       # Prometheus disk full
       - alert: PrometheusDiskFull
         expr: (prometheus_tsdb_storage_blocks_bytes / prometheus_tsdb_retention_limit_bytes) > 0.85
