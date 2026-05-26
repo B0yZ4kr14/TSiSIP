@@ -44,6 +44,20 @@ def _sipsak(args: list, timeout: int = 10) -> subprocess.CompletedProcess:
 class TestEndToEndCall:
     """End-to-end SIP call flow through OpenSIPS to Asterisk backend."""
 
+    @pytest.fixture(autouse=True)
+    def _clear_ban_list(self):
+        """Clear cachedb_local ban_list entries before each test to avoid 403 from previous runs."""
+        subprocess.run(
+            [
+                "docker", "compose", "-f", COMPOSE_FILE, "exec", "-T", "opensips",
+                "curl", "-s", "-X", "POST",
+                "-H", "Content-Type: application/json",
+                "-d", '{"jsonrpc":"2.0","method":"cache_remove_chunk","params":["local","ban_list"],"id":1}',
+                "http://localhost:8888/mi/",
+            ],
+            capture_output=True, timeout=5,
+        )
+
     def test_options_health_check(self):
         """OPTIONS probe returns 200 OK from OpenSIPS."""
         r = _sipsak(["-s", "sip:opensips:5060", "-vv"])
