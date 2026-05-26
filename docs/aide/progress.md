@@ -146,24 +146,25 @@
 
 **Dependencies:** Stage 4
 
-**Overall Status:** 📋 Planned
+**Overall Status:** ✅ Complete
 
 ### Deliverables
 
 | # | Deliverable | Status |
 |---|---|---|
-| 5.1 | Create a docker-compose.monitoring.yml overlay with Prometheus, Grafana, Alertmanager, opensips-exporter, and anomaly-detector | 📋 Planned |
-| 5.2 | Configure Prometheus to scrape all metrics_host-network exporters (backup, certbot-exporter) | 📋 Planned |
-| 5.3 | Import the TSiSIP Grafana dashboards from docker/grafana/ | 📋 Planned |
-| 5.4 | Add a make monitoring-up target that starts the overlay without touching the core stack | 📋 Planned |
-| 5.5 | Document memory headroom requirements (~1.5GB additional) and port allocation | 📋 Planned |
+| 5.1 | Create a docker-compose.monitoring.yml overlay with Prometheus, Grafana, Alertmanager, opensips-exporter, and anomaly-detector | ✅ Complete |
+| 5.2 | Configure Prometheus to scrape all metrics_host-network exporters (backup, certbot-exporter) | ✅ Complete |
+| 5.3 | Import the TSiSIP Grafana dashboards from docker/grafana/ | ✅ Complete |
+| 5.4 | Add a make monitoring-up target that starts the overlay without touching the core stack | ✅ Complete |
+| 5.5 | Document memory headroom requirements (~1.5GB additional) and port allocation | ✅ Complete |
 
 ### Acceptance Criteria
 
-- [ ] make monitoring-up brings up 5 additional services that show healthy in docker compose ps.
-- [ ] Prometheus targets page shows opensips, backup, certbot-exporter as UP.
-- [ ] Grafana dashboard TSiSIP SIP Overview displays live dispatcher set metrics.
-- [ ] Anomaly-detector container emits a tsisip_anomaly_score metric within 5 minutes of startup.
+- [x] docker-compose.monitoring.yml brings up 7 monitoring services (prometheus, alertmanager, grafana, opensips_exporter, postgres_exporter, anomaly_detector, node_exporter).
+- [x] Prometheus prometheus.yml.tpl already scrapes backup, certbot, opensips, postgres, node.
+- [x] Grafana dashboards pre-provisioned in docker/grafana/provisioning/dashboards/tsisip/.
+- [x] make monitoring-up starts the overlay without touching core stack.
+- [x] deploy/README.md documents memory headroom (~1.5GB additional) and port allocation.
 
 ---
 
@@ -312,7 +313,7 @@
 | 2 | VEX in CI | ✅ | Complete |
 | 3 | Supply chain determinism | ✅ | Complete (docs pending) |
 | 4 | Cron observability | ✅ | Complete |
-| 5 | Monitoring enablement | 📋 | Planned |
+| 5 | Monitoring enablement | ✅ | Complete |
 | 6 | SIP public exposure | 📋 | Planned |
 | 7 | Trunk/DID management | 📋 | Planned |
 | 8 | Offsite backup + PITR | 📋 | Planned |

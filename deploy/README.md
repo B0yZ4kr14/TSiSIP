@@ -106,6 +106,54 @@ make validate
 ./validate.sh
 ```
 
+## Monitoring Stack
+
+The monitoring overlay is kept separate from the core SIP stack to conserve
+resources on the VPS-lite profile.  When memory/policy allows, start it with:
+
+```bash
+make monitoring-up
+# Or directly:
+docker compose -f docker-compose.vps.yml -f docker-compose.monitoring.yml up -d
+```
+
+### Services
+
+| Service | Memory Limit | Network | Role |
+|---------|-------------:|---------|------|
+| prometheus | 2G | sip_internal, db_internal, metrics_host | Metrics collection & alerting |
+| alertmanager | 512M | db_internal, metrics_host | Alert routing |
+| grafana | 512M | db_internal, metrics_host | Dashboards & visualization |
+| opensips_exporter | 256M | sip_internal, db_internal | OpenSIPS MI → Prometheus |
+| postgres_exporter | 128M | db_internal | PostgreSQL metrics |
+| anomaly_detector | 512M | sip_internal, metrics_host | Z-score anomaly detection |
+| node_exporter | 128M | metrics_host | Host OS metrics |
+
+### Memory Requirements
+
+- **Core stack only**: ~2 GB RAM (10 services)
+- **With monitoring overlay**: ~3.5 GB RAM (+1.5 GB for 7 monitoring services)
+- **Recommended VPS**: 4 GB RAM for full stack + headroom
+
+### Port Allocation (host loopback only)
+
+| Service | Host Port | Container Port |
+|---------|-----------|----------------|
+| grafana | 127.0.0.1:3000 | 3000 |
+| prometheus | 127.0.0.1:9090 | 9090 |
+| alertmanager | 127.0.0.1:9093 | 9093 |
+
+### Grafana Dashboards
+
+Pre-provisioned dashboards (loaded from `docker/grafana/provisioning/dashboards/`):
+
+- `TSiSIP SIP Overview` — dispatcher health, call rates, auth failures
+- `TSiSIP Capacity Planning` — resource utilization trends
+- `TSiSIP Anomaly Detection` — z-score deviations and triggered alerts
+- `TSiSIP Rate Limiting` — request rates and blocked sources
+- `TSiSIP Trunk Provider Health` — provider latency and failover state
+- `TSiSIP Deployment Validation` — CI/CD pipeline health
+
 ## Makefile Targets
 
 | Target | Description |
@@ -116,6 +164,7 @@ make validate
 | `make hardening` | Server hardening |
 | `make validate` | Run all validation checks |
 | `make audit` | Run security audit |
+| `make monitoring-up` | Start Prometheus/Grafana/Alertmanager overlay |
 | `make clean` | Remove temporary files |
 
 ## Security Considerations

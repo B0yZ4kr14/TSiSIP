@@ -1,0 +1,234 @@
+# TSiSIP Monitoring Stack Overlay
+# Brings up Prometheus, Grafana, Alertmanager, and exporters alongside the
+# core TSiSIP stack without touching production SIP services.
+#
+# Usage:
+#   docker compose -f docker-compose.vps.yml -f docker-compose.monitoring.yml up -d
+#   # or
+#   make monitoring-up
+#
+# Memory headroom: ~1.5 GB additional ( Prometheus 512M + Grafana 512M +
+#   Alertmanager 256M + anomaly_detector 512M + exporters ~384M )
+
+services:
+  prometheus:
+    build:
+      context: ./docker/prometheus
+    image: ghcr.io/b0yz4kr14/tsisip/prometheus:${TSISIP_IMAGE_TAG:?must be set}
+    networks:
+      - sip_internal
+      - db_internal
+      - metrics_host
+    restart: on-failure
+    deploy:
+      resources:
+        limits:
+          memory: 2G
+        reservations:
+          memory: 512M
+    environment:
+      ALERTMANAGER_WEBHOOK_URL: ${ALERTMANAGER_WEBHOOK_URL:-http://localhost:5000/alerts}
+      ALERTMANAGER_SMTP_HOST: ${ALERTMANAGER_SMTP_HOST:-localhost:25}
+      ALERTMANAGER_SMTP_FROM: ${ALERTMANAGER_SMTP_FROM:-alerts@tsiapp.io}
+    volumes:
+      - prometheus_data:/prometheus
+      - ./docker/prometheus/alert-rules.yml:/etc/prometheus/alert-rules.yml:ro
+    cap_drop: [ALL]
+    security_opt: [no-new-privileges:true]
+    command:
+      - --config.file=/etc/prometheus/rendered/prometheus.yml
+      - --storage.tsdb.path=/prometheus
+      - --storage.tsdb.retention.time=30d
+      - --storage.tsdb.retention.size=10GB
+      - --web.console.libraries=/usr/share/prometheus/console_libraries
+      - --web.console.templates=/usr/share/prometheus/consoles
+      - --web.enable-lifecycle
+    healthcheck:
+      test: ["CMD-SHELL", "wget -qO- http://localhost:9090/-/healthy | grep -q 'Prometheus'"]
+      interval: 15s
+      timeout: 5s
+      retries: 3
+      start_period: 30s
+
+  alertmanager:
+    image: prom/alertmanager:v0.27.0@sha256:e13b6ed5cb929eeaee733479dce55e10eb3bc2e9c4586c705a4e8da41e5eacf5
+    networks:
+      - db_internal
+      - metrics_host
+    restart: on-failure
+    deploy:
+      resources:
+        limits:
+          memory: 512M
+        reservations:
+          memory: 128M
+    environment:
+      ALERTMANAGER_WEBHOOK_URL: ${ALERTMANAGER_WEBHOOK_URL:-http://localhost:5000/alerts}
+    volumes:
+      - ./docker/prometheus/alertmanager.yml.tpl:/etc/alertmanager/alertmanager.yml.tpl:ro
+      - alertmanager_data:/alertmanager
+    cap_drop: [ALL]
+    security_opt: [no-new-privileges:true]
+    command:
+      - --config.file=/etc/alertmanager/alertmanager.yml
+      - --storage.path=/alertmanager
+      - --web.external-url=http://alertmanager:9093
+    healthcheck:
+      test: ["CMD-SHELL", "wget -qO- http://localhost:9093/-/healthy | grep -q 'OK'"]
+      interval: 15s
+      timeout: 5s
+      retries: 3
+      start_period: 10s
+
+  grafana:
+    build:
+      context: ./docker/grafana
+    image: ghcr.io/b0yz4kr14/tsisip/grafana:${TSISIP_IMAGE_TAG:?must be set}
+    networks:
+      - db_internal
+      - metrics_host
+    restart: on-failure
+    deploy:
+      resources:
+        limits:
+          memory: 512M
+        reservations:
+          memory: 256M
+    environment:
+      GF_INSTALL_PLUGINS: ""
+      GF_SECURITY_ADMIN_PASSWORD__FILE: /run/secrets/grafana_admin_password
+      GF_SERVER_ROOT_URL: ${GRAFANA_ROOT_URL:-http://localhost:3000}
+      GF_USERS_DEFAULT_THEME: light
+    secrets:
+      - grafana_admin_password
+    volumes:
+      - grafana_data:/var/lib/grafana
+    cap_drop: [ALL]
+    security_opt: [no-new-privileges:true]
+    healthcheck:
+      test: ["CMD-SHELL", "curl -fsSL http://localhost:3000/api/health | grep -q 'ok'"]
+      interval: 15s
+      timeout: 5s
+      retries: 3
+      start_period: 30s
+
+  opensips_exporter:
+    build:
+      context: ./docker/opensips_exporter
+    image: ghcr.io/b0yz4kr14/tsisip/opensips_exporter:${TSISIP_IMAGE_TAG:?must be set}
+    networks:
+      - sip_internal
+      - db_internal
+    restart: on-failure
+    deploy:
+      resources:
+        limits:
+          memory: 256M
+        reservations:
+          memory: 128M
+    environment:
+      OPENSIPS_MI_HOST: opensips
+      OPENSIPS_MI_PORT: 8888
+      EXPORTER_PORT: 9442
+      CACHE_TTL_SECONDS: 10
+      TLS_CERT_PATH: /certs/live/server.crt
+    secrets:
+      - server.crt
+    volumes:
+      - tls_certs:/certs/live:ro
+    cap_drop: [ALL]
+    security_opt: [no-new-privileges:true]
+    healthcheck:
+      test: ["CMD-SHELL", "curl -fsSL http://localhost:9442/metrics | grep -q 'opensips'"]
+      interval: 15s
+      timeout: 5s
+      retries: 3
+      start_period: 10s
+
+  postgres_exporter:
+    image: prometheuscommunity/postgres-exporter:v0.15.0@sha256:386b12d19eab2a37d7cd8ca8b4c7491cc7a830d9581f49af6c98a393da9605e6
+    networks:
+      - db_internal
+    restart: on-failure
+    deploy:
+      resources:
+        limits:
+          memory: 128M
+        reservations:
+          memory: 64M
+    environment:
+      DATA_SOURCE_URI: postgres:5432/opensips?sslmode=disable
+      DATA_SOURCE_USER: opensips
+      DATA_SOURCE_PASS_FILE: /run/secrets/db_password
+    secrets:
+      - db_password
+    cap_drop: [ALL]
+    security_opt: [no-new-privileges:true]
+
+  anomaly_detector:
+    build:
+      context: ./docker/anomaly_detector
+    image: ghcr.io/b0yz4kr14/tsisip/anomaly_detector:${TSISIP_IMAGE_TAG:?must be set}
+    networks:
+      - sip_internal
+      - metrics_host
+    restart: on-failure
+    deploy:
+      resources:
+        limits:
+          memory: 512M
+        reservations:
+          memory: 256M
+    environment:
+      ENABLE_ALERTMANAGER: "true"
+      ALERTMANAGER_URL: http://alertmanager:9093/api/v1/alerts
+      ANOMALY_WINDOW_SECONDS: 60
+      ANOMALY_Z_THRESHOLD: 3.0
+      BASELINE_WINDOW_HOURS: 24
+      ALERT_COOLDOWN_SECONDS: 300
+    cap_drop: [ALL]
+    security_opt: [no-new-privileges:true]
+    healthcheck:
+      test: ["CMD-SHELL", "curl -fsSL http://localhost:8080/health || exit 1"]
+      interval: 15s
+      timeout: 5s
+      retries: 3
+      start_period: 10s
+
+  node_exporter:
+    image: prom/node-exporter:v1.8.0@sha256:8a57af80a4c77ffb97749b44895248563616fcfd405b5370d5db35fe6c15e4ec
+    networks:
+      - metrics_host
+    restart: on-failure
+    deploy:
+      resources:
+        limits:
+          memory: 128M
+        reservations:
+          memory: 64M
+    pid: host
+    volumes:
+      - /proc:/host/proc:ro
+      - /sys:/host/sys:ro
+      - /:/host/root:ro
+    cap_add: [SYS_TIME]
+    cap_drop: [ALL]
+    security_opt: [no-new-privileges:true]
+    command:
+      - --path.procfs=/host/proc
+      - --path.sysfs=/host/sys
+      - --path.rootfs=/host/root
+      - --collector.filesystem.mount-points-exclude=^/(sys|proc|dev|host|etc)($$|/)
+
+volumes:
+  prometheus_data:
+  alertmanager_data:
+  grafana_data:
+
+secrets:
+  grafana_admin_password:
+    file: ./secrets/grafana_admin_password
+  db_password:
+    file: ./secrets/db_password
+  server.crt:
+    file: ./secrets/server.crt

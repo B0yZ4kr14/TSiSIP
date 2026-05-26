@@ -1,7 +1,7 @@
 # TSiSIP Project Makefile
 # Orchestrates common development and operations tasks.
 
-.PHONY: all build test up down lint brownfield release-tag rollback clean ocp-build ocp-rollback help
+.PHONY: all build test up down lint brownfield release-tag rollback monitoring-up clean ocp-build ocp-rollback help
 
 all: build test
 
@@ -16,6 +16,7 @@ help:
 	@echo "  make brownfield   - Run brownfield hygiene scan"
 	@echo "  make release-tag  - Tag a new release with semver + manifest"
 	@echo "  make rollback     - Roll back to a previous release manifest"
+	@echo "  make monitoring-up - Start the monitoring stack overlay (Prometheus/Grafana/Alertmanager)"
 	@echo "  make ocp-build    - Build OCP theme assets only"
 	@echo "  make ocp-rollback - Rollback OCP theme to original OCP v9"
 	@echo "  make clean        - Remove generated artifacts and Docker volumes"
@@ -86,6 +87,11 @@ release-tag:
 rollback:
 	@echo "Rolling back..."
 	@./deploy/scripts/rollback.sh $(ARGS)
+
+# Start monitoring overlay
+monitoring-up:
+	@echo "Starting monitoring stack overlay..."
+	docker compose -f docker-compose.vps.yml -f docker-compose.monitoring.yml up -d
 
 # Build OCP theme only
 ocp-build:
