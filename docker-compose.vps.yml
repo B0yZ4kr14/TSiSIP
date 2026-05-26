@@ -349,7 +349,7 @@ services:
       - 1.1.1.1
     environment:
       CERT_PATH: /certs/live/server.crt
-      STATE_DIR: /var/lib/certbot_exporter
+      STATE_DIR: /var/lib/certbot-exporter
       EXPORTER_PORT: 9101
       CERT_SOURCE: certbot
       TLS_DOMAIN: ${TLS_DOMAIN:-unknown}

@@ -661,7 +661,7 @@ services:
       CERT_PATHS: /nginx/ssl/tsiapp.io.crt
       CERT_SOURCES: cloudflare-origin-ca
       CERT_DOMAINS: tsiapp.io
-      STATE_DIR: /var/lib/certbot_exporter
+      STATE_DIR: /var/lib/certbot-exporter
       EXPORTER_PORT: 9101
       CERT_SOURCE: certbot
       TLS_DOMAIN: ${TLS_DOMAIN:-unknown}
