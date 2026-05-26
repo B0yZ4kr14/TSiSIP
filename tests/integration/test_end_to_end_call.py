@@ -12,8 +12,43 @@ import subprocess
 
 
 COMPOSE_FILE = os.environ.get("COMPOSE_FILE", "docker-compose.yml")
-# Unique static IPs for each test to avoid OpenSIPS state collisions
-_TEST_IPS = ["172.24.0.100", "172.24.0.101", "172.24.0.102", "172.24.0.103"]
+
+
+def _discover_test_ips() -> list[str]:
+    """Discover available test IPs on tsisip_sip_edge network.
+
+    Priority:
+    1. TEST_IPS environment variable (comma-separated)
+    2. Docker network inspect for tsisip_sip_edge subnet
+    3. Fallback to 172.24.0.100–103
+    """
+    env_ips = os.environ.get("TEST_IPS")
+    if env_ips:
+        return [ip.strip() for ip in env_ips.split(",")]
+
+    try:
+        result = subprocess.run(
+            [
+                "docker", "network", "inspect", "tsisip_sip_edge",
+                "--format", "{{range .IPAM.Config}}{{.Subnet}}{{end}}",
+            ],
+            capture_output=True, text=True, timeout=5,
+        )
+        if result.returncode == 0 and result.stdout.strip():
+            subnet = result.stdout.strip().split("\n")[0]
+            base = subnet.split("/")[0]
+            octets = base.split(".")
+            return [
+                f"{octets[0]}.{octets[1]}.{octets[2]}.{i}"
+                for i in range(100, 104)
+            ]
+    except Exception:
+        pass
+
+    return ["172.24.0.100", "172.24.0.101", "172.24.0.102", "172.24.0.103"]
+
+
+_TEST_IPS = _discover_test_ips()
 _test_ip_index = 0
 
 

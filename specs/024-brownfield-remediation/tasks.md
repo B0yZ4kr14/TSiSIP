@@ -2,60 +2,60 @@
 
 ## Phase 1: Supply-Chain Determinism (B1)
 
-- [ ] T001: Replace FROM line in docker/admin-api/Dockerfile with SHA-pinned php image
-- [ ] T002: Add digest comment documenting fetch date and SHA verification command
-- [ ] T003: Run docker build to verify image builds successfully
-- [ ] T004: Run Trivy scan on pinned digest to verify no new HIGH/CRITICAL CVEs (R2)
-- [ ] T005: Capture Trivy scan evidence in docs/security/evidence/024-trivy-scan.txt
+- [x] T001: Replace FROM line in docker/admin-api/Dockerfile with SHA-pinned php image
+- [x] T002: Add digest comment documenting fetch date and SHA verification command
+- [x] T003: Run docker build to verify image builds successfully
+- [x] T004: Run Trivy scan on pinned digest to verify no new HIGH/CRITICAL CVEs (R2)
+- [x] T005: Capture Trivy scan evidence in docs/security/evidence/024-trivy-scan.txt
 
 ## Phase 2: Test Script Hygiene (B2–B3)
 
-- [ ] T006: Create get_test_ip() helper in tests/integration/test_end_to_end_call.py
-- [ ] T007: Replace all hard-coded 172.x IPs in test_end_to_end_call.py with TEST_IP env var
-- [ ] T008: Create get_test_ip() helper in tests/integration/test_sip_trunk_failover.py
-- [ ] T009: Replace all hard-coded 172.x IPs in test_sip_trunk_failover.py with TEST_IP env var
-- [ ] T010: Run pytest smoke test with TEST_IP=127.0.0.1 to verify parameterization
+- [x] T006: Create get_test_ip() helper in tests/integration/test_end_to_end_call.py
+- [x] T007: Replace all hard-coded 172.x IPs in test_end_to_end_call.py with TEST_IP env var
+- [x] T008: Create get_test_ip() helper in tests/integration/test_sip_trunk_failover.py
+- [x] T009: Replace all hard-coded 172.x IPs in test_sip_trunk_failover.py with TEST_IP env var
+- [x] T010: Run pytest smoke test with TEST_IP=127.0.0.1 to verify parameterization
 
 ## Phase 3: Deploy Script Robustness (B4–B6, B8–B10)
 
-- [ ] T011: Replace static RTPENGINE_PRIVATE_IP in deploy/scripts/test-vps-local.sh with docker network inspect
-- [ ] T012: Replace static RTPENGINE_INTERNAL_IP in deploy/scripts/test-vps-local.sh with docker network inspect
-- [ ] T013: Replace static RTPENGINE_PRIVATE_IP in deploy/scripts/vps-bootstrap.sh with docker network inspect
-- [ ] T014: Replace static RTPENGINE_INTERNAL_IP in deploy/scripts/vps-bootstrap.sh with docker network inspect
-- [ ] T015: Replace static RTPENGINE_PRIVATE_IP in deploy/scripts/vps-deploy.sh with docker network inspect
-- [ ] T3.6: Replace static RTPENGINE_INTERNAL_IP in deploy/scripts/vps-deploy.sh with docker network inspect
-- [ ] T3.7: Add error handling: exit 1 with descriptive message if docker network inspect fails (no silent default)
-- [ ] T3.8: Add inline comments before every sleep in deploy/scripts/orchestrate-deploy.sh explaining wait purpose
-- [ ] T3.9: Add inline comments before every sleep in deploy/scripts/safe-recovery.sh explaining wait purpose
-- [ ] T0110: Add inline comments before every sleep in deploy/scripts/vps-deploy.sh explaining wait purpose
-- [ ] T0111: Verify with grep that all sleep statements in deploy/scripts/*.sh have preceding comments
+- [x] T011: Replace static RTPENGINE_PRIVATE_IP in deploy/scripts/test-vps-local.sh with docker network inspect
+- [x] T012: Replace static RTPENGINE_INTERNAL_IP in deploy/scripts/test-vps-local.sh with docker network inspect
+- [x] T013: Replace static RTPENGINE_PRIVATE_IP in deploy/scripts/vps-bootstrap.sh with docker network inspect
+- [x] T014: Replace static RTPENGINE_INTERNAL_IP in deploy/scripts/vps-bootstrap.sh with docker network inspect
+- [x] T015: Replace static RTPENGINE_PRIVATE_IP in deploy/scripts/vps-deploy.sh with docker network inspect
+- [x] T3.6: Replace static RTPENGINE_INTERNAL_IP in deploy/scripts/vps-deploy.sh with docker network inspect
+- [x] T3.7: Add error handling: exit 1 with descriptive message if docker network inspect fails (no silent default)
+- [x] T3.8: Add inline comments before every sleep in deploy/scripts/orchestrate-deploy.sh explaining wait purpose
+- [x] T3.9: Add inline comments before every sleep in deploy/scripts/safe-recovery.sh explaining wait purpose
+- [x] T0110: Add inline comments before every sleep in deploy/scripts/vps-deploy.sh explaining wait purpose
+- [x] T0111: Verify with grep that all sleep statements in deploy/scripts/*.sh have preceding comments
 
 ## Phase 4: Configuration Completeness (B7)
 
-- [ ] T016: Extract all variable references from docker-compose.vps.yml using grep
-- [ ] T017: Audit existing .env.example and identify missing variables
-- [ ] T018: Add all missing variables to .env.example with placeholder values and descriptive comments
-- [ ] T019: Validate docker compose config with placeholder env values
+- [x] T016: Extract all variable references from docker-compose.vps.yml using grep
+- [x] T017: Audit existing .env.example and identify missing variables
+- [x] T018: Add all missing variables to .env.example with placeholder values and descriptive comments
+- [x] T019: Validate docker compose config with placeholder env values
 
 ## Phase 5: Healthcheck Hardening (B11–B12)
 
-- [ ] T5.1: Run docker compose exec ocp curl to verify current healthcheck behavior inside container namespace
-- [ ] T5.2: If healthcheck fails with userland-proxy=false, update docker-compose.vps.yml healthcheck to use localhost or internal DNS
-- [ ] T5.3: Add HEALTHCHECK to docker/admin-api/Dockerfile with 30s interval, 60s start_period, 3 retries
-- [ ] T5.4: Add HEALTHCHECK to docker/backup/Dockerfile with file-based or command-based probe
-- [ ] T5.5: Add HEALTHCHECK to docker/anomaly-detector/Dockerfile with lightweight probe
-- [ ] T5.6: Add HEALTHCHECK to docker/ca-tool/Dockerfile with certificate validity check
-- [ ] T5.7: Add HEALTHCHECK to docker/certbot-exporter/Dockerfile with metrics endpoint probe
-- [ ] T5.8: Build each modified image and verify health status transitions to healthy within 60s
+- [x] T5.1: Run docker compose exec ocp curl to verify current healthcheck behavior inside container namespace
+- [x] T5.2: If healthcheck fails with userland-proxy=false, update docker-compose.vps.yml healthcheck to use localhost or internal DNS
+- [x] T5.3: Add HEALTHCHECK to docker/admin-api/Dockerfile with 30s interval, 60s start_period, 3 retries
+- [x] T5.4: Add HEALTHCHECK to docker/backup/Dockerfile with file-based or command-based probe
+- [x] T5.5: Add HEALTHCHECK to docker/anomaly-detector/Dockerfile with lightweight probe
+- [x] T5.6: Add HEALTHCHECK to docker/ca-tool/Dockerfile with certificate validity check
+- [x] T5.7: Add HEALTHCHECK to docker/certbot-exporter/Dockerfile with metrics endpoint probe
+- [x] T5.8: Build each modified image and verify health status transitions to healthy within 60s
 
 ## Phase 6: Validation & Sign-Off
 
-- [ ] T6.1: Run docker compose config to validate zero errors after all changes (AC9)
-- [ ] T6.2: Run post-fix brownfield scan against changed files (AC10)
-- [ ] T6.3: Verify zero HIGH/MEDIUM findings in scan results (AC10)
-- [ ] T6.4: Run git diff to confirm no secrets in changes (R1)
-- [ ] T6.5: Write conventional commit with all Feature 024 changes
-- [ ] T6.6: Push commit to main and verify CI passes
+- [x] T6.1: Run docker compose config to validate zero errors after all changes (AC9)
+- [x] T6.2: Run post-fix brownfield scan against changed files (AC10)
+- [x] T6.3: Verify zero HIGH/MEDIUM findings in scan results (AC10)
+- [x] T6.4: Run git diff to confirm no secrets in changes (R1)
+- [x] T6.5: Write conventional commit with all Feature 024 changes
+- [x] T6.6: Push commit to main and verify CI passes
 
 ---
 

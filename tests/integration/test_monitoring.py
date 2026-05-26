@@ -33,7 +33,9 @@ class TestMonitoring:
             path = os.path.join(DASHBOARD_DIR, filename)
             with open(path) as f:
                 data = json.load(f)
-            title = data.get("dashboard", {}).get("title", "")
+            # Support both wrapped (API format) and unwrapped (provisioning format)
+            dashboard = data.get("dashboard", data)
+            title = dashboard.get("title", "")
             assert title, f"Dashboard {filename} missing title"
             assert "TSiSIP" in title, f"Dashboard {filename} title missing 'TSiSIP'"
 
@@ -45,7 +47,9 @@ class TestMonitoring:
             path = os.path.join(DASHBOARD_DIR, filename)
             with open(path) as f:
                 data = json.load(f)
-            panels = data.get("dashboard", {}).get("panels", [])
+            # Support both wrapped (API format) and unwrapped (provisioning format)
+            dashboard = data.get("dashboard", data)
+            panels = dashboard.get("panels", [])
             assert len(panels) > 0, f"Dashboard {filename} has no panels"
 
     def test_datasource_config_exists(self):

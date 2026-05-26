@@ -1,76 +1,109 @@
 {
-  "dashboard": {
-    "id": null,
-    "title": "TSiSIP - Capacity Planning",
-    "tags": ["tsisip", "capacity", "admin"],
-    "timezone": "browser",
-    "schemaVersion": 38,
-    "refresh": "30s",
-    "time": {"from": "now-30d", "to": "now"},
-    "panels": [
-      {
-        "id": 1,
-        "title": "${i18n:concurrent_calls_trend}",
-        "type": "timeseries",
-        "targets": [
-          {
-            "expr": "avg_over_time(opensips_active_dialogs_total[1h])",
-            "legendFormat": "Avg Concurrent Calls (1h)"
-          }
-        ],
-        "gridPos": {"h": 8, "w": 12, "x": 0, "y": 0}
-      },
-      {
-        "id": 2,
-        "title": "${i18n:rtp_port_utilization}",
-        "type": "gauge",
-        "targets": [
-          {
-            "expr": "rtpengine_ports_used / rtpengine_ports_total",
-            "legendFormat": "RTP Port Utilization"
-          }
-        ],
-        "fieldConfig": {
-          "defaults": {
-            "min": 0,
-            "max": 1,
-            "thresholds": {
-              "steps": [
-                {"color": "green", "value": 0},
-                {"color": "yellow", "value": 0.6},
-                {"color": "red", "value": 0.8}
-              ]
-            },
-            "unit": "percentunit"
-          }
-        },
-        "gridPos": {"h": 8, "w": 12, "x": 12, "y": 0}
-      },
-      {
-        "id": 3,
-        "title": "${i18n:subscriber_growth}",
-        "type": "timeseries",
-        "targets": [
-          {
-            "expr": "opensips_registered_subscribers",
-            "legendFormat": "Registered Subscribers"
-          }
-        ],
-        "gridPos": {"h": 8, "w": 12, "x": 0, "y": 8}
-      },
-      {
-        "id": 4,
-        "title": "${i18n:query_latency}",
-        "type": "timeseries",
-        "targets": [
-          {
-            "expr": "pg_stat_statements_mean_time",
-            "legendFormat": "Avg Query Time (ms)"
-          }
-        ],
-        "gridPos": {"h": 8, "w": 12, "x": 12, "y": 8}
-      }
-    ]
+  "id": null,
+  "title": "TSiSIP - Capacity Planning",
+  "tags": [
+    "tsisip",
+    "capacity",
+    "admin"
+  ],
+  "timezone": "browser",
+  "schemaVersion": 38,
+  "refresh": "30s",
+  "time": {
+    "from": "now-30d",
+    "to": "now"
   },
-  "overwrite": true
+  "panels": [
+    {
+      "id": 1,
+      "title": "${i18n:concurrent_calls_trend}",
+      "type": "timeseries",
+      "targets": [
+        {
+          "expr": "avg_over_time(opensips_active_dialogs_total[1h])",
+          "legendFormat": "Avg Concurrent Calls (1h)"
+        }
+      ],
+      "gridPos": {
+        "h": 8,
+        "w": 12,
+        "x": 0,
+        "y": 0
+      }
+    },
+    {
+      "id": 2,
+      "title": "${i18n:rtp_port_utilization}",
+      "type": "gauge",
+      "targets": [
+        {
+          "expr": "rtpengine_ports_used / rtpengine_ports_total",
+          "legendFormat": "RTP Port Utilization"
+        }
+      ],
+      "fieldConfig": {
+        "defaults": {
+          "min": 0,
+          "max": 1,
+          "thresholds": {
+            "steps": [
+              {
+                "color": "green",
+                "value": 0
+              },
+              {
+                "color": "yellow",
+                "value": 0.6
+              },
+              {
+                "color": "red",
+                "value": 0.8
+              }
+            ]
+          },
+          "unit": "percentunit"
+        }
+      },
+      "gridPos": {
+        "h": 8,
+        "w": 12,
+        "x": 12,
+        "y": 0
+      }
+    },
+    {
+      "id": 3,
+      "title": "${i18n:subscriber_growth}",
+      "type": "timeseries",
+      "targets": [
+        {
+          "expr": "opensips_registered_subscribers",
+          "legendFormat": "Registered Subscribers"
+        }
+      ],
+      "gridPos": {
+        "h": 8,
+        "w": 12,
+        "x": 0,
+        "y": 8
+      }
+    },
+    {
+      "id": 4,
+      "title": "${i18n:query_latency}",
+      "type": "timeseries",
+      "targets": [
+        {
+          "expr": "pg_stat_statements_mean_time",
+          "legendFormat": "Avg Query Time (ms)"
+        }
+      ],
+      "gridPos": {
+        "h": 8,
+        "w": 12,
+        "x": 12,
+        "y": 8
+      }
+    }
+  ]
 }

@@ -1,79 +1,116 @@
 {
-  "dashboard": {
-    "id": null,
-    "title": "TSiSIP - Anomaly Detection",
-    "tags": ["tsisip", "anomaly", "security", "noc"],
-    "timezone": "browser",
-    "schemaVersion": 38,
-    "refresh": "10s",
-    "time": {"from": "now-1h", "to": "now"},
-    "panels": [
-      {
-        "id": 1,
-        "title": "Anomaly Z-Score",
-        "type": "timeseries",
-        "targets": [
-          {
-            "expr": "tsisip_anomaly_z_score",
-            "legendFormat": "Z-Score"
-          }
-        ],
-        "fieldConfig": {
-          "defaults": {
-            "custom": {"drawStyle": "line", "lineWidth": 2},
-            "thresholds": {
-              "steps": [
-                {"color": "green", "value": null},
-                {"color": "yellow", "value": 3.0},
-                {"color": "red", "value": 6.0}
-              ]
-            }
-          }
-        },
-        "gridPos": {"h": 8, "w": 12, "x": 0, "y": 0}
-      },
-      {
-        "id": 2,
-        "title": "Current RPS vs Baseline",
-        "type": "timeseries",
-        "targets": [
-          {
-            "expr": "tsisip_current_rps",
-            "legendFormat": "Current RPS"
-          },
-          {
-            "expr": "tsisip_baseline_mean_rps",
-            "legendFormat": "Baseline Mean"
-          }
-        ],
-        "gridPos": {"h": 8, "w": 12, "x": 12, "y": 0}
-      },
-      {
-        "id": 3,
-        "title": "Events Received by Type",
-        "type": "timeseries",
-        "targets": [
-          {
-            "expr": "rate(tsisip_anomaly_events_received_total[1m])",
-            "legendFormat": "{{event_type}}"
-          }
-        ],
-        "gridPos": {"h": 8, "w": 12, "x": 0, "y": 8}
-      },
-      {
-        "id": 4,
-        "title": "Anomaly Alerts",
-        "type": "table",
-        "targets": [
-          {
-            "expr": "tsisip_anomaly_alerts_total",
-            "format": "table",
-            "instant": true
-          }
-        ],
-        "gridPos": {"h": 8, "w": 12, "x": 12, "y": 8}
-      }
-    ]
+  "id": null,
+  "title": "TSiSIP - Anomaly Detection",
+  "tags": [
+    "tsisip",
+    "anomaly",
+    "security",
+    "noc"
+  ],
+  "timezone": "browser",
+  "schemaVersion": 38,
+  "refresh": "10s",
+  "time": {
+    "from": "now-1h",
+    "to": "now"
   },
-  "overwrite": true
+  "panels": [
+    {
+      "id": 1,
+      "title": "Anomaly Z-Score",
+      "type": "timeseries",
+      "targets": [
+        {
+          "expr": "tsisip_anomaly_z_score",
+          "legendFormat": "Z-Score"
+        }
+      ],
+      "fieldConfig": {
+        "defaults": {
+          "custom": {
+            "drawStyle": "line",
+            "lineWidth": 2
+          },
+          "thresholds": {
+            "steps": [
+              {
+                "color": "green",
+                "value": null
+              },
+              {
+                "color": "yellow",
+                "value": 3.0
+              },
+              {
+                "color": "red",
+                "value": 6.0
+              }
+            ]
+          }
+        }
+      },
+      "gridPos": {
+        "h": 8,
+        "w": 12,
+        "x": 0,
+        "y": 0
+      }
+    },
+    {
+      "id": 2,
+      "title": "Current RPS vs Baseline",
+      "type": "timeseries",
+      "targets": [
+        {
+          "expr": "tsisip_current_rps",
+          "legendFormat": "Current RPS"
+        },
+        {
+          "expr": "tsisip_baseline_mean_rps",
+          "legendFormat": "Baseline Mean"
+        }
+      ],
+      "gridPos": {
+        "h": 8,
+        "w": 12,
+        "x": 12,
+        "y": 0
+      }
+    },
+    {
+      "id": 3,
+      "title": "Events Received by Type",
+      "type": "timeseries",
+      "targets": [
+        {
+          "expr": "rate(tsisip_anomaly_events_received_total[1m])",
+          "legendFormat": "{{event_type}}"
+        }
+      ],
+      "gridPos": {
+        "h": 8,
+        "w": 12,
+        "x": 0,
+        "y": 8
+      }
+    },
+    {
+      "id": 4,
+      "title": "Anomaly Alerts",
+      "type": "table",
+      "targets": [
+        {
+          "expr": "tsisip_anomaly_alerts_total",
+          "format": "table",
+          "instant": true
+        }
+      ],
+      "gridPos": {
+        "h": 8,
+        "w": 12,
+        "x": 12,
+        "y": 8
+      }
+    }
+  ]
 }

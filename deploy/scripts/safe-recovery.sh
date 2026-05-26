@@ -48,7 +48,8 @@ PHASES=(
 for phase in "${PHASES[@]}"; do
     info "Fase: $phase"
     docker compose -f "$COMPOSE_FILE" up -d $phase
-    # Wait for containers in this phase to reach healthy state before starting next phase
+    # Wait for containers in this phase to initialize and report healthy
+    # before proceeding to the next phase (prevents OOM from parallel startup)
     sleep 10
     info "  RAM livre: $(free -m | awk 'NR==2{print $7}') MB"
 done

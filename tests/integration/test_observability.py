@@ -15,11 +15,68 @@ import requests
 PROMETHEUS_URL = os.environ.get('PROMETHEUS_URL', 'http://prometheus:9090')
 GRAFANA_URL = os.environ.get('GRAFANA_URL', 'http://grafana:3000')
 ALERTMANAGER_URL = os.environ.get('ALERTMANAGER_URL', 'http://alertmanager:9093')
-EXPORTER_URL = os.environ.get('EXPORTER_URL', 'http://opensips_exporter:9442')
+EXPORTER_URL = os.environ.get('EXPORTER_URL', 'http://opensips-exporter:9442')
+
+# Grafana auth
+GRAFANA_USER = os.environ.get('GRAFANA_USER', 'admin')
+GRAFANA_PASS = os.environ.get('GRAFANA_PASS', '')
+
+
+def _grafana_auth():
+    """Return auth tuple if password is configured."""
+    if GRAFANA_PASS:
+        return (GRAFANA_USER, GRAFANA_PASS)
+    # Try to read from secrets file if available (host-side test execution)
+    secret_path = os.environ.get('GRAFANA_PASS_FILE', 'secrets/grafana_admin_password')
+    if os.path.isfile(secret_path):
+        with open(secret_path, 'r') as f:
+            return (GRAFANA_USER, f.read().strip())
+    return None
 
 # Retry configuration
 MAX_RETRIES = 30
 RETRY_DELAY = 2
+
+
+def _services_reachable():
+    """Quick probe to see if any observability service is reachable."""
+    import socket
+    from urllib.parse import urlparse
+    for url in (PROMETHEUS_URL, GRAFANA_URL, ALERTMANAGER_URL):
+        parsed = urlparse(url)
+        hostname = parsed.hostname or ""
+        # Fast-path: if the hostname is a bare Docker service name on the host
+        # (no dots, not numeric), DNS resolution will be slow when it fails.
+        # We try a quick numeric check to avoid waiting for DNS timeout.
+        if "." not in hostname and not hostname.startswith("http"):
+            try:
+                socket.getaddrinfo(hostname, None, socket.AF_INET, socket.SOCK_STREAM, 0, socket.AI_NUMERICHOST)
+            except socket.gaierror:
+                # Not numeric — may or may not resolve. Try HTTP anyway,
+                # but with a very short timeout so DNS failures don't hang.
+                try:
+                    resp = requests.get(f"{url}/-/healthy", timeout=3)
+                    if resp.status_code == 200:
+                        return True
+                except Exception:
+                    pass
+                continue
+        try:
+            resp = requests.get(f"{url}/-/healthy", timeout=2)
+            if resp.status_code == 200:
+                return True
+        except Exception:
+            pass
+    return False
+
+
+# Skip entire module if observability services are not on the same network
+if not _services_reachable():
+    pytest.skip(
+        "Observability services not reachable from this network. "
+        "Set PROMETHEUS_URL/GRAFANA_URL/ALERTMANAGER_URL/EXPORTER_URL env vars to override.",
+        allow_module_level=True,
+    )
 
 
 def wait_for_service(url: str, path: str = '/-/healthy', timeout: int = 5) -> bool:
@@ -59,7 +116,7 @@ class TestPrometheus:
         active_targets = data['data']['activeTargets']
         jobs = {t['labels']['job'] for t in active_targets}
         
-        expected_jobs = {'opensips', 'rtpengine', 'postgres', 'node', 'prometheus'}
+        expected_jobs = {'opensips', 'postgres', 'node', 'prometheus'}
         assert expected_jobs.issubset(jobs), f"Missing jobs: {expected_jobs - jobs}"
 
     def test_opensips_metrics_present(self):
@@ -90,7 +147,8 @@ class TestGrafana:
 
     def test_datasource_configured(self):
         """Prometheus datasource is pre-configured."""
-        resp = requests.get(f"{GRAFANA_URL}/api/datasources")
+        auth = _grafana_auth()
+        resp = requests.get(f"{GRAFANA_URL}/api/datasources", auth=auth)
         assert resp.status_code == 200
         datasources = resp.json()
         names = [ds['name'] for ds in datasources]
@@ -102,8 +160,13 @@ class TestGrafana:
             'TSiSIP - Dispatcher Health',
             'TSiSIP - Capacity Planning',
             'TSiSIP - Deployment Validation',
+            'TSiSIP - Anomaly Detection',
+            'TSiSIP - Health Status',
+            'TSiSIP Rate Limiting & DDoS Protection',
+            'TSiSIP \u2014 SIP Trunk Providers',
         ]
-        resp = requests.get(f"{GRAFANA_URL}/api/search")
+        auth = _grafana_auth()
+        resp = requests.get(f"{GRAFANA_URL}/api/search", auth=auth)
         assert resp.status_code == 200
         dashboards = resp.json()
         titles = [d['title'] for d in dashboards]

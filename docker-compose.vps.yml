@@ -104,6 +104,7 @@ services:
       - rtpengine
       - --interface=${RTPENGINE_PRIVATE_IP}!${HOST_PUBLIC_IP}
       - --listen-ng=${RTPENGINE_INTERNAL_IP}:22222
+      - --listen-http=0.0.0.0:2225
       - --port-min=10000
       - --port-max=10999
       - --log-stderr
@@ -189,7 +190,7 @@ services:
     cap_drop: [ALL]
     security_opt: [no-new-privileges:true]
     healthcheck:
-      test: ["CMD-SHELL", "psql -h localhost -U opensips -d opensips -c 'SELECT 1' || exit 1"]
+      test: ["CMD-SHELL", "pg_isready -h localhost -p 5432 || exit 1"]
       interval: 15s
       timeout: 5s
       retries: 3

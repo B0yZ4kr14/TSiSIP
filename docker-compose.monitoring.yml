@@ -34,7 +34,8 @@ services:
       - prometheus_data:/prometheus
       - ./docker/prometheus/alert-rules.yml:/etc/prometheus/alert-rules.yml:ro
     cap_drop: [ALL]
-    security_opt: [no-new-privileges:true]
+    security_opt:
+      - no-new-privileges:true
     command:
       - --config.file=/etc/prometheus/rendered/prometheus.yml
       - --storage.tsdb.path=/prometheus
@@ -68,7 +69,8 @@ services:
       - ./docker/prometheus/alertmanager.yml.tpl:/etc/alertmanager/alertmanager.yml.tpl:ro
       - alertmanager_data:/alertmanager
     cap_drop: [ALL]
-    security_opt: [no-new-privileges:true]
+    security_opt:
+      - no-new-privileges:true
     command:
       - --config.file=/etc/alertmanager/alertmanager.yml
       - --storage.path=/alertmanager
@@ -104,7 +106,8 @@ services:
     volumes:
       - grafana_data:/var/lib/grafana
     cap_drop: [ALL]
-    security_opt: [no-new-privileges:true]
+    security_opt:
+      - no-new-privileges:true
     healthcheck:
       test: ["CMD-SHELL", "curl -fsSL http://localhost:3000/api/health | grep -q 'ok'"]
       interval: 15s
@@ -137,7 +140,8 @@ services:
     volumes:
       - tls_certs:/certs/live:ro
     cap_drop: [ALL]
-    security_opt: [no-new-privileges:true]
+    security_opt:
+      - no-new-privileges:true
     healthcheck:
       test: ["CMD-SHELL", "curl -fsSL http://localhost:9442/metrics | grep -q 'opensips'"]
       interval: 15s
@@ -163,7 +167,8 @@ services:
     secrets:
       - db_password
     cap_drop: [ALL]
-    security_opt: [no-new-privileges:true]
+    security_opt:
+      - no-new-privileges:true
 
   anomaly_detector:
     build:
@@ -187,7 +192,8 @@ services:
       BASELINE_WINDOW_HOURS: 24
       ALERT_COOLDOWN_SECONDS: 300
     cap_drop: [ALL]
-    security_opt: [no-new-privileges:true]
+    security_opt:
+      - no-new-privileges:true
     healthcheck:
       test: ["CMD-SHELL", "curl -fsSL http://localhost:8080/health || exit 1"]
       interval: 15s
@@ -213,7 +219,8 @@ services:
       - /:/host/root:ro
     cap_add: [SYS_TIME]
     cap_drop: [ALL]
-    security_opt: [no-new-privileges:true]
+    security_opt:
+      - no-new-privileges:true
     command:
       - --path.procfs=/host/proc
       - --path.sysfs=/host/sys
@@ -238,7 +245,8 @@ services:
       - /var/lib/docker/:/var/lib/docker:ro
     cap_drop: [ALL]
     cap_add: [SYS_TIME, DAC_READ_SEARCH]
-    security_opt: [no-new-privileges:true]
+    security_opt:
+      - no-new-privileges:true
     command:
       - --housekeeping_interval=15s
       - --docker_only=true

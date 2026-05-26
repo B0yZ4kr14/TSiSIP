@@ -57,12 +57,7 @@ services:
     labels:
       tsisip.environment: production
       tsisip.deployed-by: ansible
-    deploy:
-      resources:
-        limits:
-          memory: 8G
-        reservations:
-          memory: 4G
+
   rtpengine:
     image: ghcr.io/b0yz4kr14/tsisip/rtpengine:${TSISIP_IMAGE_TAG:?must be set}
     networks:
@@ -73,6 +68,7 @@ services:
     command:
     - --interface=${RTPENGINE_PRIVATE_IP}!${HOST_PUBLIC_IP}
     - --listen-ng=${RTPENGINE_INTERNAL_IP}:22222
+    - --listen-http=0.0.0.0:2225
     - --port-min=10000
     - --port-max=20000
     - --log-stderr
@@ -192,7 +188,7 @@ services:
     security_opt:
     - no-new-privileges:true
     healthcheck:
-      test: ["CMD-SHELL", "psql -h localhost -U opensips -d opensips -c 'SELECT 1' || exit 1"]
+      test: ["CMD-SHELL", "pg_isready -h localhost -p 5432 || exit 1"]
       interval: 15s
       timeout: 5s
       retries: 3

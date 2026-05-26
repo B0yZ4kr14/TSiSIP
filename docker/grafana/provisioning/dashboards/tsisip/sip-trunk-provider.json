@@ -1,184 +1,271 @@
 {
-  "dashboard": {
-    "id": null,
-    "uid": "tsisip-sip-trunk",
-    "title": "TSiSIP — SIP Trunk Providers",
-    "tags": ["tsisip", "sip", "trunk", "opensips"],
-    "timezone": "browser",
-    "schemaVersion": 38,
-    "refresh": "30s",
-    "time": {"from": "now-6h", "to": "now"},
-    "templating": {
-      "list": [
-        {
-          "name": "prometheus",
-          "type": "datasource",
-          "query": "prometheus",
-          "current": {
-            "selected": false,
-            "text": "Prometheus",
-            "value": "Prometheus"
-          }
+  "id": null,
+  "uid": "tsisip-sip-trunk",
+  "title": "TSiSIP \u2014 SIP Trunk Providers",
+  "tags": [
+    "tsisip",
+    "sip",
+    "trunk",
+    "opensips"
+  ],
+  "timezone": "browser",
+  "schemaVersion": 38,
+  "refresh": "30s",
+  "time": {
+    "from": "now-6h",
+    "to": "now"
+  },
+  "templating": {
+    "list": [
+      {
+        "name": "prometheus",
+        "type": "datasource",
+        "query": "prometheus",
+        "current": {
+          "selected": false,
+          "text": "Prometheus",
+          "value": "Prometheus"
         }
-      ]
-    },
-    "panels": [
-      {
-        "id": 1,
-        "title": "Trunk Health Status",
-        "type": "stat",
-        "targets": [
-          {
-            "datasource": {"type": "prometheus", "uid": "${prometheus}"},
-            "expr": "tsisip_trunk_provider_healthy",
-            "legendFormat": "{{trunk_name}}",
-            "refId": "A"
-          }
-        ],
-        "fieldConfig": {
-          "defaults": {
-            "min": 0,
-            "max": 1,
-            "thresholds": {
-              "steps": [
-                {"color": "red", "value": 0},
-                {"color": "green", "value": 1}
-              ]
-            },
-            "unit": "bool",
-            "mappings": [
-              {"options": {"0": {"text": "DOWN"}}, "type": "value"},
-              {"options": {"1": {"text": "UP"}}, "type": "value"}
-            ]
-          }
-        },
-        "gridPos": {"h": 4, "w": 24, "x": 0, "y": 0}
-      },
-      {
-        "id": 2,
-        "title": "Active Calls per Trunk",
-        "type": "timeseries",
-        "targets": [
-          {
-            "datasource": {"type": "prometheus", "uid": "${prometheus}"},
-            "expr": "tsisip_trunk_calls_active",
-            "legendFormat": "{{trunk_name}} ({{direction}})",
-            "refId": "A"
-          }
-        ],
-        "gridPos": {"h": 8, "w": 8, "x": 0, "y": 4}
-      },
-      {
-        "id": 3,
-        "title": "Total Calls (Outbound/Inbound)",
-        "type": "timeseries",
-        "targets": [
-          {
-            "datasource": {"type": "prometheus", "uid": "${prometheus}"},
-            "expr": "sum by (direction) (rate(tsisip_trunk_calls_total[1m]))",
-            "legendFormat": "{{direction}}",
-            "refId": "A"
-          }
-        ],
-        "gridPos": {"h": 8, "w": 8, "x": 8, "y": 4}
-      },
-      {
-        "id": 4,
-        "title": "CPS Throttled Rate",
-        "type": "timeseries",
-        "targets": [
-          {
-            "datasource": {"type": "prometheus", "uid": "${prometheus}"},
-            "expr": "rate(tsisip_trunk_cps_throttled_total[1m])",
-            "legendFormat": "{{trunk_name}}",
-            "refId": "A"
-          }
-        ],
-        "gridPos": {"h": 8, "w": 8, "x": 16, "y": 4}
-      },
-      {
-        "id": 5,
-        "title": "Probe Latency",
-        "type": "timeseries",
-        "targets": [
-          {
-            "datasource": {"type": "prometheus", "uid": "${prometheus}"},
-            "expr": "tsisip_trunk_probe_latency_ms",
-            "legendFormat": "{{trunk_name}}",
-            "refId": "A"
-          }
-        ],
-        "gridPos": {"h": 8, "w": 12, "x": 0, "y": 12}
-      },
-      {
-        "id": 6,
-        "title": "Probe Failures",
-        "type": "timeseries",
-        "targets": [
-          {
-            "datasource": {"type": "prometheus", "uid": "${prometheus}"},
-            "expr": "rate(tsisip_trunk_probe_failures_total[1m])",
-            "legendFormat": "{{trunk_name}}",
-            "refId": "A"
-          }
-        ],
-        "gridPos": {"h": 8, "w": 12, "x": 12, "y": 12}
-      },
-      {
-        "id": 7,
-        "title": "Trunk Provider Table",
-        "type": "table",
-        "targets": [
-          {
-            "datasource": {"type": "prometheus", "uid": "${prometheus}"},
-            "expr": "tsisip_trunk_provider_healthy",
-            "format": "table",
-            "instant": true,
-            "legendFormat": "{{trunk_name}}",
-            "refId": "A"
-          },
-          {
-            "datasource": {"type": "prometheus", "uid": "${prometheus}"},
-            "expr": "tsisip_trunk_calls_active",
-            "format": "table",
-            "instant": true,
-            "legendFormat": "{{trunk_name}}",
-            "refId": "B"
-          },
-          {
-            "datasource": {"type": "prometheus", "uid": "${prometheus}"},
-            "expr": "tsisip_trunk_probe_latency_ms",
-            "format": "table",
-            "instant": true,
-            "legendFormat": "{{trunk_name}}",
-            "refId": "C"
-          }
-        ],
-        "transformations": [
-          {
-            "id": "merge",
-            "options": {}
-          },
-          {
-            "id": "organize",
-            "options": {
-              "excludeByName": {
-                "Time": true,
-                "__name__": true,
-                "trunk_host": true
-              },
-              "renameByName": {
-                "Value #A": "Healthy",
-                "Value #B": "Active Calls",
-                "Value #C": "Probe Latency (ms)",
-                "trunk_name": "Trunk Name"
-              }
-            }
-          }
-        ],
-        "gridPos": {"h": 8, "w": 24, "x": 0, "y": 20}
       }
     ]
   },
-  "overwrite": true
+  "panels": [
+    {
+      "id": 1,
+      "title": "Trunk Health Status",
+      "type": "stat",
+      "targets": [
+        {
+          "datasource": {
+            "type": "prometheus",
+            "uid": "${prometheus}"
+          },
+          "expr": "tsisip_trunk_provider_healthy",
+          "legendFormat": "{{trunk_name}}",
+          "refId": "A"
+        }
+      ],
+      "fieldConfig": {
+        "defaults": {
+          "min": 0,
+          "max": 1,
+          "thresholds": {
+            "steps": [
+              {
+                "color": "red",
+                "value": 0
+              },
+              {
+                "color": "green",
+                "value": 1
+              }
+            ]
+          },
+          "unit": "bool",
+          "mappings": [
+            {
+              "options": {
+                "0": {
+                  "text": "DOWN"
+                }
+              },
+              "type": "value"
+            },
+            {
+              "options": {
+                "1": {
+                  "text": "UP"
+                }
+              },
+              "type": "value"
+            }
+          ]
+        }
+      },
+      "gridPos": {
+        "h": 4,
+        "w": 24,
+        "x": 0,
+        "y": 0
+      }
+    },
+    {
+      "id": 2,
+      "title": "Active Calls per Trunk",
+      "type": "timeseries",
+      "targets": [
+        {
+          "datasource": {
+            "type": "prometheus",
+            "uid": "${prometheus}"
+          },
+          "expr": "tsisip_trunk_calls_active",
+          "legendFormat": "{{trunk_name}} ({{direction}})",
+          "refId": "A"
+        }
+      ],
+      "gridPos": {
+        "h": 8,
+        "w": 8,
+        "x": 0,
+        "y": 4
+      }
+    },
+    {
+      "id": 3,
+      "title": "Total Calls (Outbound/Inbound)",
+      "type": "timeseries",
+      "targets": [
+        {
+          "datasource": {
+            "type": "prometheus",
+            "uid": "${prometheus}"
+          },
+          "expr": "sum by (direction) (rate(tsisip_trunk_calls_total[1m]))",
+          "legendFormat": "{{direction}}",
+          "refId": "A"
+        }
+      ],
+      "gridPos": {
+        "h": 8,
+        "w": 8,
+        "x": 8,
+        "y": 4
+      }
+    },
+    {
+      "id": 4,
+      "title": "CPS Throttled Rate",
+      "type": "timeseries",
+      "targets": [
+        {
+          "datasource": {
+            "type": "prometheus",
+            "uid": "${prometheus}"
+          },
+          "expr": "rate(tsisip_trunk_cps_throttled_total[1m])",
+          "legendFormat": "{{trunk_name}}",
+          "refId": "A"
+        }
+      ],
+      "gridPos": {
+        "h": 8,
+        "w": 8,
+        "x": 16,
+        "y": 4
+      }
+    },
+    {
+      "id": 5,
+      "title": "Probe Latency",
+      "type": "timeseries",
+      "targets": [
+        {
+          "datasource": {
+            "type": "prometheus",
+            "uid": "${prometheus}"
+          },
+          "expr": "tsisip_trunk_probe_latency_ms",
+          "legendFormat": "{{trunk_name}}",
+          "refId": "A"
+        }
+      ],
+      "gridPos": {
+        "h": 8,
+        "w": 12,
+        "x": 0,
+        "y": 12
+      }
+    },
+    {
+      "id": 6,
+      "title": "Probe Failures",
+      "type": "timeseries",
+      "targets": [
+        {
+          "datasource": {
+            "type": "prometheus",
+            "uid": "${prometheus}"
+          },
+          "expr": "rate(tsisip_trunk_probe_failures_total[1m])",
+          "legendFormat": "{{trunk_name}}",
+          "refId": "A"
+        }
+      ],
+      "gridPos": {
+        "h": 8,
+        "w": 12,
+        "x": 12,
+        "y": 12
+      }
+    },
+    {
+      "id": 7,
+      "title": "Trunk Provider Table",
+      "type": "table",
+      "targets": [
+        {
+          "datasource": {
+            "type": "prometheus",
+            "uid": "${prometheus}"
+          },
+          "expr": "tsisip_trunk_provider_healthy",
+          "format": "table",
+          "instant": true,
+          "legendFormat": "{{trunk_name}}",
+          "refId": "A"
+        },
+        {
+          "datasource": {
+            "type": "prometheus",
+            "uid": "${prometheus}"
+          },
+          "expr": "tsisip_trunk_calls_active",
+          "format": "table",
+          "instant": true,
+          "legendFormat": "{{trunk_name}}",
+          "refId": "B"
+        },
+        {
+          "datasource": {
+            "type": "prometheus",
+            "uid": "${prometheus}"
+          },
+          "expr": "tsisip_trunk_probe_latency_ms",
+          "format": "table",
+          "instant": true,
+          "legendFormat": "{{trunk_name}}",
+          "refId": "C"
+        }
+      ],
+      "transformations": [
+        {
+          "id": "merge",
+          "options": {}
+        },
+        {
+          "id": "organize",
+          "options": {
+            "excludeByName": {
+              "Time": true,
+              "__name__": true,
+              "trunk_host": true
+            },
+            "renameByName": {
+              "Value #A": "Healthy",
+              "Value #B": "Active Calls",
+              "Value #C": "Probe Latency (ms)",
+              "trunk_name": "Trunk Name"
+            }
+          }
+        }
+      ],
+      "gridPos": {
+        "h": 8,
+        "w": 24,
+        "x": 0,
+        "y": 20
+      }
+    }
+  ]
 }

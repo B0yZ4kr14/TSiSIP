@@ -1,78 +1,111 @@
 {
-  "dashboard": {
-    "id": null,
-    "title": "TSiSIP - Deployment Validation",
-    "tags": ["tsisip", "deployment", "devops"],
-    "timezone": "browser",
-    "schemaVersion": 38,
-    "refresh": "10s",
-    "time": {"from": "now-1h", "to": "now"},
-    "panels": [
-      {
-        "id": 1,
-        "title": "${i18n:call_success_rate}",
-        "type": "stat",
-        "targets": [
-          {
-            "expr": "rate(opensips_sip_requests_total{method=\"INVITE\",status=\"success\"}[5m]) / rate(opensips_sip_requests_total{method=\"INVITE\"}[5m])",
-            "legendFormat": "Success Rate"
-          }
-        ],
-        "fieldConfig": {
-          "defaults": {
-            "unit": "percentunit",
-            "min": 0,
-            "max": 1,
-            "thresholds": {
-              "steps": [
-                {"color": "red", "value": 0},
-                {"color": "yellow", "value": 0.95},
-                {"color": "green", "value": 0.99}
-              ]
-            }
-          }
-        },
-        "gridPos": {"h": 4, "w": 8, "x": 0, "y": 0}
-      },
-      {
-        "id": 2,
-        "title": "${i18n:registration_rate}",
-        "type": "graph",
-        "targets": [
-          {
-            "expr": "rate(opensips_sip_requests_total{method=\"REGISTER\"}[5m])",
-            "legendFormat": "Registers/sec"
-          }
-        ],
-        "gridPos": {"h": 4, "w": 8, "x": 8, "y": 0}
-      },
-      {
-        "id": 3,
-        "title": "${i18n:dispatcher_summary}",
-        "type": "table",
-        "targets": [
-          {
-            "expr": "opensips_dispatcher_target_state",
-            "format": "table",
-            "instant": true
-          }
-        ],
-        "gridPos": {"h": 4, "w": 8, "x": 16, "y": 0}
-      },
-      {
-        "id": 4,
-        "title": "${i18n:recent_alerts}",
-        "type": "table",
-        "targets": [
-          {
-            "expr": "ALERTS{alertstate=\"firing\"}",
-            "format": "table",
-            "instant": true
-          }
-        ],
-        "gridPos": {"h": 4, "w": 24, "x": 0, "y": 4}
-      }
-    ]
+  "id": null,
+  "title": "TSiSIP - Deployment Validation",
+  "tags": [
+    "tsisip",
+    "deployment",
+    "devops"
+  ],
+  "timezone": "browser",
+  "schemaVersion": 38,
+  "refresh": "10s",
+  "time": {
+    "from": "now-1h",
+    "to": "now"
   },
-  "overwrite": true
+  "panels": [
+    {
+      "id": 1,
+      "title": "${i18n:call_success_rate}",
+      "type": "stat",
+      "targets": [
+        {
+          "expr": "rate(opensips_sip_requests_total{method=\"INVITE\",status=\"success\"}[5m]) / rate(opensips_sip_requests_total{method=\"INVITE\"}[5m])",
+          "legendFormat": "Success Rate"
+        }
+      ],
+      "fieldConfig": {
+        "defaults": {
+          "unit": "percentunit",
+          "min": 0,
+          "max": 1,
+          "thresholds": {
+            "steps": [
+              {
+                "color": "red",
+                "value": 0
+              },
+              {
+                "color": "yellow",
+                "value": 0.95
+              },
+              {
+                "color": "green",
+                "value": 0.99
+              }
+            ]
+          }
+        }
+      },
+      "gridPos": {
+        "h": 4,
+        "w": 8,
+        "x": 0,
+        "y": 0
+      }
+    },
+    {
+      "id": 2,
+      "title": "${i18n:registration_rate}",
+      "type": "graph",
+      "targets": [
+        {
+          "expr": "rate(opensips_sip_requests_total{method=\"REGISTER\"}[5m])",
+          "legendFormat": "Registers/sec"
+        }
+      ],
+      "gridPos": {
+        "h": 4,
+        "w": 8,
+        "x": 8,
+        "y": 0
+      }
+    },
+    {
+      "id": 3,
+      "title": "${i18n:dispatcher_summary}",
+      "type": "table",
+      "targets": [
+        {
+          "expr": "opensips_dispatcher_target_state",
+          "format": "table",
+          "instant": true
+        }
+      ],
+      "gridPos": {
+        "h": 4,
+        "w": 8,
+        "x": 16,
+        "y": 0
+      }
+    },
+    {
+      "id": 4,
+      "title": "${i18n:recent_alerts}",
+      "type": "table",
+      "targets": [
+        {
+          "expr": "ALERTS{alertstate=\"firing\"}",
+          "format": "table",
+          "instant": true
+        }
+      ],
+      "gridPos": {
+        "h": 4,
+        "w": 24,
+        "x": 0,
+        "y": 4
+      }
+    }
+  ]
 }

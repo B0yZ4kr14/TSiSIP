@@ -22,12 +22,12 @@ scrape_configs:
       - targets: ['opensips_exporter:9442']
     metrics_path: /metrics
 
-  # RTPengine — TODO: add rtpengine-exporter sidecar when metrics endpoint is implemented
-  # - job_name: 'rtpengine'
-  #   scrape_interval: 30s
-  #   static_configs:
-  #     - targets: ['rtpengine:8080']
-  #   metrics_path: /metrics
+  # RTPengine native Prometheus endpoint
+  - job_name: 'rtpengine'
+    scrape_interval: 30s
+    static_configs:
+      - targets: ['rtpengine:2225']
+    metrics_path: /metrics
 
   # PostgreSQL (via postgres_exporter sidecar)
   - job_name: 'postgres'
