@@ -7,7 +7,15 @@ info()  { echo "[INFO] $*"; }
 warn()  { echo "[WARN] $*"; }
 error() { echo "[ERROR] $*" >&2; }
 
-COMPOSE_FILE="/opt/tsisip/docker-compose.prod.yml"
+# Auto-detect compose file: VPS production first, then legacy prod
+if [ -f "/opt/tsisip/docker-compose.vps.yml" ]; then
+    COMPOSE_FILE="/opt/tsisip/docker-compose.vps.yml"
+elif [ -f "/opt/tsisip/docker-compose.prod.yml" ]; then
+    COMPOSE_FILE="/opt/tsisip/docker-compose.prod.yml"
+else
+    echo "ERROR: No compose file found in /opt/tsisip/" >&2
+    exit 1
+fi
 
 # ─── 1. Parar containers não essenciais para liberar RAM ───
 info "Parando containers não essenciais..."
@@ -32,11 +40,9 @@ PHASES=(
     "postgres"
     "rtpengine"
     "opensips"
-    "ocp"
-    "prometheus alertmanager"
-    "grafana opensips_exporter"
-    "anomaly_detector backup"
-    "asterisk_pbx_1 asterisk_pbx_2"
+    "ocp admin_api"
+    "certbot certbot_exporter"
+    "backup"
 )
 
 for phase in "${PHASES[@]}"; do
@@ -75,7 +81,7 @@ info "Health checks..."
 sleep 5
 
 HEALTH_URLS=(
-    "http://localhost:8084/login.php"
+    "http://localhost/TSiSIP/login.php"
     "http://localhost/TSiSIP/health"
 )
 
