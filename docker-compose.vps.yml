@@ -397,6 +397,12 @@ services:
       BACKUP_SCHEDULE: "0 2 * * *"
       ENCRYPTION_KEY_FILE: /run/secrets/backup_encryption_key
       METRICS_ADDR: 0.0.0.0
+      RCLONE_REMOTE_NAME: ${RCLONE_REMOTE_NAME:-remote}
+      RCLONE_REMOTE_PATH: ${RCLONE_REMOTE_PATH:-tsisip-backups}
+      RCLONE_S3_ENDPOINT: ${RCLONE_S3_ENDPOINT:-}
+      RCLONE_S3_PROVIDER: ${RCLONE_S3_PROVIDER:-Minio}
+      RCLONE_S3_REGION: ${RCLONE_S3_REGION:-us-east-1}
+      RCLONE_BW_LIMIT: ${RCLONE_BW_LIMIT:-625K}
     cap_drop: [ALL]
     cap_add: [SETUID, SETGID, CHOWN, DAC_OVERRIDE]
     secrets:
