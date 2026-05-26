@@ -584,18 +584,44 @@ python3 tests/integration/test_sip_trunk_health_probe.py
 docker compose exec postgres psql -U opensips -d opensips -c "\dt sip_trunk_*"
 ```
 
+**Runbook Automation tests (Feature 025):**
+
+```bash
+# Scale a new Asterisk backend
+./scripts/runbook/scale-asterisk.sh 192.0.2.99 1 "new-pbx-1"
+
+# Verify evidence artifact was produced
+ls evidence/runbook/*_scale-*/evidence.json
+
+# Run integration test
+python3 -m pytest tests/integration/test_runbook_scale.py -v
+```
+
+**Point-in-Time Recovery tests (Feature 005/Stage 8):**
+
+```bash
+# Verify PITR dry-run (lists backup + WAL segments to be replayed)
+docker compose exec backup /usr/local/bin/pitr-restore.sh --target $(date -u +%Y-%m-%dT%H:%M:%SZ) --verify-only
+
+# Run PITR integration tests
+python3 -m pytest tests/integration/test_backup_pitr.py -v
+```
+
 **Makefile targets:**
 
 ```bash
-make build        # Build Docker images and OCP theme assets
-make test         # Run all automated tests (Node.js frontend tests)
-make up           # Start the full Docker Compose stack
-make down         # Stop the Docker Compose stack
-make lint         # Validate Docker Compose and OpenSIPS config syntax
-make ocp-build    # Build OCP theme assets only
-make ocp-rollback # Rollback OCP theme to original OCP v9
-make clean        # Remove generated artifacts and Docker volumes
-make help         # Show available targets
+make build          # Build Docker images and OCP theme assets
+make test           # Run all automated tests (Node.js frontend tests)
+make up             # Start the full Docker Compose stack
+make down           # Stop the Docker Compose stack
+make lint           # Validate Docker Compose and OpenSIPS config syntax
+make health-checks  # Validate healthcheck stanzas across all compose files
+make runbook-scale  # Example: scale a new Asterisk backend (set IP=... SETID=...)
+make pitr-verify    # Verify PITR restore to a temp database
+make ocp-build      # Build OCP theme assets only
+make ocp-rollback   # Rollback OCP theme to original OCP v9
+make clean          # Remove generated artifacts and Docker volumes
+make help           # Show available targets
 ```
 
 **Additional repository checks:**
@@ -788,7 +814,9 @@ All tests live in `tests/integration/` and use raw Python sockets or `pytest` wi
 | `test_ddos_protection.py` | Rate limiting, pike module, circuit breaker behavior |
 | `test_rate_limiting.py` | Per-tenant and per-IP rate limit enforcement |
 | `test_backup_restore.py` | Encrypted backup creation, validation, purge, PITR restore |
+| `test_backup_pitr.py` | Point-in-Time Recovery: backup → temp DB restore → schema verification |
 | `test_backup_rclone.py` | Offsite replication via rclone |
+| `test_runbook_scale.py` | Runbook automation: scale-asterisk.sh evidence and dispatcher insertion |
 | `test_certificate_rotation.py` | CA-tool cert generation and rotation |
 | `test_cdr_billing.py` | Call Detail Record generation and billing attribution |
 | `test_monitoring.py` | Prometheus metrics scraping and Grafana datasource health |
