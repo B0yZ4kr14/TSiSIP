@@ -215,6 +215,9 @@ The rollback script:
 | `make monitoring-up` | Start Prometheus/Grafana/Alertmanager overlay |
 | `make release-tag` | Tag a new immutable release with manifest |
 | `make rollback` | Rollback to a previous release manifest |
+| `make health-checks` | Validate healthcheck stanzas across all compose files |
+| `make runbook-scale` | Example: scale a new Asterisk backend (set IP=... SETID=...) |
+| `make pitr-verify` | Verify PITR restore to a temp database |
 | `make clean` | Remove temporary files |
 
 ## Security Considerations
