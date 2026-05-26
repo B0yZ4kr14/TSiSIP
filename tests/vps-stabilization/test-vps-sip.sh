@@ -1,6 +1,10 @@
 #!/bin/bash
 # T3 — TDD RED/GREEN: SIP signaling critical path
 # Tests: OPTIONS 200 OK, INVITE 407 Proxy Authentication Required
+#
+# NOTE: Uses a temporary Alpine container on the sip_edge network because
+# the OpenSIPS image does not include python3. The probe script binds to
+# the container's Docker-assigned IP to ensure the response is routable.
 set -uo pipefail
 
 PROFILE="${1:-vps}"
@@ -29,64 +33,80 @@ if [ "$RUNNING" -eq 0 ]; then
 fi
 pass "opensips container running"
 
+# Create probe script that discovers its own IP and binds before sending
+PROBE_SCRIPT=$(mktemp /tmp/sip-probe-XXXXXX.py)
+cat > "$PROBE_SCRIPT" << 'PYEOF'
+import socket
+import subprocess
+import sys
+
+# Get our container IP
+result = subprocess.run(['hostname', '-i'], capture_output=True, text=True)
+my_ip = result.stdout.strip().split()[0]
+my_port = 15062
+
+def send_sip(method, expected):
+    msg = (
+        f'{method} sip:test@opensips:5060 SIP/2.0\r\n'
+        f'Via: SIP/2.0/UDP {my_ip}:{my_port};branch=z9hG4bK-{method.lower()}123\r\n'
+        f'From: <sip:test@{my_ip}>;tag={method.lower()}tag\r\n'
+        f'To: <sip:test@opensips:5060>\r\n'
+        f'Call-ID: tdd-{method.lower()}-001@{my_ip}\r\n'
+        f'CSeq: 1 {method}\r\n'
+        f'Max-Forwards: 70\r\n'
+        f'Contact: <sip:test@{my_ip}:{my_port}>\r\n'
+        f'Content-Length: 0\r\n\r\n'
+    ).encode()
+    
+    sock = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
+    sock.bind((my_ip, my_port))
+    sock.settimeout(5)
+    sock.sendto(msg, ('opensips', 5060))
+    try:
+        data, _ = sock.recvfrom(4096)
+        response = data.decode().splitlines()[0]
+        if expected in response:
+            print(f'PASS: {method} -> {response}')
+            return True
+        else:
+            print(f'FAIL: {method} -> unexpected {response}')
+            return False
+    except Exception as e:
+        print(f'FAIL: {method} -> TIMEOUT: {e}')
+        return False
+    finally:
+        sock.close()
+
+success = True
+if not send_sip('OPTIONS', 'SIP/2.0 200'):
+    success = False
+if not send_sip('INVITE', 'SIP/2.0 407'):
+    success = False
+
+sys.exit(0 if success else 1)
+PYEOF
+
+# Run probe inside temporary Alpine container on sip_edge network
+RESPONSE=$(docker run --rm --network "tsisip_sip_edge" -v "$PROBE_SCRIPT:/tmp/sip-probe.py" alpine sh -c \
+    'apk add python3 >/dev/null 2>&1 && python3 /tmp/sip-probe.py' 2>/dev/null || echo "PROBE_FAILED")
+
 # Test OPTIONS 200 OK
 info "Sending OPTIONS probe..."
-RESPONSE=$(docker compose -f "$PROJECT_ROOT/$COMPOSE_FILE" exec -T opensips sh -c '
-python3 -c "
-import socket
-msg = b\"OPTIONS sip:opensips@127.0.0.1:5060 SIP/2.0\r\n\" \
-      b\"Via: SIP/2.0/UDP 127.0.0.1:5062;branch=z9hG4bK-tdd123\r\n\" \
-      b\"From: <sip:test@127.0.0.1>;tag=tddtag\r\n\" \
-      b\"To: <sip:opensips@127.0.0.1>\r\n\" \
-      b\"Call-ID: tdd-001@127.0.0.1\r\n\" \
-      b\"CSeq: 1 OPTIONS\r\n\" \
-      b\"Max-Forwards: 70\r\n\" \
-      b\"Content-Length: 0\r\n\r\n\"
-sock = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
-sock.settimeout(5)
-sock.sendto(msg, (\"127.0.0.1\", 5060))
-try:
-    data, _ = sock.recvfrom(4096)
-    print(data.decode().splitlines()[0])
-except Exception as e:
-    print(f\"TIMEOUT: {e}\")
-" 2>/dev/null' || echo "PROBE_FAILED")
-
-if echo "$RESPONSE" | grep -q "SIP/2.0 200"; then
+if echo "$RESPONSE" | grep -q "PASS: OPTIONS"; then
     pass "OPTIONS → 200 OK"
 else
-    fail "OPTIONS → $RESPONSE"
+    fail "OPTIONS → $(echo "$RESPONSE" | grep 'OPTIONS' || echo 'PROBE_FAILED')"
 fi
 
 # Test INVITE 407
 info "Sending INVITE probe..."
-RESPONSE=$(docker compose -f "$PROJECT_ROOT/$COMPOSE_FILE" exec -T opensips sh -c '
-python3 -c "
-import socket
-msg = b\"INVITE sip:test@opensips:5060 SIP/2.0\r\n\" \
-      b\"Via: SIP/2.0/UDP 127.0.0.1:5062;branch=z9hG4bK-invite123\r\n\" \
-      b\"From: <sip:test@127.0.0.1>;tag=invitetag\r\n\" \
-      b\"To: <sip:test@opensips:5060>\r\n\" \
-      b\"Call-ID: tdd-invite-001@127.0.0.1\r\n\" \
-      b\"CSeq: 1 INVITE\r\n\" \
-      b\"Max-Forwards: 70\r\n\" \
-      b\"Contact: <sip:test@127.0.0.1:5062>\r\n\" \
-      b\"Content-Length: 0\r\n\r\n\"
-sock = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
-sock.settimeout(5)
-sock.sendto(msg, (\"127.0.0.1\", 5060))
-try:
-    data, _ = sock.recvfrom(4096)
-    print(data.decode().splitlines()[0])
-except Exception as e:
-    print(f\"TIMEOUT: {e}\")
-" 2>/dev/null' || echo "PROBE_FAILED")
-
-if echo "$RESPONSE" | grep -q "SIP/2.0 407"; then
+if echo "$RESPONSE" | grep -q "PASS: INVITE"; then
     pass "INVITE → 407 Proxy Authentication Required"
 else
-    fail "INVITE → $RESPONSE"
+    fail "INVITE → $(echo "$RESPONSE" | grep 'INVITE' || echo 'PROBE_FAILED')"
 fi
+
+rm -f "$PROBE_SCRIPT"
 
 echo ""
 echo "SIP: $PASS passed, $FAIL failed"
