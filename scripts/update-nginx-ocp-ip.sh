@@ -24,7 +24,8 @@ fi
 
 # Extract currently configured IPs from Nginx conf
 CONFIGURED_OCP_IP=$(grep -oP 'proxy_pass\s+http://\K172\.19\.0\.[0-9]+' "${NGINX_CONF}" | head -1 || true)
-CONFIGURED_WS_IP=$(grep -oP 'proxy_pass\s+http://\K172\.18\.0\.[0-9]+' "${NGINX_CONF}" | head -1 || true)
+# WebSocket /ws may live in either nginx.conf or sites-enabled
+CONFIGURED_WS_IP=$(grep -ohP 'proxy_pass\s+http://\K172\.18\.0\.[0-9]+' "${NGINX_CONF}" "${NGINX_MAIN}" | head -1 || true)
 
 # Resolve OpenSIPS IP for WebSocket proxy
 OPENSIPS_IP=$(docker inspect "${OPENSIPS_CONTAINER}" \
@@ -50,6 +51,7 @@ sed -i "s|server 172\.19\.0\.[0-9]\+:80;|server ${CURRENT_IP}:80;|g" "${NGINX_MA
 # Update WebSocket proxy IP for OpenSIPS (if resolved)
 if [ -n "${OPENSIPS_IP}" ]; then
     sed -i "s|proxy_pass http://172\.18\.0\.[0-9]\+:8080;|proxy_pass http://${OPENSIPS_IP}:8080;|g" "${NGINX_CONF}"
+    sed -i "s|proxy_pass http://172\.18\.0\.[0-9]\+:8080;|proxy_pass http://${OPENSIPS_IP}:8080;|g" "${NGINX_MAIN}"
 fi
 
 # Validate and reload
