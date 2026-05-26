@@ -392,7 +392,7 @@ failure_route[FAILURE_MANAGE] {
     # All destinations exhausted — clean up RTP and reply 503
     rtpengine_delete();
     xlog("L_ERR", "All dispatcher targets failed for $ru — replying 503\n");
-    t_reply("503", "Service Unavailable");
+    t_reply(503, "Service Unavailable");
 }
 
 # --- Branch Route ---
