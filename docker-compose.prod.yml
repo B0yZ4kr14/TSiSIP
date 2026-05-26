@@ -125,7 +125,7 @@ services:
       OPENSIPS_LISTEN_IP: ${OPENSIPS_LISTEN_IP}
       HOST_PUBLIC_IP: ${HOST_PUBLIC_IP}
       OPENSIPS_HOST: 127.0.0.1
-      DB_HOST: postgres
+      DB_HOST: pgbouncer
       DB_NAME: opensips
       DB_USER: opensips
       RTPENGINE_HOST: rtpengine
@@ -170,6 +170,37 @@ services:
           memory: 2G
         reservations:
           memory: 1G
+
+  pgbouncer:
+    image: ghcr.io/b0yz4kr14/tsisip/pgbouncer:${TSISIP_IMAGE_TAG:?must be set}
+    networks:
+    - db_internal
+    restart: unless-stopped
+    deploy:
+      resources:
+        limits:
+          memory: 128M
+        reservations:
+          memory: 64M
+    environment:
+      POSTGRES_HOST: postgres
+    depends_on:
+      postgres:
+        condition: service_healthy
+    cap_drop:
+    - ALL
+    security_opt:
+    - no-new-privileges:true
+    healthcheck:
+      test: ["CMD-SHELL", "psql -h localhost -U opensips -d opensips -c 'SELECT 1' || exit 1"]
+      interval: 15s
+      timeout: 5s
+      retries: 3
+      start_period: 10s
+    labels:
+      tsisip.environment: production
+      tsisip.deployed-by: ansible
+
   ocp:
     image: ghcr.io/b0yz4kr14/tsisip/ocp:${TSISIP_IMAGE_TAG:?must be set}
     networks:
@@ -177,7 +208,7 @@ services:
     - db_internal
     restart: on-failure
     environment:
-      DB_HOST: postgres
+      DB_HOST: pgbouncer
       DB_NAME: opensips
       DB_USER: opensips
       OCP_AUDIT_RETENTION_DAYS: ${OCP_AUDIT_RETENTION_DAYS:-90}
@@ -221,7 +252,7 @@ services:
     - db_internal
     restart: on-failure
     environment:
-      DB_HOST: postgres
+      DB_HOST: pgbouncer
       DB_NAME: opensips
       DB_USER: opensips
       SUBSCRIBER_CREATE_RATE_LIMIT: ${SUBSCRIBER_CREATE_RATE_LIMIT:-10}
