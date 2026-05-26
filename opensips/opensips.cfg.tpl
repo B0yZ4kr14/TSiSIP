@@ -960,17 +960,17 @@ event_route[E_AUTH_FAILURE] {
 }
 
 event_route[E_DISPATCHER_STATUS] {
-    xlog("L_INFO", "E_DISPATCHER_STATUS: uri=$param(uri) status=$param(status)\n");
+    xlog("L_INFO", "E_DISPATCHER_STATUS: address=$param(address) status=$param(status)\n");
 
     # --- BEGIN TRUNK INTEGRATION WAVE 5: Trunk Health Monitoring ---
     # Track trunk provider health from dispatcher OPTIONS probes (setid 100)
-    if ($param(uri) =~ "^sip:") {
-        $var(trunk_uri) = $param(uri);
+    if ($param(address) =~ "^sip:") {
+        $var(trunk_uri) = $param(address);
         $var(trunk_host) = $(var(trunk_uri){uri.host});
         $var(trunk_provider_id) = 0;
         sql_query_one("SELECT id FROM sip_trunk_providers WHERE host = '$var(trunk_host)' AND enabled = true LIMIT 1", "$var(trunk_provider_id)");
         if ($rc == -1) {
-            xlog("L_ERR", "E_DISPATCHER_STATUS: failed to map $param(uri) to trunk provider\n");
+            xlog("L_ERR", "E_DISPATCHER_STATUS: failed to map $param(address) to trunk provider\n");
         } else {
             if ($var(trunk_provider_id) != NULL && $var(trunk_provider_id) != 0) {
                 if ($param(status) == "0") {

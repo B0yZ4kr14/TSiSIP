@@ -319,3 +319,68 @@ DROP TRIGGER IF EXISTS trunk_provider_dispatcher_sync ON sip_trunk_providers;
 CREATE TRIGGER trunk_provider_dispatcher_sync
     AFTER INSERT OR DELETE OR UPDATE ON sip_trunk_providers
     FOR EACH ROW EXECUTE FUNCTION sync_trunk_providers_to_dispatcher();
+
+-- Feature 017: Auto-populate sip_trunk_registrations from sip_trunk_providers
+CREATE OR REPLACE FUNCTION sync_trunk_registrations()
+RETURNS TRIGGER AS $$
+BEGIN
+    IF TG_OP = 'INSERT' THEN
+        IF NEW.registration_required = true THEN
+            INSERT INTO sip_trunk_registrations (
+                trunk_provider_id, registrar, proxy, aor, username,
+                password, binding_uri, expiry, state
+            ) VALUES (
+                NEW.id,
+                'sip:' || NEW.host || ':' || NEW.port,
+                NULL,
+                'sip:' || COALESCE(NEW.auth_username, NEW.name) || '@' || NEW.host,
+                COALESCE(NEW.auth_username, NEW.name),
+                NEW.auth_password_encrypted,
+                'sip:' || COALESCE(NEW.auth_username, NEW.name) || '@' || NEW.host,
+                NEW.registration_expiry,
+                0
+            );
+        END IF;
+        RETURN NEW;
+    ELSIF TG_OP = 'UPDATE' THEN
+        IF NEW.registration_required = true AND OLD.registration_required = false THEN
+            INSERT INTO sip_trunk_registrations (
+                trunk_provider_id, registrar, proxy, aor, username,
+                password, binding_uri, expiry, state
+            ) VALUES (
+                NEW.id,
+                'sip:' || NEW.host || ':' || NEW.port,
+                NULL,
+                'sip:' || COALESCE(NEW.auth_username, NEW.name) || '@' || NEW.host,
+                COALESCE(NEW.auth_username, NEW.name),
+                NEW.auth_password_encrypted,
+                'sip:' || COALESCE(NEW.auth_username, NEW.name) || '@' || NEW.host,
+                NEW.registration_expiry,
+                0
+            );
+        ELSIF NEW.registration_required = false AND OLD.registration_required = true THEN
+            DELETE FROM sip_trunk_registrations WHERE trunk_provider_id = OLD.id;
+        ELSIF NEW.registration_required = true THEN
+            UPDATE sip_trunk_registrations SET
+                registrar = 'sip:' || NEW.host || ':' || NEW.port,
+                aor = 'sip:' || COALESCE(NEW.auth_username, NEW.name) || '@' || NEW.host,
+                username = COALESCE(NEW.auth_username, NEW.name),
+                password = NEW.auth_password_encrypted,
+                binding_uri = 'sip:' || COALESCE(NEW.auth_username, NEW.name) || '@' || NEW.host,
+                expiry = NEW.registration_expiry
+            WHERE trunk_provider_id = NEW.id;
+        END IF;
+        RETURN NEW;
+    ELSIF TG_OP = 'DELETE' THEN
+        DELETE FROM sip_trunk_registrations WHERE trunk_provider_id = OLD.id;
+        RETURN OLD;
+    END IF;
+    RETURN NULL;
+END;
+$$ LANGUAGE plpgsql;
+
+DROP TRIGGER IF EXISTS trunk_registration_sync ON sip_trunk_providers;
+CREATE TRIGGER trunk_registration_sync
+    AFTER INSERT OR UPDATE OR DELETE ON sip_trunk_providers
+    FOR EACH ROW
+    EXECUTE FUNCTION sync_trunk_registrations();
