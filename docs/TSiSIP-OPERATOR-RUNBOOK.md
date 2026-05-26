@@ -1395,9 +1395,9 @@ TSiSIP connects to upstream SIP trunk providers for PSTN ingress/egress. Each pr
 | Component | Table / File | Purpose |
 |-----------|-------------|---------|
 | Provider registry | `sip_trunk_providers` | Credentials, registration server, failover peer |
-| DID mappings | `did_mappings` | Public DID → internal extension / tenant |
-| Health probes | Prometheus metrics + OCP status page | Registration state, OPTIONS ping, RTT |
-| CPS throttling | `cps_limits` per provider | Calls-per-second ceiling to prevent provider blacklisting |
+| DID mappings | `sip_trunk_did_mappings` | Public DID → tenant / dispatcher set |
+| Health probes | Dispatcher set 100 + OCP status page | OPTIONS ping every 30s, state in `cachedb_local` |
+| CPS throttling | `max_cps` column per provider | Calls-per-second ceiling via `rl_check` |
 
 ### Onboarding a New Trunk Provider
 
@@ -1411,11 +1411,13 @@ TSiSIP connects to upstream SIP trunk providers for PSTN ingress/egress. Each pr
    - **Failover Peer**: Another provider label to route to if this one fails
    - **CPS Limit**: Maximum calls per second (default `10`)
 4. Click **Save** — the provider is inserted into `sip_trunk_providers` with `enabled = true`
-5. OpenSIPS reloads the provider table automatically via `mi reload_sip_trunk_providers`
+5. The `sync_trunk_providers_to_dispatcher` trigger auto-adds the provider to dispatcher set 100 for health probes
+6. If `registration_required = true`, the `sync_trunk_registrations` trigger auto-populates `sip_trunk_registrations`
+7. OpenSIPS will detect the new registration row on next `uac_registrant` timer cycle (max 60s)
 
 Verify registration:
 ```bash
-docker compose exec opensips opensips-cli -x mi get_statistics uac_reg
+docker compose exec postgres psql -U opensips -d opensips -c "SELECT name, state, last_register_succ FROM sip_trunk_registrations JOIN sip_trunk_providers p ON p.id = trunk_provider_id;"
 ```
 
 ### Adding DID Mappings
@@ -1431,11 +1433,11 @@ docker compose exec opensips opensips-cli -x mi get_statistics uac_reg
 Bulk import via SQL:
 ```bash
 docker compose exec postgres psql -U opensips -d opensips -c "
-    INSERT INTO did_mappings (provider_id, did_number, tenant_id, destination, enabled)
-    SELECT p.id, '+12025550123', t.id, 'sip:reception@dev.tsisip.local', true
+    INSERT INTO sip_trunk_did_mappings (did_number, tenant_id, trunk_provider_id, dispatcher_setid, description, enabled)
+    SELECT '+12025550123', t.id, p.id, 1, 'Reception DID', true
     FROM sip_trunk_providers p, tenants t
-    WHERE p.label = 'VoIP Innovations' AND t.sip_domain = 'dev.tsisip.local'
-    ON CONFLICT (did_number) DO NOTHING;
+    WHERE p.name = 'VoIP Innovations' AND t.sip_domain = 'dev.tsisip.local'
+    ON CONFLICT (did_number, trunk_provider_id) DO NOTHING;
 "
 ```
 
