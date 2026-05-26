@@ -8,6 +8,7 @@ services:
     networks:
     - db_internal
     restart: unless-stopped
+    oom_score_adj: -500
     shm_size: 2gb
     deploy:
       resources:
@@ -172,6 +173,7 @@ services:
     networks:
     - sip_internal
     restart: on-failure
+    oom_score_adj: -500
     deploy:
       resources:
         limits:
@@ -220,6 +222,7 @@ services:
     - sip_internal
     - db_internal
     restart: unless-stopped
+    oom_score_adj: -500
     deploy:
       resources:
         limits:

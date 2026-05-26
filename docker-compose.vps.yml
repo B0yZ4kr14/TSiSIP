@@ -10,6 +10,7 @@ services:
     pull_policy: missing
     networks: [db_internal, metrics_host]
     restart: unless-stopped
+    oom_score_adj: -500
     shm_size: 1gb
     deploy:
       resources:
@@ -89,6 +90,7 @@ services:
     pull_policy: missing
     networks: [sip_internal]
     restart: on-failure
+    oom_score_adj: -500
     deploy:
       resources:
         limits:
@@ -126,6 +128,7 @@ services:
     pull_policy: missing
     networks: [sip_edge, sip_internal, db_internal]
     restart: unless-stopped
+    oom_score_adj: -500
     deploy:
       resources:
         limits:

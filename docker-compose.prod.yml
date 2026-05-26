@@ -4,6 +4,7 @@ services:
     networks:
     - db_internal
     restart: unless-stopped
+    oom_score_adj: -500
     shm_size: 3gb
     command:
     - postgres
@@ -63,6 +64,7 @@ services:
     networks:
     - sip_internal
     restart: on-failure
+    oom_score_adj: -500
     ports:
     - 10000-20000:10000-20000/udp
     command:
@@ -113,6 +115,7 @@ services:
     - sip_internal
     - db_internal
     restart: unless-stopped
+    oom_score_adj: -500
     ports:
     - 5060:5060/udp
     - 5060:5060/tcp
