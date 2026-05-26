@@ -12,11 +12,15 @@ import pytest
 
 COMPOSE_FILE = os.environ.get('COMPOSE_FILE', 'docker-compose.yml')
 
+# anomaly_detector lives in the monitoring overlay / vps compose, not base compose
+ANOMALY_COMPOSE = os.environ.get('ANOMALY_COMPOSE', 'docker-compose.vps.yml')
 
-def compose_exec(service: str, cmd: list, check: bool = True) -> subprocess.CompletedProcess:
+
+def compose_exec(service: str, cmd: list, check: bool = True, compose: str = None) -> subprocess.CompletedProcess:
     """Run a command inside a container via docker compose exec."""
+    cf = compose or COMPOSE_FILE
     full_cmd = [
-        'docker', 'compose', '-f', COMPOSE_FILE,
+        'docker', 'compose', '-f', cf,
         'exec', '-T', service
     ] + cmd
     return subprocess.run(full_cmd, capture_output=True, text=True, check=check)
@@ -69,9 +73,10 @@ class TestUserblacklistModule:
         assert r.returncode == 0, f"userblacklist table check failed: {r.stderr}"
         assert '1' in r.stdout, "userblacklist table does not exist"
 
-    def test_check_blacklist_in_config(self):
-        r = compose_exec('opensips', ['grep', '-q', 'check_blacklist', '/etc/opensips/opensips.cfg'], check=False)
-        assert r.returncode == 0, "check_blacklist not found in config"
+    def test_check_user_blacklist_in_config(self):
+        """OpenSIPS 3.6 uses check_user_blacklist, not check_blacklist."""
+        r = compose_exec('opensips', ['grep', '-q', 'check_user_blacklist', '/etc/opensips/opensips.cfg'], check=False)
+        assert r.returncode == 0, "check_user_blacklist not found in config"
 
 
 class TestEventRoutes:
@@ -94,11 +99,11 @@ class TestAnomalyDetector:
     """Anomaly detector sidecar."""
 
     def test_detector_script_exists(self):
-        r = compose_exec('anomaly_detector', ['test', '-f', '/app/detector.py'], check=False)
+        r = compose_exec('anomaly-detector', ['test', '-f', '/app/detector.py'], check=False, compose=ANOMALY_COMPOSE)
         assert r.returncode == 0, "detector.py not found"
 
     def test_detector_baseline_exists(self):
-        r = compose_exec('anomaly_detector', ['test', '-f', '/app/baseline.py'], check=False)
+        r = compose_exec('anomaly-detector', ['test', '-f', '/app/baseline.py'], check=False, compose=ANOMALY_COMPOSE)
         assert r.returncode == 0, "baseline.py not found"
 
 
