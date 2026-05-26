@@ -10,6 +10,15 @@ JOBS_DIR="${JOBS_DIR:-/backup/jobs}"
 METRICS_DIR="${METRICS_DIR:-/backup/metrics}"
 BACKUP_RETENTION_DAYS="${BACKUP_RETENTION_DAYS:-30}"
 WAL_RETENTION_DAYS="${WAL_RETENTION_DAYS:-37}"
+LGPD_RETENTION_DAYS="${LGPD_RETENTION_DAYS:-365}"
+
+# LGPD compliance: never purge backups younger than LGPD retention window
+if [ "$BACKUP_RETENTION_DAYS" -lt "$LGPD_RETENTION_DAYS" ]; then
+    EFFECTIVE_BACKUP_RETENTION="$LGPD_RETENTION_DAYS"
+    log "LGPD override: backup retention extended from ${BACKUP_RETENTION_DAYS}d to ${LGPD_RETENTION_DAYS}d"
+else
+    EFFECTIVE_BACKUP_RETENTION="$BACKUP_RETENTION_DAYS"
+fi
 
 # Timestamped job log
 JOB_DATE=$(date +%Y-%m-%d)
@@ -23,7 +32,7 @@ log() {
 }
 
 JOB_START=$(date +%s)
-log "Starting purge - Backup retention: ${BACKUP_RETENTION_DAYS}d, WAL retention: ${WAL_RETENTION_DAYS}d"
+log "Starting purge - Effective backup retention: ${EFFECTIVE_BACKUP_RETENTION}d (LGPD=${LGPD_RETENTION_DAYS}d), WAL retention: ${WAL_RETENTION_DAYS}d"
 
 # Find oldest backup to determine WAL retention cutoff
 OLDEST_BACKUP="$(find "$BACKUP_DIR" -name '*.gz*' -type f -printf '%T@ %p\n' 2>/dev/null | sort -n | head -1 | cut -d' ' -f2-)"
@@ -41,7 +50,7 @@ while IFS= read -r file; do
     log "Deleting old backup: $file"
     rm -f "$file"
     BACKUP_DELETED=$((BACKUP_DELETED + 1))
-done < <(find "$BACKUP_DIR" -name '*.gz*' -type f -mtime +"$BACKUP_RETENTION_DAYS" 2>/dev/null)
+done < <(find "$BACKUP_DIR" -name '*.gz*' -type f -mtime +"$EFFECTIVE_BACKUP_RETENTION" 2>/dev/null)
 
 # Purge old WAL segments
 WAL_DELETED=0

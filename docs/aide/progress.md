@@ -254,17 +254,17 @@
 
 **Dependencies:** Stage 7, Stage 8
 
-**Overall Status:** 📋 Planned
+**Overall Status:** ✅ Complete
 
 ### Deliverables
 
 | # | Deliverable | Status |
 |---|---|---|
-| 9.1 | Implement web/cli/purge-cdr.php: anonymize CDRs older than retention period instead of deleting (preserve billing aggregates) | 📋 Planned |
-| 9.2 | Implement web/cli/export-audit-lgpd.php: generate a machine-readable export of all audit events for a given subscriber (right of access) | 📋 Planned |
-| 9.3 | Add LGPD_RETENTION_DAYS and LGPD_ANONYMIZE_AFTER_DAYS to .env.example | 📋 Planned |
-| 9.4 | Update backup purge policy to respect LGPD retention windows | 📋 Planned |
-| 9.5 | Create tests/integration/test_lgpd_compliance.py validating access export and anonymization | 📋 Planned |
+| 9.1 | Implement web/cli/purge-cdr.php: anonymize CDRs older than retention period instead of deleting (preserve billing aggregates) | ✅ Complete |
+| 9.2 | Implement web/cli/export-audit-lgpd.php: generate a machine-readable export of all audit events for a given subscriber (right of access) | ✅ Complete |
+| 9.3 | Add LGPD_RETENTION_DAYS and LGPD_ANONYMIZE_AFTER_DAYS to .env.example | ✅ Complete |
+| 9.4 | Update backup purge policy to respect LGPD retention windows | ✅ Complete |
+| 9.5 | Create tests/integration/test_lgpd_compliance.py validating access export and anonymization | ✅ Complete |
 
 ### Acceptance Criteria
 
@@ -317,7 +317,7 @@
 | 6 | SIP public exposure | 🚧 | In Progress |
 | 7 | Trunk/DID management | ✅ | Complete |
 | 8 | Offsite backup + PITR | 📋 | Planned |
-| 9 | LGPD compliance | 📋 | Planned |
+| 9 | LGPD compliance | ✅ | Complete |
 | 10 | Runbook automation | 📋 | Planned |
 
 **VPS Status:** ✅ Healthy — 10 services running, OpenSIPS 3.6.6 on production
