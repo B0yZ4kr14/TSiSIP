@@ -112,7 +112,7 @@ CREATE TABLE IF NOT EXISTS cdr (
     call_status VARCHAR(32) NOT NULL DEFAULT 'unknown',
     setup_time_ms INTEGER,
     dialog_id VARCHAR(64),
-    tenant_id UUID,
+    tenant_id VARCHAR(36),
     dispatcher_setid INTEGER,
     backend_label VARCHAR(128),
     created_at TIMESTAMPTZ NOT NULL DEFAULT NOW()
