@@ -414,7 +414,8 @@ services:
     volumes:
     - tls_certs:/certs/live:ro
     depends_on:
-    - opensips
+      opensips:
+        condition: service_healthy
     healthcheck:
       test:
       - CMD-SHELL

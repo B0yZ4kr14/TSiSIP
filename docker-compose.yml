@@ -564,7 +564,8 @@ services:
     secrets:
     - server.crt
     depends_on:
-    - opensips
+      opensips:
+        condition: service_healthy
     healthcheck:
       test:
       - CMD-SHELL
