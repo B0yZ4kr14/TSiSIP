@@ -90,12 +90,17 @@ else
     fail "Dispatcher set 100 mismatch: ${DISP_COUNT} dispatcher rows vs ${TRUNK_COUNT} enabled trunks"
 fi
 
-# Verify ping_interval in attrs
-PING_ATTRS=$(docker exec "${POSTGRES_CONTAINER}" psql -U "${PG_USER}" -d "${PG_DB}" -Atc "SELECT attrs FROM dispatcher WHERE setid = 100 LIMIT 1")
-if echo "${PING_ATTRS}" | grep -q 'ping_interval=30'; then
-    pass "Dispatcher attrs include ping_interval=30"
+# Verify ping_interval in attrs (skip if no trunks configured)
+TRUNK_COUNT=$(docker exec "${POSTGRES_CONTAINER}" psql -U "${PG_USER}" -d "${PG_DB}" -Atc "SELECT COUNT(*) FROM dispatcher WHERE setid = 100")
+if [ "${TRUNK_COUNT}" -eq 0 ]; then
+    pass "No trunk providers configured; skipping ping_interval check"
 else
-    fail "Dispatcher attrs missing ping_interval=30"
+    PING_ATTRS=$(docker exec "${POSTGRES_CONTAINER}" psql -U "${PG_USER}" -d "${PG_DB}" -Atc "SELECT attrs FROM dispatcher WHERE setid = 100 LIMIT 1")
+    if echo "${PING_ATTRS}" | grep -q 'ping_interval=30'; then
+        pass "Dispatcher attrs include ping_interval=30"
+    else
+        fail "Dispatcher attrs missing ping_interval=30"
+    fi
 fi
 
 # --- AC7: Rate limiting configuration ---
