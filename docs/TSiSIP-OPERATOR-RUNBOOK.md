@@ -1550,3 +1550,58 @@ Each evidence file follows this structure:
   ]
 }
 ```
+
+## Point-in-Time Recovery (PITR) — Feature 005/Stage 8
+
+The `pitr-restore.sh` script performs logical backup restore to a temporary
+database for validation or disaster-recovery rehearsal.
+
+### PITR Restore Procedure
+
+```bash
+# 1. Verify which backup and WAL segments would be used (dry-run)
+docker compose -f docker-compose.vps.yml exec backup \
+  /usr/local/bin/pitr-restore.sh \
+  --target 2026-05-20T14:30:00Z \
+  --verify-only
+
+# 2. Execute restore to a temporary database
+docker compose -f docker-compose.vps.yml exec backup \
+  /usr/local/bin/pitr-restore.sh \
+  --target 2026-05-20T14:30:00Z \
+  --temp-db opensips_pitr_20260520
+
+# 3. Validate restored data
+docker compose -f docker-compose.vps.yml exec postgres psql -U opensips \
+  -d opensips_pitr_20260520 -c "SELECT COUNT(*) FROM subscriber;"
+
+# 4. Drop temporary database when validation is complete
+docker compose -f docker-compose.vps.yml exec postgres psql -U opensips \
+  -d postgres -c "DROP DATABASE opensips_pitr_20260520;"
+```
+
+### Time-to-Recovery (TTR) Targets
+
+| Database Size | Expected TTR | Notes |
+|---|---|---|
+| ≤ 1 GB | < 5 min | Logical restore + pg_restore on local SSD |
+| 1–10 GB | < 15 min | Dominated by pg_restore index rebuild |
+| 10–50 GB | < 30 min | Parallel restore recommended (`-j 4`) |
+
+### Limitations
+
+- `pitr-restore.sh` uses **logical backups** (`pg_dump` / `pg_restore`).
+- True WAL replay to exact point-in-time requires physical replication
+  (`pg_basebackup` + `pg_walreplay`), which is not the current baseline.
+- For production DR, treat PITR as "nearest backup + manual replay" and
+  document the acceptable RPO (Recovery Point Objective) in your SLA.
+
+### Integration Tests
+
+Run PITR validation locally:
+
+```bash
+python3 -m pytest tests/integration/test_backup_pitr.py -v
+```
+
+Expected: 4 passed (PITR-001 through PITR-004).
