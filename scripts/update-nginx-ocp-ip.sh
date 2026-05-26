@@ -7,6 +7,7 @@
 set -euo pipefail
 
 NGINX_CONF="${NGINX_CONF:-/etc/nginx/sites-enabled/tsiapp-https}"
+NGINX_MAIN="${NGINX_MAIN:-/etc/nginx/nginx.conf}"
 CONTAINER_NAME="${CONTAINER_NAME:-tsisip-ocp-1}"
 NETWORK_NAME="${NETWORK_NAME:-tsisip_sip_internal}"
 
@@ -27,8 +28,10 @@ if [ "${CONFIGURED_IP}" = "${CURRENT_IP}" ]; then
     exit 0
 fi
 
-# Update Nginx configuration
+# Update Nginx configuration (both sites-enabled and main nginx.conf)
 sed -i "s|proxy_pass http://172\.19\.0\.[0-9]\+:80/;|proxy_pass http://${CURRENT_IP}:80/;|g" "${NGINX_CONF}"
+sed -i "s|server 172\.18\.0\.[0-9]\+:80;|server ${CURRENT_IP}:80;|g" "${NGINX_MAIN}"
+sed -i "s|server 172\.19\.0\.[0-9]\+:80;|server ${CURRENT_IP}:80;|g" "${NGINX_MAIN}"
 
 # Validate and reload
 nginx -t
