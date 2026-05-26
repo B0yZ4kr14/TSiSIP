@@ -198,3 +198,124 @@ CREATE INDEX IF NOT EXISTS idx_ocp_password_changes_user
     ON ocp_password_changes(user_id, event_time);
 CREATE INDEX IF NOT EXISTS idx_ocp_password_changes_username
     ON ocp_password_changes(username, event_time);
+
+-- ============================================================================
+-- Feature 017: SIP Trunk Provider Integration
+-- ============================================================================
+-- These tables and triggers were added to production schema but were missing
+-- from the repository init scripts. Synchronized from VPS production schema.
+
+CREATE TABLE IF NOT EXISTS sip_trunk_providers (
+    id SERIAL PRIMARY KEY,
+    name VARCHAR(255) NOT NULL UNIQUE,
+    host VARCHAR(255) NOT NULL,
+    port INTEGER DEFAULT 5060 NOT NULL CHECK (port > 0 AND port <= 65535),
+    transport VARCHAR(10) DEFAULT 'udp' NOT NULL
+        CHECK (transport IN ('udp', 'tcp', 'tls', 'ws', 'wss')),
+    auth_username VARCHAR(255),
+    auth_password_encrypted BYTEA,
+    from_domain VARCHAR(255),
+    caller_id_prefix VARCHAR(50),
+    priority INTEGER DEFAULT 100 NOT NULL,
+    enabled BOOLEAN DEFAULT TRUE NOT NULL,
+    registration_required BOOLEAN DEFAULT FALSE NOT NULL,
+    registration_expiry INTEGER DEFAULT 3600 NOT NULL CHECK (registration_expiry > 0),
+    max_cps INTEGER DEFAULT 10 NOT NULL CHECK (max_cps > 0),
+    max_concurrent INTEGER DEFAULT 100 NOT NULL CHECK (max_concurrent > 0),
+    require_mtls BOOLEAN DEFAULT FALSE NOT NULL,
+    srtp_mode VARCHAR(16) DEFAULT 'none' NOT NULL
+        CHECK (srtp_mode IN ('none', 'sdes', 'dtls')),
+    created_at TIMESTAMPTZ DEFAULT NOW() NOT NULL,
+    updated_at TIMESTAMPTZ DEFAULT NOW() NOT NULL
+);
+
+CREATE INDEX IF NOT EXISTS idx_sip_trunk_providers_enabled_priority
+    ON sip_trunk_providers(enabled, priority);
+
+CREATE TABLE IF NOT EXISTS sip_trunk_did_mappings (
+    id SERIAL PRIMARY KEY,
+    trunk_provider_id INTEGER NOT NULL REFERENCES sip_trunk_providers(id) ON DELETE CASCADE,
+    did_number VARCHAR(50) NOT NULL,
+    tenant_id VARCHAR(36) NOT NULL REFERENCES tenants(id) ON DELETE CASCADE,
+    dispatcher_setid INTEGER DEFAULT 1 NOT NULL,
+    destination VARCHAR(255),
+    description VARCHAR(255),
+    enabled BOOLEAN DEFAULT TRUE NOT NULL,
+    created_at TIMESTAMPTZ DEFAULT NOW() NOT NULL,
+    UNIQUE (did_number, trunk_provider_id)
+);
+
+CREATE INDEX IF NOT EXISTS idx_sip_trunk_did_lookup
+    ON sip_trunk_did_mappings(did_number, enabled, tenant_id) WHERE enabled = true;
+CREATE INDEX IF NOT EXISTS idx_sip_trunk_did_mappings_tenant_id
+    ON sip_trunk_did_mappings(tenant_id);
+
+CREATE TABLE IF NOT EXISTS sip_trunk_registrations (
+    id SERIAL PRIMARY KEY,
+    trunk_provider_id INTEGER NOT NULL REFERENCES sip_trunk_providers(id) ON DELETE CASCADE,
+    registrar VARCHAR(255) NOT NULL,
+    proxy VARCHAR(255),
+    aor VARCHAR(255) NOT NULL,
+    third_party_registrant VARCHAR(255),
+    username VARCHAR(255) NOT NULL,
+    password BYTEA,
+    binding_uri VARCHAR(255) NOT NULL,
+    expiry INTEGER DEFAULT 3600 NOT NULL CHECK (expiry > 0),
+    forced_socket VARCHAR(128),
+    cluster_shtag VARCHAR(128),
+    state INTEGER DEFAULT 0 NOT NULL,
+    last_register_sent TIMESTAMPTZ,
+    last_register_succ TIMESTAMPTZ,
+    last_register_code INTEGER,
+    created_at TIMESTAMPTZ DEFAULT NOW() NOT NULL,
+    binding_params VARCHAR(255)
+);
+
+CREATE INDEX IF NOT EXISTS idx_sip_trunk_registrations_provider
+    ON sip_trunk_registrations(trunk_provider_id);
+
+-- Trigger: auto-sync trunk providers to dispatcher set 100
+CREATE OR REPLACE FUNCTION sync_trunk_providers_to_dispatcher()
+RETURNS TRIGGER AS $$
+BEGIN
+    IF TG_OP = 'INSERT' THEN
+        IF NEW.enabled = true THEN
+            INSERT INTO dispatcher (setid, destination, state, weight, priority, attrs, description)
+            VALUES (
+                100,
+                'sip:' || NEW.host || ':' || NEW.port,
+                0,
+                '1',
+                NEW.priority,
+                'ping_interval=30;ping_from=sip:healthcheck@tsisip',
+                'Trunk: ' || NEW.name
+            );
+        END IF;
+        RETURN NEW;
+    ELSIF TG_OP = 'UPDATE' THEN
+        DELETE FROM dispatcher WHERE setid = 100 AND description = 'Trunk: ' || OLD.name;
+        IF NEW.enabled = true THEN
+            INSERT INTO dispatcher (setid, destination, state, weight, priority, attrs, description)
+            VALUES (
+                100,
+                'sip:' || NEW.host || ':' || NEW.port,
+                0,
+                '1',
+                NEW.priority,
+                'ping_interval=30;ping_from=sip:healthcheck@tsisip',
+                'Trunk: ' || NEW.name
+            );
+        END IF;
+        RETURN NEW;
+    ELSIF TG_OP = 'DELETE' THEN
+        DELETE FROM dispatcher WHERE setid = 100 AND description = 'Trunk: ' || OLD.name;
+        RETURN OLD;
+    END IF;
+    RETURN NULL;
+END;
+$$ LANGUAGE plpgsql;
+
+DROP TRIGGER IF EXISTS trunk_provider_dispatcher_sync ON sip_trunk_providers;
+CREATE TRIGGER trunk_provider_dispatcher_sync
+    AFTER INSERT OR DELETE OR UPDATE ON sip_trunk_providers
+    FOR EACH ROW EXECUTE FUNCTION sync_trunk_providers_to_dispatcher();
