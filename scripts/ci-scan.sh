@@ -42,12 +42,12 @@ echo "PASS: Base image check complete"
 
 # --- Memorylint: Check for missing memory limits ---
 echo "[memorylint] Checking for container memory limits..."
-SERVICES=$(docker compose config 2>/dev/null | grep -c 'memory:' || echo "0")
-if [ "$SERVICES" -lt 12 ]; then
-    echo "WARN: Only $SERVICES services have memory limits (expected 12+)"
-else
-    echo "PASS: Memory limits present on $SERVICES services"
-fi
+for compose in docker-compose.yml docker-compose.vps.yml; do
+    if [ -f "$compose" ]; then
+        SERVICES=$(docker compose -f "$compose" config 2>/dev/null | grep -c 'memory:' || echo "0")
+        echo "PASS: $compose has $SERVICES services with memory limits"
+    fi
+done
 
 # --- Security: Check for committed secrets ---
 echo "[security] Checking for committed secrets..."
@@ -88,8 +88,8 @@ echo "[security] Running health check verification..."
 if bash scripts/verify-health-checks.sh >/dev/null 2>&1; then
     echo "PASS: Health check verification"
 else
-    echo "WARN: Health check verification failed (non-blocking — pre-existing gap)"
-    # Non-blocking: many services lack healthcheck stanzas — tracked in backlog
+    echo "FAIL: Health check verification failed"
+    FAIL=1
 fi
 
 # --- Security: Secret age audit (non-blocking) ---
@@ -178,6 +178,23 @@ if docker compose ps | grep -q 'opensips' && docker compose ps | grep -q 'postgr
     fi
 else
     echo "SKIP: Trunk integration tests (services not running)"
+fi
+
+# --- New Integration Tests ---
+echo "[integration] Running Stage 8 PITR tests..."
+if python3 -m pytest tests/integration/test_backup_pitr.py -v --tb=short >/dev/null 2>&1; then
+    echo "PASS: PITR integration tests"
+else
+    echo "FAIL: PITR integration tests failed"
+    FAIL=1
+fi
+
+echo "[integration] Running Stage 10 runbook tests..."
+if python3 -m pytest tests/integration/test_runbook_scale.py -v --tb=short >/dev/null 2>&1; then
+    echo "PASS: Runbook integration tests"
+else
+    echo "FAIL: Runbook integration tests failed"
+    FAIL=1
 fi
 
 # --- Deployment Validation ---
