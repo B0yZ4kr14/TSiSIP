@@ -2,11 +2,9 @@
 Feature 007 Integration Tests: End-to-End SIP Call Flow
 Validates: OPTIONS -> 200, REGISTER -> 401, INVITE -> 407, dispatcher routing
 
-Uses sipsak inside a temporary Alpine container on the sip_edge Docker network,
-because OpenSIPS binds to the internal container IP and Via/Contact headers
-must match the real source IP for responses to route back correctly.
-
-NOTE: sipsak outputs SIP request/response traces to stderr, not stdout.
+Uses sipsak inside temporary Alpine containers with unique static IPs on the
+sip_edge Docker network. Unique IPs prevent ban_list / auth_throttle collisions
+between test runs.
 """
 import os
 import pytest
@@ -14,6 +12,17 @@ import subprocess
 
 
 COMPOSE_FILE = os.environ.get("COMPOSE_FILE", "docker-compose.yml")
+# Unique static IPs for each test to avoid OpenSIPS state collisions
+_TEST_IPS = ["172.24.0.100", "172.24.0.101", "172.24.0.102", "172.24.0.103"]
+_test_ip_index = 0
+
+
+def _next_test_ip() -> str:
+    """Return the next unique static IP for a test container."""
+    global _test_ip_index
+    ip = _TEST_IPS[_test_ip_index % len(_TEST_IPS)]
+    _test_ip_index += 1
+    return ip
 
 
 def _psql(sql: str) -> tuple[int, str, str]:
@@ -28,39 +37,55 @@ def _psql(sql: str) -> tuple[int, str, str]:
     return r.returncode, r.stdout, r.stderr
 
 
-def _sipsak(args: list, timeout: int = 10) -> subprocess.CompletedProcess:
-    """Run sipsak inside a temporary Alpine container on the sip_edge network."""
-    return subprocess.run(
+def _mi_rpc(method: str, params: list = None) -> dict:
+    """Execute an OpenSIPS MI JSON-RPC command."""
+    import json
+    payload = {"jsonrpc": "2.0", "method": method, "id": 1}
+    if params is not None:
+        payload["params"] = params
+    r = subprocess.run(
         [
-            "docker", "run", "--rm", "--network", "tsisip_sip_edge",
+            "docker", "compose", "-f", COMPOSE_FILE, "exec", "-T", "opensips",
+            "curl", "-s", "-X", "POST",
+            "-H", "Content-Type: application/json",
+            "-d", json.dumps(payload),
+            "http://localhost:8888/mi/",
+        ],
+        capture_output=True, text=True,
+    )
+    try:
+        return json.loads(r.stdout)
+    except json.JSONDecodeError:
+        return {"error": f"invalid JSON: {r.stdout}"}
+
+
+def _clear_ban(ip: str):
+    """Remove cachedb_local ban_list entry for a specific IP."""
+    _mi_rpc("cache_remove", ["local", f"ban_list_{ip}"])
+
+
+def _run_sipsak_with_ip(ip: str, args: list, timeout: int = 10) -> subprocess.CompletedProcess:
+    """Run sipsak inside a temporary Alpine container with a fixed IP."""
+    r = subprocess.run(
+        [
+            "docker", "run", "--rm", "--network", "tsisip_sip_edge", "--ip", ip,
             "alpine",
             "sh", "-c",
             f"apk add --no-cache sipsak >/dev/null 2>&1 && sipsak {' '.join(args)}",
         ],
         capture_output=True, text=True, timeout=timeout,
     )
+    return r
 
 
 class TestEndToEndCall:
     """End-to-end SIP call flow through OpenSIPS to Asterisk backend."""
 
-    @pytest.fixture(autouse=True)
-    def _clear_ban_list(self):
-        """Clear cachedb_local ban_list entries before each test to avoid 403 from previous runs."""
-        subprocess.run(
-            [
-                "docker", "compose", "-f", COMPOSE_FILE, "exec", "-T", "opensips",
-                "curl", "-s", "-X", "POST",
-                "-H", "Content-Type: application/json",
-                "-d", '{"jsonrpc":"2.0","method":"cache_remove_chunk","params":["local","ban_list"],"id":1}',
-                "http://localhost:8888/mi/",
-            ],
-            capture_output=True, timeout=5,
-        )
-
     def test_options_health_check(self):
         """OPTIONS probe returns 200 OK from OpenSIPS."""
-        r = _sipsak(["-s", "sip:opensips:5060", "-vv"])
+        ip = _next_test_ip()
+        _clear_ban(ip)
+        r = _run_sipsak_with_ip(ip, ["-s", "sip:opensips:5060", "-vv"])
         combined = r.stdout + r.stderr
         assert "SIP/2.0 200 OK" in combined, f"Expected 200 OK, got stdout={r.stdout[:200]} stderr={r.stderr[:200]}"
         assert "Server: OpenSIPS" in combined
@@ -74,7 +99,9 @@ class TestEndToEndCall:
 
     def test_register_unauthorized(self):
         """Unauthenticated REGISTER receives 401 with nonce."""
-        r = _sipsak(["-U", "-s", "sip:devuser@opensips:5060", "-vv"])
+        ip = _next_test_ip()
+        _clear_ban(ip)
+        r = _run_sipsak_with_ip(ip, ["-U", "-s", "sip:devuser@opensips:5060", "-vv"])
         combined = r.stdout + r.stderr
         assert "SIP/2.0 401 Unauthorized" in combined, \
             f"Expected 401, got stdout={r.stdout[:200]} stderr={r.stderr[:200]}"
@@ -82,21 +109,23 @@ class TestEndToEndCall:
 
     def test_invite_unauthorized(self):
         """Unauthenticated INVITE receives 407 Proxy Authentication Required."""
+        ip = _next_test_ip()
+        _clear_ban(ip)
         r = subprocess.run(
             [
-                "docker", "run", "--rm", "--network", "tsisip_sip_edge",
+                "docker", "run", "--rm", "--network", "tsisip_sip_edge", "--ip", ip,
                 "alpine", "sh", "-c",
                 (
                     "apk add --no-cache sipsak >/dev/null 2>&1 && "
                     "cat > /tmp/invite.txt << 'EOF'\n"
-                    "INVITE sip:1000@opensips:5060 SIP/2.0\n"
-                    "Via: SIP/2.0/UDP 172.24.0.4:5061;branch=z9hG4bK-inv001\n"
+                    f"INVITE sip:1000@opensips:5060 SIP/2.0\n"
+                    f"Via: SIP/2.0/UDP {ip}:5061;branch=z9hG4bK-inv001\n"
                     "From: <sip:devuser@opensips:5060>;tag=invtag001\n"
                     "To: <sip:1000@opensips:5060>\n"
                     "Call-ID: test-invite-auth-001@tsisip\n"
                     "CSeq: 1 INVITE\n"
                     "Max-Forwards: 70\n"
-                    "Contact: <sip:devuser@172.24.0.4:5061>\n"
+                    f"Contact: <sip:devuser@{ip}:5061>\n"
                     "Content-Length: 0\n"
                     "EOF\n"
                     "sipsak -f /tmp/invite.txt -s sip:1000@opensips:5060 -vv"
