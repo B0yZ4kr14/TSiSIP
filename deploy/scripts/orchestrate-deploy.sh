@@ -155,11 +155,15 @@ fi
 
 # 0e — Docker Compose syntax
 if [ "$DRY_RUN" = false ]; then
-    if ! docker compose -f "$PROJECT_ROOT/docker-compose.yml" config >/dev/null 2>&1; then
-        gate_fail "0e" "Docker Compose syntax invalid"
+    COMPOSE_CHECK="$PROJECT_ROOT/docker-compose.yml"
+    if [ -f "$PROJECT_ROOT/docker-compose.vps.yml" ]; then
+        COMPOSE_CHECK="$PROJECT_ROOT/docker-compose.vps.yml"
+    fi
+    if ! docker compose -f "$COMPOSE_CHECK" config >/dev/null 2>&1; then
+        gate_fail "0e" "Docker Compose syntax invalid ($COMPOSE_CHECK)"
         preflight_pass=false
     else
-        gate_pass "0e" "Docker Compose syntax valid"
+        gate_pass "0e" "Docker Compose syntax valid ($COMPOSE_CHECK)"
     fi
 else
     gate_pass "0e" "Docker Compose syntax (dry-run skip)"
@@ -443,13 +447,21 @@ deployer() {
     ssh $SSH_OPTS ${SSH_KEY:+-i "$SSH_KEY"} "$target" \
         "cd ${remote_dir} && git checkout main 2>/dev/null || git checkout master 2>/dev/null || true; git pull origin main 2>/dev/null || git pull origin master 2>/dev/null || echo 'git pull skipped or failed'" || true
 
+    # Determine which compose file to use on target
+    COMPOSE_VPS=""
+    if ssh $SSH_OPTS ${SSH_KEY:+-i "$SSH_KEY"} "$target" "test -f ${remote_dir}/docker-compose.vps.yml" >/dev/null 2>&1; then
+        COMPOSE_VPS="-f docker-compose.vps.yml"
+    else
+        COMPOSE_VPS="-f docker-compose.prod.yml"
+    fi
+
     # ── 4d: Pull from registry or build on target ──
     if [ "${FALLBACK_BUILD_ON_TARGET:-0}" = "1" ]; then
         info "Deployer: FALLBACK mode — building images on target..."
         # Build only the services we need to update (rtpengine is the critical one)
         # Other services use existing GHCR images on the VPS
         ssh $SSH_OPTS ${SSH_KEY:+-i "$SSH_KEY"} "$target" \
-            "cd ${remote_dir} && sudo docker compose -f docker-compose.prod.yml -f docker-compose.build.yml build rtpengine 2>&1 | tail -30" || warn "Deployer: build had warnings"
+            "cd ${remote_dir} && sudo docker compose ${COMPOSE_VPS} build rtpengine 2>&1 | tail -30" || warn "Deployer: build had warnings"
         # Verify critical images exist after build
         local missing_img
         missing_img=$(ssh $SSH_OPTS ${SSH_KEY:+-i "$SSH_KEY"} "$target" \
@@ -457,17 +469,17 @@ deployer() {
         if [ -z "$missing_img" ]; then
             warn "Deployer: rtpengine image not found after build; trying explicit build..."
             ssh $SSH_OPTS ${SSH_KEY:+-i "$SSH_KEY"} "$target" \
-                "cd ${remote_dir} && sudo docker compose -f docker-compose.prod.yml -f docker-compose.build.yml build rtpengine 2>&1 | tail -20" || { error "Deployer: rtpengine build failed"; return 1; }
+                "cd ${remote_dir} && sudo docker compose ${COMPOSE_VPS} build rtpengine 2>&1 | tail -20" || { error "Deployer: rtpengine build failed"; return 1; }
         fi
     else
         info "Deployer: docker compose pull..."
         ssh $SSH_OPTS ${SSH_KEY:+-i "$SSH_KEY"} "$target" \
-            "cd ${remote_dir} && sudo docker compose -f docker-compose.prod.yml pull 2>&1 | tail -10" || warn "Deployer: pull had warnings"
+            "cd ${remote_dir} && sudo docker compose ${COMPOSE_VPS} pull 2>&1 | tail -10" || warn "Deployer: pull had warnings"
     fi
 
     info "Deployer: docker compose up..."
     ssh $SSH_OPTS ${SSH_KEY:+-i "$SSH_KEY"} "$target" \
-        "cd ${remote_dir} && sudo docker compose -f docker-compose.prod.yml up -d" || { error "Deployer: compose up failed"; return 1; }
+        "cd ${remote_dir} && sudo docker compose ${COMPOSE_VPS} up -d" || { error "Deployer: compose up failed"; return 1; }
 
     # ── 4e: Wait for containers ──
     info "Deployer: waiting for containers to stabilize..."
@@ -510,11 +522,19 @@ verifier() {
         return 0
     fi
 
+    # Determine compose file on target for verification
+    COMPOSE_VPS=""
+    if ssh $SSH_OPTS ${SSH_KEY:+-i "$SSH_KEY"} "$target" "test -f ${remote_dir}/docker-compose.vps.yml" >/dev/null 2>&1; then
+        COMPOSE_VPS="-f docker-compose.vps.yml"
+    else
+        COMPOSE_VPS="-f docker-compose.prod.yml"
+    fi
+
     # ── 5a: Container health status ──
     info "Verifier: checking container health..."
     local unhealthy
     unhealthy=$(ssh $SSH_OPTS ${SSH_KEY:+-i "$SSH_KEY"} "$target" \
-        "cd ${remote_dir} && sudo docker compose -f docker-compose.prod.yml ps --format '{{.Name}} {{.Status}}' | grep -v 'healthy\|running' || true" 2>/dev/null)
+        "cd ${remote_dir} && sudo docker compose ${COMPOSE_VPS} ps --format '{{.Name}} {{.Status}}' | grep -v 'healthy\|running' || true" 2>/dev/null)
     if [ -n "$unhealthy" ]; then
         warn "Verifier: unhealthy containers detected:"
         echo "$unhealthy"
@@ -524,10 +544,12 @@ verifier() {
     fi
 
     # ── 5b: OCP HTTP probe ──
-    info "Verifier: probing OCP login page..."
+    # On VPS with userland-proxy=false, localhost:8084 does not work.
+    # Probe via Nginx (which proxies to the OCP container IP).
+    info "Verifier: probing OCP login page via Nginx..."
     local ocp_code
     ocp_code=$(ssh $SSH_OPTS ${SSH_KEY:+-i "$SSH_KEY"} "$target" \
-        "curl -s -o /dev/null -w '%{http_code}' http://localhost:8084/login.php" 2>/dev/null || echo "000")
+        "curl -s -o /dev/null -w '%{http_code}' -H 'Host: tsiapp.io' http://localhost/TSiSIP/login.php" 2>/dev/null || echo "000")
     if [ "$ocp_code" = "200" ]; then
         info "Verifier: OCP login → HTTP 200"
     else
@@ -547,28 +569,17 @@ verifier() {
     fi
 
     # ── 5d: SIP OPTIONS probe ──
+    # OpenSIPS port 5060 is not published on the host; probe from inside
+    # a temporary container on the sip_edge Docker network.
     info "Verifier: SIP OPTIONS probe..."
     local sip_response
     sip_response=$(ssh $SSH_OPTS ${SSH_KEY:+-i "$SSH_KEY"} "$target" \
-        "python3 -c '
-import socket
-msg = b\"OPTIONS sip:opensips@localhost:5060 SIP/2.0\r\n\" \\
-      b\"Via: SIP/2.0/UDP 127.0.0.1:5062;branch=z9hG4bK-verify123\r\n\" \\
-      b\"From: <sip:verify@127.0.0.1>;tag=verifytag\r\n\" \\
-      b\"To: <sip:opensips@localhost:5060>\r\n\" \\
-      b\"Call-ID: verify-001@127.0.0.1\r\n\" \\
-      b\"CSeq: 1 OPTIONS\r\n\" \\
-      b\"Max-Forwards: 70\r\n\" \\
-      b\"Content-Length: 0\r\n\r\n\"
-sock = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
-sock.settimeout(5)
-sock.sendto(msg, (\"127.0.0.1\", 5060))
-try:
-    data, _ = sock.recvfrom(4096)
-    print(data.decode().splitlines()[0])
-except:
-    print(\"TIMEOUT\")
-'" 2>/dev/null || echo "SIP_PROBE_UNAVAILABLE")
+        'PROBE_CID=$(docker run -d --rm --network tsisip_sip_edge alpine:latest sleep 10)
+PROBE_IP=$(docker exec "$PROBE_CID" hostname -i | awk '"'"'{print $1}'"'"')
+OPTIONS_MSG="OPTIONS sip:opensips:5060 SIP/2.0\r\nVia: SIP/2.0/UDP ${PROBE_IP}:15062;branch=z9hG4bK-verify123\r\nFrom: <sip:verify@${PROBE_IP}>;tag=verifytag\r\nTo: <sip:opensips:5060>\r\nCall-ID: verify-001@${PROBE_IP}\r\nCSeq: 1 OPTIONS\r\nMax-Forwards: 70\r\nContact: <sip:verify@${PROBE_IP}:15062>\r\nContent-Length: 0\r\n\r\n"
+RESPONSE=$(docker exec "$PROBE_CID" sh -c "echo -e \"$OPTIONS_MSG\" | nc -u -w 3 -s $PROBE_IP opensips 5060")
+docker kill "$PROBE_CID" >/dev/null 2>&1 || true
+echo "$RESPONSE" | head -1' 2>/dev/null || echo "SIP_PROBE_UNAVAILABLE")
     if echo "$sip_response" | grep -q "SIP/2.0 200"; then
         info "Verifier: SIP OPTIONS → 200 OK"
     else
@@ -624,8 +635,12 @@ if [ "$ROLLBACK_NEEDED" = true ] && [ "$DRY_RUN" = false ] && [ "$LIVE_TEST" = f
         done < "$snapshot_file"
 
         info "Rollback: restarting containers with previous images..."
+        local rollback_compose="-f docker-compose.prod.yml"
+        if ssh $SSH_OPTS ${SSH_KEY:+-i "$SSH_KEY"} "${TSiAPP_USER}@${TSiAPP_HOST}" "test -f /opt/tsisip/docker-compose.vps.yml" >/dev/null 2>&1; then
+            rollback_compose="-f docker-compose.vps.yml"
+        fi
         ssh $SSH_OPTS ${SSH_KEY:+-i "$SSH_KEY"} "${TSiAPP_USER}@${TSiAPP_HOST}" \
-            "cd /opt/tsisip && sudo docker compose -f docker-compose.prod.yml up -d" || true
+            "cd /opt/tsisip && sudo docker compose ${rollback_compose} up -d" || true
 
         info "Rollback: complete"
     else
