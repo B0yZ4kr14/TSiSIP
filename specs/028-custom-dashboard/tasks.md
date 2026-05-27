@@ -27,6 +27,6 @@
 
 ## Phase 5: Future (Drag-and-Drop)
 
-- [ ] T014: HTML5 drag-and-drop widget reordering
-- [ ] T015: Snap-to-grid layout persistence
-- [ ] T016: Widget configuration (refresh interval, filters)
+- [x] T014: HTML5 drag-and-drop widget reordering
+- [x] T015: Snap-to-grid layout persistence
+- [x] T016: Widget configuration (refresh interval, filters)
