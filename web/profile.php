@@ -131,10 +131,14 @@ require_once __DIR__ . '/common/header.php';
             function setPreset(preset) {
                 document.documentElement.setAttribute('data-theme-preset', preset);
                 fetch('/common/save-theme-preset.php', {
+                document.documentElement.setAttribute('data-theme-preset', preset);
+                fetch('/common/save-theme-preset.php', {
                     method: 'POST',
-                    headers: {Content-Type':
-                </a>
-            </div>
+                    headers: {'Content-Type': 'application/json'},
+                    body: JSON.stringify({preset: preset})
+                });
+            }
+            </script>
         </div>
     </div>
 </div>
