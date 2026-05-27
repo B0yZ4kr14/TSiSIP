@@ -1,7 +1,7 @@
 # Audit Follow-Up Report — 2026-05-27
 
 **Date**: 2026-05-27
-**Commit**: `07582b9`
+**Commit**: `1c70c60`
 **Scope**: Verification and remediation of findings from consolidated audit 2026-05-26
 
 ---
@@ -67,6 +67,18 @@
 
 ---
 
+## Integration Test Suite — Final
+
+**Date**: 2026-05-27
+**Result**: 96 passed, 26 skipped, 0 failed
+
+All previously failing tests have been resolved:
+- `test_ddos_protection.py`: Fixed anomaly_detector compose file reference and service name
+- `test_anomaly_detection.py`: Fixed container name mismatch (hyphen → underscore)
+- `test_backup_restore.py`: Aligned LGPD_RETENTION_DAYS with BACKUP_RETENTION_DAYS for test environment
+
+---
+
 ## Remaining Deferred Work
 
 - M10: Host swap tuning (operator action)
@@ -79,8 +91,8 @@
 
 ## Validation
 
-- GitNexus: Up-to-date (9,939 nodes, 10,912 edges, 81 clusters)
-- Tests: 109 PASS, 0 FAIL
-- Containers: 16/17 healthy
+- GitNexus: Up-to-date (9,947 nodes, 10,929 edges, 81 clusters)
+- Tests: 96 PASS, 26 SKIP, 0 FAIL
+- Containers: 15/17 healthy (certbot/tailscale restarting due to missing DNS/ACL)
 - Working tree: Clean
 - Feature 020: 61/61 complete
