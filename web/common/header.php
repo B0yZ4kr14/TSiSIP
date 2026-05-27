@@ -83,7 +83,7 @@ header("Referrer-Policy: strict-origin-when-cross-origin");
         </a>
     </nav>
 
-    <span class="tsisip-badge tsisip-role-badge--<?php echo htmlspecialchars($userRole, ENT_QUOTES, 'UTF-8'); ?>">
+    <a href="profile.php" style="text-decoration:none;"><span class="tsisip-badge tsisip-role-badge--<?php echo htmlspecialchars($userRole, ENT_QUOTES, 'UTF-8'); ?>">
         <?php echo htmlspecialchars(ucfirst($userRole), ENT_QUOTES, 'UTF-8'); ?>
     </span>
 
