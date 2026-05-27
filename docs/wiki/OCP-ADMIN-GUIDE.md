@@ -179,6 +179,105 @@ tar czf config-backup.tar.gz web/ db/ secrets/
 - Clear expired sessions
 - Purge old export files
 
+## Reload Operations
+
+The OCP exposes MI reload commands for hot-reloading configuration without restarting OpenSIPS.
+
+### Available Reloads
+| Command | Page | Description |
+|---------|------|-------------|
+| `address_reload` | Gateway Health | Reload dispatcher address list |
+| `dialplan_reload` | Dialplan | Reload dialplan rules |
+| `domain_reload` | Domains | Reload domain table |
+| `dr_reload` | Dynamic Routing | Reload dynamic routing rules |
+| `lb_reload` | Load Balancer | Reload load-balancer targets |
+| `clusterer_reload` | Clusterer | Reload clusterer nodes |
+| `rtpengine_reload` | RTPengine Status | Reload RTPengine instances |
+| `stats_reload` | System Reports | Reload statistics definitions |
+| `siptrace_start` / `siptrace_stop` | System Reports | Toggle SIP tracing on/off |
+
+### Usage
+1. Navigate to the relevant page (requires **devops** role or higher).
+2. Click the **Reload** button in the top action bar.
+3. Confirm the operation in the dialog.
+4. Wait for the success confirmation before proceeding.
+
+> **Warning:** Some reloads may briefly interrupt call routing. Perform during maintenance windows when possible.
+
+## Dialog Management
+
+Active SIP dialogs can be inspected and terminated from the Call Queue page.
+
+### Terminating a Dialog
+1. Go to **Call Queue**.
+2. Locate the dialog in the active calls table.
+3. Click the **Terminate** (✕) button.
+4. Confirm the termination.
+5. The dialog is ended via `dlg_end_dlg` MI command.
+
+> **Note:** Use with caution. Terminating a dialog immediately drops the call for both parties.
+
+## UAC Registrant Actions
+
+The UAC Registrant page lets you manage remote registrations (trunk registrations to upstream providers).
+
+### Refresh a Registration
+1. Go to **UAC Registrant**.
+2. Find the registration in the list.
+3. Click **Refresh** to force an immediate re-register via `uac_reg_refresh`.
+
+### Enable or Disable a Registration
+1. Select the registration row.
+2. Click **Enable** or **Disable**.
+3. The state is toggled via `uac_reg_enable` / `uac_reg_disable`.
+
+## Call Center Agent Control
+
+The Call Center page provides real-time agent management.
+
+### Login an Agent
+1. Go to **Call Center**.
+2. Select the agent from the dropdown.
+3. Click **Login**.
+4. The agent is logged in via `cc_agent_login` MI command.
+
+### Logout an Agent
+1. Select the agent.
+2. Click **Logout**.
+3. The agent is logged out via `cc_agent_login` with state `0`.
+
+> **Note:** Agents can also log in/out via SIP `*44` and `*46` feature codes.
+
+## MI Command Executor
+
+The **MI Commands** page (`mi-commands.php`) provides an interactive executor for whitelisted OpenSIPS MI commands.
+
+### Access
+- Requires **devops** role or higher for mutation commands.
+- Read-only commands are available to all authenticated users.
+
+### Using the Executor
+1. Select a command from the dropdown (46+ commands available).
+2. Fill in required parameters.
+3. Click **Execute**.
+4. View the structured JSON response below the form.
+
+### Command Categories
+| Category | Example Commands |
+|----------|-----------------|
+| System | `version`, `get_statistics`, `list_modules` |
+| Dialog | `dlg_list`, `dlg_end_dlg`, `dlg_list_ctx` |
+| Gateway | `ds_list`, `ds_reload`, `dr_status` |
+| RTPengine | `rtpengine_show`, `rtpengine_reload` |
+| Subscriber | `ul_show_contact`, `uac_reg_refresh` |
+| NAT | `nh_show_active`, `nh_keepalive` |
+| Topology | `th_show_locks`, `th_show_info` |
+| Rate Limiting | `pike_list`, `rl_get_pipes` |
+| Presence | `pres_refresh_watchers`, `list_pua` |
+| TLS | `tls_list`, `tls_reload` |
+
+> **Tip:** Hover over the info icon (ⓘ) next to each command to see parameter hints and usage examples.
+
 ## Support
 
 For issues:

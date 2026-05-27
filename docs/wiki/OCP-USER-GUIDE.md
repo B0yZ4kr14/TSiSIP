@@ -46,6 +46,28 @@ Tap the hamburger menu (☰) to open navigation.
 | Search | All | Global search |
 | Profile | All | User preferences |
 | API Docs | devops | Integration endpoints |
+| Memory Status | All | Real-time OpenSIPS memory usage |
+| Processes | All | OpenSIPS worker process list |
+| USRLoc Live | All | Live subscriber location table |
+| Blacklists | All | Runtime blacklist inspection |
+| Version | All | OpenSIPS version and loaded modules |
+| NAT Helper | All | NAT keepalive socket status |
+| Topology Hiding | All | Topology-hidden dialog mapping |
+| Hash Tables | All | Runtime hash table inspection |
+| AVP Inspector | All | AVP attribute inspection |
+| Pike Monitor | devops | Rate limiting and blocked IPs |
+| Rate Limit | devops | Per-pipe rate limiting status |
+| TCP Connections | devops | TCP/TLS connection inspector |
+| Timers | devops | Internal timer schedule |
+| Presence | devops | Presence server watchers |
+
+## Understanding MI Errors
+
+Pages that fetch data from OpenSIPS may display colored warning banners when something goes wrong.
+
+- **Yellow warning banners** mean an OpenSIPS module is not loaded or initialized. The data for that page is unavailable. Check `opensips.cfg` to verify the module is loaded and its parameters are correct.
+- **Red error banners** mean a connection failure or permission issue. This usually indicates OpenSIPS MI HTTP is unreachable, the network is down, or your role does not have access. Verify the OpenSIPS container is running, the MI URL is correct, and your account has the required role.
+- Each banner includes a contextual **hint** to guide resolution. Read the hint carefully before escalating to the DevOps team.
 
 ## Theme and Language
 
