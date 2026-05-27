@@ -151,3 +151,20 @@
   - `specs/031-ocp-rest-api/tasks.md` — marked all 22 tasks complete (implementation verified)
 - **Test Results**: 96 passed, 26 skipped, 0 failed (was 91 passed, 5 failed, 26 skipped)
 - **Commits**: 5 commits pushed to origin/main
+
+## 2026-05-27: Feature 032 — Automated Backup Verification & DR Testing
+
+### Session: Backup Verification Implementation
+- **Feature 032**: Complete implementation (15/15 tasks)
+  - Enhanced `scripts/backup-db.sh` with SHA-256 checksums and metadata JSON
+  - Created `scripts/verify-backup.sh` for full restore verification to temp PostgreSQL
+  - Created `scripts/backup-metrics.sh` for Prometheus textfile metrics
+  - Created `scripts/dr-drill.sh` for monthly disaster recovery drills with RTO measurement
+  - Created `web/backup-status.php` OCP admin dashboard
+  - Added Prometheus alert rules: TSiSIPBackupVerifyFailed, TSiSIPBackupTooOld, TSiSIPBackupSizeAnomaly
+  - Created Ansible cron config for monthly DR drills
+  - Created `tests/integration/test_backup_verification.py` (7 passed, 4 skipped)
+  - Updated operator runbook with Section 18 (restore procedures, troubleshooting)
+  - Updated CHANGELOG-2026-05.md
+- **Test Results**: 7 passed, 4 skipped (skipped due to no existing backup in test env)
+- **Commits**: 1 commit pushed to origin/main (861e329)
