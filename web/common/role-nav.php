@@ -31,7 +31,7 @@ $sipUserVisible = ($isAdmin || $isDevOps || $isDentist || $isAssist || $isUser |
 // -------------------------------------------------------------
 $systemPages = [
     'dashboard'         => _('Dashboard'),
-    'addresses'         => _('Addresses'),
+    'address'           => _('Addresses'),
     'call-center'       => _('Call Center'),
     'cdr-viewer'        => _('CDR Viewer'),
     'clusterer'         => _('Clusterer'),
@@ -286,24 +286,6 @@ $allowedPages = isset($roleNav[$userRole]) ? $roleNav[$userRole] : $roleNav['rea
                 </li>
             <?php endforeach; ?>
         <?php endif; ?>
-
-        <!-- Wiki / Documentation -->
-        <li class="tsisip-nav-heading" role="none">
-            <span class="tsisip-nav-heading-text"><?php echo _('Documentation'); ?></span>
-        </li>
-        <li class="tsisip-nav-item<?php echo $currentPage === 'wiki' && $currentWikiPage === '' ? ' is-active' : ''; ?>" role="none">
-            <a href="wiki/" class="tsisip-nav-link" role="menuitem"><?php echo _('Wiki Home'); ?></a>
-        </li>
-        <?php foreach ($allowedPages as $page): ?>
-            <?php if (isset($navLabels[$page])): ?>
-                <li class="tsisip-nav-item<?php echo ($currentPage === 'wiki' && $currentWikiPage === $page) ? ' is-active' : ''; ?>" role="none">
-                    <a href="wiki/?page=<?php echo htmlspecialchars($page, ENT_QUOTES, 'UTF-8'); ?>"
-                       class="tsisip-nav-link" role="menuitem">
-                        <?php echo htmlspecialchars($navLabels[$page], ENT_QUOTES, 'UTF-8'); ?>
-                    </a>
-                </li>
-            <?php endif; ?>
-        <?php endforeach; ?>
 
         <!-- Account -->
         <li class="tsisip-nav-heading" role="none">

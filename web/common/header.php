@@ -85,6 +85,14 @@ header("Referrer-Policy: strict-origin-when-cross-origin");
     </nav>
 
     <button class="tsisip-btn tsisip-btn-icon" id="bookmark-btn" title="Bookmark this page" style="background:none;border:none;cursor:pointer;font-size:1.2rem;">☆</button>
+    <a href="wiki/"
+       class="tsisip-btn tsisip-btn-icon"
+       title="<?php echo _('Open Documentation Wiki'); ?>"
+       aria-label="<?php echo _('Documentation Wiki'); ?>"
+       role="link"
+       style="background:none;border:none;cursor:pointer;font-size:1.2rem;text-decoration:none;">
+        &#128214;
+    </a>
     <a href="profile.php" style="text-decoration:none;"><span class="tsisip-badge tsisip-role-badge--<?php echo htmlspecialchars($userRole, ENT_QUOTES, 'UTF-8'); ?>">
         <?php echo htmlspecialchars(ucfirst($userRole), ENT_QUOTES, 'UTF-8'); ?>
     </span>

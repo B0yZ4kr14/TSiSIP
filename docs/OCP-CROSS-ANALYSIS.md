@@ -269,3 +269,37 @@ Based on filesystem audit of `web/`:
 | Architecture alignment | High (same patterns: PDO, gettext, includes, RBAC) |
 
 **Verdict**: TSiSIP's frontend is a **focused subset** of OCP functionality, heavily customized for its edge-proxy use case. It covers the essential subscriber/dispatcher/CDR tools but lacks most system-level provisioning tools. The custom additions (audit, trunking, wiki) add significant value not present in stock OCP. For production operations, the **Dialog**, **MI Commands**, and **Statistics** tools are the highest-priority gaps to close.
+
+---
+
+## 8. Atualizacao Pos-Auditoria (2026-05-27)
+
+**Auditoria**: Auditoria Cirurgica do Frontend TSiSIP realizada em 2026-05-27.
+**Relatorio**: `reports/AUDITORIA-FRONTEND-TSiSIP-2026-05-27.md`
+
+### 8.1 Correcoes de Status
+
+A analise original deste documento (Secao 2.4) esta **severamente desatualizada**. A maioria dos modulos listados como "Missing" na verdade **existem e estao funcionais** no filesystem:
+
+- aliases.php, groups.php, address.php, call-center.php, clusterer.php, config-table.php, dialog.php, dialplan.php, domains.php, dynamic-routing.php, keepalived.php, load-balancer.php, mi-commands.php, monit.php, rtpproxy.php, siptrace.php, statistics.php, status-report.php, sockets-management.php, tls-management.php, uac-registrant.php, smpp-gateway.php
+
+**Cobertura real corrigida**: ~90% dos modulos OCP v9.3.6 estao implementados (vs. 16% reportado originalmente).
+
+### 8.2 Correcoes Aplicadas
+
+1. **Link quebrado `addresses`**: corrigido em `web/common/role-nav.php` (addresses -> address)
+2. **Wiki no sidebar**: removido da navegacao principal; acesso migrado para botao no header
+3. **Botao de wiki no header**: adicionado icone de livro (&#128214;) no header.php
+
+### 8.3 Cobertura Atualizada
+
+| Categoria | OCP Tools | TSiSIP Implementados | Coverage % |
+|---|---|---|---|
+| Global Config | 4 | 0 | 0% |
+| Dashboard | 1 | 1 | 100% |
+| SIP Users | 3 | 3 | 100% |
+| System (Core) | 23 | 22 | 96% |
+| Generic | 1 | 0 | 0% |
+| **OCP Total** | **32** | **26** | **81%** |
+
+*Nota: Trunk Status e TViewer sao os unicos modulos do sistema nao completamente funcionais (stub/leve).*
