@@ -29,3 +29,43 @@
   --tsisip-breakpoint-mobile: 768px;
   --tsisip-asset-version: "dev";
 }
+
+/* ==========================================================================
+   Dark Mode Variables
+   Activated via [data-theme="dark"] on <html> element
+   ========================================================================== */
+
+[data-theme="dark"] {
+    --tsisip-primary-blue: #5B9BD5;
+    --tsisip-primary-blue-light: #7BB3E0;
+    --tsisip-primary-blue-dark: #4A8BC2;
+    --tsisip-accent-gold: #D4A843;
+    --tsisip-accent-gold-light: #E0BC68;
+    --tsisip-accent-gold-dark: #B8932E;
+
+    --tsisip-text-primary: #E8ECF1;
+    --tsisip-text-secondary: #9BA5B4;
+    --tsisip-text-tertiary: #6B7B8D;
+    --tsisip-text-muted: #4A5568;
+
+    --tsisip-bg-primary: #0A1628;
+    --tsisip-bg-secondary: #0F1C2E;
+    --tsisip-bg-tertiary: #152238;
+    --tsisip-surface-card: #1A2A42;
+    --tsisip-surface-elevated: #1E3150;
+    --tsisip-surface-overlay: #243A5C;
+
+    --tsisip-border-subtle: #2A4060;
+    --tsisip-border-default: #3A5070;
+    --tsisip-border-focus: #5B9BD5;
+
+    --tsisip-status-ok: #4CAF50;
+    --tsisip-status-warn: #FF9800;
+    --tsisip-status-error: #F44336;
+    --tsisip-status-info: #2196F3;
+    --tsisip-status-neutral: #6B7B8D;
+
+    --tsisip-shadow-sm: 0 1px 3px rgba(0, 0, 0, 0.3);
+    --tsisip-shadow-md: 0 4px 12px rgba(0, 0, 0, 0.4);
+    --tsisip-shadow-lg: 0 8px 24px rgba(0, 0, 0, 0.5);
+}

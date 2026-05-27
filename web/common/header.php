@@ -61,6 +61,7 @@ header("Referrer-Policy: strict-origin-when-cross-origin");
 
     <!-- TSiSIP Chart Module (loads D3.js on demand in chart views) -->
     <script type="module" src="<?php echo tsisip_asset('tsisip-charts.js', 'js'); ?>" defer></script>
+    <script src="<?php echo tsisip_asset('theme-toggle.js', 'js'); ?>" defer></script>
 </head>
 <body data-tsisip-role="<?php echo htmlspecialchars($userRole); ?>">
     <header class="tsisip-header">
@@ -101,6 +102,11 @@ header("Referrer-Policy: strict-origin-when-cross-origin");
             <option value="pt_BR" <?php echo ($ocpLocale === 'pt_BR') ? 'selected' : ''; ?>>Português</option>
         </select>
     </form>
+
+    <!-- Theme toggle -->
+    <button type="button" id="theme-toggle" class="tsisip-header-link" style="background:none;border:none;cursor:pointer;padding:4px 8px;" onclick="tsisipToggleTheme()">
+        <!-- Icon set by theme-toggle.js -->
+    </button>
 
     <button type="button"
             class="tsisip-sidebar-toggle"
