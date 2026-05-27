@@ -5,7 +5,7 @@
 **Feature**: OCP User Management & RBAC
 **Short name**: ocp-user-management
 **Created**: 2026-05-27
-**Status**: In Progress
+**Status**: Complete
 
 ### Context
 

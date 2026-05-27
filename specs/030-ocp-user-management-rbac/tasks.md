@@ -2,14 +2,14 @@
 
 ## Phase 1: Database Schema
 
-- [ ] T001: Create db/init/08-user-management-schema.sql
+- [x] T001: Create db/init/08-user-management-schema.sql
   - ocp_password_history table
   - ocp_user_sessions table
   - Indexes and foreign keys
 
 ## Phase 2: Password Policy Library
 
-- [ ] T002: Create web/common/password-policy.php
+- [x] T002: Create web/common/password-policy.php
   - validatePassword(string $pwd): array{valid: bool, errors: string[]}
   - isPasswordInHistory(int $userId, string $pwd): bool
   - hashPassword(string $pwd): string (bcrypt cost 12)
@@ -17,7 +17,7 @@
 
 ## Phase 3: User List Page
 
-- [ ] T003: Create web/users.php
+- [x] T003: Create web/users.php
   - Admin-only access check
   - Paginated table from ocp_users (excluding deleted)
   - Search by username/email
@@ -27,7 +27,7 @@
 
 ## Phase 4: Create/Edit User
 
-- [ ] T004: Create web/user-edit.php
+- [x] T004: Create web/user-edit.php
   - Form: username, email, role, password, confirm_password, force_password_change, is_active
   - Server-side validation
   - CSRF protection
@@ -37,7 +37,7 @@
 
 ## Phase 5: Delete User
 
-- [ ] T005: Create web/user-delete.php
+- [x] T005: Create web/user-delete.php
   - POST endpoint with user_id and CSRF token
   - Soft delete (set deleted_at)
   - Prevent self-delete and last-admin-delete
@@ -46,7 +46,7 @@
 
 ## Phase 6: Self-Service Profile
 
-- [ ] T006: Update web/profile.php
+- [x] T006: Update web/profile.php
   - Display user info
   - Change password form (current + new + confirm)
   - Update email form
@@ -54,25 +54,25 @@
 
 ## Phase 7: Session Invalidation
 
-- [ ] T007: Update web/common/config.php
+- [x] T007: Update web/common/config.php
   - On login: insert into ocp_user_sessions
   - On each request: check if session invalidated
   - On logout: invalidate session record
 
 ## Phase 8: Navigation & Integration
 
-- [ ] T008: Add "Users" link to role-nav.php (admin only)
-- [ ] T009: Add "Users" to dashboard system links
+- [x] T008: Add "Users" link to role-nav.php (admin only)
+- [x] T009: Add "Users" to dashboard system links
 
 ## Phase 9: Tests
 
-- [ ] T010: Create tests/integration/test-ocp-users.sh
+- [x] T010: Create tests/integration/test-ocp-users.sh
   - CRUD operations via curl
   - Password policy validation
   - Session invalidation check
-- [ ] T011: Run test-ocp-all.sh and fix regressions
+- [x] T011: Run test-ocp-all.sh and fix regressions
 
 ## Phase 10: Build & Commit
 
-- [ ] T012: docker compose build ocp
-- [ ] T013: Commit with conventional commits
+- [x] T012: docker compose build ocp
+- [x] T013: Commit with conventional commits
