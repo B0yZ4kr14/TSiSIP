@@ -35,7 +35,7 @@ COPY docker/ocp/php.ini /usr/local/etc/php/conf.d/98-memory-opcache.ini
 COPY web/ /var/www/html/
 
 # Copy wiki documentation for the embedded wiki renderer
-COPY docs/wiki/ /var/www/docs/wiki/
+COPY ./docs/wiki /var/www/docs/wiki
 
 # Set correct ownership for Apache
 RUN chown -R www-data:www-data /var/www/html \
