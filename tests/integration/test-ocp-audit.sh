@@ -262,6 +262,19 @@ else
     else
         report_fail "Filtered CSV export returned no data rows"
     fi
+
+    # TEXT export
+    ocp_sh "curl -fsSL -b /tmp/audit-cookies.txt -o /tmp/audit-export.txt '${OCP_INTERNAL_URL}/audit-export.php?format=text&from=${FROM_DATE}&to=${TO_DATE}'"
+    if ocp_sh "test -s /tmp/audit-export.txt"; then
+        TXT_HEADER=$(ocp_sh "head -n 1 /tmp/audit-export.txt")
+        if echo "$TXT_HEADER" | grep -q '========'; then
+            report_pass "TEXT export returned valid header"
+        else
+            report_fail "TEXT export unexpected header: $TXT_HEADER"
+        fi
+    else
+        report_fail "TEXT export returned empty file"
+    fi
 fi
 
 # ------------------------------------------------------------------
