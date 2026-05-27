@@ -1200,3 +1200,28 @@ body.tsisip-login::after {
         max-width: none;
     }
 }
+
+/* ============================================
+   THEME PRESETS
+   ============================================ */
+
+/* Ocean Preset */
+[data-theme-preset="ocean"] {
+    --tsisip-primary-blue: #0ea5e9;
+    --tsisip-success: #22d3ee;
+    --tsisip-warning-border: #f59e0b;
+}
+
+/* Forest Preset */
+[data-theme-preset="forest"] {
+    --tsisip-primary-blue: #10b981;
+    --tsisip-success: #34d399;
+    --tsisip-warning-border: #fbbf24;
+}
+
+/* Sunset Preset */
+[data-theme-preset="sunset"] {
+    --tsisip-primary-blue: #f97316;
+    --tsisip-success: #84cc16;
+    --tsisip-warning-border: #eab308;
+}
