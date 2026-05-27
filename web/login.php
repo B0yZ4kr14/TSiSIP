@@ -30,7 +30,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             }
             exit;
         } else {
-            $error = _('Invalid credentials');
+            setFlash('error', _('Invalid credentials'));
         }
     }
 }
