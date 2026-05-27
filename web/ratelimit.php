@@ -44,6 +44,10 @@ require_once __DIR__ . '/common/header.php';
 <div class="tsisip-page">
     <div class="tsisip-page-header">
         <h1 class="tsisip-page-title"><?php echo $pageTitle; ?></h1>
+        <div class="tsisip-actions">
+            <button type="button" class="tsisip-btn tsisip-btn-secondary" onclick="TSiSIPMi.exportData('ratelimit_status', [], 'csv')"><?php echo _('Export CSV'); ?></button>
+            <button type="button" class="tsisip-btn tsisip-btn-secondary" onclick="TSiSIPMi.exportData('ratelimit_status', [], 'json')"><?php echo _('Export JSON'); ?></button>
+        </div>
     </div>
 
     <?php if (!$miData["success"]): ?>
