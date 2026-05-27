@@ -130,39 +130,6 @@ if ($format === 'csv') {
     } catch (Throwable $e) {
         error_log('Audit export CSV logging failed: ' . $e->getMessage());
     }
-} else {
-    header('Content-Type: application/json; charset=utf-8');
-    header('Content-Disposition: attachment; filename="' . $filename . '"');
-    header('Cache-Control: no-store, no-cache, must-revalidate');
-
-    echo "[\n";
-    $first = true;
-    while ($row = $stmt->fetch(PDO::FETCH_ASSOC)) {
-        if (!$first) {
-            echo ",\n";
-        }
-        $first = false;
-        // Decode details JSONB so the JSON output contains a real object, not a string
-        if (!empty($row['details'])) {
-            $decoded = json_decode($row['details'], true);
-            if ($decoded !== null) {
-                $row['details'] = $decoded;
-            }
-        }
-        echo json_encode($row, JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES);
-    }
-    echo "\n]\n";
-
-    // Log export after stream completes
-    try {
-        logAuditEvent('EXPORT_JSON', 'audit_log', null, true, [
-            'filter_from' => $filters['from'],
-            'filter_to'   => $filters['to'],
-            'filter_action' => $filters['action'] ?: null,
-        ]);
-    } catch (Throwable $e) {
-        error_log('Audit export JSON logging failed: ' . $e->getMessage());
-    }
 } elseif ($format === 'text') {
     header('Content-Type: text/plain; charset=utf-8');
     header('Content-Disposition: attachment; filename="tsisip-audit-log-' . date('Ymd-His') . '.txt"');
@@ -201,5 +168,38 @@ if ($format === 'csv') {
         ]);
     } catch (Throwable $e) {
         error_log('Audit export TEXT logging failed: ' . $e->getMessage());
+    }
+} else {
+    header('Content-Type: application/json; charset=utf-8');
+    header('Content-Disposition: attachment; filename="' . $filename . '"');
+    header('Cache-Control: no-store, no-cache, must-revalidate');
+
+    echo "[\n";
+    $first = true;
+    while ($row = $stmt->fetch(PDO::FETCH_ASSOC)) {
+        if (!$first) {
+            echo ",\n";
+        }
+        $first = false;
+        // Decode details JSONB so the JSON output contains a real object, not a string
+        if (!empty($row['details'])) {
+            $decoded = json_decode($row['details'], true);
+            if ($decoded !== null) {
+                $row['details'] = $decoded;
+            }
+        }
+        echo json_encode($row, JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES);
+    }
+    echo "\n]\n";
+
+    // Log export after stream completes
+    try {
+        logAuditEvent('EXPORT_JSON', 'audit_log', null, true, [
+            'filter_from' => $filters['from'],
+            'filter_to'   => $filters['to'],
+            'filter_action' => $filters['action'] ?: null,
+        ]);
+    } catch (Throwable $e) {
+        error_log('Audit export JSON logging failed: ' . $e->getMessage());
     }
 }
