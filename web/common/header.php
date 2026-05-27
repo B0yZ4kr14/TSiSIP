@@ -84,6 +84,7 @@ header("Referrer-Policy: strict-origin-when-cross-origin");
         </a>
     </nav>
 
+    <button class="tsisip-btn tsisip-btn-icon" id="bookmark-btn" title="Bookmark this page" style="background:none;border:none;cursor:pointer;font-size:1.2rem;">☆</button>
     <a href="profile.php" style="text-decoration:none;"><span class="tsisip-badge tsisip-role-badge--<?php echo htmlspecialchars($userRole, ENT_QUOTES, 'UTF-8'); ?>">
         <?php echo htmlspecialchars(ucfirst($userRole), ENT_QUOTES, 'UTF-8'); ?>
     </span>

@@ -22,6 +22,29 @@ $displayRole = isset($roleLabels[$userRole]) ? $roleLabels[$userRole] : $roleLab
 
 /* ------------------------------------------------------------------
  * System Management links (admin + devops)
+    <!-- Bookmarks -->
+    <div class="tsisip-dashboard-section" data-widget="bookmarks">
+        <h2 class="tsisip-section-title"><?php echo _('Bookmarks'); ?></h2>
+        <div class="tsisip-btn-group">
+            <?php
+            $pdo = getDb();
+            $bmStmt = $pdo->prepare(
+                "SELECT page_url, page_label, icon FROM ocp_user_bookmarks
+                 WHERE user_id = :uid ORDER BY sort_order"
+            );
+            $bmStmt->execute([':uid' => $_SESSION['user_id'] ?? 0]);
+            $bookmarks = $bmStmt->fetchAll();
+            if (empty($bookmarks)): ?>
+                <span class="tsisip-text-muted"><?php echo _('No bookmarks yet. Click the star icon on any page to add it.'); ?></span>
+            <?php else:
+                foreach ($bookmarks as $bm): ?>
+                    <a href="<?php echo htmlspecialchars($bm['page_url']); ?>" class="tsisip-btn tsisip-btn-outline">
+                        <?php echo htmlspecialchars(_($bm['page_label'])); ?>
+                    </a>
+                <?php endforeach;
+            endif; ?>
+        </div>
+    </div>
  * ------------------------------------------------------------------ */
 $systemLinks = [];
 if ($userRole === 'admin' || $userRole === 'devops') {
@@ -73,6 +96,29 @@ if (isset($roleNav[$userRole])) {
     <?php if (!empty($systemLinks)): ?>
     <div class="tsisip-dashboard-section">
         <h2><?php echo _('System Management'); ?></h2>
+    <!-- Bookmarks -->
+    <div class="tsisip-dashboard-section" data-widget="bookmarks">
+        <h2 class="tsisip-section-title"><?php echo _('Bookmarks'); ?></h2>
+        <div class="tsisip-btn-group">
+            <?php
+            $pdo = getDb();
+            $bmStmt = $pdo->prepare(
+                "SELECT page_url, page_label, icon FROM ocp_user_bookmarks
+                 WHERE user_id = :uid ORDER BY sort_order"
+            );
+            $bmStmt->execute([':uid' => $_SESSION['user_id'] ?? 0]);
+            $bookmarks = $bmStmt->fetchAll();
+            if (empty($bookmarks)): ?>
+                <span class="tsisip-text-muted"><?php echo _('No bookmarks yet. Click the star icon on any page to add it.'); ?></span>
+            <?php else:
+                foreach ($bookmarks as $bm): ?>
+                    <a href="<?php echo htmlspecialchars($bm['page_url']); ?>" class="tsisip-btn tsisip-btn-outline">
+                        <?php echo htmlspecialchars(_($bm['page_label'])); ?>
+                    </a>
+                <?php endforeach;
+            endif; ?>
+        </div>
+    </div>
         <div class="tsisip-dashboard-links">
             <?php foreach ($systemLinks as $link): ?>
                 <a href="<?php echo htmlspecialchars($link['url'], ENT_QUOTES, 'UTF-8'); ?>"
