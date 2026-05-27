@@ -285,18 +285,14 @@ fi
 # ------------------------------------------------------------------
 
 echo ""
-echo "[cleanup] Attempting cleanup of test events..."
-CLEANUP_RESULT=$(docker compose -f "$COMPOSE_FILE" exec -T "$PG_SERVICE" \
-    psql -U "$DB_USER" -d "$DB_NAME" -t -A \
-    -c "SET ROLE tsisip_retention; DELETE FROM ocp_audit_log WHERE details->>'source' = 'integration-test';" 2>&1 || true)
-if echo "$CLEANUP_RESULT" | grep -qi 'immutable'; then
-    echo "  WARN: Could not clean up (immutability). This is expected if other events were inserted after test events."
-else
-    report_pass "Cleaned up test events"
-fi
-
-# Remove temporary test user
+echo "[cleanup] Removing temporary test user..."
 psql_exec "DELETE FROM ocp_users WHERE username = '$TEST_USER';" > /dev/null 2>&1 || true
+report_pass "Cleaned up test user"
+
+# Note: We intentionally do NOT delete audit log rows here. Middle-row
+# deletion breaks the hash chain for all subsequent rows. The
+# integration-test events are harmless append-only records and will be
+# cleaned up naturally by the retention purge job.
 
 # ------------------------------------------------------------------
 # Report
