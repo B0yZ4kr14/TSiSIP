@@ -73,6 +73,7 @@ if ($userRole === 'admin' || $userRole === 'devops') {
     ['url' => 'reports.php',       'label' => _('System Reports'),       'icon' => 'chart'],
     ['url' => 'scheduled-tasks.php','label' => _('Scheduled Tasks'),  'icon' => 'schedule'],
     ['url' => 'cache-manager.php', 'label' => _('Cache Manager'),     'icon' => 'memory'],
+    ['url' => 'system-logs.php', 'label' => _('System Logs'),       'icon' => 'file-text'],
     ];
 }
 
