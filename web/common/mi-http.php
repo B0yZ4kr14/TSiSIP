@@ -32,8 +32,19 @@ const CACHE_TTL_SECONDS = 5;
 function miHttpAvailable(): bool
 {
     $miUrl = getenv('OPENSIPS_MI_URL') ?: 'http://opensips:8888/mi';
+    $payload = json_encode([
+        'jsonrpc' => '2.0',
+        'method'  => 'version',
+        'params'  => [],
+        'id'      => 1,
+    ]);
     $result = @file_get_contents($miUrl, false, stream_context_create([
-        'http' => ['method' => 'GET', 'timeout' => 2],
+        'http' => [
+            'method'  => 'POST',
+            'header'  => "Content-Type: application/json\r\n",
+            'content' => $payload,
+            'timeout' => 2,
+        ],
     ]));
     return $result !== false;
 }
