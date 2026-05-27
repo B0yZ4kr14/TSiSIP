@@ -95,3 +95,45 @@
 ### Tasks Completed
 
 61/61 tasks
+
+---
+
+## Session Run — 2026-05-27
+
+**Feature**: Feature 020: OCP Critical Tool Gap Closure (Final Validation + Frontend Audit)
+**Branch**: main
+**Spec**: specs/020-ocp-critical-tool-gap-closure
+
+### Session Metadata
+
+| Metric | Value |
+|---|---|
+| Speckit skills executed | 2 (speckit-implement, speckit-brownfield-scan) |
+| GitNexus reindex | Completed (9,930 nodes, 10,912 edges, 81 clusters) |
+| Frontend audit | Completed — 17/17 tests PASS |
+| Commits since last session | 4 |
+
+### Commits
+
+- `3738baf` fix(docker): update OCP healthcheck after removing healthcheck-audit.php
+- `77e5d95` feat(frontend): consolidate orphan pages, remove duplicates, clean menu
+- `a202349` fix(frontend): remove wiki from sidebar, add header button, fix addresses link
+- `a27a55b` fix(opensips): remove children directive causing syntax error in 3.6.6
+
+### What was validated
+
+- Feature 020: 61/61 tasks complete, 100% coverage, 0 placeholders, 0 constitution violations
+- OCP frontend: 17/17 smoke tests PASS, zero broken links, zero orphan pages
+- GitNexus index refreshed (incremental: +239 files, -4 deleted, 77 changed)
+- Docker cleanup: ~937MB images + ~49MB volumes pruned
+
+### OCP Coverage Update
+
+| Category | OCP Tools | TSiSIP Implemented | Coverage % |
+|---|---|---|---|
+| Global Config | 4 | 0 | 0% |
+| Dashboard | 1 | 1 | 100% |
+| SIP Users | 3 | 3 | 100% |
+| System (Core) | 23 | 22 | 96% |
+| Generic | 1 | 0 | 0% |
+| **OCP Total** | **32** | **26** | **81%** |

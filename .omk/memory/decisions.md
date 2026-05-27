@@ -55,4 +55,39 @@ Never store secrets, raw MCP env, tokens, or private user data.
 2. Alter `subscriber`, `header_routing_rules`, `pbx_backends` to use `UUID`
 3. Update seed data to use valid UUID references
 
+### 2026-05-27 — Frontend Orphan Consolidation Decision
+
+**Decision**: Consolidate all orphan pages into role-nav.php navigation rather than maintaining a separate wiki index.
+
+**Context**: Frontend audit identified 18 pages not linked from any menu. Users could only access them via direct URL or wiki index.
+
+**Affected files**:
+- `web/common/role-nav.php` (added 18 entries across System, Admin, Account sections)
+- `web/common/header.php` (added wiki button)
+- `web/health.php` (deleted — redundant with system-health)
+- `web/healthcheck-audit.php` (deleted — stub)
+- `web/ocp/trunk-*.php` (deleted — duplicates of root-level pages)
+
+**Evidence**:
+- 17/17 OCP smoke tests PASS post-consolidation
+- Zero orphan pages verified by filesystem scan
+- Zero broken links verified by curl loop
+
+**Rollback trigger**: Navigation UX feedback requiring section reorganization.
+
+### 2026-05-27 — OpenSIPS `children` Directive Removal
+
+**Decision**: Remove `children = 8` from `opensips.cfg.tpl` because OpenSIPS 3.6.6 rejects it as an unknown config variable.
+
+**Context**: OpenSIPS 3.6.6 changed config parsing. The `children` parameter in the main route section causes `parse error: unknown config variable`.
+
+**Affected files**:
+- `opensips/opensips.cfg.tpl`
+
+**Evidence**:
+- Config validation passes after removal: `opensips -c -f /etc/opensips/opensips.cfg`
+- Runtime children controlled via Docker Compose `deploy.resources.limits` and process scaling
+
+**Rollback trigger**: Migration to OpenSIPS 3.7+ where `children` syntax may be restored.
+
 **Rollback trigger:** Canonical spec version bump requiring strict UUID compliance, or LGPD audit finding.

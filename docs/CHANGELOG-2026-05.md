@@ -156,5 +156,34 @@
 - **Documentation**: 35+
 - **Database Migrations**: 4
 
+## [1.0.1] - 2026-05-27
+
+### Fixes
+- **OpenSIPS Syntax**: Removed `children = 8` directive causing parse error in OpenSIPS 3.6.6 (`a27a55b`)
+- **Frontend Navigation**: Fixed broken `addresses` → `address` link in role-nav.php (`a202349`)
+- **Docker Healthcheck**: Updated OCP healthcheck after removing `healthcheck-audit.php` (`3738baf`)
+- **MI HTTP**: Replaced GET calls with POST+JSON-RPC for `tls_reload` and `version` (`f6ea33f`)
+- **Tests**: Fixed arithmetic expansion breaking `set -e` in `test-ocp-all.sh` (`0ec543f`)
+- **Audit**: Repaired hash chain integrity and test query bug (`9341777`)
+- **PgBouncer**: Added `auth_file` with SCRAM-SHA-256 for OCP connectivity (`f6d8f28`)
+
+### Frontend Audit & Consolidation (2026-05-27)
+- **Wiki Relocation**: Removed wiki from sidebar; added 📖 header button
+- **Orphan Page Consolidation**: Added 18 previously orphan pages to navigation menus
+- **Duplicate Removal**: Removed stubs (`health.php`, `healthcheck-audit.php`) and duplicate trunk pages
+- **Menu Coverage**: 53+ pages exposed across 9 sections, zero orphan pages remaining
+- **OCP Tests**: 17/17 PASS, container healthy, zero broken links
+
+### Features Completed (029–031)
+- **Feature 029**: Frontend Refactor — MI Parity complete (drag-and-drop dashboard, SSE expansion, MI data export)
+- **Feature 030**: OCP User Management & RBAC — complete implementation
+- **Feature 031**: OCP REST API — complete implementation with public status endpoint
+
+### Stats Update
+- **Total Commits**: 615
+- **PHP Files**: 115
+- **OCP Coverage**: ~81% (26/32 OCP modules implemented)
+- **Integration Tests**: 109 PASS, 0 FAIL
+
 ## Status: COMPLETE ✅
 All planned features for Q2 2026 have been implemented.

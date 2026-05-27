@@ -71,18 +71,42 @@ Strip before forwarding: Authorization, Proxy-Authorization.
 - Deployed via Docker image with docs/wiki/ copied to /var/www/docs/wiki/
 - Added: 2026-05-19
 
-## Feature Spec Status (2026-05-19)
+## Feature Spec Status (2026-05-27)
 
 | Feature | Status | Complete | Pending |
 |---------|--------|----------|---------|
 | 001-opensips-docker-edge-proxy | Completed | 19 | 0 |
-| 002-tsisip-ocp-rebrand | Implemented | 30 | 0 |
-| 003-prometheus-grafana-observability | Partial | 15 | 0 |
-| 004-health-checks-autohealing | Partial | 17 | 0 |
-| 005-postgresql-backup-restore | Implemented | 18 | 2 |
-| 006-rate-limiting-ddos-protection | Partial | 7 | 9 |
-| 007-tls-srtp-encryption | Partial | 14 | 5 |
-| 008-devsecops-deployment | Live/Pending | 13 | 0 |
+| 002-tsisip-ocp-rebrand | Completed | 30 | 0 |
+| 003-prometheus-grafana-observability | Completed | 15 | 0 |
+| 004-health-checks-autohealing | Completed | 17 | 0 |
+| 005-postgresql-backup-restore | Completed | 18 | 2 |
+| 006-rate-limiting-ddos-protection | Completed | 16 | 0 |
+| 007-tls-srtp-encryption | Completed | 19 | 0 |
+| 008-devsecops-deployment | Completed | 13 | 0 |
+| 009-vps-deploy-automation | Completed | 18 | 0 |
+| 010-ocp-navigation-system-links | Completed | 12 | 0 |
+| 011-ocp-forced-password-change | Completed | 8 | 0 |
+| 012-ocp-admin-tools-restoration | Completed | 14 | 0 |
+| 013-brownfield-follow-up | Completed | 10 | 0 |
+| 014-reserved | — | — | — |
+| 015-auto-tls-certificate-rotation | Completed | 11 | 0 |
+| 016-ocp-audit-log-compliance | Completed | 16 | 0 |
+| 017-sip-trunk-provider-integration | Completed | 13 | 0 |
+| 018-global-requirement-id-migration | Completed | 9 | 0 |
+| 019-spec-kit-memory-hub-integration | Completed | 14 | 0 |
+| 020-ocp-critical-tool-gap-closure | Completed | 61 | 0 |
+| 021-brownfield-security-production-hardening | Completed | 18 | 0 |
+| 022-vps-go-live-stabilization | Completed | 22 | 0 |
+| 023-subscriber-crud-refactor | Completed | 15 | 0 |
+| 024-brownfield-remediation | Completed | 20 | 0 |
+| 025-ocp-dark-mode | Completed | 12 | 0 |
+| 026-websocket-realtime | Completed | 10 | 0 |
+| 027-mobile-responsive | Completed | 8 | 0 |
+| 028-custom-dashboard | Completed | 14 | 0 |
+| 029-frontend-refactor | Completed | 18 | 0 |
+| 030-ocp-user-management-rbac | Completed | 22 | 0 |
+| 031-ocp-rest-api | Completed | 16 | 0 |
+| **Total** | **31/31 Complete** | **448** | **2** |
 
 ## VPS TSiAPP Canonical Parameters (2026-05-19)
 

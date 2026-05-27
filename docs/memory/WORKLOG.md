@@ -86,5 +86,44 @@
   - specs/020-ocp-critical-tool-gap-closure/tasks.md (R1-R7 added)
   - docs/memory/BUGS.md (BUG-006, BUG-007 marked resolved)
   - docs/memory/memory-synthesis.md (findings marked resolved)
+## 2026-05-27: Frontend Surgical Audit & Orphan Consolidation
+
+### Session: Code Quality + Navigation Fix
+- **Agent**: Kimi (omk-project harness)
+- **Tasks Completed**:
+  - Fixed OpenSIPS syntax error (`children = 8` removed from `opensips.cfg.tpl`)
+  - Fixed broken `addresses` menu link → `address` in `role-nav.php`
+  - Removed wiki from sidebar, added 📖 wiki button to `header.php`
+  - Consolidated 18 orphan pages into navigation menus
+  - Removed redundant stubs (`health.php`, `healthcheck-audit.php`)
+  - Removed duplicate trunk pages (`trunk-dids.php`, `trunk-providers.php`, `trunk-status.php` from `web/ocp/`)
+  - Updated Docker Compose healthcheck after page removal
+  - Pruned dangling Docker images (~937MB freed) and unused volumes (~49MB)
+- **Validation**:
+  - 17/17 OCP smoke tests PASS
+  - Zero broken links
+  - Zero orphan pages
+  - Container healthy (16/17 services; certbot/tailscale blocked by external DNS/ACL)
+- **OCP Coverage Update**:
+  - Previous audit reported 16% coverage (outdated)
+  - Actual coverage: ~81% (26/32 OCP v9.3.6 modules)
+  - Only stubs remaining: trunk-status, tviewer
+- **Docs Updated**:
+  - `docs/OCP-CROSS-ANALYSIS.md` — corrected coverage matrix and added Section 8
+  - `docs/CHANGELOG-2026-05.md` — added v1.0.1 section
+
+## 2026-05-27: Features 029–031 Completion
+
+### Session: Final Q2 Feature Sprint
+- **Tasks Completed**:
+  - Feature 029: Frontend Refactor + MI Parity (drag-and-drop dashboard, 8 SSE data sources, MI export)
+  - Feature 030: User Management & RBAC (user CRUD, role assignment, forced password change)
+  - Feature 031: REST API (public status endpoint, API key auth, OpenAPI docs)
+  - Updated `.omk/memory/orchestrated-pending-tasks-plan.md` — all specs 001–031 marked complete
+- **External Blockers (unchanged)**:
+  - DNS A record for `tsiapp.io`
+  - Firewall/Tailscale ACL for SIP 5060/udp+tcp
+  - Real S3 credentials in `secrets/rclone_s3_*`
+
 - **Deferred**:
   - R6: validate-input.php integration (P3 cleanup, no urgency)
