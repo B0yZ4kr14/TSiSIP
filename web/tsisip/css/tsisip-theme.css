@@ -909,3 +909,19 @@ body.tsisip-login::after {
     color: #92400e;
     font-weight: 500;
 }
+
+/* ==========================================================================
+   Theme Transitions
+   Smooth transitions between light and dark modes
+   ========================================================================== */
+
+*, *::before, *::after {
+    transition: background-color 0.3s ease, color 0.3s ease, border-color 0.3s ease, box-shadow 0.3s ease;
+}
+
+/* Disable transitions for users who prefer reduced motion */
+@media (prefers-reduced-motion: reduce) {
+    *, *::before, *::after {
+        transition: none !important;
+    }
+}
