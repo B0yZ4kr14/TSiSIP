@@ -54,7 +54,7 @@ docker compose up -d
 
 # Wait for database
 echo "Waiting for database..."
-sleep 5
+sleep 5  # Allow services to initialize before health checks
 
 # Run migrations
 echo "Running migrations..."

@@ -18,7 +18,7 @@ docker compose down -v
 docker compose up -d
 
 # Wait for DB
-sleep 5
+sleep 5  # Allow containers to fully stop before removal
 
 # Run migrations
 bash scripts/migrate.sh

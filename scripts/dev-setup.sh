@@ -31,7 +31,7 @@ echo "Starting..."
 make up
 
 # Wait
-sleep 5
+sleep 5  # Allow database to accept connections after startup
 
 # Migrate
 echo "Running migrations..."
