@@ -127,3 +127,27 @@
 
 - **Deferred**:
   - R6: validate-input.php integration (P3 cleanup, no urgency)
+
+## 2026-05-27: Post-Audit Remediation & Test Suite Repair
+
+### Session: Audit Follow-Up Batch
+- **Findings Resolved**:
+  - B17: Updated `.github/copilot-instructions.md` from stale "greenfield" to mature repo description
+  - B18: Removed plaintext `admin123!` reference from seed data SQL
+  - F1: Verified `.env.example` uses `v0.0.0-dev` (not `latest`)
+  - D9: Aligned `docker/admin_api/Dockerfile` to same PHP digest as OCP
+  - M1: Added OpenSIPS memory args `-m 256 -M 32` to `docker-compose.yml`
+  - M2: Reduced PostgreSQL prod `work_mem` from 16MB to 8MB
+  - M3: Verified `shm_size=3gb` already set in prod compose
+  - M5/M6: Verified chunked LIMIT queries present in LGPD/audit exports
+- **Test Fixes**:
+  - `test_ddos_protection.py`: Fixed anomaly_detector compose file (`docker-compose.yml`) and service name (`anomaly_detector`)
+  - `test_anomaly_detection.py`: Fixed container name from hyphen to underscore (`tsisip-anomaly_detector-1`)
+  - `test_backup_restore.py`: Added `LGPD_RETENTION_DAYS=30` to backup service to align with test expectations
+- **Frontend Fixes**:
+  - Added 6 orphan pages to `web/common/role-nav.php`: system-health, search, call-queue, failover, audit-export, userblacklist
+- **Docs Updated**:
+  - `reports/AUDIT-FOLLOWUP-2026-05-27.md` — final status with test results
+  - `specs/031-ocp-rest-api/tasks.md` — marked all 22 tasks complete (implementation verified)
+- **Test Results**: 96 passed, 26 skipped, 0 failed (was 91 passed, 5 failed, 26 skipped)
+- **Commits**: 5 commits pushed to origin/main
