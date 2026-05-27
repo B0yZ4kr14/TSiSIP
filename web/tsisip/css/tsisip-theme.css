@@ -993,3 +993,147 @@ body.tsisip-login::after {
     gap: 0.5rem;
     justify-content: flex-end;
 }
+
+/* ============================================
+   MOBILE RESPONSIVE DESIGN
+   ============================================ */
+
+/* Base responsive settings */
+@media (max-width: 1024px) {
+    .tsisip-dashboard-grid {
+        grid-template-columns: 1fr;
+    }
+    .tsisip-dashboard-section {
+        padding: 1rem;
+    }
+}
+
+/* Tablet (768px - 1023px) */
+@media (max-width: 768px) {
+    #content {
+        padding: 1rem;
+    }
+    .tsisip-header {
+        flex-wrap: wrap;
+        gap: 0.5rem;
+        padding: 0.75rem 1rem;
+    }
+    .tsisip-header-logo {
+        height: 28px;
+    }
+    .tsisip-header h1 {
+        font-size: 1rem;
+    }
+    .tsisip-header nav {
+        order: 3;
+        width: 100%;
+        justify-content: space-around;
+    }
+    .tsisip-table {
+        display: block;
+        overflow-x: auto;
+        white-space: nowrap;
+        -webkit-overflow-scrolling: touch;
+    }
+    .tsisip-table thead,
+    .tsisip-table tbody {
+        display: table;
+        width: 100%;
+    }
+    .tsisip-btn {
+        min-height: 44px;
+        min-width: 44px;
+        padding: 0.625rem 1rem;
+    }
+    .tsisip-form-group {
+        margin-bottom: 1rem;
+    }
+    .tsisip-input,
+    .tsisip-select {
+        font-size: 16px; /* Prevent iOS zoom */
+        min-height: 44px;
+    }
+    .tsisip-modal {
+        margin: 1rem;
+        max-height: 90vh;
+        overflow-y: auto;
+    }
+}
+
+/* Phone (< 768px) */
+@media (max-width: 767px) {
+    #content h1 {
+        font-size: 1.25rem;
+    }
+    .tsisip-card-header h3 {
+        font-size: 0.95rem;
+    }
+    .tsisip-data-row {
+        flex-direction: column;
+        gap: 0.25rem;
+        padding: 0.5rem 0;
+    }
+    .tsisip-data-label {
+        font-size: 0.8rem;
+    }
+    .tsisip-metric-value {
+        font-size: 1.5rem;
+    }
+    .tsisip-btn-group {
+        flex-wrap: wrap;
+    }
+    .tsisip-dashboard-grid[style*="grid-template-columns:repeat(4"] {
+        grid-template-columns: repeat(2, 1fr) !important;
+    }
+    /* Hamburger menu */
+    .tsisip-mobile-menu-toggle {
+        display: block;
+        background: none;
+        border: none;
+        color: var(--tsisip-text-primary);
+        font-size: 1.5rem;
+        cursor: pointer;
+        padding: 0.5rem;
+    }
+    .tsisip-header nav {
+        display: none;
+        position: absolute;
+        top: 100%;
+        left: 0;
+        right: 0;
+        background: var(--tsisip-surface-card);
+        border-top: 1px solid var(--tsisip-border-subtle);
+        flex-direction: column;
+        padding: 0.5rem;
+        z-index: 100;
+    }
+    .tsisip-header nav.tsisip-nav-open {
+        display: flex;
+    }
+    .tsisip-header nav a {
+        padding: 0.75rem 1rem;
+        border-radius: 6px;
+    }
+}
+
+/* Small phone (< 480px) */
+@media (max-width: 480px) {
+    .tsisip-dashboard-grid[style*="grid-template-columns:repeat(2"] {
+        grid-template-columns: 1fr !important;
+    }
+    .tsisip-header h1 {
+        display: none;
+    }
+    .tsisip-footer {
+        flex-direction: column;
+        gap: 0.5rem;
+        text-align: center;
+    }
+}
+
+/* Hide mobile toggle on desktop */
+@media (min-width: 768px) {
+    .tsisip-mobile-menu-toggle {
+        display: none;
+    }
+}
