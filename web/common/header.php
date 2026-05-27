@@ -92,6 +92,16 @@ header("Referrer-Policy: strict-origin-when-cross-origin");
         </a>
     <?php endif; ?>
 
+    <!-- Language selector -->
+    <form method="POST" action="common/set-language.php" style="display:inline;margin-left:8px;">
+        <?php echo csrfInput(); ?>
+        <select name="lang" class="tsisip-input" style="padding:4px 8px;font-size:13px;" onchange="this.form.submit()">
+            <option value="en_US" <?php echo ($ocpLocale === 'en_US') ? 'selected' : ''; ?>>English</option>
+            <option value="es_ES" <?php echo ($ocpLocale === 'es_ES') ? 'selected' : ''; ?>>Español</option>
+            <option value="pt_BR" <?php echo ($ocpLocale === 'pt_BR') ? 'selected' : ''; ?>>Português</option>
+        </select>
+    </form>
+
     <button type="button"
             class="tsisip-sidebar-toggle"
             aria-expanded="false"
