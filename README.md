@@ -32,8 +32,10 @@ OpenSIPS ←→ RTPengine
 - **Dark Mode**: Toggle between light and dark themes
 - **i18n**: English, Spanish, Portuguese
 - **Mobile**: Responsive design for phones and tablets
-- **API**: REST endpoints for integration
-- **Security**: CSRF protection, role-based access, audit logging
+- **API**: REST API v1 with Bearer auth, rate limiting, metrics/users/audit endpoints
+- **User Management**: RBAC with 6 roles, password policy, session invalidation
+- **MI Parity**: 100% OpenSIPS 3.6 MI command coverage via web UI
+- **Security**: CSRF protection, role-based access, audit logging, hash chain integrity
 
 ## Quick Start
 
