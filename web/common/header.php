@@ -42,7 +42,7 @@ header("X-Content-Type-Options: nosniff");
 header("Referrer-Policy: strict-origin-when-cross-origin");
 ?>
 <!DOCTYPE html>
-<html lang="<?php echo htmlspecialchars(substr($ocpLocale, 0, 2)); ?>">
+<html lang="<?php echo htmlspecialchars(substr($ocpLocale, 0, 2)); ?>" data-theme="<?php echo htmlspecialchars($_SESSION['tsisip_theme'] ?? 'light', ENT_QUOTES, 'UTF-8'); ?>">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
