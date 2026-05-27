@@ -98,9 +98,41 @@ require_once __DIR__ . '/common/header.php';
             </div>
 
             <!-- Change Password -->
+            <!-- Theme Preset -->
+            <div class="tsisip-form-group" style="margin-top:1rem;">
+                <label class="tsisip-form-label"><?php echo _('Color Preset'); ?></label>
+                <div class="tsisip-btn-group">
+                    <button class="tsisip-btn tsisip-btn-outline" onclick="setPreset('default')" style="border-color:var(--tsisip-primary-blue)"><?php echo _('Default'); ?></button>
+                    <button class="tsisip-btn tsisip-btn-outline" onclick="setPreset('ocean')" style="border-color:#0ea5e9"><?php echo _('Ocean'); ?></button>
+                    <button class="tsisip-btn tsisip-btn-outline" onclick="setPreset('forest')" style="border-color:#10b981"><?php echo _('Forest'); ?></button>
+                    <button class="tsisip-btn tsisip-btn-outline" onclick="setPreset('sunset')" style="border-color:#f97316"><?php echo _('Sunset'); ?></button>
+                </div>
+            </div>
+            <script>
+            function setPreset(preset) {
+                document.documentElement.setAttribute('data-theme-preset', preset);
+                fetch('/common/save-theme-preset.php', {
+                    method: 'POST',
+                    headers: {Content-Type':
             <div class="tsisip-form-group" style="margin-top:2rem;">
                 <a href="change-password.php" class="tsisip-btn tsisip-btn-warning">
                     <?php echo _('Change Password'); ?>
+            <!-- Theme Preset -->
+            <div class="tsisip-form-group" style="margin-top:1rem;">
+                <label class="tsisip-form-label"><?php echo _('Color Preset'); ?></label>
+                <div class="tsisip-btn-group">
+                    <button class="tsisip-btn tsisip-btn-outline" onclick="setPreset('default')" style="border-color:var(--tsisip-primary-blue)"><?php echo _('Default'); ?></button>
+                    <button class="tsisip-btn tsisip-btn-outline" onclick="setPreset('ocean')" style="border-color:#0ea5e9"><?php echo _('Ocean'); ?></button>
+                    <button class="tsisip-btn tsisip-btn-outline" onclick="setPreset('forest')" style="border-color:#10b981"><?php echo _('Forest'); ?></button>
+                    <button class="tsisip-btn tsisip-btn-outline" onclick="setPreset('sunset')" style="border-color:#f97316"><?php echo _('Sunset'); ?></button>
+                </div>
+            </div>
+            <script>
+            function setPreset(preset) {
+                document.documentElement.setAttribute('data-theme-preset', preset);
+                fetch('/common/save-theme-preset.php', {
+                    method: 'POST',
+                    headers: {Content-Type':
                 </a>
             </div>
         </div>
