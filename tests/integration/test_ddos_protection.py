@@ -13,7 +13,7 @@ import pytest
 COMPOSE_FILE = os.environ.get('COMPOSE_FILE', 'docker-compose.yml')
 
 # anomaly_detector lives in the monitoring overlay / vps compose, not base compose
-ANOMALY_COMPOSE = os.environ.get('ANOMALY_COMPOSE', 'docker-compose.vps.yml')
+ANOMALY_COMPOSE = os.environ.get('ANOMALY_COMPOSE', 'docker-compose.yml')
 
 
 def compose_exec(service: str, cmd: list, check: bool = True, compose: str = None) -> subprocess.CompletedProcess:
@@ -99,11 +99,11 @@ class TestAnomalyDetector:
     """Anomaly detector sidecar."""
 
     def test_detector_script_exists(self):
-        r = compose_exec('anomaly-detector', ['test', '-f', '/app/detector.py'], check=False, compose=ANOMALY_COMPOSE)
+        r = compose_exec('anomaly_detector', ['test', '-f', '/app/detector.py'], check=False, compose=ANOMALY_COMPOSE)
         assert r.returncode == 0, "detector.py not found"
 
     def test_detector_baseline_exists(self):
-        r = compose_exec('anomaly-detector', ['test', '-f', '/app/baseline.py'], check=False, compose=ANOMALY_COMPOSE)
+        r = compose_exec('anomaly_detector', ['test', '-f', '/app/baseline.py'], check=False, compose=ANOMALY_COMPOSE)
         assert r.returncode == 0, "baseline.py not found"
 
 
