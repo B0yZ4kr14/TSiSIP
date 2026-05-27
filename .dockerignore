@@ -45,3 +45,4 @@ dist/
 Dockerfile*
 docker-compose*.yml
 .dockerignore
+reports/benchmarks/

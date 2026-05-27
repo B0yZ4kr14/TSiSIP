@@ -88,3 +88,4 @@ deploy/nginx/ssl/*.key
 deploy/nginx/ssl/*-selfsigned.*
 evidence/
 .docguard/
+reports/benchmarks/
