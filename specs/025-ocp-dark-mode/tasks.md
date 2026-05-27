@@ -2,27 +2,27 @@
 
 ## Phase 1: CSS Variables
 
-- [ ] T001 Audit all CSS files for hardcoded colors
-- [ ] T002 Add dark mode variables to `web/tsisip/css/tsisip-variables.css`
-- [ ] T003 Update `web/tsisip/css/tsisip-theme.css` to use variables exclusively
+- [x] T001 Audit all CSS files for hardcoded colors
+- [x] T002 Add dark mode variables to `web/tsisip/css/tsisip-variables.css`
+- [x] T003 Update `web/tsisip/css/tsisip-theme.css` to use variables exclusively
 
 ## Phase 2: Theme Toggle
 
-- [ ] T004 Create `web/tsisip/js/theme-toggle.js`
-- [ ] T005 Add toggle switch to `web/common/header.php`
-- [ ] T006 Create `web/common/set-theme.php` AJAX endpoint
-- [ ] T007 Update `web/common/config.php` to load theme preference
+- [x] T004 Create `web/tsisip/js/theme-toggle.js`
+- [x] T005 Add toggle switch to `web/common/header.php`
+- [x] T006 Create `web/common/set-theme.php` AJAX endpoint
+- [x] T007 Update `web/common/config.php` to load theme preference
 
 ## Phase 3: System Preference
 
-- [ ] T008 Add `prefers-color-scheme` detection to theme-toggle.js
-- [ ] T009 Ensure system preference respected when no user preference set
+- [x] T008 Add `prefers-color-scheme` detection to theme-toggle.js
+- [x] T009 Ensure system preference respected when no user preference set
 
 ## Phase 4: Persistence
 
-- [ ] T010 Save preference to localStorage
-- [ ] T011 Save preference to PHP session via AJAX
-- [ ] T012 Restore preference on page load
+- [x] T010 Save preference to localStorage
+- [x] T011 Save preference to PHP session via AJAX
+- [x] T012 Restore preference on page load
 
 ## Phase 5: Accessibility
 
