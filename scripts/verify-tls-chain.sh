@@ -1,5 +1,6 @@
 #!/bin/bash
 # scripts/verify-tls-chain.sh
+set -euo pipefail
 
 echo "=== Certificate Validity ==="
 docker compose exec certbot openssl x509 -in /etc/letsencrypt/live/tsiapp.io/fullchain.pem -noout -dates -subject -issuer 2>/dev/null || echo "Certificate not yet issued"

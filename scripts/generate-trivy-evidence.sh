@@ -1,5 +1,6 @@
 #!/bin/bash
 # scripts/generate-trivy-evidence.sh
+set -euo pipefail
 # Run against all vps-lite images
 
 IMAGES=(

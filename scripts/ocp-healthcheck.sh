@@ -1,5 +1,6 @@
 #!/usr/bin/env bash
 # TSiSIP OCP — Container Health Check
+set -euo pipefail
 # Verifies OCP pages directly via container IP (bypasses nginx reverse proxy)
 set -uo pipefail
 

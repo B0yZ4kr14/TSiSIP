@@ -1,5 +1,6 @@
 #!/bin/bash
 # scripts/verify-port-policy.sh
+set -euo pipefail
 # Verify zero public Asterisk/PostgreSQL ports
 
 echo "=== Docker Compose Port Audit ==="

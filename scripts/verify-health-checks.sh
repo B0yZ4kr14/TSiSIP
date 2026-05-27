@@ -1,5 +1,6 @@
 #!/bin/bash
 # TSiSIP Health Check Validation (SG3.6)
+set -euo pipefail
 set -uo pipefail
 
 PROJECT_ROOT="$(cd "$(dirname "$0")/.." && pwd)"

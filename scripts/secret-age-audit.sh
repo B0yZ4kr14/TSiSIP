@@ -1,5 +1,6 @@
 #!/bin/bash
 # TSiSIP Secret Rotation Age Audit (SG4.1)
+set -euo pipefail
 # Checks if any secret file is older than 90 days
 # Exits 0 always (non-blocking warning)
 

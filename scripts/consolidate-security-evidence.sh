@@ -1,5 +1,6 @@
 #!/bin/bash
 # scripts/consolidate-security-evidence.sh
+set -euo pipefail
 
 mkdir -p docs/security/evidence/022-vps-go-live
 

@@ -1,5 +1,6 @@
 #!/bin/bash
 # TSiSIP Nginx TLS Configuration Audit (SG3.5)
+set -euo pipefail
 set -uo pipefail
 
 PROJECT_ROOT="$(cd "$(dirname "$0")/.." && pwd)"
