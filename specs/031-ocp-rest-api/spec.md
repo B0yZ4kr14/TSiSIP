@@ -5,7 +5,7 @@
 **Feature**: OCP REST API
 **Short name**: ocp-rest-api
 **Created**: 2026-05-27
-**Status**: In Progress
+**Status**: Complete
 
 ### Context
 
