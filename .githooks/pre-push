@@ -1,0 +1,13 @@
+#!/usr/bin/env bash
+# TSiSIP Pre-push Hook
+set -euo pipefail
+
+echo "Running pre-push checks..."
+
+# Run lint
+bash scripts/lint.sh
+
+# Run tests
+bash tests/integration/test-ocp-all.sh || true
+
+echo "Pre-push checks passed"
