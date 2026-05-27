@@ -9,6 +9,20 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Added
 
+#### Feature 029: OCP Frontend — 100% OpenSIPS 3.6 MI Parity
+- Generic MI action handler (`web/common/mi-action.php`) with 67 whitelisted commands
+- `mi-actions.js` helper with `attachReload`, `attachToggle`, `attachRowAction`
+- MI actions on 12 existing pages: reload, terminate, toggle, refresh controls
+- 14 new module pages: Memory Status, Pike Monitor, Rate Limit, USRLoc Live,
+  Hash Tables, NAT Helper, TCP Connections, Topology Hiding, Processes,
+  Blacklists, Version, Timers, Presence, AVP Inspector
+- MI command executor expanded from 6 to 46+ commands with categories and search
+- Navigation updated with Runtime, Security, NAT & Presence, Advanced groups
+- Dashboard quick links to new runtime and security pages
+- System Events page (`web/system-events.php`) for audit log browsing with filters
+- Human-friendly MI error banners (`web/common/mi-error-helper.php`)
+- 4 new integration test suites validating MI actions, new pages, whitelist, and smoke
+
 #### Feature 018: Global Requirement ID Migration
 - Feature-scoped FR-NNN-XXX identifiers across all 24 specs
 - Validation scripts (`scripts/validate-fr-ids.py`, `scripts/migrate-fr-ids.py`)
@@ -100,6 +114,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Cross-project consistency: `constitution.md`, `brownfield-scan-report.md`, `memorylint-report.md`, `remediation-summary.md`, and `security-compliance.md` synchronized with ground truth
 
 ### Fixed
+- `miHttpAvailable()` now uses POST instead of GET to avoid OpenSIPS MI HTTP error log spam
+- `.dockerignore` blocking `docs/wiki/` broke OCP Docker build — fixed by removing `docs/` exclusion
 - Brownfield residual findings B14-B16 (backup encryption, healthchecks, CI `latest` tag documentation)
 - Speckit-analyze issues across all 014 specs (placeholders, port numbers, schema references, plan corruption)
 - `scripts/ci-scan.sh` robustness: handles missing PHP, missing env vars, and non-running compose stacks gracefully
