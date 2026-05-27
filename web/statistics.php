@@ -166,7 +166,12 @@ if (typeof d3 === 'undefined') {
 </script>
 
 <div id="content" class="tsisip-dashboard">
-    <h1><?php echo _('OpenSIPS Statistics Monitor'); ?></h1>
+    <div style="display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:8px;">
+        <h1><?php echo _('OpenSIPS Statistics Monitor'); ?></h1>
+        <?php if (isDevOpsOrHigher()): ?>
+            <button id="btn-reset-stats" class="tsisip-btn tsisip-btn-danger"><?php echo _('Reset Statistics'); ?></button>
+        <?php endif; ?>
+    </div>
 
     <div class="tsisip-dashboard-section">
         <div id="stats-warning" class="tsisip-badge tsisip-badge-error" style="display:none;margin-bottom:12px;" role="alert">
@@ -385,4 +390,9 @@ if (typeof d3 === 'undefined') {
 })();
 </script>
 
+<script>
+<?php if (isDevOpsOrHigher()): ?>
+TSiSIPMi.attachReload('#btn-reset-stats', 'reset_statistics', '<?php echo _('Reset all OpenSIPS statistics?'); ?>');
+<?php endif; ?>
+</script>
 <?php require_once __DIR__ . '/common/footer.php'; ?>

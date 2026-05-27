@@ -104,7 +104,7 @@ require_once __DIR__ . '/common/header.php';
         ?>
             <div class="tsisip-badge tsisip-badge--info"><?php echo _('No live dialog data returned by OpenSIPS.'); ?></div>
         <?php else: ?>
-            <table class="tsisip-table dataTable">
+            <table class="tsisip-table dataTable" id="dialog-table">
                 <thead>
                     <tr>
                         <th><?php echo _('Call-ID'); ?></th>
@@ -112,6 +112,7 @@ require_once __DIR__ . '/common/header.php';
                         <th><?php echo _('To'); ?></th>
                         <th><?php echo _('State'); ?></th>
                         <th><?php echo _('Start Time'); ?></th>
+                        <?php if (isDevOpsOrHigher()): ?><th><?php echo _('Actions'); ?></th><?php endif; ?>
                     </tr>
                 </thead>
                 <tbody>
@@ -137,6 +138,15 @@ require_once __DIR__ . '/common/header.php';
                                 </span>
                             </td>
                             <td><?php echo htmlspecialchars($dlg['start_time'] ?? $dlg['startTime'] ?? $dlg['START_TIME'] ?? '—'); ?></td>
+                            <?php if (isDevOpsOrHigher()): ?>
+                            <td>
+                                <button type="button" class="tsisip-btn tsisip-btn--danger tsisip-btn--sm btn-terminate"
+                                        data-callid="<?php echo htmlspecialchars($dlg['callid'] ?? $dlg['call_id'] ?? $dlg['CALLID'] ?? '', ENT_QUOTES, 'UTF-8'); ?>"
+                                        data-from-tag="<?php echo htmlspecialchars($dlg['from_tag'] ?? $dlg['fromTag'] ?? $dlg['FROM_TAG'] ?? '', ENT_QUOTES, 'UTF-8'); ?>">
+                                    <?php echo _('Terminate'); ?>
+                                </button>
+                            </td>
+                            <?php endif; ?>
                         </tr>
                     <?php endforeach; ?>
                 </tbody>
@@ -205,4 +215,11 @@ require_once __DIR__ . '/common/header.php';
         <?php echo renderPagination($page, $totalItems, $perPage, 'dialog.php'); ?>
     </div>
 </div>
+<script>
+<?php if (isDevOpsOrHigher()): ?>
+TSiSIPMi.attachRowAction('#dialog-table', '.btn-terminate', 'dlg_end_dlg', function(btn){
+    return [btn.dataset.callid, btn.dataset.fromTag];
+}, '<?php echo _('Terminate this dialog?'); ?>');
+<?php endif; ?>
+</script>
 <?php require_once __DIR__ . '/common/footer.php'; ?>

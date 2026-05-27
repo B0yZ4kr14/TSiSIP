@@ -7,6 +7,7 @@
 require_once __DIR__ . '/common/config.php';
 require_once __DIR__ . '/common/csrf.php';
 require_once __DIR__ . '/common/pagination.php';
+require_once __DIR__ . '/common/mi-http.php';
 
 requireAuth();
 checkPasswordChange();
@@ -166,9 +167,14 @@ require_once __DIR__ . '/common/header.php';
 ?>
 
 <div class="tsisip-page">
-    <header class="tsisip-page-header">
-        <h1 class="tsisip-page-title"><?php echo _('Dynamic Routing'); ?></h1>
-        <p class="tsisip-page-subtitle"><?php echo _('LCR / dynamic routing gateway and rule management'); ?></p>
+    <header class="tsisip-page-header" style="display:flex;justify-content:space-between;align-items:flex-start;flex-wrap:wrap;gap:8px;">
+        <div>
+            <h1 class="tsisip-page-title"><?php echo _('Dynamic Routing'); ?></h1>
+            <p class="tsisip-page-subtitle"><?php echo _('LCR / dynamic routing gateway and rule management'); ?></p>
+        </div>
+        <?php if (isDevOpsOrHigher()): ?>
+            <button id="btn-dr-reload" class="tsisip-btn tsisip-btn--primary"><?php echo _('Reload DRouting'); ?></button>
+        <?php endif; ?>
     </header>
 
     <?php if ($error): ?>
@@ -177,6 +183,44 @@ require_once __DIR__ . '/common/header.php';
     <?php if ($success): ?>
         <div class="tsisip-alert tsisip-alert--success" role="alert"><?php echo htmlspecialchars($success); ?></div>
     <?php endif; ?>
+
+    <!-- Gateway Status via MI -->
+    <section class="tsisip-section">
+        <h2 class="tsisip-section-title"><?php echo _('Gateway Status'); ?></h2>
+        <?php if (empty($gateways)): ?>
+            <div class="tsisip-badge tsisip-badge--info"><?php echo _('No gateways configured.'); ?></div>
+        <?php else: ?>
+            <table class="tsisip-table">
+                <thead>
+                    <tr><th><?php echo _('GWID'); ?></th><th><?php echo _('Status'); ?></th></tr>
+                </thead>
+                <tbody>
+                    <?php foreach ($gateways as $g): ?>
+                        <?php
+                        $gwStatus = miHttpCall('dr_gw_status', [$g['gwid']]);
+                        $statusVal = null;
+                        if ($gwStatus['success'] && is_array($gwStatus['data'])) {
+                            $statusVal = $gwStatus['data']['status'] ?? $gwStatus['data'][0] ?? null;
+                        }
+                        $statusClass = 'tsisip-badge--neutral';
+                        $statusLabel = _('Unknown');
+                        if ($statusVal === '1' || $statusVal === 1 || $statusVal === 'up') {
+                            $statusClass = 'tsisip-badge--success';
+                            $statusLabel = _('Up');
+                        } elseif ($statusVal === '0' || $statusVal === 0 || $statusVal === 'down') {
+                            $statusClass = 'tsisip-badge--danger';
+                            $statusLabel = _('Down');
+                        }
+                        ?>
+                        <tr>
+                            <td><code><?php echo htmlspecialchars($g['gwid']); ?></code></td>
+                            <td><span class="tsisip-badge <?php echo $statusClass; ?>"><?php echo $statusLabel; ?></span></td>
+                        </tr>
+                    <?php endforeach; ?>
+                </tbody>
+            </table>
+        <?php endif; ?>
+    </section>
 
     <section class="tsisip-section">
         <h2 class="tsisip-section-title"><?php echo _('Gateways'); ?></h2>
@@ -375,4 +419,9 @@ require_once __DIR__ . '/common/header.php';
     </section>
 </div>
 
+<script>
+<?php if (isDevOpsOrHigher()): ?>
+TSiSIPMi.attachReload('#btn-dr-reload', 'dr_reload');
+<?php endif; ?>
+</script>
 <?php require_once __DIR__ . '/common/footer.php'; ?>

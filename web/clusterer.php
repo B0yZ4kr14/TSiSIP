@@ -229,6 +229,23 @@ require_once __DIR__ . '/common/header.php';
                             <td><?php echo $n['priority']; ?></td>
                             <td><code><?php echo htmlspecialchars($n['sip_addr'] ?? ''); ?></code></td>
                             <td>
+                                <?php if (isDevOpsOrHigher()): ?>
+                                    <select class="tsisip-select tsisip-btn--sm clusterer-state-select" style="width:auto;display:inline-block;">
+                                        <option value="active"><?php echo _('Active'); ?></option>
+                                        <option value="backup"><?php echo _('Backup'); ?></option>
+                                        <option value="down"><?php echo _('Down'); ?></option>
+                                    </select>
+                                    <button type="button" class="tsisip-btn tsisip-btn--secondary tsisip-btn--sm btn-clusterer-set-state"
+                                            data-cluster="<?php echo htmlspecialchars($n['cluster_id'], ENT_QUOTES, 'UTF-8'); ?>"
+                                            data-node="<?php echo htmlspecialchars($n['node_id'], ENT_QUOTES, 'UTF-8'); ?>">
+                                        <?php echo _('Set State'); ?>
+                                    </button>
+                                    <button type="button" class="tsisip-btn tsisip-btn--secondary tsisip-btn--sm btn-clusterer-ping"
+                                            data-cluster="<?php echo htmlspecialchars($n['cluster_id'], ENT_QUOTES, 'UTF-8'); ?>"
+                                            data-node="<?php echo htmlspecialchars($n['node_id'], ENT_QUOTES, 'UTF-8'); ?>">
+                                        <?php echo _('Ping'); ?>
+                                    </button>
+                                <?php endif; ?>
                                 <form method="post" style="display:inline">
                                     <input type="hidden" name="csrf_token" value="<?php echo $csrfToken; ?>">
                                     <input type="hidden" name="action" value="delete">
@@ -296,4 +313,35 @@ require_once __DIR__ . '/common/header.php';
     </section>
 </div>
 
+<script>
+<?php if (isDevOpsOrHigher()): ?>
+document.querySelectorAll('.btn-clusterer-set-state').forEach(function(btn) {
+    btn.addEventListener('click', function(e) {
+        e.preventDefault();
+        var row = btn.closest('tr');
+        var select = row.querySelector('.clusterer-state-select');
+        var state = select ? select.value : 'active';
+        var params = [parseInt(btn.dataset.cluster), parseInt(btn.dataset.node), state];
+        btn.disabled = true;
+        TSiSIPMi.action('clusterer_set_state', params, function() {
+            btn.disabled = false;
+        }, function() {
+            btn.disabled = false;
+        });
+    });
+});
+document.querySelectorAll('.btn-clusterer-ping').forEach(function(btn) {
+    btn.addEventListener('click', function(e) {
+        e.preventDefault();
+        var params = [parseInt(btn.dataset.cluster), parseInt(btn.dataset.node)];
+        btn.disabled = true;
+        TSiSIPMi.action('clusterer_ping', params, function() {
+            btn.disabled = false;
+        }, function() {
+            btn.disabled = false;
+        });
+    });
+});
+<?php endif; ?>
+</script>
 <?php require_once __DIR__ . '/common/footer.php'; ?>

@@ -124,9 +124,14 @@ require_once __DIR__ . '/common/header.php';
 ?>
 
 <div class="tsisip-page">
-    <header class="tsisip-page-header">
-        <h1 class="tsisip-page-title"><?php echo _('Load Balancer'); ?></h1>
-        <p class="tsisip-page-subtitle"><?php echo _('Alternative load balancing destinations'); ?></p>
+    <header class="tsisip-page-header" style="display:flex;justify-content:space-between;align-items:flex-start;flex-wrap:wrap;gap:8px;">
+        <div>
+            <h1 class="tsisip-page-title"><?php echo _('Load Balancer'); ?></h1>
+            <p class="tsisip-page-subtitle"><?php echo _('Alternative load balancing destinations'); ?></p>
+        </div>
+        <?php if (isDevOpsOrHigher()): ?>
+            <button id="btn-lb-reload" class="tsisip-btn tsisip-btn--primary"><?php echo _('Reload Load Balancer'); ?></button>
+        <?php endif; ?>
     </header>
 
     <?php if ($error): ?>
@@ -174,6 +179,14 @@ require_once __DIR__ . '/common/header.php';
                             </td>
                             <td><?php echo htmlspecialchars($e['description'] ?? ''); ?></td>
                             <td>
+                                <?php if (isDevOpsOrHigher()): ?>
+                                    <button type="button" class="tsisip-btn tsisip-btn--secondary tsisip-btn--sm btn-lb-toggle"
+                                            data-group="<?php echo htmlspecialchars($e['group_id'], ENT_QUOTES, 'UTF-8'); ?>"
+                                            data-dst="<?php echo htmlspecialchars($e['dst_uri'], ENT_QUOTES, 'UTF-8'); ?>"
+                                            data-state="<?php echo $e['probe_mode'] ? 'on' : 'off'; ?>">
+                                        <?php echo $e['probe_mode'] ? _('Runtime Disable') : _('Runtime Enable'); ?>
+                                    </button>
+                                <?php endif; ?>
                                 <form method="post" style="display:inline">
                                     <input type="hidden" name="csrf_token" value="<?php echo $csrfToken; ?>">
                                     <input type="hidden" name="action" value="toggle">
@@ -281,4 +294,24 @@ require_once __DIR__ . '/common/header.php';
     </section>
 </div>
 
+<script>
+<?php if (isDevOpsOrHigher()): ?>
+TSiSIPMi.attachReload('#btn-lb-reload', 'lb_reload');
+document.querySelectorAll('.btn-lb-toggle').forEach(function(btn) {
+    btn.addEventListener('click', function(e) {
+        e.preventDefault();
+        var isOn = btn.dataset.state === 'on';
+        var params = [parseInt(btn.dataset.group), btn.dataset.dst, isOn ? 0 : 1];
+        btn.disabled = true;
+        TSiSIPMi.action('lb_status', params, function() {
+            btn.disabled = false;
+            btn.dataset.state = isOn ? 'off' : 'on';
+            btn.textContent = isOn ? <?php echo json_encode(_('Runtime Enable')); ?> : <?php echo json_encode(_('Runtime Disable')); ?>;
+        }, function() {
+            btn.disabled = false;
+        });
+    });
+});
+<?php endif; ?>
+</script>
 <?php require_once __DIR__ . '/common/footer.php'; ?>

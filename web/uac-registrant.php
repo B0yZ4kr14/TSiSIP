@@ -7,6 +7,7 @@
 require_once __DIR__ . '/common/config.php';
 require_once __DIR__ . '/common/csrf.php';
 require_once __DIR__ . '/common/pagination.php';
+require_once __DIR__ . '/common/mi-http.php';
 
 requireAuth();
 checkPasswordChange();
@@ -112,6 +113,22 @@ $stmt->execute(array_merge($params, [$perPage, $offset]));
 $regs = $stmt->fetchAll(PDO::FETCH_ASSOC);
 
 $csrfToken = generateCsrfToken();
+
+// Fetch live UAC reg status for enable/disable state
+$liveRegs = [];
+$miRegs = miHttpCall('uac_reg_list');
+if ($miRegs['success'] && is_array($miRegs['data'])) {
+    $raw = $miRegs['data'];
+    if (isset($raw['Gateways']) && is_array($raw['Gateways'])) {
+        $raw = $raw['Gateways'];
+    }
+    foreach ($raw as $item) {
+        if (is_array($item) && isset($item['l_uuid'])) {
+            $liveRegs[$item['l_uuid']] = $item;
+        }
+    }
+}
+
 require_once __DIR__ . '/common/header.php';
 ?>
 
@@ -164,6 +181,21 @@ require_once __DIR__ . '/common/header.php';
                             <td><?php echo $r['expires']; ?>s</td>
                             <td><?php echo $r['flags']; ?></td>
                             <td>
+                                <?php if (isDevOpsOrHigher()): ?>
+                                    <button type="button" class="tsisip-btn tsisip-btn--secondary tsisip-btn--sm btn-uac-refresh"
+                                            data-uuid="<?php echo htmlspecialchars($r['l_uuid'], ENT_QUOTES, 'UTF-8'); ?>">
+                                        <?php echo _('Refresh'); ?>
+                                    </button>
+                                    <?php
+                                    $live = $liveRegs[$r['l_uuid']] ?? null;
+                                    $isEnabled = $live ? !(isset($live['disabled']) && $live['disabled']) : true;
+                                    ?>
+                                    <button type="button" class="tsisip-btn tsisip-btn--<?php echo $isEnabled ? 'danger' : 'success'; ?> tsisip-btn--sm btn-uac-toggle"
+                                            data-uuid="<?php echo htmlspecialchars($r['l_uuid'], ENT_QUOTES, 'UTF-8'); ?>"
+                                            data-state="<?php echo $isEnabled ? 'on' : 'off'; ?>">
+                                        <?php echo $isEnabled ? _('Disable') : _('Enable'); ?>
+                                    </button>
+                                <?php endif; ?>
                                 <form method="post" style="display:inline">
                                     <input type="hidden" name="csrf_token" value="<?php echo $csrfToken; ?>">
                                     <input type="hidden" name="action" value="delete">
@@ -224,4 +256,36 @@ require_once __DIR__ . '/common/header.php';
     </section>
 </div>
 
+<script>
+<?php if (isDevOpsOrHigher()): ?>
+document.querySelectorAll('.btn-uac-refresh').forEach(function(btn) {
+    btn.addEventListener('click', function(e) {
+        e.preventDefault();
+        btn.disabled = true;
+        TSiSIPMi.action('uac_reg_refresh', [btn.dataset.uuid], function() {
+            btn.disabled = false;
+        }, function() {
+            btn.disabled = false;
+        });
+    });
+});
+document.querySelectorAll('.btn-uac-toggle').forEach(function(btn) {
+    btn.addEventListener('click', function(e) {
+        e.preventDefault();
+        var isOn = btn.dataset.state === 'on';
+        var cmd = isOn ? 'uac_reg_disable' : 'uac_reg_enable';
+        btn.disabled = true;
+        TSiSIPMi.action(cmd, [btn.dataset.uuid], function() {
+            btn.disabled = false;
+            btn.dataset.state = isOn ? 'off' : 'on';
+            btn.textContent = isOn ? <?php echo json_encode(_('Enable')); ?> : <?php echo json_encode(_('Disable')); ?>;
+            btn.classList.toggle('tsisip-btn--danger', !isOn);
+            btn.classList.toggle('tsisip-btn--success', isOn);
+        }, function() {
+            btn.disabled = false;
+        });
+    });
+});
+<?php endif; ?>
+</script>
 <?php require_once __DIR__ . '/common/footer.php'; ?>

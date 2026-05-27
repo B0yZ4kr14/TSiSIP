@@ -271,6 +271,14 @@ require_once __DIR__ . '/common/header.php';
                             <td><?php echo htmlspecialchars(strtoupper($a['logstate'])); ?></td>
                             <td><?php echo $a['enabled'] ? '<span class="tsisip-tag tsisip-tag--success">'._('Enabled').'</span>' : '<span class="tsisip-tag tsisip-tag--muted">'._('Disabled').'</span>'; ?></td>
                             <td>
+                                <?php if (isDevOpsOrHigher()): ?>
+                                    <?php $agentLoggedIn = $a['logstate'] === 'in'; ?>
+                                    <button type="button" class="tsisip-btn tsisip-btn--<?php echo $agentLoggedIn ? 'danger' : 'success'; ?> tsisip-btn--sm btn-cc-toggle"
+                                            data-agent="<?php echo htmlspecialchars($a['agentid'], ENT_QUOTES, 'UTF-8'); ?>"
+                                            data-state="<?php echo $agentLoggedIn ? 'on' : 'off'; ?>">
+                                        <?php echo $agentLoggedIn ? _('Logout') : _('Login'); ?>
+                                    </button>
+                                <?php endif; ?>
                                 <a href="?edit_agent=<?php echo $a['id']; ?>" class="tsisip-btn tsisip-btn--sm"><?php echo _('Edit'); ?></a>
                                 <form method="post" style="display:inline">
                                     <input type="hidden" name="csrf_token" value="<?php echo $csrfToken; ?>">
@@ -334,6 +342,40 @@ require_once __DIR__ . '/common/header.php';
     </section>
 
     <section class="tsisip-section">
+        <h2 class="tsisip-section-title"><?php echo _('Call Flow Status'); ?></h2>
+        <?php
+        $miFlow = miHttpCall('cc_flow_status');
+        if (!$miFlow['success']):
+        ?>
+            <div class="tsisip-badge tsisip-badge--warning" role="alert">
+                <?php echo _('MI unavailable: ') . htmlspecialchars($miFlow['error']); ?>
+            </div>
+        <?php else:
+            $flowData = $miFlow['data'] ?? [];
+            if (!is_array($flowData)) {
+                $flowData = [];
+            }
+            if (empty($flowData)):
+        ?>
+            <div class="tsisip-badge tsisip-badge--info"><?php echo _('No live call flow data returned by OpenSIPS.'); ?></div>
+        <?php else: ?>
+            <table class="tsisip-table">
+                <thead>
+                    <tr><th><?php echo _('Flow'); ?></th><th><?php echo _('Value'); ?></th></tr>
+                </thead>
+                <tbody>
+                    <?php foreach ($flowData as $key => $val): ?>
+                        <tr>
+                            <td><?php echo htmlspecialchars($key); ?></td>
+                            <td><code><?php echo htmlspecialchars(is_array($val) ? json_encode($val) : $val); ?></code></td>
+                        </tr>
+                    <?php endforeach; ?>
+                </tbody>
+            </table>
+        <?php endif; endif; ?>
+    </section>
+
+    <section class="tsisip-section">
         <h2 class="tsisip-section-title"><?php echo _('Live Call Center Agents'); ?></h2>
         <?php
         $miAgents = miHttpCall('cc_list_agents');
@@ -376,4 +418,25 @@ require_once __DIR__ . '/common/header.php';
     </section>
 </div>
 
+<script>
+<?php if (isDevOpsOrHigher()): ?>
+document.querySelectorAll('.btn-cc-toggle').forEach(function(btn) {
+    btn.addEventListener('click', function(e) {
+        e.preventDefault();
+        var isOn = btn.dataset.state === 'on';
+        var cmd = isOn ? 'cc_agent_logout' : 'cc_agent_login';
+        btn.disabled = true;
+        TSiSIPMi.action(cmd, [btn.dataset.agent], function() {
+            btn.disabled = false;
+            btn.dataset.state = isOn ? 'off' : 'on';
+            btn.textContent = isOn ? <?php echo json_encode(_('Login')); ?> : <?php echo json_encode(_('Logout')); ?>;
+            btn.classList.toggle('tsisip-btn--danger', !isOn);
+            btn.classList.toggle('tsisip-btn--success', isOn);
+        }, function() {
+            btn.disabled = false;
+        });
+    });
+});
+<?php endif; ?>
+</script>
 <?php require_once __DIR__ . '/common/footer.php'; ?>

@@ -75,13 +75,32 @@ $stmt->execute(array_merge($params, [$perPage, $offset]));
 $traces = $stmt->fetchAll(PDO::FETCH_ASSOC);
 
 $csrfToken = generateCsrfToken();
+
+// Fetch live siptrace status for toggle button state
+$miTrace = miHttpCall('sip_trace_status');
+$traceStatus = $miTrace['data'] ?? [];
+
 require_once __DIR__ . '/common/header.php';
 ?>
 
 <div class="tsisip-page">
-    <header class="tsisip-page-header">
-        <h1 class="tsisip-page-title"><?php echo _('SIPtrace'); ?></h1>
-        <p class="tsisip-page-subtitle"><?php echo _('SIP packet capture viewer'); ?></p>
+    <header class="tsisip-page-header" style="display:flex;justify-content:space-between;align-items:flex-start;flex-wrap:wrap;gap:8px;">
+        <div>
+            <h1 class="tsisip-page-title"><?php echo _('SIPtrace'); ?></h1>
+            <p class="tsisip-page-subtitle"><?php echo _('SIP packet capture viewer'); ?></p>
+        </div>
+        <?php if (isDevOpsOrHigher()): ?>
+            <?php
+            $traceOn = false;
+            if ($miTrace['success'] && is_array($traceStatus)) {
+                $traceOn = ($traceStatus['status'] ?? $traceStatus['tracing'] ?? $traceStatus['state'] ?? '') === 'on' || ($traceStatus['status'] ?? '') === '1' || ($traceStatus['tracing'] ?? '') === '1';
+            }
+            ?>
+            <button id="btn-siptrace-toggle" class="tsisip-btn <?php echo $traceOn ? 'tsisip-btn--danger' : 'tsisip-btn--success'; ?>"
+                    data-state="<?php echo $traceOn ? 'on' : 'off'; ?>">
+                <?php echo $traceOn ? _('Stop Capture') : _('Start Capture'); ?>
+            </button>
+        <?php endif; ?>
     </header>
 
     <?php if ($error): ?>
@@ -91,10 +110,7 @@ require_once __DIR__ . '/common/header.php';
     <!-- Real-time siptrace status via MI HTTP -->
     <section class="tsisip-section">
         <h2 class="tsisip-section-title"><?php echo _('Live SIPtrace Status'); ?></h2>
-        <?php
-        $miTrace = miHttpCall('sip_trace_status');
-        if (!$miTrace['success']):
-        ?>
+        <?php if (!$miTrace['success']): ?>
             <div class="tsisip-badge tsisip-badge--warning" role="alert">
                 <?php echo _('MI unavailable: ') . htmlspecialchars($miTrace['error']); ?>
             </div>
@@ -197,4 +213,28 @@ require_once __DIR__ . '/common/header.php';
     </section>
 </div>
 
+<script>
+<?php if (isDevOpsOrHigher()): ?>
+(function() {
+    var btn = document.getElementById('btn-siptrace-toggle');
+    if (btn) {
+        btn.addEventListener('click', function(e) {
+            e.preventDefault();
+            var isOn = btn.dataset.state === 'on';
+            var cmd = isOn ? 'sip_trace_stop' : 'sip_trace_start';
+            btn.disabled = true;
+            TSiSIPMi.action(cmd, [], function() {
+                btn.disabled = false;
+                btn.dataset.state = isOn ? 'off' : 'on';
+                btn.textContent = isOn ? <?php echo json_encode(_('Start Capture')); ?> : <?php echo json_encode(_('Stop Capture')); ?>;
+                btn.classList.toggle('tsisip-btn--danger', !isOn);
+                btn.classList.toggle('tsisip-btn--success', isOn);
+            }, function() {
+                btn.disabled = false;
+            });
+        });
+    }
+})();
+<?php endif; ?>
+</script>
 <?php require_once __DIR__ . '/common/footer.php'; ?>

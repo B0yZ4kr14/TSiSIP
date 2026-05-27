@@ -70,7 +70,49 @@ $trunkPages = [
 $trunkVisible = ($isAdmin || $isDevOps || $isDentist || $isAssist);
 
 // -------------------------------------------------------------
-// 4. ADMINISTRATION (tenants, routing, users, audit, wiki)
+// 4. RUNTIME (live system status)
+// -------------------------------------------------------------
+$runtimePages = [
+    'memory-status'    => _('Memory Status'),
+    'processes'        => _('Processes'),
+    'tcp-connections'  => _('TCP Connections'),
+    'usrloc'           => _('USRLoc Live'),
+    'blacklists'       => _('Blacklists'),
+    'timers'           => _('Timers'),
+    'version'          => _('Version'),
+];
+$runtimeVisible = ($isAdmin || $isDevOps || $isDentist || $isAssist || $isUser || $isReadOnly);
+
+// -------------------------------------------------------------
+// 5. SECURITY (DDoS & rate limiting)
+// -------------------------------------------------------------
+$securityPages = [
+    'pike-monitor' => _('Pike Monitor'),
+    'ratelimit'    => _('Rate Limit'),
+];
+$securityVisible = ($isAdmin || $isDevOps || $isDentist || $isAssist || $isUser || $isReadOnly);
+
+// -------------------------------------------------------------
+// 6. NAT & PRESENCE
+// -------------------------------------------------------------
+$natPresencePages = [
+    'nat-helper'      => _('NAT Helper'),
+    'topology-hiding' => _('Topology Hiding'),
+    'presence'        => _('Presence'),
+];
+$natPresenceVisible = ($isAdmin || $isDevOps || $isDentist || $isAssist || $isUser || $isReadOnly);
+
+// -------------------------------------------------------------
+// 7. ADVANCED (low-level inspection)
+// -------------------------------------------------------------
+$advancedPages = [
+    'hash-tables'  => _('Hash Tables'),
+    'avp-inspector'=> _('AVP Inspector'),
+];
+$advancedVisible = ($isAdmin || $isDevOps || $isDentist || $isAssist || $isUser || $isReadOnly);
+
+// -------------------------------------------------------------
+// 8. ADMINISTRATION (tenants, routing, users, audit, wiki)
 // -------------------------------------------------------------
 $adminPages = [
     'tenants'        => _('Tenants'),
@@ -139,6 +181,71 @@ $allowedPages = isset($roleNav[$userRole]) ? $roleNav[$userRole] : $roleNav['rea
                 // MI Commands restricted
                 if ($page === 'mi-commands' && !($isAdmin || $isDevOps)) continue;
                 ?>
+                <li class="tsisip-nav-item<?php echo $currentPage === $page ? ' is-active' : ''; ?>" role="none">
+                    <a href="<?php echo htmlspecialchars($page, ENT_QUOTES, 'UTF-8'); ?>.php"
+                       class="tsisip-nav-link" role="menuitem">
+                        <?php echo htmlspecialchars($label, ENT_QUOTES, 'UTF-8'); ?>
+                    </a>
+                </li>
+            <?php endforeach; ?>
+        <?php endif; ?>
+
+        <!-- Runtime -->
+        <?php if ($runtimeVisible && !empty($runtimePages)): ?>
+            <li class="tsisip-nav-heading" role="none">
+                <span class="tsisip-nav-heading-text"><?php echo _('Runtime'); ?></span>
+            </li>
+            <?php foreach ($runtimePages as $page => $label): ?>
+                <?php
+                if (($page === 'tcp-connections' || $page === 'timers') && !($isAdmin || $isDevOps)) continue;
+                ?>
+                <li class="tsisip-nav-item<?php echo $currentPage === $page ? ' is-active' : ''; ?>" role="none">
+                    <a href="<?php echo htmlspecialchars($page, ENT_QUOTES, 'UTF-8'); ?>.php"
+                       class="tsisip-nav-link" role="menuitem">
+                        <?php echo htmlspecialchars($label, ENT_QUOTES, 'UTF-8'); ?>
+                    </a>
+                </li>
+            <?php endforeach; ?>
+        <?php endif; ?>
+
+        <!-- Security -->
+        <?php if ($securityVisible && !empty($securityPages)): ?>
+            <li class="tsisip-nav-heading" role="none">
+                <span class="tsisip-nav-heading-text"><?php echo _('Security'); ?></span>
+            </li>
+            <?php foreach ($securityPages as $page => $label): ?>
+                <?php if (!($isAdmin || $isDevOps)) continue; ?>
+                <li class="tsisip-nav-item<?php echo $currentPage === $page ? ' is-active' : ''; ?>" role="none">
+                    <a href="<?php echo htmlspecialchars($page, ENT_QUOTES, 'UTF-8'); ?>.php"
+                       class="tsisip-nav-link" role="menuitem">
+                        <?php echo htmlspecialchars($label, ENT_QUOTES, 'UTF-8'); ?>
+                    </a>
+                </li>
+            <?php endforeach; ?>
+        <?php endif; ?>
+
+        <!-- NAT & Presence -->
+        <?php if ($natPresenceVisible && !empty($natPresencePages)): ?>
+            <li class="tsisip-nav-heading" role="none">
+                <span class="tsisip-nav-heading-text"><?php echo _('NAT & Presence'); ?></span>
+            </li>
+            <?php foreach ($natPresencePages as $page => $label): ?>
+                <?php if ($page === 'presence' && !($isAdmin || $isDevOps)) continue; ?>
+                <li class="tsisip-nav-item<?php echo $currentPage === $page ? ' is-active' : ''; ?>" role="none">
+                    <a href="<?php echo htmlspecialchars($page, ENT_QUOTES, 'UTF-8'); ?>.php"
+                       class="tsisip-nav-link" role="menuitem">
+                        <?php echo htmlspecialchars($label, ENT_QUOTES, 'UTF-8'); ?>
+                    </a>
+                </li>
+            <?php endforeach; ?>
+        <?php endif; ?>
+
+        <!-- Advanced -->
+        <?php if ($advancedVisible && !empty($advancedPages)): ?>
+            <li class="tsisip-nav-heading" role="none">
+                <span class="tsisip-nav-heading-text"><?php echo _('Advanced'); ?></span>
+            </li>
+            <?php foreach ($advancedPages as $page => $label): ?>
                 <li class="tsisip-nav-item<?php echo $currentPage === $page ? ' is-active' : ''; ?>" role="none">
                     <a href="<?php echo htmlspecialchars($page, ENT_QUOTES, 'UTF-8'); ?>.php"
                        class="tsisip-nav-link" role="menuitem">

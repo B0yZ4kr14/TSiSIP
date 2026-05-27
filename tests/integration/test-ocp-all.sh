@@ -24,12 +24,9 @@ run_test() {
     echo ""
 }
 
-# Login test first
-run_test "$(dirname "$0")/test-ocp-login.sh"
-
 # Page tests
 for test in "$(dirname "$0")"/test-ocp-*.sh; do
-    if [ "$test" != "$(dirname "$0")/test-ocp-all.sh" ] && [ "$test" != "$(dirname "$0")/test-ocp-login.sh" ]; then
+    if [ "$test" != "$(dirname "$0")/test-ocp-all.sh" ]; then
         run_test "$test"
     fi
 done

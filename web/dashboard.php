@@ -83,17 +83,38 @@ if ($userRole === 'admin' || $userRole === 'devops') {
         ['url' => 'subscriber-stats.php', 'label' => _('Subscriber Statistics'),  'icon' => 'users'],
         ['url' => 'system-config.php',  'label' => _('System Configuration'),    'icon' => 'sliders'],
         ['url' => 'help.php',           'label' => _('Help & Documentation'),   'icon' => 'help-circle'],
-    ['url' => 'about.php',       'label' => _('About'),              'icon' => 'info'],
-    ['url' => 'feedback.php',      'label' => _('Feedback'),            'icon' => 'message'],
-    ['url' => 'feedback-list.php','label' => _('Feedback Mgmt'),       'icon' => 'list'],
-    ['url' => 'notes.php',       'label' => _('My Notes'),            'icon' => 'note'],
-    ['url' => 'search.php',       'label' => _('Global Search'),       'icon' => 'search'],
-    ['url' => 'system-health.php','label' => _('System Health'),     'icon' => 'health'],
-    ['url' => 'api-docs.php',      'label' => _('API Documentation'),     'icon' => 'code'],
-    ['url' => 'reports.php',       'label' => _('System Reports'),       'icon' => 'chart'],
-    ['url' => 'scheduled-tasks.php','label' => _('Scheduled Tasks'),  'icon' => 'schedule'],
-    ['url' => 'cache-manager.php', 'label' => _('Cache Manager'),     'icon' => 'memory'],
-    ['url' => 'system-logs.php', 'label' => _('System Logs'),       'icon' => 'file-text'],
+        ['url' => 'about.php',          'label' => _('About'),              'icon' => 'info'],
+        ['url' => 'feedback.php',       'label' => _('Feedback'),            'icon' => 'message'],
+        ['url' => 'feedback-list.php',  'label' => _('Feedback Mgmt'),       'icon' => 'list'],
+        ['url' => 'notes.php',          'label' => _('My Notes'),            'icon' => 'note'],
+        ['url' => 'search.php',         'label' => _('Global Search'),       'icon' => 'search'],
+        ['url' => 'system-health.php',  'label' => _('System Health'),     'icon' => 'health'],
+        ['url' => 'api-docs.php',       'label' => _('API Documentation'),     'icon' => 'code'],
+        ['url' => 'reports.php',        'label' => _('System Reports'),       'icon' => 'chart'],
+        ['url' => 'scheduled-tasks.php','label' => _('Scheduled Tasks'),  'icon' => 'schedule'],
+        ['url' => 'cache-manager.php',  'label' => _('Cache Manager'),     'icon' => 'memory'],
+        ['url' => 'system-logs.php',    'label' => _('System Logs'),       'icon' => 'file-text'],
+    ];
+}
+
+/* ------------------------------------------------------------------
+ * Runtime links (all authenticated roles)
+ * ------------------------------------------------------------------ */
+$runtimeLinks = [
+    ['url' => 'memory-status.php', 'label' => _('Memory Status'), 'icon' => 'memory'],
+    ['url' => 'processes.php',     'label' => _('Processes'),     'icon' => 'cpu'],
+    ['url' => 'usrloc.php',        'label' => _('USRLoc Live'),   'icon' => 'users'],
+    ['url' => 'version.php',       'label' => _('Version'),       'icon' => 'info'],
+];
+
+/* ------------------------------------------------------------------
+ * Security links (devops and admin only)
+ * ------------------------------------------------------------------ */
+$securityLinks = [];
+if ($userRole === 'admin' || $userRole === 'devops') {
+    $securityLinks = [
+        ['url' => 'pike-monitor.php', 'label' => _('Pike Monitor'), 'icon' => 'shield'],
+        ['url' => 'ratelimit.php',    'label' => _('Rate Limit'),   'icon' => 'gauge'],
     ];
 }
 
@@ -164,6 +185,34 @@ if (isset($roleNav[$userRole])) {
             <?php foreach ($systemLinks as $link): ?>
                 <a href="<?php echo htmlspecialchars($link['url'], ENT_QUOTES, 'UTF-8'); ?>"
                    class="tsisip-btn tsisip-btn-primary">
+                    <?php echo htmlspecialchars($link['label'], ENT_QUOTES, 'UTF-8'); ?>
+                </a>
+            <?php endforeach; ?>
+        </div>
+    </div>
+    <?php endif; ?>
+
+    <?php if (!empty($runtimeLinks)): ?>
+    <div class="tsisip-dashboard-section">
+        <h2><?php echo _('Runtime'); ?></h2>
+        <div class="tsisip-dashboard-links">
+            <?php foreach ($runtimeLinks as $link): ?>
+                <a href="<?php echo htmlspecialchars($link['url'], ENT_QUOTES, 'UTF-8'); ?>"
+                   class="tsisip-btn tsisip-btn-secondary">
+                    <?php echo htmlspecialchars($link['label'], ENT_QUOTES, 'UTF-8'); ?>
+                </a>
+            <?php endforeach; ?>
+        </div>
+    </div>
+    <?php endif; ?>
+
+    <?php if (!empty($securityLinks)): ?>
+    <div class="tsisip-dashboard-section">
+        <h2><?php echo _('Security'); ?></h2>
+        <div class="tsisip-dashboard-links">
+            <?php foreach ($securityLinks as $link): ?>
+                <a href="<?php echo htmlspecialchars($link['url'], ENT_QUOTES, 'UTF-8'); ?>"
+                   class="tsisip-btn tsisip-btn-secondary">
                     <?php echo htmlspecialchars($link['label'], ENT_QUOTES, 'UTF-8'); ?>
                 </a>
             <?php endforeach; ?>

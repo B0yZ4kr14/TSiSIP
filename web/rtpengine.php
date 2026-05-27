@@ -66,6 +66,7 @@ require_once __DIR__ . '/common/header.php';
                         <th><?php echo _('Total Ports'); ?></th>
                         <th><?php echo _('Weight'); ?></th>
                         <th><?php echo _('Status'); ?></th>
+                        <?php if (isDevOpsOrHigher()): ?><th><?php echo _('Actions'); ?></th><?php endif; ?>
                     </tr>
                 </thead>
                 <tbody>
@@ -81,6 +82,16 @@ require_once __DIR__ . '/common/header.php';
                                     <?php echo (isset($inst['disabled']) && $inst['disabled']) ? _('Disabled') : _('Active'); ?>
                                 </span>
                             </td>
+                            <?php if (isDevOpsOrHigher()): ?>
+                            <td>
+                                <?php $isDisabled = isset($inst['disabled']) && $inst['disabled']; ?>
+                                <button type="button" class="tsisip-btn tsisip-btn--<?php echo $isDisabled ? 'success' : 'danger'; ?> tsisip-btn--sm btn-rtpengine-toggle"
+                                        data-url="<?php echo htmlspecialchars($inst['url'] ?? $inst['interface'] ?? '', ENT_QUOTES, 'UTF-8'); ?>"
+                                        data-state="<?php echo $isDisabled ? 'off' : 'on'; ?>">
+                                    <?php echo $isDisabled ? _('Enable') : _('Disable'); ?>
+                                </button>
+                            </td>
+                            <?php endif; ?>
                         </tr>
                     <?php endforeach; ?>
                 </tbody>
@@ -105,4 +116,26 @@ require_once __DIR__ . '/common/header.php';
     });
     </script>
 </div>
+<script>
+<?php if (isDevOpsOrHigher()): ?>
+document.querySelectorAll('.btn-rtpengine-toggle').forEach(function(btn) {
+    btn.addEventListener('click', function(e) {
+        e.preventDefault();
+        var isOn = btn.dataset.state === 'on';
+        var cmd = isOn ? 'rtpengine_disable' : 'rtpengine_enable';
+        var params = [btn.dataset.url];
+        btn.disabled = true;
+        TSiSIPMi.action(cmd, params, function() {
+            btn.disabled = false;
+            btn.dataset.state = isOn ? 'off' : 'on';
+            btn.textContent = isOn ? <?php echo json_encode(_('Enable')); ?> : <?php echo json_encode(_('Disable')); ?>;
+            btn.classList.toggle('tsisip-btn--danger', !isOn);
+            btn.classList.toggle('tsisip-btn--success', isOn);
+        }, function() {
+            btn.disabled = false;
+        });
+    });
+});
+<?php endif; ?>
+</script>
 <?php require_once __DIR__ . '/common/footer.php'; ?>

@@ -158,7 +158,12 @@ $rules = $listStmt->fetchAll();
 require_once __DIR__ . '/common/header.php';
 ?>
 <div id="content">
-    <h2><?php echo _('Dialplan Rules'); ?></h2>
+    <div style="display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:8px;">
+        <h2><?php echo _('Dialplan Rules'); ?></h2>
+        <?php if (isDevOpsOrHigher()): ?>
+            <button id="btn-dialplan-reload" class="tsisip-btn tsisip-btn-primary"><?php echo _('Reload Dialplan'); ?></button>
+        <?php endif; ?>
+    </div>
 
     <?php if ($error): ?>
         <div class="tsisip-badge tsisip-badge-error" role="alert"><?php echo htmlspecialchars($error); ?></div>
@@ -298,4 +303,9 @@ require_once __DIR__ . '/common/header.php';
         <?php echo renderPagination($page, $totalItems, $perPage, 'dialplan.php'); ?>
     </div>
 </div>
+<script>
+<?php if (isDevOpsOrHigher()): ?>
+TSiSIPMi.attachReload('#btn-dialplan-reload', 'dialplan_reload');
+<?php endif; ?>
+</script>
 <?php require_once __DIR__ . '/common/footer.php'; ?>

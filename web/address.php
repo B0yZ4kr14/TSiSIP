@@ -71,7 +71,12 @@ $entries = $listStmt->fetchAll();
 require_once __DIR__ . '/common/header.php';
 ?>
 <div class="tsisip-dashboard">
-    <h2><?php echo _('IP Whitelist'); ?></h2>
+    <div style="display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:8px;">
+        <h2><?php echo _('IP Whitelist'); ?></h2>
+        <?php if (isDevOpsOrHigher()): ?>
+            <button id="btn-address-reload" class="tsisip-btn tsisip-btn-primary"><?php echo _('Reload Address Table'); ?></button>
+        <?php endif; ?>
+    </div>
     <p class="tsisip-text-muted"><?php echo _('Trusted gateway IPs for the OpenSIPS permissions module (check_source_address).'); ?></p>
 
     <?php if ($error): ?>
@@ -146,4 +151,9 @@ require_once __DIR__ . '/common/header.php';
         <?php echo renderPagination($page, $totalItems, $perPage, 'address.php'); ?>
     </div>
 </div>
+<script>
+<?php if (isDevOpsOrHigher()): ?>
+TSiSIPMi.attachReload('#btn-address-reload', 'address_reload');
+<?php endif; ?>
+</script>
 <?php require_once __DIR__ . '/common/footer.php'; ?>
