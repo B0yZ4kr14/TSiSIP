@@ -1225,3 +1225,13 @@ body.tsisip-login::after {
     --tsisip-success: #84cc16;
     --tsisip-warning-border: #eab308;
 }
+
+/* Keyboard Shortcuts */
+kbd {
+    background: var(--tsisip-bg-secondary);
+    border: 1px solid var(--tsisip-border-subtle);
+    border-radius: 4px;
+    padding: 0.125rem 0.375rem;
+    font-family: monospace;
+    font-size: 0.85rem;
+}
