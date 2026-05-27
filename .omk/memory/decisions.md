@@ -90,4 +90,27 @@ Never store secrets, raw MCP env, tokens, or private user data.
 
 **Rollback trigger**: Migration to OpenSIPS 3.7+ where `children` syntax may be restored.
 
+### 2026-05-27 — Audit Finding Remediation Batch
+
+**Decision**: Resolve all feasible findings from consolidated audit 2026-05-26; defer operator-dependent items.
+
+**Findings resolved**:
+- M1/M2: OpenSIPS and PostgreSQL memory tuning
+- D9/F1/A2: Version alignment and pinning
+- B17/B18/B21-B28: Documentation, entrypoints, EXPOSE, seed data
+- M5/M6: Bounded queries with LIMIT
+- M3/M4/M8/M9/M11: Memory, pooler, alerting
+
+**Findings deferred**:
+- M10: Host swap configuration (requires root access to VPS)
+- B20: Legacy parity schema columns (low risk, future sprint)
+- External: DNS, firewall ACL, S3 credentials
+
+**Evidence**:
+- `reports/AUDITORIA-FRONTEND-TSiSIP-2026-05-27.md`
+- `reports/AUDIT-FOLLOWUP-2026-05-27.md`
+- Commit `07582b9`
+
+**Rollback trigger**: Audit regression requiring revert of memory parameters.
+
 **Rollback trigger:** Canonical spec version bump requiring strict UUID compliance, or LGPD audit finding.
