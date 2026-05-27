@@ -122,6 +122,8 @@ services:
           memory: 64M
     environment:
       POSTGRES_HOST: postgres
+    secrets:
+    - db_password
     depends_on:
       postgres:
         condition: service_healthy
