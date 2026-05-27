@@ -7,6 +7,7 @@
 
 require_once __DIR__ . '/common/config.php';
 require_once __DIR__ . '/common/pagination.php';
+require_once __DIR__ . '/common/export-text.php';
 
 requireAuth();
 checkPasswordChange();
@@ -215,6 +216,13 @@ require_once __DIR__ . '/common/header.php';
         <a href="audit-export.php?<?php echo htmlspecialchars(http_build_query($exportJsonQuery), ENT_QUOTES); ?>"
            class="tsisip-btn tsisip-btn-secondary">
             <?php echo _('Export JSON'); ?>
+        </a>
+        <?php
+        $exportTextQuery = array_merge($baseQuery, ['format' => 'text']);
+        ?>
+        <a href="audit-export.php?<?php echo htmlspecialchars(http_build_query($exportTextQuery), ENT_QUOTES); ?>"
+           class="tsisip-btn tsisip-btn-secondary">
+            <?php echo _('Export Text'); ?>
         </a>
     </div>
 

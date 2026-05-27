@@ -20,6 +20,19 @@ if (session_status() === PHP_SESSION_NONE) {
     session_start();
 }
 
+// --- i18n / Gettext Setup ---
+$ocpLocale = isset($_SESSION['lang']) ? $_SESSION['lang'] : (getenv('OCP_DEFAULT_LANG') ?: 'en_US');
+$validLocales = ['en_US', 'es_ES', 'pt_BR'];
+if (!in_array($ocpLocale, $validLocales, true)) {
+    $ocpLocale = 'en_US';
+}
+putenv('LC_ALL=' . $ocpLocale);
+setlocale(LC_ALL, $ocpLocale . '.UTF-8', $ocpLocale);
+$localeDir = __DIR__ . '/../tsisip/locale';
+bindtextdomain('tsisip', $localeDir);
+bind_textdomain_codeset('tsisip', 'UTF-8');
+textdomain('tsisip');
+
 require_once __DIR__ . '/audit.php';
 
 // --- Database Configuration ---

@@ -3,8 +3,8 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: TSiSIP 1.0\n"
-"Report-Msgid-Bugs-To: dev@tsisip.local\n"
-"POT-Creation-Date: 2026-05-25 00:00+0000\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2026-05-26 22:50-0300\n"
 "PO-Revision-Date: 2026-05-25 00:00+0000\n"
 "Last-Translator: TSiSIP Team\n"
 "Language: es_ES\n"
@@ -12,1901 +12,3296 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 
-msgid "TSiSIP -- TSiSIP Control Panel"
-msgstr "TSiSIP -- Panel de Control TSiSIP"
-
-msgid "TSiSIP -- Login"
-msgstr "TSiSIP -- Inicio de Sesion"
-
-msgid "TSiSIP Home"
-msgstr "Inicio TSiSIP"
-
-msgid "TSiSIP Logo"
-msgstr "Logo TSiSIP"
-
-msgid "Toggle navigation"
-msgstr "Alternar navegacion"
-
-msgid "Sign In"
-msgstr "Iniciar Sesion"
-
-msgid "Username"
-msgstr "Usuario"
-
-msgid "Passphrase"
-msgstr "Contrasena"
-
-msgid "Invalid credentials"
-msgstr "Credenciales invalidas"
-
-msgid "Dispatcher Targets"
-msgstr "Destinos del Dispatcher"
-
-msgid "Set ID"
-msgstr "ID de Conjunto"
-
-msgid "Destination"
-msgstr "Destino"
-
-msgid "State"
-msgstr "Estado"
-
-msgid "Weight"
-msgstr "Peso"
-
-msgid "Actions"
-msgstr "Acciones"
-
-msgid "Active"
-msgstr "Activo"
-
-msgid "Edit"
-msgstr "Editar"
-
-msgid "Delete"
-msgstr "Eliminar"
-
-msgid "RTPengine Sessions"
-msgstr "Sesiones RTPengine"
-
-msgid "Instance"
-msgstr "Instancia"
-
-msgid "Max"
-msgstr "Maximo"
-
-msgid "No data available"
-msgstr "No hay datos disponibles"
-
-msgid "Error loading chart data"
-msgstr "Error al cargar datos del grafico"
-
-msgid "D3.js library not loaded"
-msgstr "Biblioteca D3.js no cargada"
-
-msgid "A config entry with this name already exists."
-msgstr "Ya existe una entrada de configuración con este nombre."
-
-msgid "Add Agent"
-msgstr "Agregar Agente"
-
-msgid "Add Alias"
-msgstr "Agregar Alias"
-
-msgid "Add Call Flow"
-msgstr "Agregar Flujo de Llamadas"
-
-msgid "Add Cluster Node"
-msgstr "Agregar Nodo de Cluster"
-
-msgid "Add Config Entry"
-msgstr "Agregar Entrada de Configuración"
-
-msgid "Add Destination"
-msgstr "Agregar Destino"
-
-msgid "Add Gateway"
-msgstr "Agregar Gateway"
-
-msgid "Add Keepalived Instance"
-msgstr "Agregar Instancia Keepalived"
-
-msgid "Add Membership"
-msgstr "Agregar Membresía"
-
-msgid "Add Monit Check"
-msgstr "Agregar Chequeo Monit"
-
-msgid "Add Registration"
-msgstr "Agregar Registro"
-
-msgid "Address"
-msgstr "Dirección"
-
-msgid "Add Routing Rule"
-msgstr "Agregar Regla de Enrutamiento"
-
-msgid "Add RTPProxy Instance"
-msgstr "Agregar Instancia RTPProxy"
-
-msgid "Add Schema"
-msgstr "Agregar Esquema"
-
-msgid "Add SMPP Gateway"
-msgstr "Agregar Gateway SMPP"
-
-msgid "Add Socket"
-msgstr "Agregar Socket"
-
-msgid "Agent agentid is required."
-msgstr "Se requiere el ID de agente."
-
-msgid "Agent created successfully."
-msgstr "Agente creado exitosamente."
-
-msgid "Agent deleted successfully."
-msgstr "Agente eliminado exitosamente."
-
-msgid "Agents"
-msgstr "Agentes"
-
-msgid "Agent updated successfully."
-msgstr "Agente actualizado exitosamente."
-
-msgid "Alert Email"
-msgstr "Correo de Alerta"
-
-msgid "Alias"
-msgstr "Alias"
-
-msgid "Alias created successfully."
-msgstr "Alias creado exitosamente."
-
-msgid "Alias deleted successfully."
-msgstr "Alias eliminado exitosamente."
-
-msgid "Alias Domain"
-msgstr "Dominio del Alias"
-
-msgid "Alias Entries"
-msgstr "Entradas de Alias"
-
-msgid "Aliases"
-msgstr "Alias"
-
-msgid "Alias Username"
-msgstr "Nombre de Usuario del Alias"
-
-msgid "Alias username and target username are required."
-msgstr "Se requiere el nombre de usuario del alias y el nombre de usuario de destino."
-
-msgid "All Categories"
-msgstr "Todas las Categorías"
-
-msgid "All Clusters"
-msgstr "Todos los Clusters"
-
-msgid "All Methods"
-msgstr "Todos los Métodos"
-
-msgid "All Severities"
-msgstr "Todas las Severidades"
-
-msgid "Alternative load balancing destinations"
-msgstr "Destinos alternativos de balanceo de carga"
-
-msgid "A node with this cluster/node ID already exists."
-msgstr "Ya existe un nodo con este ID de cluster/nodo."
-
-msgid "Attrs"
-msgstr "Atributos"
-
-msgid "A UAC registration with this UUID already exists."
-msgstr "Ya existe un registro UAC con este UUID."
-
-msgid "Auth Proxy"
-msgstr "Proxy de Autenticación"
-
-msgid "Available Schemas"
-msgstr "Esquemas Disponibles"
-
-msgid "Backup"
-msgstr "Respaldo"
-
-msgid "Call Center"
-msgstr "Call Center"
-
-msgid "Call Flow"
-msgstr "Flujo de Llamadas"
-
-msgid "Call flow created successfully."
-msgstr "Flujo de llamadas creado exitosamente."
-
-msgid "Call flow deleted successfully."
-msgstr "Flujo de llamadas eliminado exitosamente."
-
-msgid "Call Flows"
-msgstr "Flujos de Llamadas"
-
-msgid "Call flows, agents, and queue management"
-msgstr "Gestión de flujos de llamadas, agentes y colas"
-
-msgid "Call flow updated successfully."
-msgstr "Flujo de llamadas actualizado exitosamente."
-
-msgid "Call-ID"
-msgstr "Call-ID"
-
-msgid "Call-ID..."
-msgstr "Call-ID..."
-
-msgid "Cancel"
-msgstr "Cancelar"
-
-msgid "Category"
-msgstr "Categoría"
-
-msgid "Check Type"
-msgstr "Tipo de Chequeo"
-
-msgid "Clear"
-msgstr "Limpiar"
-
-msgid "Client registration provisioning for OpenSIPS"
-msgstr "Aprovisionamiento de registro de clientes para OpenSIPS"
-
-msgid "Cluster"
-msgstr "Cluster"
-
-msgid "Clusterer"
-msgstr "Clusterer"
-
-msgid "Cluster ID"
-msgstr "ID de Cluster"
-
-msgid "Cluster ID, Node ID, and URL are required."
-msgstr "Se requieren el ID de cluster, el ID de nodo y la URL."
-
-msgid "Cluster node created successfully."
-msgstr "Nodo de cluster creado exitosamente."
-
-msgid "Cluster node deleted successfully."
-msgstr "Nodo de cluster eliminado exitosamente."
-
-msgid "Cluster Nodes"
-msgstr "Nodos de Cluster"
-
-msgid "Cluster node updated successfully."
-msgstr "Nodo de cluster actualizado exitosamente."
-
-msgid "Columns"
-msgstr "Columnas"
-
-msgid "Config entry created successfully."
-msgstr "Entrada de configuración creada exitosamente."
-
-msgid "Config entry deleted successfully."
-msgstr "Entrada de configuración eliminada exitosamente."
-
-msgid "Config entry updated successfully."
-msgstr "Entrada de configuración actualizada exitosamente."
-
-msgid "Config Table"
-msgstr "Tabla de Configuración"
-
-msgid "Configuration Entries"
-msgstr "Entradas de Configuración"
-
-msgid "Create"
-msgstr "Crear"
-
-msgid "Database error: "
-msgstr "Error de base de datos: "
-
-msgid "days"
-msgstr "días"
-
-msgid "Delete?"
-msgstr "¿Eliminar?"
-
-msgid "Delete this agent?"
-msgstr "¿Eliminar este agente?"
-
-msgid "Delete this alias?"
-msgstr "¿Eliminar este alias?"
-
-msgid "Delete this check?"
-msgstr "¿Eliminar este chequeo?"
-
-msgid "Delete this entry?"
-msgstr "¿Eliminar esta entrada?"
-
-msgid "Delete this flow?"
-msgstr "¿Eliminar este flujo?"
-
-msgid "Delete this gateway?"
-msgstr "¿Eliminar este gateway?"
-
-msgid "Delete this instance?"
-msgstr "¿Eliminar esta instancia?"
-
-msgid "Delete this membership?"
-msgstr "¿Eliminar esta membresía?"
-
-msgid "Delete this node?"
-msgstr "¿Eliminar este nodo?"
-
-msgid "Delete this registration?"
-msgstr "¿Eliminar este registro?"
-
-msgid "Delete this rule?"
-msgstr "¿Eliminar esta regla?"
-
-msgid "Delete this schema?"
-msgstr "¿Eliminar este esquema?"
-
-msgid "Delete this socket?"
-msgstr "¿Eliminar este socket?"
-
-msgid "Description"
-msgstr "Descripción"
-
-msgid "Destinations"
-msgstr "Destinos"
-
-msgid "Destination URI"
-msgstr "URI de Destino"
-
-msgid "Details"
-msgstr "Detalles"
-
-msgid "Direction"
-msgstr "Dirección"
-
-msgid "Disable"
-msgstr "Deshabilitar"
-
-msgid "Disabled"
-msgstr "Deshabilitado"
-
-msgid "Domain"
-msgstr "Dominio"
-
-msgid "Dynamic Routing"
-msgstr "Enrutamiento Dinámico"
-
-msgid "Dynamic socket provisioning via database (OCP 9.3.6+)"
-msgstr "Aprovisionamiento dinámico de sockets mediante base de datos (OCP 9.3.6+)"
-
-msgid "Edit Agent"
-msgstr "Editar Agente"
-
-msgid "Edit Call Flow"
-msgstr "Editar Flujo de Llamadas"
-
-msgid "Edit Gateway"
-msgstr "Editar Gateway"
-
-msgid "Edit Keepalived Instance"
-msgstr "Editar Instancia Keepalived"
-
-msgid "Edit Membership"
-msgstr "Editar Membresía"
-
-msgid "Edit Monit Check"
-msgstr "Editar Chequeo Monit"
-
-msgid "Edit Routing Rule"
-msgstr "Editar Regla de Enrutamiento"
-
-msgid "Edit Schema"
-msgstr "Editar Esquema"
-
-msgid "Edit SMPP Gateway"
-msgstr "Editar Gateway SMPP"
-
-msgid "Enable"
-msgstr "Habilitar"
-
-msgid "Enabled"
-msgstr "Habilitado"
-
-msgid "Error"
-msgstr "Error"
-
-msgid "Expires"
-msgstr "Expira"
-
-msgid "Expires (seconds)"
-msgstr "Expira (segundos)"
-
-msgid "FIFO"
-msgstr "FIFO"
-
-msgid "File"
-msgstr "Archivo"
-
-msgid "Filesystem"
-msgstr "Sistema de Archivos"
-
-msgid "Filter"
-msgstr "Filtrar"
-
-msgid "Flags"
-msgstr "Banderas"
-
-msgid "Flow"
-msgstr "Flujo"
-
-msgid "Flow Name"
-msgstr "Nombre del Flujo"
-
-msgid "Flow name is required."
-msgstr "Se requiere el nombre del flujo."
-
-msgid "Flow Type"
-msgstr "Tipo de Flujo"
-
-msgid "From IP"
-msgstr "Desde IP"
-
-msgid "From / Source IP..."
-msgstr "Desde / IP de Origen..."
-
-msgid "Gateway created successfully."
-msgstr "Gateway creado exitosamente."
-
-msgid "Gateway deleted successfully."
-msgstr "Gateway eliminado exitosamente."
-
-msgid "Gateway ID and address are required."
-msgstr "Se requieren el ID y la dirección del gateway."
-
-msgid "Gateway List"
-msgstr "Lista de Gateways"
-
-msgid "Gateway list is required."
-msgstr "Se requiere la lista de gateways."
-
-msgid "Gateways"
-msgstr "Gateways"
-
-msgid "Gateway updated successfully."
-msgstr "Gateway actualizado exitosamente."
-
-msgid "Generic table viewer"
-msgstr "Visor genérico de tablas"
-
-msgid "Group"
-msgstr "Grupo"
-
-msgid "Group-based ACL for SIP subscribers"
-msgstr "ACL basada en grupos para suscriptores SIP"
-
-msgid "Group ID"
-msgstr "ID de Grupo"
-
-msgid "Group ID, destination URI, and resources are required."
-msgstr "Se requieren el ID de grupo, el URI de destino y los recursos."
-
-msgid "Group membership created successfully."
-msgstr "Membresía de grupo creada exitosamente."
-
-msgid "Group membership deleted successfully."
-msgstr "Membresía de grupo eliminada exitosamente."
-
-msgid "Group Memberships"
-msgstr "Membresías de Grupo"
-
-msgid "Group membership updated successfully."
-msgstr "Membresía de grupo actualizada exitosamente."
-
-msgid "Groups"
-msgstr "Grupos"
-
-msgid "GWID"
-msgstr "GWID"
-
-msgid "GW List"
-msgstr "Lista de GW"
-
-msgid "Host"
-msgstr "Host"
-
-msgid "Identifier"
-msgstr "Identificador"
-
-msgid "Inactive"
-msgstr "Inactivo"
-
-msgid "Info"
-msgstr "Información"
-
-msgid "Interface"
-msgstr "Interfaz"
-
+#: web/address.php:21 web/aliases.php:21 web/call-center.php:23
+#: web/clusterer.php:23 web/config-table.php:23 web/dialplan.php:23
+#: web/dispatcher.php:23 web/domains.php:23 web/dynamic-routing.php:22
+#: web/groups.php:21 web/header-routing.php:21 web/keepalived.php:22
+#: web/load-balancer.php:23 web/mi-commands.php:41 web/monit.php:22
+#: web/ocp/trunk-dids.php:21 web/ocp/trunk-providers.php:24 web/rtpproxy.php:22
+#: web/smpp-gateway.php:22 web/sockets-management.php:23 web/subscribers.php:24
+#: web/tenants.php:21 web/tls-management.php:67 web/trunk-dids.php:21
+#: web/trunk-providers.php:24 web/tviewer.php:21 web/uac-registrant.php:22
+#: web/userblacklist.php:21 web/users.php:24
 msgid "Invalid CSRF token."
 msgstr "Token CSRF inválido."
 
-msgid "Invalid protocol. Valid: udp, tcp, tls, ws, wss, sctp, hep"
-msgstr "Protocolo inválido. Válidos: udp, tcp, tls, ws, wss, sctp, hep"
-
-msgid "Invalid table name."
-msgstr "Nombre de tabla inválido."
-
-msgid "Invalid virtual IP address."
-msgstr "Dirección IP virtual inválida."
-
-msgid "Keepalived"
-msgstr "Keepalived"
-
-msgid "Keepalived instance created successfully."
-msgstr "Instancia Keepalived creada exitosamente."
-
-msgid "Keepalived instance deleted successfully."
-msgstr "Instancia Keepalived eliminada exitosamente."
-
-msgid "Keepalived Instances"
-msgstr "Instancias Keepalived"
-
-msgid "Keepalived instance updated successfully."
-msgstr "Instancia Keepalived actualizada exitosamente."
-
-msgid "Last Modified"
-msgstr "Última Modificación"
-
-msgid "LCR / dynamic routing gateway and rule management"
-msgstr "Gestión de gateways y reglas de enrutamiento dinámico / LCR"
-
-msgid "Leave blank to keep existing."
-msgstr "Dejar en blanco para mantener el existente."
-
-msgid "Legacy RTP proxy instance management"
-msgstr "Gestión de instancias de proxy RTP heredado"
-
-msgid "LIFO"
-msgstr "LIFO"
-
-msgid "Load Balancer"
-msgstr "Balanceador de Carga"
-
-msgid "Load balancer destination created successfully."
-msgstr "Destino de balanceador de carga creado exitosamente."
-
-msgid "Load balancer destination deleted successfully."
-msgstr "Destino de balanceador de carga eliminado exitosamente."
-
-msgid "Load balancer destination updated successfully."
-msgstr "Destino de balanceador de carga actualizado exitosamente."
-
-msgid "Local Domain"
-msgstr "Dominio Local"
-
-msgid "Local User"
-msgstr "Usuario Local"
-
-msgid "Local Username"
-msgstr "Nombre de Usuario Local"
-
-msgid "Location"
-msgstr "Ubicación"
-
-msgid "Location (SIP URI)"
-msgstr "Ubicación (SIP URI)"
-
-msgid "Logged In"
-msgstr "Conectado"
-
-msgid "Logged Out"
-msgstr "Desconectado"
-
-msgid "Login State"
-msgstr "Estado de Inicio de Sesión"
-
-msgid "Master"
-msgstr "Maestro"
-
-msgid "Method"
-msgstr "Método"
-
-msgid "Modified"
-msgstr "Modificado"
-
-msgid "Monit"
-msgstr "Monit"
-
-msgid "Monit check created successfully."
-msgstr "Chequeo Monit creado exitosamente."
-
-msgid "Monit check deleted successfully."
-msgstr "Chequeo Monit eliminado exitosamente."
-
-msgid "Monit Checks"
-msgstr "Chequeos Monit"
-
-msgid "Monit check updated successfully."
-msgstr "Chequeo Monit actualizado exitosamente."
-
-msgid "Name"
-msgstr "Nombre"
-
-msgid "Name and process name are required."
-msgstr "Se requieren el nombre y el nombre del proceso."
-
-msgid "Name and value are required."
-msgstr "Se requieren el nombre y el valor."
-
-msgid "Name must contain only letters, numbers, and underscores."
-msgstr "El nombre debe contener solo letras, números y guiones bajos."
-
-msgid "Name, SMSC IP and System ID are required."
-msgstr "Se requieren el nombre, la IP del SMSC y el ID del sistema."
-
-msgid "Network"
-msgstr "Red"
-
-msgid "No agents found."
-msgstr "No se encontraron agentes."
-
-msgid "No aliases found."
-msgstr "No se encontraron alias."
-
-msgid "No call flows found."
-msgstr "No se encontraron flujos de llamadas."
-
-msgid "No cluster nodes found."
-msgstr "No se encontraron nodos de cluster."
-
-msgid "No config entries found."
-msgstr "No se encontraron entradas de configuración."
-
-msgid "Node"
-msgstr "Nodo"
-
-msgid "Node ID"
-msgstr "ID de Nodo"
-
-msgid "No destinations found."
-msgstr "No se encontraron destinos."
-
-msgid "No gateways found."
-msgstr "No se encontraron gateways."
-
-msgid "No group memberships found."
-msgstr "No se encontraron membresías de grupo."
-
-msgid "No Keepalived instances found."
-msgstr "No se encontraron instancias Keepalived."
-
-msgid "No monit checks found."
-msgstr "No se encontraron chequeos Monit."
-
-msgid "None"
-msgstr "Ninguno"
-
-msgid "No-Ping Retries"
-msgstr "Reintentos sin Ping"
-
-msgid "No registrations found."
-msgstr "No se encontraron registros."
-
-msgid "No routing rules found."
-msgstr "No se encontraron reglas de enrutamiento."
-
-msgid "No RTPProxy instances found."
-msgstr "No se encontraron instancias RTPProxy."
-
-msgid "No schemas configured."
-msgstr "No hay esquemas configurados."
-
-msgid "No SMPP gateways found."
-msgstr "No se encontraron gateways SMPP."
-
-msgid "No sockets found."
-msgstr "No se encontraron sockets."
-
-msgid "No status reports found."
-msgstr "No se encontraron reportes de estado."
-
-msgid "No trace records found."
-msgstr "No se encontraron registros de traza."
-
-msgid "Off"
-msgstr "Apagado"
-
-msgid "On"
-msgstr "Encendido"
-
-msgid "OpenSIPS built-in clustering provisioning"
-msgstr "Aprovisionamiento de clustering integrado de OpenSIPS"
-
-msgid "OpenSIPS status identifiers (OCP 9.3.3+)"
-msgstr "Identificadores de estado de OpenSIPS (OCP 9.3.3+)"
-
-msgid "Optional"
-msgstr "Opcional"
-
-msgid "Options"
-msgstr "Opciones"
-
-msgid "Passive"
-msgstr "Pasivo"
-
-msgid "Password"
-msgstr "Contraseña"
-
-msgid "Permanently delete old traces?"
-msgstr "¿Eliminar permanentemente las trazas antiguas?"
-
-msgid "Port"
-msgstr "Puerto"
-
-msgid "Prefix"
-msgstr "Prefijo"
-
-msgid "Primary Key"
-msgstr "Clave Primaria"
-
-msgid "Priority"
-msgstr "Prioridad"
-
-msgid "Probe"
-msgstr "Sonda"
-
-msgid "Probe Mode"
-msgstr "Modo de Sonda"
-
-msgid "Probing disabled."
-msgstr "Sondeo deshabilitado."
-
-msgid "Probing enabled."
-msgstr "Sondeo habilitado."
-
-msgid "Process"
-msgstr "Proceso"
-
-msgid "Process monitoring and alerts"
-msgstr "Monitoreo de procesos y alertas"
-
-msgid "Process Name"
-msgstr "Nombre del Proceso"
-
-msgid "Program"
-msgstr "Programa"
-
+#: web/address.php:31
+msgid "Valid IP address is required."
+msgstr "Valid IP address is required."
+
+#: web/address.php:36
+msgid "Address added successfully."
+msgstr "Address added successfully."
+
+#: web/address.php:39
+msgid "Failed to add address: "
+msgstr "Failed to add address: "
+
+#: web/address.php:48
+msgid "Address deleted successfully."
+msgstr "Address deleted successfully."
+
+#: web/address.php:51
+msgid "Failed to delete address: "
+msgstr "Failed to delete address: "
+
+#: web/address.php:74
+msgid "IP Whitelist"
+msgstr "IP Whitelist"
+
+#: web/address.php:75
+msgid ""
+"Trusted gateway IPs for the OpenSIPS permissions module "
+"(check_source_address)."
+msgstr ""
+"Trusted gateway IPs for the OpenSIPS permissions module "
+"(check_source_address)."
+
+#: web/address.php:85
+msgid "Add Trusted IP"
+msgstr "Add Trusted IP"
+
+#: web/address.php:90 web/audit-log.php:185 web/audit-log.php:236
+msgid "IP Address"
+msgstr "Dirección IP"
+
+#: web/address.php:94
+msgid "CIDR Mask"
+msgstr "CIDR Mask"
+
+#: web/address.php:98 web/dynamic-routing.php:335 web/load-balancer.php:209
+msgid "Group ID"
+msgstr "ID de Grupo"
+
+#: web/address.php:102
+msgid "Port (0 = any)"
+msgstr "Port (0 = any)"
+
+#: web/address.php:106 web/sockets-management.php:152
+#: web/sockets-management.php:180 web/sockets-management.php:226
 msgid "Protocol"
 msgstr "Protocolo"
 
-msgid "Purge"
-msgstr "Purgar"
+#: web/address.php:116
+msgid "Add Address"
+msgstr "Add Address"
 
-msgid "Purged %d trace records older than %d days."
-msgstr "Se purgaron %d registros de traza con más de %d días."
+#: web/address.php:121
+msgid "Trusted Addresses"
+msgstr "Trusted Addresses"
 
-msgid "Purge records older than"
-msgstr "Purgar registros anteriores a"
+#: web/address.php:124 web/dynamic-routing.php:284 web/groups.php:139
+#: web/groups.php:189 web/load-balancer.php:153 web/load-balancer.php:257
+msgid "Group"
+msgstr "Grupo"
 
-msgid "Random"
-msgstr "Aleatorio"
+#: web/address.php:124 web/audit-log.php:188
+msgid "IP"
+msgstr "IP"
 
-msgid "Registrations"
-msgstr "Registros"
+#: web/address.php:124
+msgid "Mask"
+msgstr "Mask"
 
-msgid "Remote Domain"
-msgstr "Dominio Remoto"
+#: web/address.php:124 web/ocp/trunk-providers.php:248
+#: web/ocp/trunk-providers.php:300 web/ocp/trunk-providers.php:366
+#: web/ocp/trunk-status.php:46 web/sockets-management.php:154
+#: web/sockets-management.php:182 web/sockets-management.php:242
+#: web/trunk-providers.php:248 web/trunk-providers.php:300
+#: web/trunk-providers.php:366 web/trunk-status.php:46
+msgid "Port"
+msgstr "Puerto"
 
-msgid "Remote User"
-msgstr "Usuario Remoto"
+#: web/address.php:124
+msgid "Proto"
+msgstr "Proto"
 
-msgid "Remote Username"
-msgstr "Nombre de Usuario Remoto"
+#: web/address.php:124 web/aliases.php:128 web/call-center.php:182
+#: web/call-center.php:259 web/clusterer.php:212 web/config-table.php:165
+#: web/dialplan.php:224 web/dispatcher.php:295 web/domains.php:161
+#: web/dynamic-routing.php:193 web/dynamic-routing.php:291 web/groups.php:141
+#: web/header-routing.php:148 web/keepalived.php:153 web/load-balancer.php:158
+#: web/monit.php:145 web/ocp/trunk-dids.php:239 web/ocp/trunk-providers.php:307
+#: web/rtpproxy.php:124 web/smpp-gateway.php:150 web/sockets-management.php:186
+#: web/subscribers.php:231 web/tenants.php:137 web/trunk-dids.php:239
+#: web/trunk-providers.php:307 web/tviewer.php:143 web/uac-registrant.php:151
+#: web/userblacklist.php:110 web/users.php:188
+msgid "Actions"
+msgstr "Acciones"
 
-msgid "Resources"
-msgstr "Recursos"
+#: web/address.php:132
+msgid "any"
+msgstr "Cualquier"
 
-msgid "Round Robin"
-msgstr "Round Robin"
+#: web/address.php:135
+msgid "Delete this address?"
+msgstr "Delete this address?"
 
-msgid "Route ID"
-msgstr "ID de Ruta"
+#: web/address.php:139 web/aliases.php:151 web/call-center.php:203
+#: web/call-center.php:281 web/clusterer.php:238 web/config-table.php:186
+#: web/dialplan.php:247 web/dispatcher.php:331 web/domains.php:180
+#: web/dynamic-routing.php:217 web/dynamic-routing.php:316 web/groups.php:162
+#: web/header-routing.php:171 web/keepalived.php:176 web/load-balancer.php:191
+#: web/monit.php:167 web/ocp/trunk-dids.php:276 web/ocp/trunk-providers.php:346
+#: web/rtpproxy.php:142 web/smpp-gateway.php:172 web/sockets-management.php:208
+#: web/subscribers.php:267 web/tenants.php:162 web/trunk-dids.php:276
+#: web/trunk-providers.php:346 web/tviewer.php:166 web/uac-registrant.php:173
+#: web/userblacklist.php:130 web/users.php:215
+msgid "Delete"
+msgstr "Eliminar"
 
-msgid "Routing rule created successfully."
-msgstr "Regla de enrutamiento creada exitosamente."
+#: web/aliases.php:32
+msgid "Alias username and target username are required."
+msgstr "Alias username and target username are required."
+"Se requiere el nombre de usuario del alias y el nombre de usuario de destino."
 
-msgid "Routing rule deleted successfully."
-msgstr "Regla de enrutamiento eliminada exitosamente."
+#: web/aliases.php:39
+msgid "Alias created successfully."
+msgstr "Alias creado exitosamente."
 
-msgid "Routing Rules"
-msgstr "Reglas de Enrutamiento"
+#: web/aliases.php:42 web/aliases.php:58 web/call-center.php:55
+#: web/call-center.php:71 web/call-center.php:102 web/call-center.php:118
+#: web/clusterer.php:53 web/clusterer.php:66 web/clusterer.php:83
+#: web/config-table.php:50 web/config-table.php:63 web/config-table.php:80
+#: web/dynamic-routing.php:59 web/dynamic-routing.php:75
+#: web/dynamic-routing.php:110 web/dynamic-routing.php:126 web/groups.php:51
+#: web/groups.php:67 web/keepalived.php:61 web/keepalived.php:78
+#: web/load-balancer.php:46 web/load-balancer.php:58 web/load-balancer.php:75
+#: web/load-balancer.php:90 web/monit.php:55 web/monit.php:71
+#: web/rtpproxy.php:44 web/rtpproxy.php:61 web/siptrace.php:32
+#: web/smpp-gateway.php:59 web/smpp-gateway.php:75
+#: web/sockets-management.php:49 web/sockets-management.php:61
+#: web/sockets-management.php:78 web/tviewer.php:54 web/tviewer.php:70
+#: web/uac-registrant.php:51 web/uac-registrant.php:64
+#: web/uac-registrant.php:81
+msgid "Database error: "
+msgstr "Error de base de datos: "
 
-msgid "Routing rule updated successfully."
-msgstr "Regla de enrutamiento actualizada exitosamente."
+#: web/aliases.php:54
+msgid "Alias deleted successfully."
+msgstr "Alias eliminado exitosamente."
 
-msgid "RTPProxy"
-msgstr "RTPProxy"
+#: web/aliases.php:97 web/common/role-nav.php:23
+msgid "Aliases"
+msgstr "Alias"
 
-msgid "RTPProxy instance created successfully."
-msgstr "Instancia RTPProxy creada exitosamente."
-
-msgid "RTPProxy instance deleted successfully."
-msgstr "Instancia RTPProxy eliminada exitosamente."
-
-msgid "RTPProxy Instances"
-msgstr "Instancias RTPProxy"
-
-msgid "RTPProxy socket is required."
-msgstr "Se requiere el socket RTPProxy."
-
-msgid "Rule ID"
-msgstr "ID de Regla"
-
-msgid "Runtime configuration via database (cfgutils module)"
-msgstr "Configuración en tiempo de ejecución mediante base de datos (módulo cfgutils)"
-
-msgid "Schema created successfully."
-msgstr "Esquema creado exitosamente."
-
-msgid "Schema deleted successfully."
-msgstr "Esquema eliminado exitosamente."
-
-msgid "Schema updated successfully."
-msgstr "Esquema actualizado exitosamente."
-
-msgid "Search..."
-msgstr "Buscar..."
-
-msgid "Search aliases..."
-msgstr "Buscar alias..."
-
-msgid "Search registrations..."
-msgstr "Buscar registros..."
-
-msgid "Search sockets..."
-msgstr "Buscar sockets..."
-
-msgid "Severity"
-msgstr "Severidad"
-
-msgid "SIP Address"
-msgstr "Dirección SIP"
-
+#: web/aliases.php:98
 msgid "SIP alias provisioning for subscribers"
 msgstr "Aprovisionamiento de alias SIP para suscriptores"
 
-msgid "SIP packet capture viewer"
-msgstr "Visor de captura de paquetes SIP"
+#: web/aliases.php:110
+msgid "Search aliases..."
+msgstr "Buscar alias..."
 
-msgid "SIPtrace"
-msgstr "SIPtrace"
+#: web/aliases.php:112 web/audit-log.php:198 web/cdr-viewer.php:129
+#: web/clusterer.php:151 web/config-table.php:150 web/groups.php:127
+#: web/keepalived.php:137 web/load-balancer.php:143 web/monit.php:130
+#: web/rtpproxy.php:112 web/siptrace.php:143 web/smpp-gateway.php:135
+#: web/sockets-management.php:131 web/status-report.php:80
+#: web/uac-registrant.php:135
+msgid "Filter"
+msgstr "Filtrar"
 
-msgid "Skills"
-msgstr "Habilidades"
+#: web/aliases.php:113 web/clusterer.php:152 web/config-table.php:151
+#: web/groups.php:128 web/keepalived.php:138 web/load-balancer.php:144
+#: web/monit.php:131 web/rtpproxy.php:113 web/siptrace.php:144
+#: web/smpp-gateway.php:136 web/sockets-management.php:132
+#: web/status-report.php:81 web/uac-registrant.php:136
+msgid "Clear"
+msgstr "Limpiar"
 
-msgid "SMPP Gateway"
-msgstr "Gateway SMPP"
+#: web/aliases.php:118
+msgid "Alias Entries"
+msgstr "Entradas de Alias"
 
-msgid "SMPP gateway created successfully."
-msgstr "Gateway SMPP creado exitosamente."
+#: web/aliases.php:122
+msgid "Alias"
+msgstr "Alias"
 
-msgid "SMPP gateway deleted successfully."
-msgstr "Gateway SMPP eliminado exitosamente."
+#: web/aliases.php:123 web/aliases.php:175
+msgid "Alias Domain"
+msgstr "Dominio del Alias"
 
-msgid "SMPP Gateways"
-msgstr "Gateways SMPP"
-
-msgid "SMPP gateway updated successfully."
-msgstr "Gateway SMPP actualizado exitosamente."
-
-msgid "SMSC"
-msgstr "SMSC"
-
-msgid "SMSC IP"
-msgstr "IP del SMSC"
-
-msgid "SMSC Port"
-msgstr "Puerto del SMSC"
-
-msgid "SMS gateway management"
-msgstr "Gestión de gateway SMS"
-
-msgid "Socket"
-msgstr "Socket"
-
-msgid "Socket created successfully."
-msgstr "Socket creado exitosamente."
-
-msgid "Socket Definitions"
-msgstr "Definiciones de Socket"
-
-msgid "Socket deleted successfully."
-msgstr "Socket eliminado exitosamente."
-
-msgid "Sockets Management"
-msgstr "Gestión de Sockets"
-
-msgid "Socket updated successfully."
-msgstr "Socket actualizado exitosamente."
-
-msgid "Source Addr"
-msgstr "Dirección de Origen"
-
-msgid "Source Address"
-msgstr "Dirección de Origen"
-
-msgid "Status"
-msgstr "Estado"
-
-msgid "Status Report"
-msgstr "Reporte de Estado"
-
-msgid "Status Reports"
-msgstr "Reportes de Estado"
-
-msgid "Strip"
-msgstr "Truncar"
-
-msgid "System"
-msgstr "Sistema"
-
-msgid "System ID"
-msgstr "ID del Sistema"
-
-msgid "System Type"
-msgstr "Tipo de Sistema"
-
-msgid "Table Name"
-msgstr "Nombre de Tabla"
-
-msgid "Table name and columns are required."
-msgstr "Se requieren el nombre de la tabla y las columnas."
-
-msgid "Target Domain"
-msgstr "Dominio de Destino"
-
+#: web/aliases.php:124
 msgid "Target User"
 msgstr "Usuario de Destino"
 
+#: web/aliases.php:125 web/aliases.php:183
+msgid "Target Domain"
+msgstr "Dominio de Destino"
+
+#: web/aliases.php:126 web/sockets-management.php:185
+msgid "Modified"
+msgstr "Modificado"
+
+#: web/aliases.php:134
+msgid "No aliases found."
+msgstr "No se encontraron alias."
+
+#: web/aliases.php:150
+msgid "Delete this alias?"
+msgstr "¿Eliminar este alias?"
+
+#: web/aliases.php:166
+msgid "Add Alias"
+msgstr "Agregar Alias"
+
+#: web/aliases.php:171
+msgid "Alias Username"
+msgstr "Nombre de Usuario del Alias"
+
+#: web/aliases.php:176 web/aliases.php:184 web/sockets-management.php:247
+msgid "Optional"
+msgstr "Opcional"
+
+#: web/aliases.php:179
 msgid "Target Username"
 msgstr "Nombre de Usuario de Destino"
 
-msgid "This socket already exists."
-msgstr "Este socket ya existe."
+#: web/aliases.php:186 web/call-center.php:244 web/call-center.php:331
+#: web/clusterer.php:294 web/config-table.php:219 web/dynamic-routing.php:273
+#: web/dynamic-routing.php:372 web/groups.php:192 web/keepalived.php:223
+#: web/load-balancer.php:231 web/monit.php:215 web/rtpproxy.php:167
+#: web/smpp-gateway.php:225 web/sockets-management.php:253 web/tviewer.php:234
+#: web/uac-registrant.php:222
+msgid "Create"
+msgstr "Crear"
 
-msgid "This VRRP ID/interface combination already exists."
-msgstr "Esta combinación de ID/interface VRRP ya existe."
+#: web/audit-export.php:18
+msgid "Invalid format. Use ?format=csv or ?format=json"
+msgstr "Invalid format. Use ?format=csv or ?format=json"
 
-msgid "Time"
-msgstr "Hora"
+#: web/audit-log.php:130 web/dashboard.php:31
+msgid "Audit Log & Compliance"
+msgstr "Audit Log & Compliance"
 
-msgid "Time Rec"
-msgstr "Registro de Tiempo"
+#: web/audit-log.php:137 web/cdr-viewer.php:92 web/cdr-viewer.php:142
+#: web/dialog.php:111 web/dialog.php:153
+msgid "From"
+msgstr "From"
 
-msgid "Time Recurrence"
-msgstr "Recurrencia de Tiempo"
+#: web/audit-log.php:142 web/cdr-viewer.php:96 web/cdr-viewer.php:143
+#: web/dialog.php:112 web/dialog.php:154
+msgid "To"
+msgstr "a"
 
-msgid "Timestamp"
-msgstr "Marca de Tiempo"
+#: web/audit-log.php:147 web/audit-log.php:233
+msgid "Action"
+msgstr "Acción"
 
-msgid "To IP"
-msgstr "Hacia IP"
+#: web/audit-log.php:149 web/audit-log.php:167 web/audit-log.php:179
+#: web/cdr-viewer.php:106 web/cdr-viewer.php:117
+msgid "All"
+msgstr "Todos"
 
-msgid "To IP..."
-msgstr "Hacia IP..."
+#: web/audit-log.php:159 web/audit-log.php:232 web/dashboard.php:17
+msgid "User"
+msgstr "Usuario"
 
-msgid "Trace Records"
-msgstr "Registros de Traza"
+#: web/audit-log.php:162 web/groups.php:137 web/groups.php:181 web/login.php:83
+#: web/login.php:88 web/subscribers.php:185 web/subscribers.php:226
+#: web/subscribers.php:279 web/userblacklist.php:110 web/users.php:148
+#: web/users.php:183
+msgid "Username"
+msgstr "Usuario"
 
-msgid "TViewer"
-msgstr "TViewer"
+#: web/audit-log.php:165
+msgid "Resource Type"
+msgstr "Resource Type"
 
+#: web/audit-log.php:177 web/call-center.php:181 web/call-center.php:258
+#: web/cdr-viewer.php:145 web/dynamic-routing.php:192
+#: web/dynamic-routing.php:290 web/header-routing.php:147
+#: web/keepalived.php:152 web/load-balancer.php:260 web/monit.php:144
+#: web/ocp/trunk-dids.php:238 web/ocp/trunk-providers.php:306
+#: web/rtpengine.php:68 web/siptrace.php:172 web/smpp-gateway.php:149
+#: web/subscribers.php:230 web/tenants.php:135 web/trunk-dids.php:238
+#: web/trunk-providers.php:306 web/users.php:186
+msgid "Status"
+msgstr "Estado"
+
+#: web/audit-log.php:180 web/audit-log.php:237 web/audit-log.php:257
+msgid "Success"
+msgstr "Éxito"
+
+#: web/audit-log.php:181 web/audit-log.php:259
+msgid "Failure"
+msgstr "Failure"
+
+#: web/audit-log.php:191
+msgid "Search Details"
+msgstr "Search Details"
+
+#: web/audit-log.php:194
+msgid "JSON text search"
+msgstr "JSON text search"
+
+#: web/audit-log.php:201
+msgid "Reset"
+msgstr "Restablecer"
+
+#: web/audit-log.php:210
+msgid "Export:"
+msgstr "Export:"
+
+#: web/audit-log.php:213
+msgid "Export CSV"
+msgstr "Exportar CSV"
+
+#: web/audit-log.php:217
+msgid "Export JSON"
+msgstr "Exportar JSON"
+
+#: web/audit-log.php:225
+msgid "No audit events found."
+msgstr "No audit events found."
+
+#: web/audit-log.php:231
+msgid "Event Time"
+msgstr "Event Time"
+
+#: web/audit-log.php:234
+msgid "Resource"
+msgstr "Resource"
+
+#: web/audit-log.php:235
+msgid "Resource ID"
+msgstr "Resource ID"
+
+#: web/audit-log.php:238 web/status-report.php:100 web/status-report.php:130
+msgid "Details"
+msgstr "Detalles"
+
+#: web/audit-log.php:266
+msgid "Toggle"
+msgstr "Toggle"
+
+#: web/call-center.php:35
+msgid "Flow name is required."
+msgstr "Se requiere el nombre del flujo."
+
+#: web/call-center.php:44
+msgid "Call flow created successfully."
+msgstr "Flujo de llamadas creado exitosamente."
+
+#: web/call-center.php:51
+msgid "Call flow updated successfully."
+msgstr "Flujo de llamadas actualizado exitosamente."
+
+#: web/call-center.php:67
+msgid "Call flow deleted successfully."
+msgstr "Flujo de llamadas eliminado exitosamente."
+
+#: web/call-center.php:82
+msgid "Agent agentid is required."
+msgstr "Se requiere el ID de agente."
+
+#: web/call-center.php:91
+msgid "Agent created successfully."
+msgstr "Agente creado exitosamente."
+
+#: web/call-center.php:98
+msgid "Agent updated successfully."
+msgstr "Agente actualizado exitosamente."
+
+#: web/call-center.php:114
+msgid "Agent deleted successfully."
+msgstr "Agente eliminado exitosamente."
+
+#: web/call-center.php:162 web/common/role-nav.php:35
+msgid "Call Center"
+msgstr "Call Center"
+
+#: web/call-center.php:163
+msgid "Call flows, agents, and queue management"
+msgstr "Gestión de flujos de llamadas, agentes y colas"
+
+#: web/call-center.php:174
+msgid "Call Flows"
+msgstr "Flujos de Llamadas"
+
+#: web/call-center.php:178 web/call-center.php:222
+msgid "Flow Name"
+msgstr "Nombre del Flujo"
+
+#: web/call-center.php:179 web/dynamic-routing.php:187
+#: web/dynamic-routing.php:236 web/userblacklist.php:110
 msgid "Type"
 msgstr "Tipo"
 
-msgid "UAC Registrant"
-msgstr "Registrante UAC"
+#: web/call-center.php:180 web/call-center.php:235 web/clusterer.php:291
+#: web/config-table.php:163 web/config-table.php:216 web/dispatcher.php:264
+#: web/dispatcher.php:294 web/dispatcher.php:359 web/dynamic-routing.php:264
+#: web/dynamic-routing.php:363 web/load-balancer.php:157
+#: web/load-balancer.php:228 web/mi-commands.php:204 web/ocp/trunk-dids.php:212
+#: web/ocp/trunk-dids.php:237 web/ocp/trunk-dids.php:320
+#: web/sockets-management.php:184 web/sockets-management.php:250
+#: web/trunk-dids.php:212 web/trunk-dids.php:237 web/trunk-dids.php:320
+#: web/tviewer.php:142 web/tviewer.php:225
+msgid "Description"
+msgstr "Descripción"
 
-msgid "UAC registration created successfully."
-msgstr "Registro UAC creado exitosamente."
+#: web/call-center.php:187
+msgid "No call flows found."
+msgstr "No se encontraron flujos de llamadas."
 
-msgid "UAC registration deleted successfully."
-msgstr "Registro UAC eliminado exitosamente."
+#: web/call-center.php:194 web/call-center.php:241 web/call-center.php:272
+#: web/call-center.php:328 web/dynamic-routing.php:208
+#: web/dynamic-routing.php:270 web/dynamic-routing.php:307
+#: web/dynamic-routing.php:369 web/header-routing.php:130
+#: web/keepalived.php:167 web/keepalived.php:220 web/load-balancer.php:224
+#: web/monit.php:158 web/monit.php:212 web/ocp/trunk-dids.php:218
+#: web/ocp/trunk-dids.php:253 web/ocp/trunk-dids.php:326
+#: web/ocp/trunk-providers.php:284 web/ocp/trunk-providers.php:323
+#: web/ocp/trunk-providers.php:402 web/ocp/trunk-status.php:47
+#: web/smpp-gateway.php:163 web/smpp-gateway.php:222 web/subscribers.php:213
+#: web/subscribers.php:308 web/tenants.php:121 web/tenants.php:183
+#: web/trunk-dids.php:218 web/trunk-dids.php:253 web/trunk-dids.php:326
+#: web/trunk-providers.php:284 web/trunk-providers.php:323
+#: web/trunk-providers.php:402 web/trunk-status.php:47 web/tviewer.php:231
+#: web/users.php:170 web/users.php:250
+msgid "Enabled"
+msgstr "Habilitado"
 
-msgid "UAC registration updated successfully."
-msgstr "Registro UAC actualizado exitosamente."
+#: web/call-center.php:194 web/call-center.php:272 web/dynamic-routing.php:208
+#: web/dynamic-routing.php:307 web/header-routing.php:163
+#: web/keepalived.php:167 web/load-balancer.php:223 web/monit.php:158
+#: web/ocp/trunk-dids.php:255 web/ocp/trunk-providers.php:325
+#: web/rtpengine.php:81 web/smpp-gateway.php:163 web/subscribers.php:245
+#: web/tenants.php:149 web/trunk-dids.php:255 web/trunk-providers.php:325
+#: web/users.php:201
+msgid "Disabled"
+msgstr "Deshabilitado"
 
-msgid "Unassigned"
-msgstr "Sin Asignar"
+#: web/call-center.php:196 web/call-center.php:274 web/dialplan.php:241
+#: web/dispatcher.php:325 web/domains.php:174 web/dynamic-routing.php:210
+#: web/dynamic-routing.php:309 web/groups.php:155 web/keepalived.php:169
+#: web/monit.php:160 web/ocp/trunk-dids.php:270 web/ocp/trunk-providers.php:340
+#: web/smpp-gateway.php:165 web/subscribers.php:260 web/tenants.php:156
+#: web/trunk-dids.php:270 web/trunk-providers.php:340 web/tviewer.php:159
+#: web/users.php:209
+msgid "Edit"
+msgstr "Editar"
 
+#: web/call-center.php:202
+msgid "Delete this flow?"
+msgstr "¿Eliminar este flujo?"
+
+#: web/call-center.php:216
+msgid "Edit Call Flow"
+msgstr "Editar Flujo de Llamadas"
+
+#: web/call-center.php:216
+msgid "Add Call Flow"
+msgstr "Agregar Flujo de Llamadas"
+
+#: web/call-center.php:226
+msgid "Flow Type"
+msgstr "Tipo de Flujo"
+
+#: web/call-center.php:228
+msgid "FIFO"
+msgstr "FIFO"
+
+#: web/call-center.php:229
+msgid "LIFO"
+msgstr "LIFO"
+
+#: web/call-center.php:230
+msgid "Random"
+msgstr "Aleatorio"
+
+#: web/call-center.php:231
+msgid "Round Robin"
+msgstr "Round Robin"
+
+#: web/call-center.php:244 web/call-center.php:331 web/dynamic-routing.php:273
+#: web/dynamic-routing.php:372 web/groups.php:192 web/keepalived.php:223
+#: web/monit.php:215 web/smpp-gateway.php:225 web/tviewer.php:234
 msgid "Update"
 msgstr "Actualizar"
 
-msgid "Updated"
-msgstr "Actualizado"
+#: web/call-center.php:245 web/call-center.php:332 web/dialplan.php:290
+#: web/dispatcher.php:377 web/domains.php:203 web/dynamic-routing.php:274
+#: web/dynamic-routing.php:373 web/groups.php:193 web/keepalived.php:224
+#: web/monit.php:216 web/ocp/trunk-dids.php:333 web/ocp/trunk-providers.php:409
+#: web/smpp-gateway.php:226 web/subscribers.php:314 web/tenants.php:189
+#: web/trunk-dids.php:333 web/trunk-providers.php:409 web/tviewer.php:235
+#: web/users.php:256
+msgid "Cancel"
+msgstr "Cancelar"
 
-msgid "URL"
-msgstr "URL"
+#: web/call-center.php:250
+msgid "Agents"
+msgstr "Agentes"
 
-msgid "Username and group name are required."
-msgstr "Se requieren el nombre de usuario y el nombre del grupo."
+#: web/call-center.php:254 web/call-center.php:358
+msgid "Location"
+msgstr "Ubicación"
 
-msgid "UUID"
-msgstr "UUID"
+#: web/call-center.php:255
+msgid "Flow"
+msgstr "Flujo"
 
-msgid "UUID, local username, remote username, and auth proxy are required."
-msgstr "Se requieren el UUID, el nombre de usuario local, el nombre de usuario remoto y el proxy de autenticación."
+#: web/call-center.php:256 web/call-center.php:315 web/call-center.php:360
+msgid "Skills"
+msgstr "Habilidades"
 
-msgid "Valid address and port (1-65535) are required."
-msgstr "Se requieren una dirección y un puerto válidos (1-65535)."
+#: web/call-center.php:257 web/call-center.php:359 web/clusterer.php:178
+#: web/clusterer.php:209 web/clusterer.php:268 web/dialog.php:113
+#: web/dialog.php:155 web/dispatcher.php:204 web/dispatcher.php:272
+#: web/dispatcher.php:291 web/dispatcher.php:367 web/keepalived.php:148
+#: web/keepalived.php:199
+msgid "State"
+msgstr "Estado"
 
-msgid "Value"
-msgstr "Valor"
+#: web/call-center.php:264
+msgid "No agents found."
+msgstr "No se encontraron agentes."
 
-msgid "View"
-msgstr "Ver"
+#: web/call-center.php:269 web/call-center.php:306
+msgid "Unassigned"
+msgstr "Sin Asignar"
 
-msgid "Viewing: "
-msgstr "Visualizando: "
+#: web/call-center.php:280
+msgid "Delete this agent?"
+msgstr "¿Eliminar este agente?"
 
-msgid "Virtual IP"
-msgstr "IP Virtual"
+#: web/call-center.php:294
+msgid "Edit Agent"
+msgstr "Editar Agente"
 
-msgid "Virtual IP and high-availability management"
-msgstr "Gestión de IP virtual y alta disponibilidad"
+#: web/call-center.php:294
+msgid "Add Agent"
+msgstr "Agregar Agente"
 
-msgid "VRRP ID"
-msgstr "ID VRRP"
+#: web/call-center.php:300
+msgid "Location (SIP URI)"
+msgstr "Ubicación (SIP URI)"
 
-msgid "VRRP ID, interface and virtual IP are required."
-msgstr "Se requieren el ID VRRP, la interfaz y la IP virtual."
+#: web/call-center.php:304
+msgid "Call Flow"
+msgstr "Flujo de Llamadas"
 
-msgid "Warning"
-msgstr "Advertencia"
+#: web/call-center.php:319
+msgid "Login State"
+msgstr "Estado de Inicio de Sesión"
 
-msgid "Live Cluster Status"
-msgstr "Estado del Clúster en Vivo"
+#: web/call-center.php:321
+msgid "Logged In"
+msgstr "Conectado"
 
+#: web/call-center.php:322
+msgid "Logged Out"
+msgstr "Desconectado"
+
+#: web/call-center.php:337
+msgid "Live Call Center Agents"
+msgstr "Live Call Center Agents"
+
+#: web/call-center.php:343 web/clusterer.php:164 web/dialog.php:93
+#: web/dispatcher.php:169 web/load-balancer.php:242 web/rtpengine.php:56
+#: web/siptrace.php:99 web/sockets-management.php:144 web/status-report.php:93
 msgid "MI unavailable: "
 msgstr "MI no disponible: "
 
+#: web/call-center.php:352
+msgid "No live call center data returned by OpenSIPS."
+msgstr "No live call center data returned by OpenSIPS."
+
+#: web/call-center.php:357
+msgid "Agent ID"
+msgstr "Agent ID"
+
+#: web/cdr-viewer.php:86
+msgid "Call Detail Records"
+msgstr "Call Detail Records"
+
+#: web/cdr-viewer.php:100
+msgid "From User"
+msgstr "From User"
+
+#: web/cdr-viewer.php:104
+msgid "Call Status"
+msgstr "Call Status"
+
+#: web/cdr-viewer.php:107
+msgid "Answered"
+msgstr "Answered"
+
+#: web/cdr-viewer.php:108
+msgid "No Answer"
+msgstr "No Answer"
+
+#: web/cdr-viewer.php:109
+msgid "Busy"
+msgstr "Ocupado"
+
+#: web/cdr-viewer.php:110
+msgid "Failed"
+msgstr "Fallido"
+
+#: web/cdr-viewer.php:111 web/dialog.php:28 web/ocp/trunk-status.php:73
+#: web/trunk-status.php:73
+msgid "Unknown"
+msgstr "Desconocido"
+
+#: web/cdr-viewer.php:115 web/header-routing.php:102 web/header-routing.php:142
+#: web/ocp/trunk-dids.php:194 web/ocp/trunk-dids.php:234
+#: web/ocp/trunk-dids.php:302 web/subscribers.php:201 web/subscribers.php:228
+#: web/subscribers.php:295 web/trunk-dids.php:194 web/trunk-dids.php:234
+#: web/trunk-dids.php:302
+msgid "Tenant"
+msgstr "Inquilino"
+
+#: web/cdr-viewer.php:126
+msgid "SIP Method"
+msgstr "SIP Method"
+
+#: web/cdr-viewer.php:135
+msgid "Records"
+msgstr "Records"
+
+#: web/cdr-viewer.php:139 web/dialog.php:114
+msgid "Start Time"
+msgstr "Start Time"
+
+#: web/cdr-viewer.php:140
+msgid "End Time"
+msgstr "End Time"
+
+#: web/cdr-viewer.php:141 web/dialog.php:156
+msgid "Duration"
+msgstr "Duración"
+
+#: web/cdr-viewer.php:144 web/siptrace.php:171
+msgid "Method"
+msgstr "Método"
+
+#: web/cdr-viewer.php:146
+msgid "Setup (ms)"
+msgstr "Setup (ms)"
+
+#: web/cdr-viewer.php:177
+msgid "No records found."
+msgstr "No records found."
+
+#: web/change-password.php:17
+msgid "Invalid or missing CSRF token."
+msgstr "Invalid or missing CSRF token."
+
+#: web/change-password.php:24
+msgid "All fields are required."
+msgstr "All fields are required."
+
+#: web/change-password.php:26
+msgid "New passphrases do not match."
+msgstr "New passphrases do not match."
+
+#: web/change-password.php:28
+msgid "Passphrase must be at least 12 characters long."
+msgstr "Passphrase must be at least 12 characters long."
+
+#: web/change-password.php:33
+msgid "Passphrase must contain uppercase, lowercase, number, and symbol."
+msgstr "Passphrase must contain uppercase, lowercase, number, and symbol."
+
+#: web/change-password.php:43
+msgid "Current passphrase is incorrect."
+msgstr "Current passphrase is incorrect."
+
+#: web/change-password.php:83
+msgid "Passphrase updated successfully."
+msgstr "Passphrase updated successfully."
+
+#: web/change-password.php:126 web/common/role-nav.php:205
+msgid "Change Passphrase"
+msgstr "Change Passphrase"
+
+#: web/change-password.php:130
+msgid "You must change your passphrase before continuing."
+msgstr "You must change your passphrase before continuing."
+
+#: web/change-password.php:149
+msgid "Current Passphrase"
+msgstr "Current Passphrase"
+
+#: web/change-password.php:158
+msgid "New Passphrase"
+msgstr "New Passphrase"
+
+#: web/change-password.php:167
+msgid "Minimum 12 characters, with uppercase, lowercase, number, and symbol."
+msgstr "Minimum 12 characters, with uppercase, lowercase, number, and symbol."
+
+#: web/change-password.php:171
+msgid "Confirm New Passphrase"
+msgstr "Confirm New Passphrase"
+
+#: web/change-password.php:181
+msgid "Update Passphrase"
+msgstr "Update Passphrase"
+
+#: web/clusterer.php:39
+msgid "Cluster ID, Node ID, and URL are required."
+msgstr "Se requieren el ID de cluster, el ID de nodo y la URL."
+
+#: web/clusterer.php:47
+msgid "Cluster node created successfully."
+msgstr "Nodo de cluster creado exitosamente."
+
+#: web/clusterer.php:51
+msgid "A node with this cluster/node ID already exists."
+msgstr "Ya existe un nodo con este ID de cluster/nodo."
+
+#: web/clusterer.php:63
+msgid "Cluster node updated successfully."
+msgstr "Nodo de cluster actualizado exitosamente."
+
+#: web/clusterer.php:79
+msgid "Cluster node deleted successfully."
+msgstr "Nodo de cluster eliminado exitosamente."
+
+#: web/clusterer.php:130 web/common/role-nav.php:37
+msgid "Clusterer"
+msgstr "Clusterer"
+
+#: web/clusterer.php:131
+msgid "OpenSIPS built-in clustering provisioning"
+msgstr "Aprovisionamiento de clustering integrado de OpenSIPS"
+
+#: web/clusterer.php:143 web/config-table.php:140 web/groups.php:125
+#: web/keepalived.php:135 web/load-balancer.php:141 web/monit.php:128
+#: web/rtpproxy.php:110 web/smpp-gateway.php:133 web/status-report.php:72
+msgid "Search..."
+msgstr "Buscar..."
+
+#: web/clusterer.php:146
+msgid "All Clusters"
+msgstr "Todos los Clusters"
+
+#: web/clusterer.php:158
+msgid "Live Cluster Status"
+msgstr "Estado del Clúster en Vivo"
+
+#: web/clusterer.php:170
 msgid "No live cluster data returned by OpenSIPS."
 msgstr "OpenSIPS no devolvió datos de clúster en vivo."
 
-msgid "Live SIPtrace Status"
-msgstr "Estado de SIPtrace en Vivo"
+#: web/clusterer.php:175 web/clusterer.php:206
+msgid "Cluster"
+msgstr "Cluster"
 
-msgid "Attribute"
-msgstr "Atributo"
+#: web/clusterer.php:176 web/clusterer.php:207
+msgid "Node"
+msgstr "Nodo"
 
-msgid "No live status data."
-msgstr "No hay datos de estado en vivo."
+#: web/clusterer.php:177 web/clusterer.php:208 web/clusterer.php:264
+msgid "URL"
+msgstr "URL"
 
-msgid "Live OpenSIPS Status"
-msgstr "Estado de OpenSIPS en Vivo"
+#: web/clusterer.php:179 web/clusterer.php:210 web/clusterer.php:279
+#: web/dialplan.php:178 web/dialplan.php:217 web/dialplan.php:259
+#: web/dispatcher.php:260 web/dispatcher.php:293 web/dispatcher.php:355
+#: web/dynamic-routing.php:285 web/dynamic-routing.php:339
+#: web/header-routing.php:124 web/header-routing.php:146 web/keepalived.php:149
+#: web/keepalived.php:206 web/ocp/trunk-providers.php:278
+#: web/ocp/trunk-providers.php:305 web/ocp/trunk-providers.php:396
+#: web/trunk-providers.php:278 web/trunk-providers.php:305
+#: web/trunk-providers.php:396
+msgid "Priority"
+msgstr "Prioridad"
 
-msgid "No live status reports."
-msgstr "No hay informes de estado en vivo."
+#: web/clusterer.php:190 web/clusterer.php:226 web/clusterer.php:270
+#: web/dispatcher.php:220 web/dispatcher.php:274 web/dispatcher.php:305
+#: web/dispatcher.php:369 web/header-routing.php:161 web/load-balancer.php:273
+#: web/rtpengine.php:81 web/subscribers.php:243 web/tenants.php:147
+#: web/users.php:199
+msgid "Active"
+msgstr "Activo"
 
-msgid "Live OpenSIPS Sockets"
-msgstr "Sockets de OpenSIPS en Vivo"
+#: web/clusterer.php:190 web/clusterer.php:226 web/clusterer.php:271
+#: web/dispatcher.php:220 web/dispatcher.php:275 web/dispatcher.php:307
+#: web/dispatcher.php:370 web/load-balancer.php:273
+msgid "Inactive"
+msgstr "Inactivo"
 
-msgid "No live socket data."
-msgstr "No hay datos de socket en vivo."
+#: web/clusterer.php:202
+msgid "Cluster Nodes"
+msgstr "Nodos de Cluster"
 
+#: web/clusterer.php:211 web/clusterer.php:283
+msgid "SIP Address"
+msgstr "Dirección SIP"
 
-msgid "Live Call Center Status"
-msgstr "Estado del Call Center en Vivo"
+#: web/clusterer.php:217
+msgid "No cluster nodes found."
+msgstr "No se encontraron nodos de cluster."
 
-msgid "No active calls."
-msgstr "No hay llamadas activas."
+#: web/clusterer.php:237
+msgid "Delete this node?"
+msgstr "¿Eliminar este nodo?"
 
+#: web/clusterer.php:251
+msgid "Add Cluster Node"
+msgstr "Agregar Nodo de Cluster"
+
+#: web/clusterer.php:256
+msgid "Cluster ID"
+msgstr "ID de Cluster"
+
+#: web/clusterer.php:260
+msgid "Node ID"
+msgstr "ID de Nodo"
+
+#: web/clusterer.php:275
+msgid "No-Ping Retries"
+msgstr "Reintentos sin Ping"
+
+#: web/clusterer.php:287 web/uac-registrant.php:150 web/uac-registrant.php:219
+msgid "Flags"
+msgstr "Banderas"
+
+#: web/common/config.php:71
+msgid "Service temporarily unavailable. Please try again later."
+msgstr "Servicio temporalmente no disponible. Por favor, inténtelo más tarde."
+
+#: web/common/config.php:214
+msgid "Access denied."
+msgstr "Acceso denegado."
+
+#: web/common/header.php:50
+msgid "TSiSIP — Control Panel"
+msgstr "TSiSIP — Control Panel"
+
+#: web/common/header.php:68 web/common/header.php:73
+#: web/wiki/common/wiki-header.php:59 web/wiki/common/wiki-header.php:64
+msgid "TSiSIP Home"
+msgstr "Inicio TSiSIP"
+
+#: web/common/header.php:71 web/common/header.php:76 web/login.php:72
+#: web/wiki/common/wiki-header.php:62 web/wiki/common/wiki-header.php:67
+msgid "TSiSIP Platform"
+msgstr "TSiSIP Platform"
+
+#: web/common/header.php:79
+msgid "Top navigation"
+msgstr "Top navigation"
+
+#: web/common/header.php:81 web/common/role-nav.php:33
+#: web/common/role-nav.php:114
+msgid "Dashboard"
+msgstr "Panel de Control"
+
+#: web/common/header.php:90 web/wiki/common/wiki-header.php:79
+msgid "Sign out"
+msgstr "Cerrar sesión"
+
+#: web/common/header.php:91 web/wiki/common/wiki-header.php:80
+msgid "Logout"
+msgstr "Cerrar sesión"
+
+#: web/common/header.php:99
+msgid "Toggle navigation"
+msgstr "Alternar navegacion"
+
+#: web/common/mi-http.php:59
+msgid "OpenSIPS MI endpoint temporarily unavailable (circuit breaker open)."
+msgstr "OpenSIPS MI endpoint temporarily unavailable (circuit breaker open)."
+
+#: web/common/mi-http.php:109
+msgid "Failed to connect to OpenSIPS MI endpoint at "
+msgstr "Failed to connect to OpenSIPS MI endpoint at "
+
+#: web/common/mi-http.php:123
+msgid "Invalid JSON response from OpenSIPS MI."
+msgstr "Invalid JSON response from OpenSIPS MI."
+
+#: web/common/pagination.php:30
+msgid "Pagination"
+msgstr "Pagination"
+
+#: web/common/pagination.php:31
+#, php-format
+msgid "Page %d of %d (%d items)"
+msgstr "Page %d of %d (%d items)"
+
+#: web/common/pagination.php:36 web/common/pagination.php:38
+msgid "Previous"
+msgstr "Anterior"
+
+#: web/common/pagination.php:54 web/common/pagination.php:56
+msgid "Next"
+msgstr "Siguiente"
+
+#: web/common/role-nav.php:22 web/subscribers.php:222
+msgid "Subscribers"
+msgstr "Subscribers"
+
+#: web/common/role-nav.php:24 web/groups.php:112
+msgid "Groups"
+msgstr "Grupos"
+
+#: web/common/role-nav.php:34
+msgid "Addresses"
+msgstr "Addresses"
+
+#: web/common/role-nav.php:36
+msgid "CDR Viewer"
+msgstr "CDR Viewer"
+
+#: web/common/role-nav.php:38 web/config-table.php:127
+msgid "Config Table"
+msgstr "Tabla de Configuración"
+
+#: web/common/role-nav.php:39 web/dashboard.php:34 web/dialog.php:148
+#: web/statistics.php:144 web/statistics.php:212
+msgid "Active Dialogs"
+msgstr "Active Dialogs"
+
+#: web/common/role-nav.php:40 web/dashboard.php:32
+msgid "Dialplan"
+msgstr "Dialplan"
+
+#: web/common/role-nav.php:41
+msgid "Dispatcher"
+msgstr "Despachador"
+
+#: web/common/role-nav.php:42 web/domains.php:122 web/domains.php:153
+msgid "Domains"
+msgstr "Domains"
+
+#: web/common/role-nav.php:43 web/dynamic-routing.php:170
+msgid "Dynamic Routing"
+msgstr "Enrutamiento Dinámico"
+
+#: web/common/role-nav.php:44 web/keepalived.php:122
+msgid "Keepalived"
+msgstr "Keepalived"
+
+#: web/common/role-nav.php:45 web/load-balancer.php:128
+msgid "Load Balancer"
+msgstr "Balanceador de Carga"
+
+#: web/common/role-nav.php:46 web/dashboard.php:35
+msgid "MI Commands"
+msgstr "MI Commands"
+
+#: web/common/role-nav.php:47 web/monit.php:115
+msgid "Monit"
+msgstr "Monit"
+
+#: web/common/role-nav.php:48
+msgid "RTPEngine"
+msgstr "RTPengine"
+
+#: web/common/role-nav.php:49 web/rtpproxy.php:97
+msgid "RTPProxy"
+msgstr "RTPProxy"
+
+#: web/common/role-nav.php:50 web/siptrace.php:83
+msgid "SIPtrace"
+msgstr "SIPtrace"
+
+#: web/common/role-nav.php:51 web/smpp-gateway.php:120
+msgid "SMPP Gateway"
+msgstr "Gateway SMPP"
+
+#: web/common/role-nav.php:52 web/sockets-management.php:116
+msgid "Sockets Management"
+msgstr "Gestión de Sockets"
+
+#: web/common/role-nav.php:53 web/tviewer.php:123
+msgid "TViewer"
+msgstr "TViewer"
+
+#: web/common/role-nav.php:54 web/dashboard.php:36
+msgid "Statistics"
+msgstr "Estadísticas"
+
+#: web/common/role-nav.php:55 web/status-report.php:55
+msgid "Status Report"
+msgstr "Reporte de Estado"
+
+#: web/common/role-nav.php:56 web/dashboard.php:37
+msgid "TLS Certificates"
+msgstr "TLS Certificates"
+
+#: web/common/role-nav.php:57 web/uac-registrant.php:120
+msgid "UAC Registrant"
+msgstr "Registrante UAC"
+
+#: web/common/role-nav.php:66 web/ocp/trunk-providers.php:223
+#: web/ocp/trunk-providers.php:294 web/trunk-providers.php:223
+#: web/trunk-providers.php:294
+msgid "Trunk Providers"
+msgstr "Trunk Providers"
+
+#: web/common/role-nav.php:67 web/ocp/trunk-dids.php:163
+#: web/ocp/trunk-dids.php:228 web/trunk-dids.php:163 web/trunk-dids.php:228
+msgid "DID Mappings"
+msgstr "DID Mappings"
+
+#: web/common/role-nav.php:68 web/ocp/trunk-status.php:38
+#: web/trunk-status.php:38
+msgid "Trunk Status"
+msgstr "Trunk Status"
+
+#: web/common/role-nav.php:76 web/tenants.php:129
+msgid "Tenants"
+msgstr "Tenants"
+
+#: web/common/role-nav.php:77
+msgid "Header Routing"
+msgstr "Header Routing"
+
+#: web/common/role-nav.php:78
+msgid "Admin Users"
+msgstr "Admin Users"
+
+#: web/common/role-nav.php:79
+msgid "Audit Log"
+msgstr "Audit Log"
+
+#: web/common/role-nav.php:96
+msgid "System Overview"
+msgstr "System Overview"
+
+#: web/common/role-nav.php:97
+msgid "Administrators"
+msgstr "Administrators"
+
+#: web/common/role-nav.php:98
+msgid "DevOps SIP"
+msgstr "DevOps SIP"
+
+#: web/common/role-nav.php:99
+msgid "Runbooks & Troubleshooting"
+msgstr "Runbooks & Troubleshooting"
+
+#: web/common/role-nav.php:100
+msgid "Security & Compliance"
+msgstr "Security & Compliance"
+
+#: web/common/role-nav.php:101
+msgid "Developers"
+msgstr "Developers"
+
+#: web/common/role-nav.php:102
+msgid "Operators & Users"
+msgstr "Operators & Users"
+
+#: web/common/role-nav.php:103
+msgid "Dentists"
+msgstr "Dentists"
+
+#: web/common/role-nav.php:104
+msgid "Assistants"
+msgstr "Assistants"
+
+#: web/common/role-nav.php:109
+msgid "Main navigation"
+msgstr "Main navigation"
+
+#: web/common/role-nav.php:120
+msgid "SIP Users"
+msgstr "SIP Users"
+
+#: web/common/role-nav.php:135 web/monit.php:202
+msgid "System"
+msgstr "Sistema"
+
+#: web/common/role-nav.php:154
+msgid "Trunking"
+msgstr "Trunking"
+
+#: web/common/role-nav.php:169
+msgid "Administration"
+msgstr "Administration"
+
+#: web/common/role-nav.php:183
+msgid "Documentation"
+msgstr "Documentación"
+
+#: web/common/role-nav.php:186 web/wiki/common/wiki-header.php:72
+msgid "Wiki Home"
+msgstr "Wiki Home"
+
+#: web/common/role-nav.php:201
+msgid "Account"
+msgstr "Cuenta"
+
+#: web/common/role-nav.php:210
+msgid "Sign Out"
+msgstr "Cerrar sesión"
+
+#: web/common/subscriber-proxy.php:47
+msgid "Subscriber service temporarily unavailable. Please try again later."
+msgstr "Subscriber service temporarily unavailable. Please try again later."
+
+#: web/common/subscriber-proxy.php:54
+msgid "Too many subscriber changes. Please wait a moment and try again."
+msgstr "Too many subscriber changes. Please wait a moment and try again."
+
+#: web/common/subscriber-proxy.php:61
+msgid "Access denied to subscriber service."
+msgstr "Access denied to subscriber service."
+
+#: web/common/subscriber-proxy.php:68
+msgid "Subscriber operation failed. Please contact support."
+msgstr "Subscriber operation failed. Please contact support."
+
+#: web/common/subscriber-proxy.php:76
+msgid "Invalid response from subscriber service."
+msgstr "Invalid response from subscriber service."
+
+#: web/common/subscriber-proxy.php:86
+msgid "Subscriber operation failed."
+msgstr "Subscriber operation failed."
+
+#: web/common/validate-input.php:15
+msgid "Username is required."
+msgstr "Username is required."
+
+#: web/common/validate-input.php:18
+msgid "Username must be between 1 and 64 characters."
+msgstr "Username must be between 1 and 64 characters."
+
+#: web/common/validate-input.php:21
+msgid ""
+"Username may only contain letters, numbers, dots, underscores, and hyphens."
+msgstr ""
+"Username may only contain letters, numbers, dots, underscores, and hyphens."
+
+#: web/common/validate-input.php:32
+msgid "Domain is required."
+msgstr "Domain is required."
+
+#: web/common/validate-input.php:35
+msgid "Domain must be between 1 and 255 characters."
+msgstr "Domain must be between 1 and 255 characters."
+
+#: web/common/validate-input.php:38
+msgid "Domain contains invalid characters."
+msgstr "Domain contains invalid characters."
+
+#: web/common/validate-input.php:52 web/subscribers.php:38 web/users.php:38
+#: web/users.php:76
+msgid "Password must be at least 8 characters."
+msgstr "Password must be at least 8 characters."
+
+#: web/common/validate-input.php:65
+msgid "Invalid email address."
+msgstr "Invalid email address."
+
+#: web/common/validate-input.php:68
+msgid "Email must not exceed 255 characters."
+msgstr "Email must not exceed 255 characters."
+
+#: web/common/validate-input.php:79 web/dispatcher.php:37
+msgid "Destination is required."
+msgstr "Destination is required."
+
+#: web/common/validate-input.php:82 web/dispatcher.php:39
+msgid "Destination must start with sip:"
+msgstr "Destination must start with sip:"
+
+#: web/common/validate-input.php:85
+msgid "Destination must not exceed 255 characters."
+msgstr "Destination must not exceed 255 characters."
+
+#: web/common/validate-input.php:96
+msgid "Match expression is required."
+msgstr "Match expression is required."
+
+#: web/common/validate-input.php:99
+msgid "Match expression must not exceed 255 characters."
+msgstr "Match expression must not exceed 255 characters."
+
+#: web/common/validate-input.php:110
+msgid "Substitution expression must not exceed 255 characters."
+msgstr "Substitution expression must not exceed 255 characters."
+
+#: web/common/validate-input.php:121
+msgid "Replacement expression must not exceed 255 characters."
+msgstr "Replacement expression must not exceed 255 characters."
+
+#: web/common/validate-input.php:132
+msgid "Attributes must not exceed 255 characters."
+msgstr "Attributes must not exceed 255 characters."
+
+#: web/common/validate-input.php:146
+msgid "DID must not exceed 255 characters."
+msgstr "DID must not exceed 255 characters."
+
+#: web/config-table.php:34
+msgid "Name and value are required."
+msgstr "Se requieren el nombre y el valor."
+
+#: web/config-table.php:36
+msgid "Name must contain only letters, numbers, and underscores."
+msgstr "El nombre debe contener solo letras, números y guiones bajos."
+
+#: web/config-table.php:44
+msgid "Config entry created successfully."
+msgstr "Entrada de configuración creada exitosamente."
+
+#: web/config-table.php:48
+msgid "A config entry with this name already exists."
+msgstr "Ya existe una entrada de configuración con este nombre."
+
+#: web/config-table.php:60
+msgid "Config entry updated successfully."
+msgstr "Entrada de configuración actualizada exitosamente."
+
+#: web/config-table.php:76
+msgid "Config entry deleted successfully."
+msgstr "Entrada de configuración eliminada exitosamente."
+
+#: web/config-table.php:128
+msgid "Runtime configuration via database (cfgutils module)"
+msgstr "Runtime configuration via database (cfgutils module)"
+"Configuración en tiempo de ejecución mediante base de datos (módulo cfgutils)"
+
+#: web/config-table.php:143
+msgid "All Categories"
+msgstr "Todas las Categorías"
+
+#: web/config-table.php:156
+msgid "Configuration Entries"
+msgstr "Entradas de Configuración"
+
+#: web/config-table.php:160 web/config-table.php:204 web/monit.php:140
+#: web/monit.php:186 web/ocp/trunk-providers.php:240
+#: web/ocp/trunk-providers.php:298 web/ocp/trunk-providers.php:358
+#: web/smpp-gateway.php:145 web/smpp-gateway.php:191 web/tenants.php:111
+#: web/tenants.php:133 web/tenants.php:173 web/trunk-providers.php:240
+#: web/trunk-providers.php:298 web/trunk-providers.php:358
+msgid "Name"
+msgstr "Nombre"
+
+#: web/config-table.php:161 web/config-table.php:208 web/siptrace.php:106
+msgid "Value"
+msgstr "Valor"
+
+#: web/config-table.php:162 web/config-table.php:212
+msgid "Category"
+msgstr "Categoría"
+
+#: web/config-table.php:164
+msgid "Updated"
+msgstr "Actualizado"
+
+#: web/config-table.php:170
+msgid "No config entries found."
+msgstr "No se encontraron entradas de configuración."
+
+#: web/config-table.php:185 web/userblacklist.php:126
+msgid "Delete this entry?"
+msgstr "¿Eliminar esta entrada?"
+
+#: web/config-table.php:199
+msgid "Add Config Entry"
+msgstr "Agregar Entrada de Configuración"
+
+#: web/dashboard.php:13
+msgid "Administrator"
+msgstr "Administrador"
+
+#: web/dashboard.php:14
+msgid "DevOps Engineer"
+msgstr "Ingeniero DevOps"
+
+#: web/dashboard.php:15
+msgid "Dentist"
+msgstr "Dentista"
+
+#: web/dashboard.php:16
+msgid "Assistant"
+msgstr "Asistente"
+
+#: web/dashboard.php:18
+msgid "Read-Only User"
+msgstr "Usuario de Solo Lectura"
+
+#: web/dashboard.php:29 web/dispatcher.php:152
+msgid "Dispatcher Targets"
+msgstr "Destinos del Dispatcher"
+
+#: web/dashboard.php:30
+msgid "RTPengine Sessions"
+msgstr "Sesiones RTPengine"
+
+#: web/dashboard.php:33
+msgid "SIP Domains"
+msgstr "SIP Domains"
+
+#: web/dashboard.php:58
+msgid "Welcome"
+msgstr "Bienvenido"
+
+#: web/dashboard.php:64
+msgid "System Management"
+msgstr "Gestión del Sistema"
+
+#: web/dashboard.php:77
+msgid "Documentation & Wiki"
+msgstr "Documentación y Wiki"
+
+#: web/dashboard.php:88
+msgid "No wiki links available for your role."
+msgstr "No wiki links available for your role."
+
+#: web/dashboard.php:93
+msgid "System Status"
+msgstr "Estado del Sistema"
+
+#: web/dashboard.php:94
+msgid "TSiSIP Control Panel is operational."
+msgstr "TSiSIP Control Panel is operational."
+
+#: web/dashboard.php:102
+msgid ""
+"Feature 020 tools are now available: Dialog Viewer, MI Commands, Statistics, "
+"Dialplan, Domains, and TLS Management."
+msgstr ""
+"Feature 020 tools are now available: Dialog Viewer, MI Commands, Statistics, "
+"Dialplan, Domains, and TLS Management."
+
+#: web/dialog.php:23
+msgid "Early"
+msgstr "Early"
+
+#: web/dialog.php:24
+msgid "Confirmed"
+msgstr "Confirmed"
+
+#: web/dialog.php:25
+msgid "Terminated"
+msgstr "Terminated"
+
+#: web/dialog.php:26
+msgid "Deleted"
+msgstr "Deleted"
+
+#: web/dialog.php:79
+msgid "SIP Dialogs"
+msgstr "SIP Dialogs"
+
+#: web/dialog.php:82
+msgid "This is a read-only view of active SIP dialogs."
+msgstr "This is a read-only view of active SIP dialogs."
+
+#: web/dialog.php:87
+msgid "Live Active Dialogs"
+msgstr "Live Active Dialogs"
+
+#: web/dialog.php:105
+msgid "No live dialog data returned by OpenSIPS."
+msgstr "No live dialog data returned by OpenSIPS."
+
+#: web/dialog.php:110 web/dialog.php:152 web/siptrace.php:170
+msgid "Call-ID"
+msgstr "Call-ID"
+
+#: web/dialog.php:157
+msgid "Timeout"
+msgstr "Timeout"
+
+#: web/dialog.php:199
+msgid "No active dialogs found."
+msgstr "No active dialogs found."
+
+#: web/dialplan.php:58
+msgid "Dialplan rule added."
+msgstr "Dialplan rule added."
+
+#: web/dialplan.php:71
+msgid "Failed to add dialplan rule: "
+msgstr "Failed to add dialplan rule: "
+
+#: web/dialplan.php:90 web/domains.php:65
+msgid "ID is required."
+msgstr "ID is required."
+
+#: web/dialplan.php:112
+msgid "Dialplan rule updated."
+msgstr "Dialplan rule updated."
+
+#: web/dialplan.php:127 web/dispatcher.php:107 web/domains.php:88
+msgid "Failed to update: "
+msgstr "Failed to update: "
+
+#: web/dialplan.php:135
+msgid "Dialplan rule deleted."
+msgstr "Dialplan rule deleted."
+
+#: web/dialplan.php:161
+msgid "Dialplan Rules"
+msgstr "Dialplan Rules"
+
+#: web/dialplan.php:172 web/header-routing.php:97 web/header-routing.php:133
+msgid "Add Rule"
+msgstr "Add Rule"
+
+#: web/dialplan.php:182 web/dialplan.php:218 web/dialplan.php:263
+msgid "Match Op"
+msgstr "Match Op"
+
+#: web/dialplan.php:186 web/dialplan.php:219 web/dialplan.php:267
+msgid "Match Expression"
+msgstr "Match Expression"
+
+#: web/dialplan.php:190 web/dialplan.php:220 web/dialplan.php:271
+msgid "Match Flags"
+msgstr "Match Flags"
+
+#: web/dialplan.php:194 web/dialplan.php:221 web/dialplan.php:275
+msgid "Subst Expression"
+msgstr "Subst Expression"
+
+#: web/dialplan.php:198 web/dialplan.php:222 web/dialplan.php:279
+msgid "Replacement"
+msgstr "Replacement"
+
+#: web/dialplan.php:202 web/dialplan.php:223 web/dialplan.php:283
+#: web/dispatcher.php:268 web/dispatcher.php:363 web/dynamic-routing.php:252
+#: web/dynamic-routing.php:359
+msgid "Attrs"
+msgstr "Atributos"
+
+#: web/dialplan.php:206 web/dispatcher.php:279 web/domains.php:147
+msgid "Add"
+msgstr "Add"
+
+#: web/dialplan.php:212 web/header-routing.php:138
+msgid "Rules"
+msgstr "Rules"
+
+#: web/dialplan.php:216 web/domains.php:157 web/load-balancer.php:256
+#: web/tls-management.php:115
+msgid "ID"
+msgstr "ID"
+
+#: web/dialplan.php:243 web/dynamic-routing.php:315 web/header-routing.php:167
+msgid "Delete this rule?"
+msgstr "¿Eliminar esta regla?"
+
+#: web/dialplan.php:287 web/dispatcher.php:374 web/domains.php:200
+#: web/ocp/trunk-dids.php:330 web/ocp/trunk-providers.php:406
+#: web/trunk-dids.php:330 web/trunk-providers.php:406
+msgid "Save"
+msgstr "Guardar"
+
+#: web/dispatcher.php:55
+msgid "Dispatcher destination added."
+msgstr "Dispatcher destination added."
+
+#: web/dispatcher.php:64
+msgid "Failed to add destination: "
+msgstr "Failed to add destination: "
+
+#: web/dispatcher.php:78
+msgid "ID and destination are required."
+msgstr "ID and destination are required."
+
+#: web/dispatcher.php:97
+msgid "Dispatcher destination updated."
+msgstr "Dispatcher destination updated."
+
+#: web/dispatcher.php:115
+msgid "Dispatcher destination deleted."
+msgstr "Dispatcher destination deleted."
+
+#: web/dispatcher.php:124
+msgid "State toggled."
+msgstr "State toggled."
+
+#: web/dispatcher.php:163
+msgid "Live Dispatcher Status"
+msgstr "Live Dispatcher Status"
+
+#: web/dispatcher.php:197
+msgid "No live dispatcher data returned by OpenSIPS."
+msgstr "No live dispatcher data returned by OpenSIPS."
+
+#: web/dispatcher.php:202 web/dispatcher.php:248 web/dispatcher.php:343
+#: web/header-routing.php:145 web/ocp/trunk-dids.php:235 web/rtpproxy.php:122
+#: web/rtpproxy.php:164 web/trunk-dids.php:235
+msgid "Set ID"
+msgstr "ID de Conjunto"
+
+#: web/dispatcher.php:203 web/dispatcher.php:252 web/dispatcher.php:290
+#: web/dispatcher.php:347 web/load-balancer.php:258 web/ocp/trunk-dids.php:208
+#: web/ocp/trunk-dids.php:236 web/ocp/trunk-dids.php:316 web/trunk-dids.php:208
+#: web/trunk-dids.php:236 web/trunk-dids.php:316
+msgid "Destination"
+msgstr "Destino"
+
+#: web/dispatcher.php:205 web/dispatcher.php:256 web/dispatcher.php:292
+#: web/dispatcher.php:351 web/rtpengine.php:67
+msgid "Weight"
+msgstr "Peso"
+
+#: web/dispatcher.php:206
+msgid "Probing"
+msgstr "Probing"
+
+#: web/dispatcher.php:230 web/ocp/trunk-status.php:66 web/trunk-status.php:66
+msgid "Yes"
+msgstr "Sí"
+
+#: web/dispatcher.php:230 web/ocp/trunk-status.php:68 web/trunk-status.php:68
+msgid "No"
+msgstr "No"
+
+#: web/dispatcher.php:242 web/load-balancer.php:204
+msgid "Add Destination"
+msgstr "Agregar Destino"
+
+#: web/dispatcher.php:285 web/load-balancer.php:149
+msgid "Destinations"
+msgstr "Destinos"
+
+#: web/dispatcher.php:289
+msgid "Set"
+msgstr "Set"
+
+#: web/dispatcher.php:320
+msgid "Deactivate"
+msgstr "Desactivar"
+
+#: web/dispatcher.php:320
+msgid "Activate"
+msgstr "Activar"
+
+#: web/dispatcher.php:327
+msgid "Delete this destination?"
+msgstr "Delete this destination?"
+
+#: web/domains.php:45
+msgid "Domain added."
+msgstr "Domain added."
+
+#: web/domains.php:53
+msgid "Failed to add domain: "
+msgstr "Failed to add domain: "
+
+#: web/domains.php:78
+msgid "Domain updated."
+msgstr "Domain updated."
+
+#: web/domains.php:96
+msgid "Domain deleted."
+msgstr "Domain deleted."
+
+#: web/domains.php:133
+msgid "Add Domain"
+msgstr "Add Domain"
+
+#: web/domains.php:139 web/domains.php:158 web/domains.php:192
+#: web/groups.php:138 web/groups.php:185 web/subscribers.php:189
+#: web/subscribers.php:227 web/subscribers.php:283 web/tls-management.php:116
+#: web/userblacklist.php:110
+msgid "Domain"
+msgstr "Dominio"
+
+#: web/domains.php:143 web/domains.php:159 web/domains.php:196
+msgid "DID"
+msgstr "DID"
+
+#: web/domains.php:160 web/groups.php:140
+msgid "Last Modified"
+msgstr "Última Modificación"
+
+#: web/domains.php:176
+msgid "Delete this domain?"
+msgstr "Delete this domain?"
+
+#: web/dynamic-routing.php:38
+msgid "Gateway ID and address are required."
+msgstr "Se requieren el ID y la dirección del gateway."
+
+#: web/dynamic-routing.php:47
+msgid "Gateway created successfully."
+msgstr "Gateway creado exitosamente."
+
+#: web/dynamic-routing.php:55
+msgid "Gateway updated successfully."
+msgstr "Gateway actualizado exitosamente."
+
+#: web/dynamic-routing.php:71
+msgid "Gateway deleted successfully."
+msgstr "Gateway eliminado exitosamente."
+
+#: web/dynamic-routing.php:90
+msgid "Gateway list is required."
+msgstr "Se requiere la lista de gateways."
+
+#: web/dynamic-routing.php:99
+msgid "Routing rule created successfully."
+msgstr "Regla de enrutamiento creada exitosamente."
+
+#: web/dynamic-routing.php:106
+msgid "Routing rule updated successfully."
+msgstr "Regla de enrutamiento actualizada exitosamente."
+
+#: web/dynamic-routing.php:122
+msgid "Routing rule deleted successfully."
+msgstr "Regla de enrutamiento eliminada exitosamente."
+
+#: web/dynamic-routing.php:171
+msgid "LCR / dynamic routing gateway and rule management"
+msgstr "Gestión de gateways y reglas de enrutamiento dinámico / LCR"
+
+#: web/dynamic-routing.php:182
+msgid "Gateways"
+msgstr "Gateways"
+
+#: web/dynamic-routing.php:186
+msgid "GWID"
+msgstr "GWID"
+
+#: web/dynamic-routing.php:188 web/dynamic-routing.php:240
+#: web/sockets-management.php:153 web/sockets-management.php:181
+#: web/sockets-management.php:238
+msgid "Address"
+msgstr "Dirección"
+
+#: web/dynamic-routing.php:189 web/dynamic-routing.php:244
+msgid "Strip"
+msgstr "Truncar"
+
+#: web/dynamic-routing.php:190 web/dynamic-routing.php:248
+#: web/dynamic-routing.php:286 web/dynamic-routing.php:343
+#: web/ocp/trunk-providers.php:304 web/trunk-providers.php:304
+#: web/userblacklist.php:110
+msgid "Prefix"
+msgstr "Prefijo"
+
+#: web/dynamic-routing.php:191 web/load-balancer.php:156
+msgid "Probe"
+msgstr "Sonda"
+
+#: web/dynamic-routing.php:198
+msgid "No gateways found."
+msgstr "No se encontraron gateways."
+
+#: web/dynamic-routing.php:207 web/dynamic-routing.php:259
+#: web/load-balancer.php:172
+msgid "On"
+msgstr "Encendido"
+
+#: web/dynamic-routing.php:207 web/load-balancer.php:172
+msgid "Off"
+msgstr "Apagado"
+
+#: web/dynamic-routing.php:216 web/smpp-gateway.php:171
+msgid "Delete this gateway?"
+msgstr "¿Eliminar este gateway?"
+
+#: web/dynamic-routing.php:230
+msgid "Edit Gateway"
+msgstr "Editar Gateway"
+
+#: web/dynamic-routing.php:230
+msgid "Add Gateway"
+msgstr "Agregar Gateway"
+
+#: web/dynamic-routing.php:256 web/load-balancer.php:221
+msgid "Probe Mode"
+msgstr "Modo de Sonda"
+
+#: web/dynamic-routing.php:258
+msgid "None"
+msgstr "Ninguno"
+
+#: web/dynamic-routing.php:260
+msgid "Passive"
+msgstr "Pasivo"
+
+#: web/dynamic-routing.php:279
+msgid "Routing Rules"
+msgstr "Reglas de Enrutamiento"
+
+#: web/dynamic-routing.php:283
+msgid "Rule ID"
+msgstr "ID de Regla"
+
+#: web/dynamic-routing.php:287
+msgid "Time Rec"
+msgstr "Registro de Tiempo"
+
+#: web/dynamic-routing.php:288 web/dynamic-routing.php:351
+msgid "Route ID"
+msgstr "ID de Ruta"
+
+#: web/dynamic-routing.php:289
+msgid "GW List"
+msgstr "Lista de GW"
+
+#: web/dynamic-routing.php:296
+msgid "No routing rules found."
+msgstr "No se encontraron reglas de enrutamiento."
+
+#: web/dynamic-routing.php:329
+msgid "Edit Routing Rule"
+msgstr "Editar Regla de Enrutamiento"
+
+#: web/dynamic-routing.php:329
+msgid "Add Routing Rule"
+msgstr "Agregar Regla de Enrutamiento"
+
+#: web/dynamic-routing.php:347
+msgid "Time Recurrence"
+msgstr "Recurrencia de Tiempo"
+
+#: web/dynamic-routing.php:355
+msgid "Gateway List"
+msgstr "Lista de Gateways"
+
+#: web/groups.php:32
+msgid "Username and group name are required."
+msgstr "Se requieren el nombre de usuario y el nombre del grupo."
+
+#: web/groups.php:40
+msgid "Group membership created successfully."
+msgstr "Membresía de grupo creada exitosamente."
+
+#: web/groups.php:47
+msgid "Group membership updated successfully."
+msgstr "Membresía de grupo actualizada exitosamente."
+
+#: web/groups.php:63
+msgid "Group membership deleted successfully."
+msgstr "Membresía de grupo eliminada exitosamente."
+
+#: web/groups.php:113
+msgid "Group-based ACL for SIP subscribers"
+msgstr "ACL basada en grupos para suscriptores SIP"
+
+#: web/groups.php:133
+msgid "Group Memberships"
+msgstr "Membresías de Grupo"
+
+#: web/groups.php:146
+msgid "No group memberships found."
+msgstr "No se encontraron membresías de grupo."
+
+#: web/groups.php:161
+msgid "Delete this membership?"
+msgstr "¿Eliminar esta membresía?"
+
+#: web/groups.php:175
+msgid "Edit Membership"
+msgstr "Editar Membresía"
+
+#: web/groups.php:175
+msgid "Add Membership"
+msgstr "Agregar Membresía"
+
+#: web/header-routing.php:32
+msgid "Header name and match value are required."
+msgstr "Header name and match value are required."
+
+#: web/header-routing.php:43
+msgid "Rule created successfully."
+msgstr "Rule created successfully."
+
+#: web/header-routing.php:46
+msgid "Failed to create rule: "
+msgstr "Failed to create rule: "
+
+#: web/header-routing.php:55
+msgid "Rule deleted successfully."
+msgstr "Rule deleted successfully."
+
+#: web/header-routing.php:58
+msgid "Failed to delete rule: "
+msgstr "Failed to delete rule: "
+
+#: web/header-routing.php:86
+msgid "Header Routing Rules"
+msgstr "Header Routing Rules"
+
+#: web/header-routing.php:87
+msgid ""
+"Tenant-scoped header-based routing metadata for dynamic SIP request "
+"dispatching."
+msgstr ""
+"Tenant-scoped header-based routing metadata for dynamic SIP request "
+"dispatching."
+
+#: web/header-routing.php:112
+msgid "Header Name"
+msgstr "Header Name"
+
+#: web/header-routing.php:116
+msgid "Match Value"
+msgstr "Match Value"
+
+#: web/header-routing.php:120 web/ocp/trunk-dids.php:204
+#: web/ocp/trunk-dids.php:312 web/trunk-dids.php:204 web/trunk-dids.php:312
+msgid "Dispatcher Set ID"
+msgstr "Dispatcher Set ID"
+
+#: web/header-routing.php:143
+msgid "Header"
+msgstr "Encabezado"
+
+#: web/header-routing.php:144
+msgid "Match"
+msgstr "Match"
+
+#: web/header-routing.php:154 web/subscribers.php:239
+msgid "Default"
+msgstr "Predeterminado"
+
+#: web/keepalived.php:36
+msgid "VRRP ID, interface and virtual IP are required."
+msgstr "Se requieren el ID VRRP, la interfaz y la IP virtual."
+
+#: web/keepalived.php:38
+msgid "Invalid virtual IP address."
+msgstr "Dirección IP virtual inválida."
+
+#: web/keepalived.php:47
+msgid "Keepalived instance created successfully."
+msgstr "Instancia Keepalived creada exitosamente."
+
+#: web/keepalived.php:54
+msgid "Keepalived instance updated successfully."
+msgstr "Instancia Keepalived actualizada exitosamente."
+
+#: web/keepalived.php:59
+msgid "This VRRP ID/interface combination already exists."
+msgstr "Esta combinación de ID/interface VRRP ya existe."
+
+#: web/keepalived.php:74
+msgid "Keepalived instance deleted successfully."
+msgstr "Instancia Keepalived eliminada exitosamente."
+
+#: web/keepalived.php:123
+msgid "Virtual IP and high-availability management"
+msgstr "Gestión de IP virtual y alta disponibilidad"
+
+#: web/keepalived.php:143
+msgid "Keepalived Instances"
+msgstr "Instancias Keepalived"
+
+#: web/keepalived.php:147 web/keepalived.php:195
+msgid "VRRP ID"
+msgstr "ID VRRP"
+
+#: web/keepalived.php:150 web/keepalived.php:210 web/rtpengine.php:64
+msgid "Interface"
+msgstr "Interfaz"
+
+#: web/keepalived.php:151 web/keepalived.php:214
+msgid "Virtual IP"
+msgstr "IP Virtual"
+
+#: web/keepalived.php:158
+msgid "No Keepalived instances found."
+msgstr "No se encontraron instancias Keepalived."
+
+#: web/keepalived.php:175 web/rtpproxy.php:141
+msgid "Delete this instance?"
+msgstr "¿Eliminar esta instancia?"
+
+#: web/keepalived.php:189
+msgid "Edit Keepalived Instance"
+msgstr "Editar Instancia Keepalived"
+
+#: web/keepalived.php:189
+msgid "Add Keepalived Instance"
+msgstr "Agregar Instancia Keepalived"
+
+#: web/keepalived.php:201
+msgid "Master"
+msgstr "Maestro"
+
+#: web/keepalived.php:202
+msgid "Backup"
+msgstr "Respaldo"
+
+#: web/load-balancer.php:35
+msgid "Group ID, destination URI, and resources are required."
+msgstr "Se requieren el ID de grupo, el URI de destino y los recursos."
+
+#: web/load-balancer.php:43
+msgid "Load balancer destination created successfully."
+msgstr "Destino de balanceador de carga creado exitosamente."
+
+#: web/load-balancer.php:55
+msgid "Load balancer destination updated successfully."
+msgstr "Destino de balanceador de carga actualizado exitosamente."
+
+#: web/load-balancer.php:71
+msgid "Load balancer destination deleted successfully."
+msgstr "Destino de balanceador de carga eliminado exitosamente."
+
+#: web/load-balancer.php:87
+msgid "Probing enabled."
+msgstr "Sondeo habilitado."
+
+#: web/load-balancer.php:87
+msgid "Probing disabled."
+msgstr "Sondeo deshabilitado."
+
+#: web/load-balancer.php:129
+msgid "Alternative load balancing destinations"
+msgstr "Destinos alternativos de balanceo de carga"
+
+#: web/load-balancer.php:154 web/load-balancer.php:213
+msgid "Destination URI"
+msgstr "URI de Destino"
+
+#: web/load-balancer.php:155 web/load-balancer.php:217
+#: web/load-balancer.php:259
+msgid "Resources"
+msgstr "Recursos"
+
+#: web/load-balancer.php:163
+msgid "No destinations found."
+msgstr "No se encontraron destinos."
+
+#: web/load-balancer.php:182 web/ocp/trunk-dids.php:265
+#: web/ocp/trunk-providers.php:335 web/subscribers.php:255
+#: web/trunk-dids.php:265 web/trunk-providers.php:335
+msgid "Disable"
+msgstr "Deshabilitar"
+
+#: web/load-balancer.php:182 web/ocp/trunk-dids.php:265
+#: web/ocp/trunk-providers.php:335 web/subscribers.php:255
+#: web/trunk-dids.php:265 web/trunk-providers.php:335
+msgid "Enable"
+msgstr "Habilitar"
+
+#: web/load-balancer.php:190
+msgid "Delete?"
+msgstr "¿Eliminar?"
+
+#: web/load-balancer.php:236
 msgid "Live Load Balancer Status"
 msgstr "Estado del Balanceador en Vivo"
 
-msgid "No load balancer destinations."
-msgstr "No hay destinos de balanceador."
-msgid "(any)"
-msgstr ""
-msgid "(global)"
-msgstr ""
-msgid "2xx Replies"
-msgstr ""
-msgid "Access denied to subscriber service."
-msgstr ""
-msgid "Access denied."
-msgstr ""
-msgid "Account"
-msgstr ""
-msgid "Action"
-msgstr ""
-msgid "Activate"
-msgstr ""
-msgid "Active Dialogs"
-msgstr ""
-msgid "Active Sessions"
-msgstr ""
-msgid "Add"
-msgstr ""
-msgid "Add Address"
-msgstr ""
-msgid "Add DID Mapping"
-msgstr ""
-msgid "Add Domain"
-msgstr ""
-msgid "Add Entry"
-msgstr ""
-msgid "Add New Subscriber"
-msgstr ""
-msgid "Add New Tenant"
-msgstr ""
-msgid "Add New User"
-msgstr ""
-msgid "Add Rule"
-msgstr ""
-msgid "Add Trunk Provider"
-msgstr ""
-msgid "Add Trusted IP"
-msgstr ""
-msgid "Address added successfully."
-msgstr ""
-msgid "Address deleted successfully."
-msgstr ""
-msgid "Addresses"
-msgstr ""
-msgid "Admin Users"
-msgstr ""
-msgid "Admin only"
-msgstr ""
-msgid "Admin role required for this action."
-msgstr ""
-msgid "Administration"
-msgstr ""
-msgid "Administrative Actions"
-msgstr ""
-msgid "Administrator"
-msgstr ""
-msgid "Administrators"
-msgstr ""
-msgid "Agent ID"
-msgstr ""
-msgid "All"
-msgstr ""
-msgid "All fields are required."
-msgstr ""
-msgid "All required fields must be filled."
-msgstr ""
-msgid "Allow"
-msgstr ""
-msgid "Answered"
-msgstr ""
-msgid "Assistant"
-msgstr ""
-msgid "Assistants"
-msgstr ""
-msgid "Attributes must not exceed 255 characters."
-msgstr ""
-msgid "Audit Log"
-msgstr ""
-msgid "Audit Log & Compliance"
-msgstr ""
-msgid "Auth Password"
-msgstr ""
-msgid "Auth Password (leave blank to keep)"
-msgstr ""
-msgid "Auth Username"
-msgstr ""
-msgid "Available Commands"
-msgstr ""
-msgid "Block"
-msgstr ""
-msgid "Busy"
-msgstr ""
-msgid "CA File"
-msgstr ""
-msgid "CDR Viewer"
-msgstr ""
-msgid "CIDR Mask"
-msgstr ""
-msgid "CRL Check All"
-msgstr ""
-msgid "Call Detail Records"
-msgstr ""
-msgid "Call Status"
-msgstr ""
-msgid "Caller ID Prefix"
-msgstr ""
-msgid "Certificate File"
-msgstr ""
-msgid "Change Passphrase"
-msgstr ""
-msgid "Charts unavailable — D3.js could not be loaded."
-msgstr ""
-msgid "Command"
-msgstr ""
-msgid "Command executed successfully."
-msgstr ""
-msgid "Command not in whitelist."
-msgstr ""
-msgid "Confirm New Passphrase"
-msgstr ""
-msgid "Confirmed"
-msgstr ""
-msgid "Contents"
-msgstr ""
-msgid "Control Panel"
-msgstr ""
-msgid "Create Mapping"
-msgstr ""
-msgid "Create Provider"
-msgstr ""
-msgid "Create Subscriber"
-msgstr ""
-msgid "Create Tenant"
-msgstr ""
-msgid "Create User"
-msgstr ""
-msgid "Created"
-msgstr ""
-msgid "Current Passphrase"
-msgstr ""
-msgid "Current passphrase is incorrect."
-msgstr ""
-msgid "DID"
-msgstr ""
-msgid "DID Mappings"
-msgstr ""
-msgid "DID Number"
-msgstr ""
-msgid "DID mapping created successfully."
-msgstr ""
-msgid "DID mapping deleted."
-msgstr ""
-msgid "DID mapping status updated."
-msgstr ""
-msgid "DID mapping updated successfully."
-msgstr ""
-msgid "DID must not exceed 255 characters."
-msgstr ""
-msgid "Dashboard"
-msgstr ""
-msgid "Deactivate"
-msgstr ""
-msgid "Default"
-msgstr ""
-msgid "Delete this address?"
-msgstr ""
-msgid "Delete this destination?"
-msgstr ""
-msgid "Delete this domain?"
-msgstr ""
-msgid "Delete this mapping?"
-msgstr ""
-msgid "Delete this provider?"
-msgstr ""
-msgid "Delete this subscriber? This action cannot be undone."
-msgstr ""
-msgid "Delete this tenant?"
-msgstr ""
-msgid "Delete this user?"
-msgstr ""
-msgid "Deleted"
-msgstr ""
-msgid "Dentist"
-msgstr ""
-msgid "Dentists"
-msgstr ""
-msgid "Destination is required."
-msgstr ""
-msgid "Destination must not exceed 255 characters."
-msgstr ""
-msgid "Destination must start with sip:"
-msgstr ""
-msgid "DevOps Engineer"
-msgstr ""
-msgid "DevOps SIP"
-msgstr ""
-msgid "Developers"
-msgstr ""
-msgid "Dialplan"
-msgstr ""
-msgid "Dialplan Rules"
-msgstr ""
-msgid "Dialplan rule added."
-msgstr ""
-msgid "Dialplan rule deleted."
-msgstr ""
-msgid "Dialplan rule updated."
-msgstr ""
-msgid "Dispatcher"
-msgstr ""
-msgid "Dispatcher Health"
-msgstr ""
-msgid "Dispatcher Set ID"
-msgstr ""
-msgid "Dispatcher Sets"
-msgstr ""
-msgid "Dispatcher destination added."
-msgstr ""
-msgid "Dispatcher destination deleted."
-msgstr ""
-msgid "Dispatcher destination updated."
-msgstr ""
-msgid "Documentation"
-msgstr ""
-msgid "Documentation & Wiki"
-msgstr ""
-msgid "Domain (empty for any)"
-msgstr ""
-msgid "Domain added."
-msgstr ""
-msgid "Domain contains invalid characters."
-msgstr ""
-msgid "Domain deleted."
-msgstr ""
-msgid "Domain is required."
-msgstr ""
-msgid "Domain must be between 1 and 255 characters."
-msgstr ""
-msgid "Domain updated."
-msgstr ""
-msgid "Domains"
-msgstr ""
-msgid "Duration"
-msgstr ""
-msgid "Early"
-msgstr ""
-msgid "Email"
-msgstr ""
-msgid "Email must not exceed 255 characters."
-msgstr ""
-msgid "End Time"
-msgstr ""
-msgid "Entries"
-msgstr ""
-msgid "Entry created successfully."
-msgstr ""
-msgid "Entry deleted successfully."
-msgstr ""
-msgid "Event Time"
-msgstr ""
-msgid "Execute"
-msgstr ""
-msgid "Execute Command"
-msgstr ""
-msgid "Export CSV"
-msgstr ""
-msgid "Export JSON"
-msgstr ""
-msgid "Export:"
-msgstr ""
-msgid "Failed"
-msgstr ""
-msgid "Failed to add address: "
-msgstr ""
-msgid "Failed to add destination: "
-msgstr ""
-msgid "Failed to add dialplan rule: "
-msgstr ""
-msgid "Failed to add domain: "
-msgstr ""
-msgid "Failed to connect to OpenSIPS MI endpoint at "
-msgstr ""
-msgid "Failed to connect to OpenSIPS MI endpoint."
-msgstr ""
-msgid "Failed to create DID mapping: "
-msgstr ""
-msgid "Failed to create entry: "
-msgstr ""
-msgid "Failed to create rule: "
-msgstr ""
-msgid "Failed to create subscriber."
-msgstr ""
-msgid "Failed to create tenant: "
-msgstr ""
-msgid "Failed to create trunk provider: "
-msgstr ""
-msgid "Failed to create user: "
-msgstr ""
-msgid "Failed to delete address: "
-msgstr ""
-msgid "Failed to delete entry: "
-msgstr ""
-msgid "Failed to delete rule: "
-msgstr ""
-msgid "Failed to delete subscriber."
-msgstr ""
-msgid "Failed to delete tenant: "
-msgstr ""
-msgid "Failed to delete user: "
-msgstr ""
-msgid "Failed to reload TLS certificates."
-msgstr ""
-msgid "Failed to update DID mapping: "
-msgstr ""
-msgid "Failed to update subscriber status."
-msgstr ""
-msgid "Failed to update subscriber."
-msgstr ""
-msgid "Failed to update tenant: "
-msgstr ""
-msgid "Failed to update trunk provider: "
-msgstr ""
-msgid "Failed to update user: "
-msgstr ""
-msgid "Failed to update: "
-msgstr ""
-msgid "Failure"
-msgstr ""
-msgid "Feature 020 tools are now available: Dialog Viewer, MI Commands, Statistics, Dialplan, Domains, and TLS Management."
-msgstr ""
-msgid "Filter table of contents"
-msgstr ""
-msgid "From"
-msgstr ""
-msgid "From Domain"
-msgstr ""
-msgid "From User"
-msgstr ""
-msgid "Get Statistics"
-msgstr ""
-msgid "Hash Entry"
-msgstr ""
-msgid "Hash ID"
-msgstr ""
-msgid "Hash entry and hash ID are required for dialog termination."
-msgstr ""
-msgid "Header"
-msgstr ""
-msgid "Header Name"
-msgstr ""
-msgid "Header Routing"
-msgstr ""
-msgid "Header Routing Rules"
-msgstr ""
-msgid "Header name and match value are required."
-msgstr ""
-msgid "Healthy"
-msgstr ""
-msgid "ID"
-msgstr ""
-msgid "ID and destination are required."
-msgstr ""
-msgid "ID is required."
-msgstr ""
-msgid "ID, name, and SIP domain are required."
-msgstr ""
-msgid "ID, name, and host are required."
-msgstr ""
-msgid "ID, username, and domain are required."
-msgstr ""
-msgid "IP"
-msgstr ""
-msgid "IP Address"
-msgstr ""
-msgid "IP Whitelist"
-msgstr ""
-msgid "Insufficient role for this command."
-msgstr ""
-msgid "Invalid JSON response from OpenSIPS MI."
-msgstr ""
-msgid "Invalid email address."
-msgstr ""
-msgid "Invalid format. Use ?format=csv or ?format=json"
-msgstr ""
-msgid "Invalid or missing CSRF token."
-msgstr ""
-msgid "Invalid response from subscriber service."
-msgstr ""
-msgid "Invalid role selected."
-msgstr ""
-msgid "JSON text search"
-msgstr ""
-msgid "Key File"
-msgstr ""
-msgid "Last Login"
-msgstr ""
-msgid "Last Register Success"
-msgstr ""
-msgid "List Active Dialogs"
-msgstr ""
-msgid "Live Active Dialogs"
-msgstr ""
-msgid "Live Call Center Agents"
-msgstr ""
-msgid "Live Dispatcher Status"
-msgstr ""
-msgid "Live RTPengine Status"
-msgstr ""
-msgid "Loaded Certificates"
-msgstr ""
-msgid "Loading…"
-msgstr ""
-msgid "Logout"
-msgstr ""
-msgid "MI Command Runner"
-msgstr ""
-msgid "MI Commands"
-msgstr ""
-msgid "Main navigation"
-msgstr ""
-msgid "Manage per-user and global ban/allow lists for the OpenSIPS userblacklist module."
-msgstr ""
-msgid "Mask"
-msgstr ""
-msgid "Match"
-msgstr ""
-msgid "Match Expression"
-msgstr ""
-msgid "Match Flags"
-msgstr ""
-msgid "Match Op"
-msgstr ""
-msgid "Match Value"
-msgstr ""
-msgid "Match expression is required."
-msgstr ""
-msgid "Match expression must not exceed 255 characters."
-msgstr ""
-msgid "Metrics Overview"
-msgstr ""
-msgid "Minimum 12 characters, with uppercase, lowercase, number, and symbol."
-msgstr ""
-msgid "N/A"
-msgstr ""
-msgid "Name and SIP domain are required."
-msgstr ""
-msgid "Name and host are required."
-msgstr ""
-msgid "Never"
-msgstr ""
-msgid "New Passphrase"
-msgstr ""
-msgid "New passphrases do not match."
-msgstr ""
-msgid "Next"
-msgstr ""
-msgid "No"
-msgstr ""
-msgid "No Answer"
-msgstr ""
-msgid "No TLS certificates loaded or unable to reach OpenSIPS MI endpoint."
-msgstr ""
-msgid "No active dialogs found."
-msgstr ""
-msgid "No audit events found."
-msgstr ""
-msgid "No live RTPengine data returned by OpenSIPS."
-msgstr ""
-msgid "No live call center data returned by OpenSIPS."
-msgstr ""
-msgid "No live dialog data returned by OpenSIPS."
-msgstr ""
-msgid "No live dispatcher data returned by OpenSIPS."
-msgstr ""
+#: web/load-balancer.php:251
 msgid "No live load balancer data returned by OpenSIPS."
-msgstr ""
-msgid "No records found."
-msgstr ""
-msgid "No trunk providers configured."
-msgstr ""
-msgid "No wiki links available for your role."
-msgstr ""
-msgid "Not Registered"
-msgstr ""
-msgid "OCP User Management"
-msgstr ""
-msgid "OpenSIPS MI endpoint is unreachable."
-msgstr ""
-msgid "OpenSIPS MI endpoint temporarily unavailable (circuit breaker open)."
-msgstr ""
-msgid "OpenSIPS MI unreachable"
-msgstr ""
-msgid "OpenSIPS Statistics Monitor"
-msgstr ""
-msgid "Operators & Users"
-msgstr ""
-msgid "Optional JSON array or comma-separated values"
-msgstr ""
-msgid "Page %d of %d (%d items)"
-msgstr ""
-msgid "Page Not Found"
-msgstr ""
-msgid "Pagination"
-msgstr ""
-msgid "Parameters"
-msgstr ""
-msgid "Passphrase must be at least 12 characters long."
-msgstr ""
-msgid "Passphrase must contain uppercase, lowercase, number, and symbol."
-msgstr ""
-msgid "Passphrase updated successfully."
-msgstr ""
-msgid "Password (leave blank to keep)"
-msgstr ""
-msgid "Password must be at least 8 characters."
-msgstr ""
-msgid "Port (0 = any)"
-msgstr ""
-msgid "Prefix / Pattern"
-msgstr ""
-msgid "Previous"
-msgstr ""
-msgid "Probing"
-msgstr ""
-msgid "Processed Transactions"
-msgstr ""
-msgid "Proto"
-msgstr ""
-msgid "Provider"
-msgstr ""
-msgid "RTPEngine"
-msgstr ""
-msgid "RTPengine"
-msgstr ""
-msgid "Read-Only User"
-msgstr ""
-msgid "Real-time Metrics"
-msgstr ""
-msgid "Real-time media relay status"
-msgstr ""
-msgid "Received Requests"
-msgstr ""
-msgid "Records"
-msgstr ""
-msgid "Registered"
-msgstr ""
-msgid "Registered Users"
-msgstr ""
-msgid "Registration"
-msgstr ""
-msgid "Reload Dispatcher Sets"
-msgstr ""
-msgid "Reload Domains"
-msgstr ""
-msgid "Reload TLS Certificates"
-msgstr ""
-msgid "Reload all TLS certificates? This will apply any certificate file changes immediately."
-msgstr ""
-msgid "Replacement"
-msgstr ""
-msgid "Replacement expression must not exceed 255 characters."
-msgstr ""
-msgid "Required Role"
-msgstr ""
-msgid "Reset"
-msgstr ""
-msgid "Resource"
-msgstr ""
-msgid "Resource ID"
-msgstr ""
-msgid "Resource Type"
-msgstr ""
-msgid "Response"
-msgstr ""
-msgid "Return to Wiki Home"
-msgstr ""
-msgid "Role"
-msgstr ""
-msgid "Rule created successfully."
-msgstr ""
-msgid "Rule deleted successfully."
-msgstr ""
-msgid "Rules"
-msgstr ""
-msgid "Runbooks & Troubleshooting"
-msgstr ""
-msgid "SIP Dialogs"
-msgstr ""
-msgid "SIP Domain"
-msgstr ""
-msgid "SIP Domains"
-msgstr ""
-msgid "SIP Method"
-msgstr ""
-msgid "SIP Users"
-msgstr ""
-msgid "Save"
-msgstr ""
-msgid "Save Changes"
-msgstr ""
-msgid "Search Details"
-msgstr ""
-msgid "Search contents..."
-msgstr ""
-msgid "Security & Compliance"
-msgstr ""
-msgid "Service temporarily unavailable. Please try again later."
-msgstr ""
-msgid "Set"
-msgstr ""
-msgid "Setup (ms)"
-msgstr ""
-msgid "Sign Out"
-msgstr ""
-msgid "Sign out"
-msgstr ""
-msgid "Start Time"
-msgstr ""
-msgid "State toggled."
-msgstr ""
-msgid "Statistics"
-msgstr ""
-msgid "Statistics refresh failed — MI HTTP unreachable. Charts show last-known values."
-msgstr ""
-msgid "Subscriber Management"
-msgstr ""
-msgid "Subscriber created successfully."
-msgstr ""
-msgid "Subscriber deleted successfully."
-msgstr ""
-msgid "Subscriber operation failed."
-msgstr ""
-msgid "Subscriber operation failed. Please contact support."
-msgstr ""
-msgid "Subscriber service temporarily unavailable. Please try again later."
-msgstr ""
-msgid "Subscriber status updated."
-msgstr ""
-msgid "Subscriber updated successfully."
-msgstr ""
-msgid "Subscribers"
-msgstr ""
-msgid "Subst Expression"
-msgstr ""
-msgid "Substitution expression must not exceed 255 characters."
-msgstr ""
-msgid "Success"
-msgstr ""
-msgid "System Management"
-msgstr ""
-msgid "System Overview"
-msgstr ""
-msgid "System Status"
-msgstr ""
-msgid "TLS Certificate Management"
-msgstr ""
-msgid "TLS Certificates"
-msgstr ""
-msgid "TLS certificates reloaded successfully."
-msgstr ""
-msgid "TSiSIP Control Panel"
-msgstr ""
-msgid "TSiSIP Control Panel is operational."
-msgstr ""
-msgid "TSiSIP Platform"
-msgstr ""
-msgid "TSiSIP — Control Panel"
-msgstr ""
-msgid "TSiSIP — Sign In"
-msgstr ""
-msgid "TSiSIP — Wiki"
-msgstr ""
-msgid "Table of Contents"
-msgstr ""
-msgid "Tenant"
-msgstr ""
-msgid "Tenant Management"
-msgstr ""
-msgid "Tenant created successfully."
-msgstr ""
-msgid "Tenant deleted successfully."
-msgstr ""
-msgid "Tenant updated successfully."
-msgstr ""
-msgid "Tenant-scoped header-based routing metadata for dynamic SIP request dispatching."
-msgstr ""
-msgid "Tenants"
-msgstr ""
-msgid "Terminate Dialog"
-msgstr ""
-msgid "Terminated"
-msgstr ""
-msgid "The requested wiki page does not exist."
-msgstr ""
-msgid "This is a read-only view of active SIP dialogs."
-msgstr ""
-msgid "Timeout"
-msgstr ""
-msgid "To"
-msgstr ""
-msgid "Toggle"
-msgstr ""
-msgid "Too many subscriber changes. Please wait a moment and try again."
-msgstr ""
-msgid "Top navigation"
-msgstr ""
-msgid "Total Ports"
-msgstr ""
-msgid "Transport"
-msgstr ""
-msgid "Trunk Provider"
-msgstr ""
-msgid "Trunk Providers"
-msgstr ""
-msgid "Trunk Status"
-msgstr ""
-msgid "Trunk credential encryption key is not available."
-msgstr ""
-msgid "Trunk provider created successfully."
-msgstr ""
-msgid "Trunk provider deleted."
-msgstr ""
-msgid "Trunk provider status updated."
-msgstr ""
-msgid "Trunk provider updated successfully."
-msgstr ""
-msgid "Trunk provider, DID number, and tenant are required."
-msgstr ""
-msgid "Trunking"
-msgstr ""
-msgid "Trusted Addresses"
-msgstr ""
-msgid "Trusted gateway IPs for the OpenSIPS permissions module (check_source_address)."
-msgstr ""
-msgid "Unhealthy"
-msgstr ""
-msgid "Unknown"
-msgstr ""
-msgid "Update Passphrase"
-msgstr ""
-msgid "Update failed"
-msgstr ""
-msgid "Updated: "
-msgstr ""
-msgid "User"
-msgstr ""
-msgid "User Blacklist"
-msgstr ""
-msgid "User ID is required."
-msgstr ""
-msgid "User created successfully."
-msgstr ""
-msgid "User deleted successfully."
-msgstr ""
-msgid "User updated successfully."
-msgstr ""
-msgid "Username (empty for global)"
-msgstr ""
+msgstr "No live load balancer data returned by OpenSIPS."
+
+#: web/login.php:16
 msgid "Username and passphrase are required."
-msgstr ""
-msgid "Username and password are required."
-msgstr ""
-msgid "Username is required."
-msgstr ""
-msgid "Username may only contain letters, numbers, dots, underscores, and hyphens."
-msgstr ""
-msgid "Username must be between 1 and 64 characters."
-msgstr ""
-msgid "Username, domain, and password are required."
-msgstr ""
-msgid "Users"
-msgstr ""
-msgid "Valid IP address is required."
-msgstr ""
-msgid "Verify Cert"
-msgstr ""
-msgid "Verify Depth"
-msgstr ""
-msgid "Welcome"
-msgstr ""
+msgstr "Username and passphrase are required."
+
+#: web/login.php:33
+msgid "Invalid credentials"
+msgstr "Credenciales invalidas"
+
+#: web/login.php:62
+msgid "TSiSIP — Sign In"
+msgstr "TSiSIP — Sign In"
+
+#: web/login.php:74
 msgid "Welcome back"
-msgstr ""
-msgid "Whitelist (allow instead of block)"
-msgstr ""
-msgid "Wiki"
-msgstr ""
-msgid "Wiki Home"
-msgstr ""
-msgid "Wiki navigation"
-msgstr ""
-msgid "Yes"
-msgstr ""
-msgid "You must change your passphrase before continuing."
-msgstr ""
-msgid "any"
-msgstr ""
-msgid "e.g. 1234"
-msgstr ""
-msgid "e.g. 5678"
-msgstr ""
+msgstr "Welcome back"
+
+#: web/login.php:75
+msgid "TSiSIP Control Panel"
+msgstr "TSiSIP Control Panel"
+
+#: web/login.php:93 web/login.php:98
+msgid "Passphrase"
+msgstr "Contrasena"
+
+#: web/login.php:103
+msgid "Sign In"
+msgstr "Iniciar Sesion"
+
+#: web/mi-commands.php:16
+msgid "Reload Dispatcher Sets"
+msgstr "Reload Dispatcher Sets"
+
+#: web/mi-commands.php:17
+msgid "Reload Domains"
+msgstr "Reload Domains"
+
+#: web/mi-commands.php:18
+msgid "Get Statistics"
+msgstr "Get Statistics"
+
+#: web/mi-commands.php:19
+msgid "List Active Dialogs"
+msgstr "List Active Dialogs"
+
+#: web/mi-commands.php:20
+msgid "Terminate Dialog"
+msgstr "Terminate Dialog"
+
+#: web/mi-commands.php:21 web/tls-management.php:150
+msgid "Reload TLS Certificates"
+msgstr "Reload TLS Certificates"
+
+#: web/mi-commands.php:48
+msgid "Command not in whitelist."
+msgstr "Command not in whitelist."
+
+#: web/mi-commands.php:57
+msgid "Insufficient role for this command."
+msgstr "Insufficient role for this command."
+
+#: web/mi-commands.php:70
+msgid "Hash entry and hash ID are required for dialog termination."
+msgstr "Hash entry and hash ID are required for dialog termination."
+
+#: web/mi-commands.php:110
+msgid "Failed to connect to OpenSIPS MI endpoint."
+msgstr "Failed to connect to OpenSIPS MI endpoint."
+
+#: web/mi-commands.php:117
+msgid "Command executed successfully."
+msgstr "Command executed successfully."
+
+#: web/mi-commands.php:132
+msgid "MI Command Runner"
+msgstr "MI Command Runner"
+
+#: web/mi-commands.php:142
+msgid "Execute Command"
+msgstr "Execute Command"
+
+#: web/mi-commands.php:147 web/mi-commands.php:203
+msgid "Command"
+msgstr "Command"
+
+#: web/mi-commands.php:149
 msgid "— Select —"
+msgstr "— Select —"
+
+#: web/mi-commands.php:166
+msgid "Hash Entry"
+msgstr "Hash Entry"
+
+#: web/mi-commands.php:167
+msgid "e.g. 1234"
+msgstr "e.g. 1234"
+
+#: web/mi-commands.php:170
+msgid "Hash ID"
+msgstr "Hash ID"
+
+#: web/mi-commands.php:171
+msgid "e.g. 5678"
+msgstr "e.g. 5678"
+
+#: web/mi-commands.php:176
+msgid "Parameters"
+msgstr "Parameters"
+
+#: web/mi-commands.php:177
+msgid "Optional JSON array or comma-separated values"
+msgstr "Optional JSON array or comma-separated values"
+
+#: web/mi-commands.php:180
+msgid "Execute"
+msgstr "Execute"
+
+#: web/mi-commands.php:186
+msgid "Response"
+msgstr "Respuesta"
+
+#: web/mi-commands.php:199
+msgid "Available Commands"
+msgstr "Available Commands"
+
+#: web/mi-commands.php:205
+msgid "Required Role"
+msgstr "Required Role"
+
+#: web/monit.php:35
+msgid "Name and process name are required."
+msgstr "Se requieren el nombre y el nombre del proceso."
+
+#: web/monit.php:44
+msgid "Monit check created successfully."
+msgstr "Chequeo Monit creado exitosamente."
+
+#: web/monit.php:51
+msgid "Monit check updated successfully."
+msgstr "Chequeo Monit actualizado exitosamente."
+
+#: web/monit.php:67
+msgid "Monit check deleted successfully."
+msgstr "Chequeo Monit eliminado exitosamente."
+
+#: web/monit.php:116
+msgid "Process monitoring and alerts"
+msgstr "Monitoreo de procesos y alertas"
+
+#: web/monit.php:136
+msgid "Monit Checks"
+msgstr "Chequeos Monit"
+
+#: web/monit.php:141 web/monit.php:196
+msgid "Process"
+msgstr "Proceso"
+
+#: web/monit.php:142 web/monit.php:194
+msgid "Check Type"
+msgstr "Tipo de Chequeo"
+
+#: web/monit.php:143 web/monit.php:206
+msgid "Alert Email"
+msgstr "Correo de Alerta"
+
+#: web/monit.php:150
+msgid "No monit checks found."
+msgstr "No se encontraron chequeos Monit."
+
+#: web/monit.php:166
+msgid "Delete this check?"
+msgstr "¿Eliminar este chequeo?"
+
+#: web/monit.php:180
+msgid "Edit Monit Check"
+msgstr "Editar Chequeo Monit"
+
+#: web/monit.php:180
+msgid "Add Monit Check"
+msgstr "Agregar Chequeo Monit"
+
+#: web/monit.php:190
+msgid "Process Name"
+msgstr "Nombre del Proceso"
+
+#: web/monit.php:197
+msgid "File"
+msgstr "Archivo"
+
+#: web/monit.php:198
+msgid "Filesystem"
+msgstr "Sistema de Archivos"
+
+#: web/monit.php:199 web/ocp/trunk-providers.php:244
+#: web/ocp/trunk-providers.php:299 web/ocp/trunk-providers.php:362
+#: web/ocp/trunk-status.php:45 web/trunk-providers.php:244
+#: web/trunk-providers.php:299 web/trunk-providers.php:362
+#: web/trunk-status.php:45
+msgid "Host"
+msgstr "Host"
+
+#: web/monit.php:200
+msgid "Network"
+msgstr "Red"
+
+#: web/monit.php:201
+msgid "Program"
+msgstr "Programa"
+
+#: web/ocp/trunk-dids.php:35 web/trunk-dids.php:35
+msgid "Trunk provider, DID number, and tenant are required."
+msgstr "Trunk provider, DID number, and tenant are required."
+
+#: web/ocp/trunk-dids.php:53 web/trunk-dids.php:53
+msgid "DID mapping created successfully."
+msgstr "DID mapping created successfully."
+
+#: web/ocp/trunk-dids.php:61 web/trunk-dids.php:61
+msgid "Failed to create DID mapping: "
+msgstr "Failed to create DID mapping: "
+
+#: web/ocp/trunk-dids.php:75 web/trunk-dids.php:75
+msgid "All required fields must be filled."
+msgstr "All required fields must be filled."
+
+#: web/ocp/trunk-dids.php:99 web/trunk-dids.php:99
+msgid "DID mapping updated successfully."
+msgstr "DID mapping updated successfully."
+
+#: web/ocp/trunk-dids.php:107 web/trunk-dids.php:107
+msgid "Failed to update DID mapping: "
+msgstr "Failed to update DID mapping: "
+
+#: web/ocp/trunk-dids.php:116 web/trunk-dids.php:116
+msgid "DID mapping status updated."
+msgstr "DID mapping status updated."
+
+#: web/ocp/trunk-dids.php:126 web/trunk-dids.php:126
+msgid "DID mapping deleted."
+msgstr "DID mapping deleted."
+
+#: web/ocp/trunk-dids.php:174 web/trunk-dids.php:174
+msgid "Add DID Mapping"
+msgstr "Add DID Mapping"
+
+#: web/ocp/trunk-dids.php:180 web/ocp/trunk-dids.php:232
+#: web/ocp/trunk-dids.php:288 web/trunk-dids.php:180 web/trunk-dids.php:232
+#: web/trunk-dids.php:288
+msgid "DID Number"
+msgstr "DID Number"
+
+#: web/ocp/trunk-dids.php:184 web/ocp/trunk-dids.php:233
+#: web/ocp/trunk-dids.php:292 web/trunk-dids.php:184 web/trunk-dids.php:233
+#: web/trunk-dids.php:292
+msgid "Trunk Provider"
+msgstr "Trunk Provider"
+
+#: web/ocp/trunk-dids.php:222 web/trunk-dids.php:222
+msgid "Create Mapping"
+msgstr "Create Mapping"
+
+#: web/ocp/trunk-dids.php:272 web/trunk-dids.php:272
+msgid "Delete this mapping?"
+msgstr "Delete this mapping?"
+
+#: web/ocp/trunk-providers.php:41 web/trunk-providers.php:41
+msgid "Name and host are required."
+msgstr "Name and host are required."
+
+#: web/ocp/trunk-providers.php:43 web/ocp/trunk-providers.php:103
+#: web/trunk-providers.php:43 web/trunk-providers.php:103
+msgid "Trunk credential encryption key is not available."
+msgstr "Trunk credential encryption key is not available."
+
+#: web/ocp/trunk-providers.php:74 web/trunk-providers.php:74
+msgid "Trunk provider created successfully."
+msgstr "Trunk provider created successfully."
+
+#: web/ocp/trunk-providers.php:84 web/trunk-providers.php:84
+msgid "Failed to create trunk provider: "
+msgstr "Failed to create trunk provider: "
+
+#: web/ocp/trunk-providers.php:101 web/trunk-providers.php:101
+msgid "ID, name, and host are required."
+msgstr "ID, name, and host are required."
+
+#: web/ocp/trunk-providers.php:164 web/trunk-providers.php:164
+msgid "Trunk provider updated successfully."
+msgstr "Trunk provider updated successfully."
+
+#: web/ocp/trunk-providers.php:174 web/trunk-providers.php:174
+msgid "Failed to update trunk provider: "
+msgstr "Failed to update trunk provider: "
+
+#: web/ocp/trunk-providers.php:183 web/trunk-providers.php:183
+msgid "Trunk provider status updated."
+msgstr "Trunk provider status updated."
+
+#: web/ocp/trunk-providers.php:193 web/trunk-providers.php:193
+msgid "Trunk provider deleted."
+msgstr "Trunk provider deleted."
+
+#: web/ocp/trunk-providers.php:234 web/trunk-providers.php:234
+msgid "Add Trunk Provider"
+msgstr "Add Trunk Provider"
+
+#: web/ocp/trunk-providers.php:252 web/ocp/trunk-providers.php:301
+#: web/ocp/trunk-providers.php:370 web/trunk-providers.php:252
+#: web/trunk-providers.php:301 web/trunk-providers.php:370
+msgid "Transport"
+msgstr "Transport"
+
+#: web/ocp/trunk-providers.php:262 web/ocp/trunk-providers.php:302
+#: web/ocp/trunk-providers.php:380 web/trunk-providers.php:262
+#: web/trunk-providers.php:302 web/trunk-providers.php:380
+msgid "Auth Username"
+msgstr "Auth Username"
+
+#: web/ocp/trunk-providers.php:266 web/trunk-providers.php:266
+msgid "Auth Password"
+msgstr "Auth Password"
+
+#: web/ocp/trunk-providers.php:270 web/ocp/trunk-providers.php:303
+#: web/ocp/trunk-providers.php:388 web/trunk-providers.php:270
+#: web/trunk-providers.php:303 web/trunk-providers.php:388
+msgid "From Domain"
+msgstr "From Domain"
+
+#: web/ocp/trunk-providers.php:274 web/ocp/trunk-providers.php:392
+#: web/trunk-providers.php:274 web/trunk-providers.php:392
+msgid "Caller ID Prefix"
+msgstr "Caller ID Prefix"
+
+#: web/ocp/trunk-providers.php:288 web/trunk-providers.php:288
+msgid "Create Provider"
+msgstr "Create Provider"
+
+#: web/ocp/trunk-providers.php:342 web/trunk-providers.php:342
+msgid "Delete this provider?"
+msgstr "Delete this provider?"
+
+#: web/ocp/trunk-providers.php:384 web/trunk-providers.php:384
+msgid "Auth Password (leave blank to keep)"
+msgstr "Auth Password (leave blank to keep)"
+
+#: web/ocp/trunk-status.php:44 web/trunk-status.php:44
+msgid "Provider"
+msgstr "Provider"
+
+#: web/ocp/trunk-status.php:48 web/trunk-status.php:48
+msgid "Dispatcher Health"
+msgstr "Dispatcher Health"
+
+#: web/ocp/trunk-status.php:49 web/trunk-status.php:49
+msgid "Registration"
+msgstr "Registration"
+
+#: web/ocp/trunk-status.php:50 web/trunk-status.php:50
+msgid "Last Register Success"
+msgstr "Last Register Success"
+
+#: web/ocp/trunk-status.php:56 web/trunk-status.php:56
+msgid "No trunk providers configured."
+msgstr "No trunk providers configured."
+
+#: web/ocp/trunk-status.php:75 web/trunk-status.php:75
+msgid "Healthy"
+msgstr "Healthy"
+
+#: web/ocp/trunk-status.php:77 web/trunk-status.php:77
+msgid "Unhealthy"
+msgstr "Unhealthy"
+
+#: web/ocp/trunk-status.php:82 web/ocp/trunk-status.php:89
+#: web/trunk-status.php:82 web/trunk-status.php:89
+msgid "N/A"
+msgstr "N/A"
+
+#: web/ocp/trunk-status.php:84 web/trunk-status.php:84
+msgid "Registered"
+msgstr "Registered"
+
+#: web/ocp/trunk-status.php:86 web/trunk-status.php:86
+msgid "Not Registered"
+msgstr "Not Registered"
+
+#: web/rtpengine.php:48
+msgid "RTPengine"
+msgstr "RTPengine"
+
+#: web/rtpengine.php:49
+msgid "Real-time media relay status"
+msgstr "Real-time media relay status"
+
+#: web/rtpengine.php:53
+msgid "Live RTPengine Status"
+msgstr "Live RTPengine Status"
+
+#: web/rtpengine.php:59
+msgid "No live RTPengine data returned by OpenSIPS."
+msgstr "No live RTPengine data returned by OpenSIPS."
+
+#: web/rtpengine.php:65
+msgid "Active Sessions"
+msgstr "Active Sessions"
+
+#: web/rtpengine.php:66
+msgid "Total Ports"
+msgstr "Total Ports"
+
+#: web/rtpproxy.php:31
+msgid "RTPProxy socket is required."
+msgstr "Se requiere el socket RTPProxy."
+
+#: web/rtpproxy.php:38
+msgid "RTPProxy instance created successfully."
+msgstr "Instancia RTPProxy creada exitosamente."
+
+#: web/rtpproxy.php:42
+msgid "This socket already exists."
+msgstr "Este socket ya existe."
+
+#: web/rtpproxy.php:57
+msgid "RTPProxy instance deleted successfully."
+msgstr "Instancia RTPProxy eliminada exitosamente."
+
+#: web/rtpproxy.php:98
+msgid "Legacy RTP proxy instance management"
+msgstr "Gestión de instancias de proxy RTP heredado"
+
+#: web/rtpproxy.php:118
+msgid "RTPProxy Instances"
+msgstr "Instancias RTPProxy"
+
+#: web/rtpproxy.php:123 web/rtpproxy.php:160
+msgid "Socket"
+msgstr "Socket"
+
+#: web/rtpproxy.php:129
+msgid "No RTPProxy instances found."
+msgstr "No se encontraron instancias RTPProxy."
+
+#: web/rtpproxy.php:155
+msgid "Add RTPProxy Instance"
+msgstr "Agregar Instancia RTPProxy"
+
+#: web/siptrace.php:29
+#, php-format
+msgid "Purged %d trace records older than %d days."
+msgstr "Se purgaron %d registros de traza con más de %d días."
+
+#: web/siptrace.php:84
+msgid "SIP packet capture viewer"
+msgstr "Visor de captura de paquetes SIP"
+
+#: web/siptrace.php:93
+msgid "Live SIPtrace Status"
+msgstr "Estado de SIPtrace en Vivo"
+
+#: web/siptrace.php:106
+msgid "Attribute"
+msgstr "Atributo"
+
+#: web/siptrace.php:116
+msgid "No live status data."
+msgstr "No hay datos de estado en vivo."
+
+#: web/siptrace.php:128
+msgid "Call-ID..."
+msgstr "Call-ID..."
+
+#: web/siptrace.php:130
+msgid "From / Source IP..."
+msgstr "Desde / IP de Origen..."
+
+#: web/siptrace.php:132
+msgid "To IP..."
+msgstr "Hacia IP..."
+
+#: web/siptrace.php:135
+msgid "All Methods"
+msgstr "Todos los Métodos"
+
+#: web/siptrace.php:153
+msgid "Purge records older than"
+msgstr "Purgar registros anteriores a"
+
+#: web/siptrace.php:155
+msgid "days"
+msgstr "días"
+
+#: web/siptrace.php:157
+msgid "Permanently delete old traces?"
+msgstr "¿Eliminar permanentemente las trazas antiguas?"
+
+#: web/siptrace.php:158
+msgid "Purge"
+msgstr "Purgar"
+
+#: web/siptrace.php:165
+msgid "Trace Records"
+msgstr "Registros de Traza"
+
+#: web/siptrace.php:169
+msgid "Time"
+msgstr "Hora"
+
+#: web/siptrace.php:173
+msgid "From IP"
+msgstr "Desde IP"
+
+#: web/siptrace.php:174
+msgid "To IP"
+msgstr "Hacia IP"
+
+#: web/siptrace.php:175
+msgid "Direction"
+msgstr "Dirección"
+
+#: web/siptrace.php:180
+msgid "No trace records found."
+msgstr "No se encontraron registros de traza."
+
+#: web/smpp-gateway.php:38
+msgid "Name, SMSC IP and System ID are required."
+msgstr "Se requieren el nombre, la IP del SMSC y el ID del sistema."
+
+#: web/smpp-gateway.php:47
+msgid "SMPP gateway created successfully."
+msgstr "Gateway SMPP creado exitosamente."
+
+#: web/smpp-gateway.php:55
+msgid "SMPP gateway updated successfully."
+msgstr "Gateway SMPP actualizado exitosamente."
+
+#: web/smpp-gateway.php:71
+msgid "SMPP gateway deleted successfully."
+msgstr "Gateway SMPP eliminado exitosamente."
+
+#: web/smpp-gateway.php:121
+msgid "SMS gateway management"
+msgstr "Gestión de gateway SMS"
+
+#: web/smpp-gateway.php:141
+msgid "SMPP Gateways"
+msgstr "Gateways SMPP"
+
+#: web/smpp-gateway.php:146
+msgid "SMSC"
+msgstr "SMSC"
+
+#: web/smpp-gateway.php:147 web/smpp-gateway.php:207
+msgid "System ID"
+msgstr "ID del Sistema"
+
+#: web/smpp-gateway.php:148
+msgid "Source Addr"
+msgstr "Dirección de Origen"
+
+#: web/smpp-gateway.php:155
+msgid "No SMPP gateways found."
+msgstr "No se encontraron gateways SMPP."
+
+#: web/smpp-gateway.php:185
+msgid "Edit SMPP Gateway"
+msgstr "Editar Gateway SMPP"
+
+#: web/smpp-gateway.php:185
+msgid "Add SMPP Gateway"
+msgstr "Agregar Gateway SMPP"
+
+#: web/smpp-gateway.php:195
+msgid "SMSC IP"
+msgstr "IP del SMSC"
+
+#: web/smpp-gateway.php:199
+msgid "SMSC Port"
+msgstr "Puerto del SMSC"
+
+#: web/smpp-gateway.php:203
+msgid "System Type"
+msgstr "Tipo de Sistema"
+
+#: web/smpp-gateway.php:211 web/subscribers.php:193 web/users.php:156
+msgid "Password"
+msgstr "Contraseña"
+
+#: web/smpp-gateway.php:213
+msgid "Leave blank to keep existing."
+msgstr "Dejar en blanco para mantener el existente."
+
+#: web/smpp-gateway.php:216
+msgid "Source Address"
+msgstr "Dirección de Origen"
+
+#: web/sockets-management.php:36
+msgid "Invalid protocol. Valid: udp, tcp, tls, ws, wss, sctp, hep"
+msgstr "Protocolo inválido. Válidos: udp, tcp, tls, ws, wss, sctp, hep"
+
+#: web/sockets-management.php:38
+msgid "Valid address and port (1-65535) are required."
+msgstr "Se requieren una dirección y un puerto válidos (1-65535)."
+
+#: web/sockets-management.php:46
+msgid "Socket created successfully."
+msgstr "Socket creado exitosamente."
+
+#: web/sockets-management.php:58
+msgid "Socket updated successfully."
+msgstr "Socket actualizado exitosamente."
+
+#: web/sockets-management.php:74
+msgid "Socket deleted successfully."
+msgstr "Socket eliminado exitosamente."
+
+#: web/sockets-management.php:117
+msgid "Dynamic socket provisioning via database (OCP 9.3.6+)"
+msgstr "Dynamic socket provisioning via database (OCP 9.3.6+)"
+"Aprovisionamiento dinámico de sockets mediante base de datos (OCP 9.3.6+)"
+
+#: web/sockets-management.php:129
+msgid "Search sockets..."
+msgstr "Buscar sockets..."
+
+#: web/sockets-management.php:138
+msgid "Live OpenSIPS Sockets"
+msgstr "Sockets de OpenSIPS en Vivo"
+
+#: web/sockets-management.php:155 web/sockets-management.php:183
+#: web/sockets-management.php:246
+msgid "Options"
+msgstr "Opciones"
+
+#: web/sockets-management.php:168
+msgid "No live socket data."
+msgstr "No hay datos de socket en vivo."
+
+#: web/sockets-management.php:176
+msgid "Socket Definitions"
+msgstr "Definiciones de Socket"
+
+#: web/sockets-management.php:191
+msgid "No sockets found."
+msgstr "No se encontraron sockets."
+
+#: web/sockets-management.php:207
+msgid "Delete this socket?"
+msgstr "¿Eliminar este socket?"
+
+#: web/sockets-management.php:221
+msgid "Add Socket"
+msgstr "Agregar Socket"
+
+#: web/statistics.php:105
+msgid "OpenSIPS MI endpoint is unreachable."
+msgstr "OpenSIPS MI endpoint is unreachable."
+
+#: web/statistics.php:145 web/statistics.php:213
+msgid "Registered Users"
+msgstr "Registered Users"
+
+#: web/statistics.php:146 web/statistics.php:214
+msgid "Processed Transactions"
+msgstr "Processed Transactions"
+
+#: web/statistics.php:147 web/statistics.php:215
+msgid "2xx Replies"
+msgstr "2xx Replies"
+
+#: web/statistics.php:148 web/statistics.php:216
+msgid "Received Requests"
+msgstr "Received Requests"
+
+#: web/statistics.php:149 web/statistics.php:217
+msgid "Dispatcher Sets"
+msgstr "Dispatcher Sets"
+
+#: web/statistics.php:162
+msgid "Charts unavailable — D3.js could not be loaded."
+msgstr "Charts unavailable — D3.js could not be loaded."
+
+#: web/statistics.php:169
+msgid "OpenSIPS Statistics Monitor"
+msgstr "OpenSIPS Statistics Monitor"
+
+#: web/statistics.php:173
+msgid ""
+"Statistics refresh failed — MI HTTP unreachable. Charts show last-known "
+"values."
 msgstr ""
+"Statistics refresh failed — MI HTTP unreachable. Charts show last-known "
+"values."
+
+#: web/statistics.php:176
+msgid "Real-time Metrics"
+msgstr "Real-time Metrics"
+
+#: web/statistics.php:178
+msgid "Loading…"
+msgstr "Loading…"
+
+#: web/statistics.php:202
+msgid "Metrics Overview"
+msgstr "Metrics Overview"
+
+#: web/statistics.php:350 web/statistics.php:377
+msgid "Updated: "
+msgstr "Updated: "
+
+#: web/statistics.php:354
+msgid "Update failed"
+msgstr "Update failed"
+
+#: web/statistics.php:380
+msgid "OpenSIPS MI unreachable"
+msgstr "OpenSIPS MI unreachable"
+
+#: web/status-report.php:56
+msgid "OpenSIPS status identifiers (OCP 9.3.3+)"
+msgstr "Identificadores de estado de OpenSIPS (OCP 9.3.3+)"
+
+#: web/status-report.php:75
+msgid "All Severities"
+msgstr "Todas las Severidades"
+
+#: web/status-report.php:76
+msgid "Error"
+msgstr "Error"
+
+#: web/status-report.php:77
+msgid "Warning"
+msgstr "Advertencia"
+
+#: web/status-report.php:78
+msgid "Info"
+msgstr "Información"
+
+#: web/status-report.php:87
+msgid "Live OpenSIPS Status"
+msgstr "Estado de OpenSIPS en Vivo"
+
+#: web/status-report.php:100 web/status-report.php:128
+msgid "Identifier"
+msgstr "Identificador"
+
+#: web/status-report.php:100 web/status-report.php:129
+msgid "Severity"
+msgstr "Severidad"
+
+#: web/status-report.php:115
+msgid "No live status reports."
+msgstr "No hay informes de estado en vivo."
+
+#: web/status-report.php:123
+msgid "Status Reports"
+msgstr "Reportes de Estado"
+
+#: web/status-report.php:127
+msgid "Timestamp"
+msgstr "Marca de Tiempo"
+
+#: web/status-report.php:135
+msgid "No status reports found."
+msgstr "No se encontraron reportes de estado."
+
+#: web/subscribers.php:36
+msgid "Username, domain, and password are required."
+msgstr "Username, domain, and password are required."
+
+#: web/subscribers.php:52
+msgid "Subscriber created successfully."
+msgstr "Subscriber created successfully."
+
+#: web/subscribers.php:59
+msgid "Failed to create subscriber."
+msgstr "Failed to create subscriber."
+
+#: web/subscribers.php:71
+msgid "ID, username, and domain are required."
+msgstr "ID, username, and domain are required."
+
+#: web/subscribers.php:86
+msgid "Subscriber updated successfully."
+msgstr "Subscriber updated successfully."
+
+#: web/subscribers.php:93
+msgid "Failed to update subscriber."
+msgstr "Failed to update subscriber."
+
+#: web/subscribers.php:105
+msgid "Subscriber status updated."
+msgstr "Subscriber status updated."
+
+#: web/subscribers.php:110
+msgid "Failed to update subscriber status."
+msgstr "Failed to update subscriber status."
+
+#: web/subscribers.php:118
+msgid "Subscriber deleted successfully."
+msgstr "Subscriber deleted successfully."
+
+#: web/subscribers.php:121
+msgid "Failed to delete subscriber."
+msgstr "Failed to delete subscriber."
+
+#: web/subscribers.php:169
+msgid "Subscriber Management"
+msgstr "Subscriber Management"
+
+#: web/subscribers.php:180
+msgid "Add New Subscriber"
+msgstr "Add New Subscriber"
+
+#: web/subscribers.php:197 web/subscribers.php:229 web/subscribers.php:291
+#: web/users.php:152 web/users.php:184 web/users.php:230
+msgid "Email"
+msgstr "Correo electrónico"
+
+#: web/subscribers.php:216
+msgid "Create Subscriber"
+msgstr "Create Subscriber"
+
+#: web/subscribers.php:262
+msgid "Delete this subscriber? This action cannot be undone."
+msgstr "Delete this subscriber? This action cannot be undone."
+
+#: web/subscribers.php:287 web/users.php:234
+msgid "Password (leave blank to keep)"
+msgstr "Password (leave blank to keep)"
+
+#: web/subscribers.php:311 web/tenants.php:186 web/users.php:253
+msgid "Save Changes"
+msgstr "Save Changes"
+
+#: web/tenants.php:31
+msgid "Name and SIP domain are required."
+msgstr "Name and SIP domain are required."
+
+#: web/tenants.php:38
+msgid "Tenant created successfully."
+msgstr "Tenant created successfully."
+
+#: web/tenants.php:41
+msgid "Failed to create tenant: "
+msgstr "Failed to create tenant: "
+
+#: web/tenants.php:51
+msgid "ID, name, and SIP domain are required."
+msgstr "ID, name, and SIP domain are required."
+
+#: web/tenants.php:58
+msgid "Tenant updated successfully."
+msgstr "Tenant updated successfully."
+
+#: web/tenants.php:61
+msgid "Failed to update tenant: "
+msgstr "Failed to update tenant: "
+
+#: web/tenants.php:70
+msgid "Tenant deleted successfully."
+msgstr "Tenant deleted successfully."
+
+#: web/tenants.php:73
+msgid "Failed to delete tenant: "
+msgstr "Failed to delete tenant: "
+
+#: web/tenants.php:96
+msgid "Tenant Management"
+msgstr "Tenant Management"
+
+#: web/tenants.php:106
+msgid "Add New Tenant"
+msgstr "Add New Tenant"
+
+#: web/tenants.php:115 web/tenants.php:134 web/tenants.php:177
+msgid "SIP Domain"
+msgstr "SIP Domain"
+
+#: web/tenants.php:124
+msgid "Create Tenant"
+msgstr "Create Tenant"
+
+#: web/tenants.php:136
+msgid "Created"
+msgstr "Created"
+
+#: web/tenants.php:158
+msgid "Delete this tenant?"
+msgstr "Delete this tenant?"
+
+#: web/tls-management.php:74
+msgid "TLS certificates reloaded successfully."
+msgstr "TLS certificates reloaded successfully."
+
+#: web/tls-management.php:77
+msgid "Failed to reload TLS certificates."
+msgstr "Failed to reload TLS certificates."
+
+#: web/tls-management.php:97
+msgid "TLS Certificate Management"
+msgstr "TLS Certificate Management"
+
+#: web/tls-management.php:107
+msgid "Loaded Certificates"
+msgstr "Loaded Certificates"
+
+#: web/tls-management.php:110
+msgid "No TLS certificates loaded or unable to reach OpenSIPS MI endpoint."
+msgstr "No TLS certificates loaded or unable to reach OpenSIPS MI endpoint."
+
+#: web/tls-management.php:117
+msgid "Certificate File"
+msgstr "Certificate File"
+
+#: web/tls-management.php:118
+msgid "Key File"
+msgstr "Key File"
+
+#: web/tls-management.php:119
+msgid "CA File"
+msgstr "CA File"
+
+#: web/tls-management.php:120
+msgid "Verify Cert"
+msgstr "Verify Cert"
+
+#: web/tls-management.php:121
+msgid "Verify Depth"
+msgstr "Verify Depth"
+
+#: web/tls-management.php:122
+msgid "CRL Check All"
+msgstr "CRL Check All"
+
+#: web/tls-management.php:145
+msgid "Administrative Actions"
+msgstr "Administrative Actions"
+
+#: web/tls-management.php:149
+msgid ""
+"Reload all TLS certificates? This will apply any certificate file changes "
+"immediately."
+msgstr ""
+"Reload all TLS certificates? This will apply any certificate file changes "
+"immediately."
+
+#: web/tviewer.php:34
+msgid "Table name and columns are required."
+msgstr "Se requieren el nombre de la tabla y las columnas."
+
+#: web/tviewer.php:43
+msgid "Schema created successfully."
+msgstr "Esquema creado exitosamente."
+
+#: web/tviewer.php:50
+msgid "Schema updated successfully."
+msgstr "Esquema actualizado exitosamente."
+
+#: web/tviewer.php:66
+msgid "Schema deleted successfully."
+msgstr "Esquema eliminado exitosamente."
+
+#: web/tviewer.php:96
+msgid "Invalid table name."
+msgstr "Nombre de tabla inválido."
+
+#: web/tviewer.php:124
+msgid "Generic table viewer"
+msgstr "Visor genérico de tablas"
+
+#: web/tviewer.php:135
+msgid "Available Schemas"
+msgstr "Esquemas Disponibles"
+
+#: web/tviewer.php:139 web/tviewer.php:213
+msgid "Table Name"
+msgstr "Nombre de Tabla"
+
+#: web/tviewer.php:140 web/tviewer.php:217
+msgid "Columns"
+msgstr "Columnas"
+
+#: web/tviewer.php:141 web/tviewer.php:221
+msgid "Primary Key"
+msgstr "Clave Primaria"
+
+#: web/tviewer.php:148
+msgid "No schemas configured."
+msgstr "No hay esquemas configurados."
+
+#: web/tviewer.php:157
+msgid "View"
+msgstr "Ver"
+
+#: web/tviewer.php:165
+msgid "Delete this schema?"
+msgstr "¿Eliminar este esquema?"
+
+#: web/tviewer.php:180
+msgid "Viewing: "
+msgstr "Visualizando: "
+
+#: web/tviewer.php:207
+msgid "Edit Schema"
+msgstr "Editar Esquema"
+
+#: web/tviewer.php:207
+msgid "Add Schema"
+msgstr "Agregar Esquema"
+
+#: web/uac-registrant.php:37
+msgid "UUID, local username, remote username, and auth proxy are required."
+msgstr "UUID, local username, remote username, and auth proxy are required."
+"Se requieren el UUID, el nombre de usuario local, el nombre de usuario "
+"remoto y el proxy de autenticación."
+
+#: web/uac-registrant.php:45
+msgid "UAC registration created successfully."
+msgstr "Registro UAC creado exitosamente."
+
+#: web/uac-registrant.php:49
+msgid "A UAC registration with this UUID already exists."
+msgstr "Ya existe un registro UAC con este UUID."
+
+#: web/uac-registrant.php:61
+msgid "UAC registration updated successfully."
+msgstr "Registro UAC actualizado exitosamente."
+
+#: web/uac-registrant.php:77
+msgid "UAC registration deleted successfully."
+msgstr "Registro UAC eliminado exitosamente."
+
+#: web/uac-registrant.php:121
+msgid "Client registration provisioning for OpenSIPS"
+msgstr "Aprovisionamiento de registro de clientes para OpenSIPS"
+
+#: web/uac-registrant.php:133
+msgid "Search registrations..."
+msgstr "Buscar registros..."
+
+#: web/uac-registrant.php:141
+msgid "Registrations"
+msgstr "Registros"
+
+#: web/uac-registrant.php:145 web/uac-registrant.php:191
+msgid "UUID"
+msgstr "UUID"
+
+#: web/uac-registrant.php:146
+msgid "Local User"
+msgstr "Usuario Local"
+
+#: web/uac-registrant.php:147
+msgid "Remote User"
+msgstr "Usuario Remoto"
+
+#: web/uac-registrant.php:148 web/uac-registrant.php:211
+msgid "Auth Proxy"
+msgstr "Proxy de Autenticación"
+
+#: web/uac-registrant.php:149
+msgid "Expires"
+msgstr "Expira"
+
+#: web/uac-registrant.php:156
+msgid "No registrations found."
+msgstr "No se encontraron registros."
+
+#: web/uac-registrant.php:172
+msgid "Delete this registration?"
+msgstr "¿Eliminar este registro?"
+
+#: web/uac-registrant.php:186
+msgid "Add Registration"
+msgstr "Agregar Registro"
+
+#: web/uac-registrant.php:195
+msgid "Local Username"
+msgstr "Nombre de Usuario Local"
+
+#: web/uac-registrant.php:199
+msgid "Local Domain"
+msgstr "Dominio Local"
+
+#: web/uac-registrant.php:203
+msgid "Remote Username"
+msgstr "Nombre de Usuario Remoto"
+
+#: web/uac-registrant.php:207
+msgid "Remote Domain"
+msgstr "Dominio Remoto"
+
+#: web/uac-registrant.php:215
+msgid "Expires (seconds)"
+msgstr "Expira (segundos)"
+
+#: web/userblacklist.php:32
+msgid "Entry created successfully."
+msgstr "Entry created successfully."
+
+#: web/userblacklist.php:35
+msgid "Failed to create entry: "
+msgstr "Failed to create entry: "
+
+#: web/userblacklist.php:43
+msgid "Entry deleted successfully."
+msgstr "Entry deleted successfully."
+
+#: web/userblacklist.php:46
+msgid "Failed to delete entry: "
+msgstr "Failed to delete entry: "
+
+#: web/userblacklist.php:69
+msgid "User Blacklist"
+msgstr "User Blacklist"
+
+#: web/userblacklist.php:70
+msgid ""
+"Manage per-user and global ban/allow lists for the OpenSIPS userblacklist "
+"module."
+msgstr ""
+"Manage per-user and global ban/allow lists for the OpenSIPS userblacklist "
+"module."
+
+#: web/userblacklist.php:80 web/userblacklist.php:102
+msgid "Add Entry"
+msgstr "Add Entry"
+
+#: web/userblacklist.php:85
+msgid "Username (empty for global)"
+msgstr "Username (empty for global)"
+
+#: web/userblacklist.php:89
+msgid "Domain (empty for any)"
+msgstr "Domain (empty for any)"
+
+#: web/userblacklist.php:93
+msgid "Prefix / Pattern"
+msgstr "Prefix / Pattern"
+
+#: web/userblacklist.php:99
+msgid "Whitelist (allow instead of block)"
+msgstr "Whitelist (allow instead of block)"
+
+#: web/userblacklist.php:107
+msgid "Entries"
+msgstr "registros"
+
+#: web/userblacklist.php:115
+msgid "(global)"
+msgstr "(global)"
+
+#: web/userblacklist.php:116
+msgid "(any)"
+msgstr "(any)"
+
+#: web/userblacklist.php:120
+msgid "Allow"
+msgstr "Allow"
+
+#: web/userblacklist.php:122
+msgid "Block"
+msgstr "Block"
+
+#: web/users.php:36
+msgid "Username and password are required."
+msgstr "Username and password are required."
+
+#: web/users.php:40 web/users.php:71
+msgid "Invalid role selected."
+msgstr "Invalid role selected."
+
+#: web/users.php:55
+msgid "User created successfully."
+msgstr "User created successfully."
+
+#: web/users.php:58
+msgid "Failed to create user: "
+msgstr "Failed to create user: "
+
+#: web/users.php:69
+msgid "User ID is required."
+msgstr "User ID is required."
+
+#: web/users.php:91
+msgid "User updated successfully."
+msgstr "User updated successfully."
+
+#: web/users.php:95
+msgid "Failed to update user: "
+msgstr "Failed to update user: "
+
+#: web/users.php:104
+msgid "User deleted successfully."
+msgstr "User deleted successfully."
+
+#: web/users.php:107
+msgid "Failed to delete user: "
+msgstr "Failed to delete user: "
+
+#: web/users.php:111
+msgid "Admin role required for this action."
+msgstr "Admin role required for this action."
+
+#: web/users.php:132
+msgid "OCP User Management"
+msgstr "OCP User Management"
+
+#: web/users.php:143
+msgid "Add New User"
+msgstr "Add New User"
+
+#: web/users.php:160 web/users.php:185 web/users.php:238
+msgid "Role"
+msgstr "Rol"
+
+#: web/users.php:173
+msgid "Create User"
+msgstr "Create User"
+
+#: web/users.php:179
+msgid "Users"
+msgstr "Users"
+
+#: web/users.php:187
+msgid "Last Login"
+msgstr "Last Login"
+
+#: web/users.php:204
+msgid "Never"
+msgstr "Nunca"
+
+#: web/users.php:211
+msgid "Delete this user?"
+msgstr "Delete this user?"
+
+#: web/users.php:218
+msgid "Admin only"
+msgstr "Admin only"
+
+#: web/wiki/common/wiki-header.php:44
+msgid "TSiSIP — Wiki"
+msgstr "TSiSIP — Wiki"
+
+#: web/wiki/common/wiki-header.php:70
+msgid "Wiki navigation"
+msgstr "Wiki navigation"
+
+#: web/wiki/common/wiki-header.php:75
+msgid "Control Panel"
+msgstr "Control Panel"
+
+#: web/wiki/index.php:33 web/wiki.php:27
+msgid "Wiki"
+msgstr "Wiki"
+
+#: web/wiki/index.php:195 web/wiki.php:214
+msgid "Page Not Found"
+msgstr "Page Not Found"
+
+#: web/wiki/index.php:196 web/wiki.php:215
+msgid "The requested wiki page does not exist."
+msgstr "The requested wiki page does not exist."
+
+#: web/wiki/index.php:198 web/wiki.php:217
+msgid "Return to Wiki Home"
+msgstr "Return to Wiki Home"
+
+#: web/wiki/index.php:204 web/wiki.php:223
+msgid "Table of Contents"
+msgstr "Table of Contents"
+
+#: web/wiki/index.php:206 web/wiki.php:225
+msgid "Contents"
+msgstr "Contents"
+
+#: web/wiki/index.php:209 web/wiki.php:228
+msgid "Search contents..."
+msgstr "Search contents..."
+
+#: web/wiki/index.php:210 web/wiki.php:229
+msgid "Filter table of contents"
+msgstr "Filter table of contents"
+
+#~ msgid "TSiSIP -- TSiSIP Control Panel"
+#~ msgstr "TSiSIP -- Panel de Control TSiSIP"
+
+#~ msgid "TSiSIP -- Login"
+#~ msgstr "TSiSIP -- Inicio de Sesion"
+
+#~ msgid "TSiSIP Logo"
+#~ msgstr "Logo TSiSIP"
+
+#~ msgid "Instance"
+#~ msgstr "Instancia"
+
+#~ msgid "Max"
+#~ msgstr "Maximo"
+
+#~ msgid "No data available"
+#~ msgstr "No hay datos disponibles"
+
+#~ msgid "Error loading chart data"
+#~ msgstr "Error al cargar datos del grafico"
+
+#~ msgid "D3.js library not loaded"
+#~ msgstr "Biblioteca D3.js no cargada"
+
+#~ msgid "Live Call Center Status"
+#~ msgstr "Estado del Call Center en Vivo"
+
+#~ msgid "No active calls."
+#~ msgstr "No hay llamadas activas."
+
+#~ msgid "No load balancer destinations."
+#~ msgstr "No hay destinos de balanceador."

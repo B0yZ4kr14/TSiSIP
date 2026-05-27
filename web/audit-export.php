@@ -13,9 +13,9 @@ checkPasswordChange();
 requireRole('devops');
 
 $format = $_GET['format'] ?? '';
-if ($format !== 'csv' && $format !== 'json') {
+if ($format !== 'csv' && $format !== 'json' && $format !== 'text') {
     http_response_code(400);
-    echo _('Invalid format. Use ?format=csv or ?format=json');
+    echo _('Invalid format. Use ?format=csv, ?format=json, or ?format=text');
     exit;
 }
 
@@ -162,5 +162,44 @@ if ($format === 'csv') {
         ]);
     } catch (Throwable $e) {
         error_log('Audit export JSON logging failed: ' . $e->getMessage());
+    }
+} elseif ($format === 'text') {
+    header('Content-Type: text/plain; charset=utf-8');
+    header('Content-Disposition: attachment; filename="tsisip-audit-log-' . date('Ymd-His') . '.txt"');
+    header('Cache-Control: no-store, no-cache, must-revalidate');
+
+    echo str_repeat('=', 80) . "\n";
+    echo _('TSiSIP Audit Log Export') . "\n";
+    echo str_repeat('=', 80) . "\n";
+    echo _('Filters: ') . json_encode($filters, JSON_UNESCAPED_UNICODE) . "\n";
+    echo str_repeat('-', 80) . "\n";
+
+    while ($row = $stmt->fetch(PDO::FETCH_ASSOC)) {
+        echo _('ID: ') . ($row['id'] ?? 'N/A') . "\n";
+        echo _('Time: ') . ($row['event_time'] ?? 'N/A') . "\n";
+        echo _('User: ') . ($row['username'] ?? 'N/A') . "\n";
+        echo _('Action: ') . ($row['action'] ?? 'N/A') . "\n";
+        echo _('Resource: ') . ($row['resource_type'] ?? 'N/A') . ' / ' . ($row['resource_id'] ?? 'N/A') . "\n";
+        echo _('IP: ') . ($row['ip_address'] ?? 'N/A') . "\n";
+        echo _('Success: ') . (($row['success'] ?? false) ? _('Yes') : _('No')) . "\n";
+        if (!empty($row['details'])) {
+            $decoded = json_decode($row['details'], true);
+            if ($decoded !== null) {
+                echo _('Details: ') . json_encode($decoded, JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES) . "\n";
+            } else {
+                echo _('Details: ') . $row['details'] . "\n";
+            }
+        }
+        echo str_repeat('-', 80) . "\n";
+    }
+
+    try {
+        logAuditEvent('EXPORT_TEXT', 'audit_log', null, true, [
+            'filter_from' => $filters['from'],
+            'filter_to'   => $filters['to'],
+            'filter_action' => $filters['action'] ?: null,
+        ]);
+    } catch (Throwable $e) {
+        error_log('Audit export TEXT logging failed: ' . $e->getMessage());
     }
 }

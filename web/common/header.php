@@ -32,8 +32,7 @@ if (isset($_SESSION['ocp_user_role']) && in_array($_SESSION['ocp_user_role'], $v
     $userRole = $_SESSION['ocp_user_role'];
 }
 
-// Locale for i18n
-$ocpLocale = isset($_SESSION['lang']) ? $_SESSION['lang'] : 'en_US';
+// Locale already initialized in config.php
 ?>
 <?php
 // Security headers for all OCP responses

@@ -35,6 +35,11 @@ if ($userRole === 'admin' || $userRole === 'devops') {
         ['url' => 'mi-commands.php',  'label' => _('MI Commands'),          'icon' => 'terminal'],
         ['url' => 'statistics.php',   'label' => _('Statistics'),           'icon' => 'chart'],
         ['url' => 'tls-management.php', 'label' => _('TLS Certificates'),    'icon' => 'lock'],
+        ['url' => 'gateway-health.php', 'label' => _('Gateway Health'),       'icon' => 'heart'],
+        ['url' => 'call-queue.php',     'label' => _('Live Call Queue'),      'icon' => 'queue'],
+        ['url' => 'topology.php',       'label' => _('Network Topology'),     'icon' => 'network'],
+        ['url' => 'failover.php',       'label' => _('Manual Failover'),      'icon' => 'switch'],
+        ['url' => 'alert-history.php',  'label' => _('Alert History'),        'icon' => 'bell'],
     ];
 }
 
@@ -99,7 +104,7 @@ if (isset($roleNav[$userRole])) {
             <li><span class="tsisip-status-dot tsisip-status-dot--ok"></span> OCP Web Interface</li>
         </ul>
         <p class="tsisip-hint">
-            <?php echo _('Feature 020 tools are now available: Dialog Viewer, MI Commands, Statistics, Dialplan, Domains, and TLS Management.'); ?>
+            <?php echo _('Feature 020 tools are now available: Dialog Viewer, MI Commands, Statistics, Dialplan, Domains, TLS Management, Gateway Health, Live Call Queue, Network Topology, Manual Failover, and Alert History.'); ?>
         </p>
     </div>
 </div>

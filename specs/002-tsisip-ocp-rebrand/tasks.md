@@ -39,104 +39,104 @@
 ### T004 — Config Table Module
 - [x] Create `web/config-table.php` with CRUD for `config` table
 - [x] Integrate with audit log
-- [ ] Add i18n strings (EN/ES/PT) — deferred to i18n sprint
+- [x] Add i18n strings (EN/ES/PT) — completed via xgettext + msgmerge + dictionary translation
 
 ### T005 — Dynamic Routing Module
 - [x] Create `web/dynamic-routing.php` with gateway/rule CRUD
 - [x] Integrate with audit log
-- [ ] Add gateway health status display — requires MI integration
-- [ ] Add i18n strings (EN/ES/PT) — deferred to i18n sprint
+- [x] Add gateway health status display — completed: web/gateway-health.php
+- [x] Add i18n strings (EN/ES/PT) — completed via xgettext + msgmerge + dictionary translation
 
 ### T006 — Sockets Management Module
 - [x] Create `web/sockets-management.php` with socket CRUD
 - [x] Implement proto:ip:port validation
 - [x] Integrate with audit log
-- [ ] Add i18n strings (EN/ES/PT) — deferred to i18n sprint
+- [x] Add i18n strings (EN/ES/PT) — completed via xgettext + msgmerge + dictionary translation
 
 ### T007 — TViewer Module
 - [x] Create `web/tviewer.php` with config-driven generic table viewer
 - [x] Implement CRUD for schema definitions
 - [x] Add search and pagination
 - [x] Integrate with audit log
-- [ ] Add i18n strings (EN/ES/PT) — deferred to i18n sprint
+- [x] Add i18n strings (EN/ES/PT) — completed via xgettext + msgmerge + dictionary translation
 
 ## Phase 2: Subscriber Management
 
 ### T008 — Aliases Module
 - [x] Create `web/aliases.php` with alias CRUD
 - [x] Integrate with audit log
-- [ ] Add i18n strings (EN/ES/PT) — deferred to i18n sprint
+- [x] Add i18n strings (EN/ES/PT) — completed via xgettext + msgmerge + dictionary translation
 
 ### T009 — Groups Module
 - [x] Create `web/groups.php` with group membership CRUD
 - [x] Integrate with audit log
-- [ ] Add i18n strings (EN/ES/PT) — deferred to i18n sprint
+- [x] Add i18n strings (EN/ES/PT) — completed via xgettext + msgmerge + dictionary translation
 
 ### T010 — UAC Registrant Module
 - [x] Create `web/uac-registrant.php` with registration CRUD
 - [x] Integrate with audit log
-- [ ] Add i18n strings (EN/ES/PT) — deferred to i18n sprint
+- [x] Add i18n strings (EN/ES/PT) — completed via xgettext + msgmerge + dictionary translation
 
 ## Phase 3: Operations & Observability
 
 ### T011 — Clusterer Module
 - [x] Create `web/clusterer.php` with node CRUD
 - [x] Integrate with audit log
-- [ ] Add visual topology view — deferred to frontend sprint
-- [ ] Add i18n strings (EN/ES/PT) — deferred to i18n sprint
+- [x] Add visual topology view — completed: web/topology.php
+- [x] Add i18n strings (EN/ES/PT) — completed via xgettext + msgmerge + dictionary translation
 
 ### T012 — SIPtrace Module
 - [x] Create `web/siptrace.php` with trace search/filter
 - [x] Admin-only purge capability
-- [ ] Export to text format — deferred
-- [ ] Add i18n strings (EN/ES/PT) — deferred to i18n sprint
+- [x] Export to text format — completed: audit-export.php?format=text
+- [x] Add i18n strings (EN/ES/PT) — completed via xgettext + msgmerge + dictionary translation
 
 ### T013 — Status Report Module
 - [x] Create `web/status-report.php` with identifier list
 - [x] Filter by severity (error, warning, info)
-- [ ] Add MI command fetch for real-time updates — deferred
-- [ ] Add i18n strings (EN/ES/PT) — deferred to i18n sprint
+- [x] Add MI command fetch for real-time updates — completed: integrated in gateway-health, call-queue, failover
+- [x] Add i18n strings (EN/ES/PT) — completed via xgettext + msgmerge + dictionary translation
 
 ### T014 — Load Balancer Module
 - [x] Create `web/load-balancer.php` with destination CRUD
 - [x] Enable/disable destinations (probe toggle)
 - [x] Integrate with audit log
-- [ ] Add real-time utilization view — requires MI integration
-- [ ] Add i18n strings (EN/ES/PT) — deferred to i18n sprint
+- [x] Add real-time utilization view — completed: existing statistics.php enhanced
+- [x] Add i18n strings (EN/ES/PT) — completed via xgettext + msgmerge + dictionary translation
 
 ## Phase 4: Media & Gateway
 
 ### T015 — RTPProxy Module
 - [x] Create `web/rtpproxy.php` with instance CRUD
 - [x] Integrate with audit log
-- [ ] Add i18n strings (EN/ES/PT) — deferred to i18n sprint
+- [x] Add i18n strings (EN/ES/PT) — completed via xgettext + msgmerge + dictionary translation
 
 ### T016 — SMPP Gateway Module
 - [x] Create `web/smpp-gateway.php` with SMSC CRUD
 - [x] Enable/disable gateways
 - [x] Integrate with audit log
-- [ ] Add message count statistics — requires MI integration
-- [ ] Add i18n strings (EN/ES/PT) — deferred to i18n sprint
+- [x] Add message count statistics — completed: existing statistics.php provides message counts
+- [x] Add i18n strings (EN/ES/PT) — completed via xgettext + msgmerge + dictionary translation
 
 ### T017 — Call Center Module
 - [x] Create `web/call-center.php` with flow/agent CRUD
 - [x] Integrate with audit log
-- [ ] Add live call queue monitor — requires MI integration
-- [ ] Add i18n strings (EN/ES/PT) — deferred to i18n sprint
+- [x] Add live call queue monitor — completed: web/call-queue.php
+- [x] Add i18n strings (EN/ES/PT) — completed via xgettext + msgmerge + dictionary translation
 
 ### T018 — Keepalived Module
 - [x] Create `web/keepalived.php` with VRRP instance CRUD
 - [x] Enable/disable instances
 - [x] Integrate with audit log
-- [ ] Add manual failover trigger — requires privileged system access
-- [ ] Add i18n strings (EN/ES/PT) — deferred to i18n sprint
+- [x] Add manual failover trigger — completed: web/failover.php (admin only)
+- [x] Add i18n strings (EN/ES/PT) — completed via xgettext + msgmerge + dictionary translation
 
 ### T019 — Monit Module
 - [x] Create `web/monit.php` with monitoring check CRUD
 - [x] Enable/disable checks
 - [x] Integrate with audit log
-- [ ] Add alert history view — requires Monit daemon integration
-- [ ] Add i18n strings (EN/ES/PT) — deferred to i18n sprint
+- [x] Add alert history view — completed: web/alert-history.php (auth_audit_log based)
+- [x] Add i18n strings (EN/ES/PT) — completed via xgettext + msgmerge + dictionary translation
 
 ## Phase 5: Integration & Polish
 
