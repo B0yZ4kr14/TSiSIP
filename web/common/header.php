@@ -123,4 +123,5 @@ header("Referrer-Policy: strict-origin-when-cross-origin");
     </button>
 </header>
 
+<?php require_once __DIR__ . '/common/mi-error-helper.php'; ?>
 <?php require_once __DIR__ . '/role-nav.php'; ?>

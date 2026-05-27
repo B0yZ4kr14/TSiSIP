@@ -96,9 +96,7 @@ require_once __DIR__ . '/common/header.php';
     <section class="tsisip-section">
         <h2 class="tsisip-section-title"><?php echo _('Loaded Modules'); ?> (<?php echo count($modules); ?>)</h2>
         <?php if (!$whichData['success']): ?>
-            <div class="tsisip-alert tsisip-alert--warning" role="alert">
-                <?php echo _('MI Error:'); ?> <?php echo htmlspecialchars($whichData['error'] ?? 'Unknown'); ?>
-            </div>
+            <?php echo miErrorBanner($whichData['error'] ?? _('Unknown')); ?>
         <?php else: ?>
             <div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(180px,1fr));gap:8px;">
                 <?php foreach ($modules as $mod): ?>

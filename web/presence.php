@@ -98,7 +98,7 @@ require_once __DIR__ . '/common/header.php';
     </div>
 
     <?php if ($error): ?>
-        <div class="tsisip-alert tsisip-alert--error" role="alert"><?php echo htmlspecialchars($error); ?></div>
+        <?php echo miErrorBanner($error); ?>
     <?php endif; ?>
     <?php if ($success): ?>
         <div class="tsisip-alert tsisip-alert--success" role="status"><?php echo htmlspecialchars($success); ?></div>

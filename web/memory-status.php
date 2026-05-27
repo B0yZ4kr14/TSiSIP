@@ -129,10 +129,8 @@ require_once __DIR__ . '/common/header.php';
         <h1 class="tsisip-page-title"><?php echo $pageTitle; ?></h1>
     </div>
 
-    <?php if (!$miData['success']): ?>
-        <div class="tsisip-alert tsisip-alert--warning" role="alert">
-            <?php echo _('MI Error:'); ?> <?php echo htmlspecialchars($miData['error'] ?? 'Unknown'); ?>
-        </div>
+    <?php if (!$miData["success"]): ?>
+        <?php echo miErrorBanner($miData["error"] ?? _("Unknown")); ?>
     <?php else: ?>
         <?php if ($pkgData['pct'] > 80 || $shmData['pct'] > 80): ?>
             <div class="tsisip-alert tsisip-alert--error" role="alert">

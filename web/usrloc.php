@@ -87,10 +87,8 @@ require_once __DIR__ . '/common/header.php';
         </div>
     </section>
 
-    <?php if (!$miData['success']): ?>
-        <div class="tsisip-alert tsisip-alert--warning" role="alert">
-            <?php echo _('MI Error:'); ?> <?php echo htmlspecialchars($miData['error'] ?? 'Unknown'); ?>
-        </div>
+    <?php if (!$miData["success"]): ?>
+        <?php echo miErrorBanner($miData["error"] ?? _("Unknown")); ?>
     <?php else: ?>
         <section class="tsisip-section">
             <h2 class="tsisip-section-title"><?php echo _('Contacts'); ?></h2>

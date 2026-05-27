@@ -87,10 +87,8 @@ require_once __DIR__ . '/common/header.php';
             <h2 class="tsisip-section-title"><?php echo _('Connections'); ?></h2>
             <span class="tsisip-badge tsisip-badge-info"><?php echo sprintf(_('Total: %d'), count($filtered)); ?></span>
         </div>
-        <?php if (!$miData['success']): ?>
-            <div class="tsisip-alert tsisip-alert--warning" role="alert">
-                <?php echo _('MI Error:'); ?> <?php echo htmlspecialchars($miData['error'] ?? 'Unknown'); ?>
-            </div>
+        <?php if (!$miData["success"]): ?>
+        <?php echo miErrorBanner($miData["error"] ?? _("Unknown")); ?>
         <?php else: ?>
             <div style="overflow-x:auto;">
                 <table class="tsisip-table dataTable" data-tsisip-sortable>

@@ -69,9 +69,7 @@ require_once __DIR__ . '/common/header.php';
     <section class="tsisip-section">
         <h2 class="tsisip-section-title"><?php echo _('NAT Helper Sockets'); ?></h2>
         <?php if (!$socketData['success']): ?>
-            <div class="tsisip-alert tsisip-alert--warning" role="alert">
-                <?php echo _('MI Error:'); ?> <?php echo htmlspecialchars($socketData['error'] ?? 'Unknown'); ?>
-            </div>
+            <?php echo miErrorBanner($socketData['error'] ?? _('Unknown')); ?>
         <?php else: ?>
             <div style="overflow-x:auto;">
                 <table class="tsisip-table dataTable" data-tsisip-sortable>
@@ -108,9 +106,7 @@ require_once __DIR__ . '/common/header.php';
     <section class="tsisip-section">
         <h2 class="tsisip-section-title"><?php echo _('Ping Statistics'); ?></h2>
         <?php if (!$pingData['success']): ?>
-            <div class="tsisip-alert tsisip-alert--warning" role="alert">
-                <?php echo _('MI Error:'); ?> <?php echo htmlspecialchars($pingData['error'] ?? 'Unknown'); ?>
-            </div>
+            <?php echo miErrorBanner($pingData['error'] ?? _('Unknown')); ?>
         <?php else: ?>
             <div style="overflow-x:auto;">
                 <table class="tsisip-table dataTable" data-tsisip-sortable>

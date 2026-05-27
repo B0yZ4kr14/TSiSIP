@@ -47,10 +47,8 @@ require_once __DIR__ . '/common/header.php';
         <?php echo _('Topology hiding status is inferred from dialog data as there is no dedicated MI command for the topology_hiding module.'); ?>
     </div>
 
-    <?php if (!$miData['success']): ?>
-        <div class="tsisip-alert tsisip-alert--warning" role="alert">
-            <?php echo _('MI Error:'); ?> <?php echo htmlspecialchars($miData['error'] ?? 'Unknown'); ?>
-        </div>
+    <?php if (!$miData["success"]): ?>
+        <?php echo miErrorBanner($miData["error"] ?? _("Unknown")); ?>
     <?php else: ?>
         <section class="tsisip-section">
             <h2 class="tsisip-section-title"><?php echo _('Dialogs with Topology Hiding'); ?></h2>
