@@ -15,9 +15,9 @@ if ! docker ps --format '{{.Names}}' | grep -qx "$OPENSIPS_CONTAINER"; then
     exit 1
 fi
 
-# Primary: MI HTTP tls_reload from inside the container
+# Primary: MI HTTP tls_reload from inside the container (requires POST + JSON-RPC)
 start_time=$(date +%s)
-if docker exec "$OPENSIPS_CONTAINER" sh -c "curl -fsSL --max-time $TIMEOUT http://127.0.0.1:8888/mi/tls_reload >/dev/null 2>&1"; then
+if docker exec "$OPENSIPS_CONTAINER" sh -c "curl -fsSL --max-time $TIMEOUT -X POST -H 'Content-Type: application/json' -d '{\\\"jsonrpc\\\":\\\"2.0\\\",\\\"method\\\":\\\"tls_reload\\\",\\\"params\\\":[],\\\"id\\\":1}' http://127.0.0.1:8888/mi >/dev/null 2>&1"; then
     end_time=$(date +%s)
     duration=$((end_time - start_time))
     echo "[TLS-RELOAD] TLS reload completed via MI HTTP in ${duration}s"

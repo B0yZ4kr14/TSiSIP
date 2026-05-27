@@ -34,7 +34,11 @@ chmod 600 "${CERT_DIR}/server.key"
 # Trigger OpenSIPS reload via MI HTTP
 OPENSIPS_MI_URL="${OPENSIPS_MI_URL:-http://opensips:8888/mi}"
 
-if curl -fsSL --max-time 10 "${OPENSIPS_MI_URL}/tls_reload" >/dev/null 2>&1; then
+# MI HTTP requires POST with JSON-RPC payload
+if curl -fsSL --max-time 10 -X POST \
+    -H "Content-Type: application/json" \
+    -d '{"jsonrpc":"2.0","method":"tls_reload","params":[],"id":1}' \
+    "${OPENSIPS_MI_URL}" >/dev/null 2>&1; then
     echo "[CERTBOT] Deployed new certificate and triggered tls_reload via MI HTTP"
     exit 0
 fi

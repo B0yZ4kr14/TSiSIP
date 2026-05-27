@@ -133,7 +133,7 @@ test_mi_http_endpoint() {
         return
     fi
 
-    if docker exec "$container" sh -c "curl -fsSL --max-time 5 http://127.0.0.1:8888/mi/version >/dev/null 2>&1"; then
+    if docker exec "$container" sh -c "curl -fsSL --max-time 5 -X POST -H 'Content-Type: application/json' -d '{\\\"jsonrpc\\\":\\\"2.0\\\",\\\"method\\\":\\\"version\\\",\\\"params\\\":[],\\\"id\\\":1}' http://127.0.0.1:8888/mi >/dev/null 2>&1"; then
         tap_ok "MI HTTP endpoint responds"
     else
         tap_not_ok "MI HTTP endpoint responds"
