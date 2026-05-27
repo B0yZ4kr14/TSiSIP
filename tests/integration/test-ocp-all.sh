@@ -15,10 +15,10 @@ run_test() {
     local script="$1"
     echo "--- Running: $(basename "$script") ---"
     if bash "$script" 2>&1; then
-        ((PASS++))
+        PASS=$((PASS + 1))
         echo "✓ PASSED"
     else
-        ((FAIL++))
+        FAIL=$((FAIL + 1))
         echo "✗ FAILED"
     fi
     echo ""
