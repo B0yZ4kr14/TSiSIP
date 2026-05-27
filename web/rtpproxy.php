@@ -158,7 +158,7 @@ require_once __DIR__ . '/common/header.php';
             <input type="hidden" name="action" value="create">
             <div class="tsisip-form-row">
                 <label class="tsisip-label"><?php echo _('Socket'); ?></label>
-                <input type="text" name="rtpproxy_sock" required class="tsisip-input" placeholder="udp:10.0.0.1:7722">
+                <input type="text" name="rtpproxy_sock" required class="tsisip-input" placeholder="udp:rtpproxy.example.com:7722">
             </div>
             <div class="tsisip-form-row">
                 <label class="tsisip-label"><?php echo _('Set ID'); ?></label>

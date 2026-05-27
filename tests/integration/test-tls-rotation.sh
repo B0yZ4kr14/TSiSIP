@@ -9,6 +9,8 @@
 # Exit: 0 = all passed, 1 = one or more failed
 
 set -euo pipefail
+# Cleanup temp files on exit
+trap "rm -rf /tmp/tsisip-*" EXIT
 
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 PROJECT_DIR="$(dirname "$(dirname "$SCRIPT_DIR")")"

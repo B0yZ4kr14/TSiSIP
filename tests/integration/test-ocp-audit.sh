@@ -109,7 +109,7 @@ echo ""
 echo "[test] Verifying immutability trigger blocks UPDATE..."
 UPDATE_RESULT=$(docker compose -f "$COMPOSE_FILE" exec -T "$PG_SERVICE" \
     psql -U "$DB_USER" -d "$DB_NAME" -t -A \
-    -c "UPDATE ocp_audit_log SET action = 'HACKED' WHERE id = (SELECT MIN(id) FROM ocp_audit_log);" 2>&1 || true)
+    -c "UPDATE ocp_audit_log SET action = 'TEST_MUTATION' WHERE id = (SELECT MIN(id) FROM ocp_audit_log);" 2>&1 || true)
 if echo "$UPDATE_RESULT" | grep -qi 'immutable'; then
     report_pass "UPDATE blocked by immutability trigger"
 else

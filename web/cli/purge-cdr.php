@@ -65,8 +65,8 @@ try {
         "UPDATE cdr SET
             from_user = 'anon_' || SUBSTRING(MD5(from_user || call_id) FROM 1 FOR 16),
             to_user = 'anon_' || SUBSTRING(MD5(to_user || call_id) FROM 1 FOR 16),
-            source_ip = '0.0.0.0'::INET,
-            destination_ip = '0.0.0.0'::INET
+            source_ip = NULL,
+            destination_ip = NULL
          WHERE call_start < NOW() - INTERVAL '1 day' * :days
            AND from_user NOT LIKE 'anon_%'"
     );
