@@ -48,8 +48,15 @@ if (!isset($routes[$routeKey])) {
     exit;
 }
 
-$auth = requireApiAuth();
-enforceRateLimit($auth['key_id']);
+// Public endpoints (no API key required)
+$publicRoutes = ['GET /v1/status'];
+$isPublic = in_array($routeKey, $publicRoutes, true);
+
+$auth = null;
+if (!$isPublic) {
+    $auth = requireApiAuth();
+    enforceRateLimit($auth['key_id']);
+}
 
 // Load handler
 $handlerFile = __DIR__ . '/' . $routes[$routeKey];

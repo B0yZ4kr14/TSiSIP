@@ -37,13 +37,19 @@ api_call() {
     fi
 }
 
-# T001: Status endpoint without auth
+# T001: Status endpoint without auth (public)
 echo "--- Test: GET /v1/status ---"
 HTTP_CODE=$(api_call "GET" "/v1/status")
-if [ "$HTTP_CODE" = "401" ]; then
-    report_pass "Status endpoint requires auth (401)"
+if [ "$HTTP_CODE" = "200" ]; then
+    report_pass "Status endpoint is public (200)"
+    BODY=$(docker compose exec -T ocp cat /tmp/api_resp)
+    if echo "$BODY" | grep -q '"opensips"'; then
+        report_pass "Status contains opensips field"
+    else
+        report_fail "Status missing opensips field"
+    fi
 else
-    report_fail "Expected 401, got $HTTP_CODE"
+    report_fail "Expected 200, got $HTTP_CODE"
 fi
 
 # T002: Status with valid key
@@ -80,14 +86,25 @@ else
     report_fail "Expected 200, got $HTTP_CODE"
 fi
 
-# T005: Invalid key
+# T005: Invalid key on protected endpoint
 echo "--- Test: Invalid key ---"
-HTTP_CODE=$(api_call "GET" "/v1/status" "Authorization: Bearer invalid_key_12345")
+HTTP_CODE=$(api_call "GET" "/v1/metrics" "Authorization: Bearer invalid_key_12345")
 if [ "$HTTP_CODE" = "401" ]; then
     report_pass "Invalid key rejected (401)"
 else
     report_fail "Expected 401, got $HTTP_CODE"
 fi
+
+# T006: Protected endpoints reject unauthenticated
+echo "--- Test: Protected endpoints without auth ---"
+for endpoint in /v1/metrics /v1/users /v1/audit; do
+    HTTP_CODE=$(api_call "GET" "$endpoint")
+    if [ "$HTTP_CODE" = "401" ]; then
+        report_pass "${endpoint} requires auth (401)"
+    else
+        report_fail "${endpoint} expected 401, got $HTTP_CODE"
+    fi
+done
 
 # Cleanup
 docker compose exec -T postgres psql -U opensips -d opensips -c "
