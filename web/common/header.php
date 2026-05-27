@@ -45,6 +45,7 @@ header("Referrer-Policy: strict-origin-when-cross-origin");
 <html lang="<?php echo htmlspecialchars(substr($ocpLocale, 0, 2)); ?>" data-theme="<?php echo htmlspecialchars($_SESSION['tsisip_theme'] ?? 'light', ENT_QUOTES, 'UTF-8'); ?>">
 <head>
     <meta charset="UTF-8">
+    <meta name="csrf-token" content="<?php echo htmlspecialchars(generateCsrfToken()); ?>">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta name="theme-color" content="#0A1628">
     <title><?php echo _('TSiSIP — Control Panel'); ?></title>

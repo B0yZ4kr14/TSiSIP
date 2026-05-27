@@ -925,3 +925,24 @@ body.tsisip-login::after {
         transition: none !important;
     }
 }
+
+/* SSE Status Indicator */
+.tsisip-sse-status {
+    width: 10px;
+    height: 10px;
+    border-radius: 50%;
+    display: inline-block;
+    margin-left: 0.5rem;
+    transition: background-color 0.3s ease;
+}
+.tsisip-sse-status--disconnected { background: var(--tsisip-text-secondary); }
+.tsisip-sse-status--connecting   { background: var(--tsisip-warning-border); animation: pulse 1s infinite; }
+.tsisip-sse-status--connected    { background: var(--tsisip-success); }
+.tsisip-sse-status--reconnecting { background: var(--tsisip-warning-border); animation: pulse 1.5s infinite; }
+.tsisip-sse-status--error        { background: var(--tsisip-danger); }
+.tsisip-sse-status--unsupported  { background: var(--tsisip-text-secondary); opacity: 0.5; }
+
+@keyframes pulse {
+    0%, 100% { opacity: 1; }
+    50% { opacity: 0.4; }
+}
