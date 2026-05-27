@@ -23,6 +23,7 @@ $sipUserPages = [
     'subscriber-stats' => _('Subscriber Stats'),
     'aliases'          => _('Aliases'),
     'groups'           => _('Groups'),
+    'userblacklist'    => _('User Blacklist'),
 ];
 // Role filter: readonly sees list only (handled in each module)
 $sipUserVisible = ($isAdmin || $isDevOps || $isDentist || $isAssist || $isUser || $isReadOnly);
