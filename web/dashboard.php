@@ -40,6 +40,8 @@ if ($userRole === 'admin' || $userRole === 'devops') {
         ['url' => 'topology.php',       'label' => _('Network Topology'),     'icon' => 'network'],
         ['url' => 'failover.php',       'label' => _('Manual Failover'),      'icon' => 'switch'],
         ['url' => 'alert-history.php',  'label' => _('Alert History'),        'icon' => 'bell'],
+        ['url' => 'rtpengine-status.php', 'label' => _('RTPengine Status'),       'icon' => 'broadcast'],
+        ['url' => 'subscriber-stats.php', 'label' => _('Subscriber Statistics'),  'icon' => 'users'],
     ];
 }
 
@@ -104,7 +106,7 @@ if (isset($roleNav[$userRole])) {
             <li><span class="tsisip-status-dot tsisip-status-dot--ok"></span> OCP Web Interface</li>
         </ul>
         <p class="tsisip-hint">
-            <?php echo _('Feature 020 tools are now available: Dialog Viewer, MI Commands, Statistics, Dialplan, Domains, TLS Management, Gateway Health, Live Call Queue, Network Topology, Manual Failover, and Alert History.'); ?>
+            <?php echo _('Feature 020 tools are now available: Dialog Viewer, MI Commands, Statistics, Dialplan, Domains, TLS Management, Gateway Health, Live Call Queue, Network Topology, Manual Failover, Alert History, RTPengine Status, and Subscriber Statistics.'); ?>
         </p>
     </div>
 </div>
