@@ -23,6 +23,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             $_SESSION['ocp_user_email'] = $user['email'];
             $_SESSION['ocp_user_role']  = $user['role'];
             $_SESSION['ocp_force_password_change'] = $user['force_password_change'];
+            recordSession($user['id']);
             if ($user['force_password_change']) {
                 header('Location: change-password.php');
             } else {

@@ -175,6 +175,11 @@ function requireAuth(): void {
         header('Location: login.php');
         exit;
     }
+    if (isSessionInvalidated()) {
+        logout();
+        header('Location: login.php');
+        exit;
+    }
 }
 
 /**
@@ -265,4 +270,79 @@ function getFlash(): ?array {
     $flash = $_SESSION['flash'] ?? null;
     unset($_SESSION['flash']);
     return $flash;
+}
+
+/**
+ * Record an active session in the database.
+ */
+function recordSession(int $userId): void {
+    try {
+        $pdo = getDb();
+        $token = session_id();
+        if ($token === '') return;
+        $pdo->prepare(
+            "INSERT INTO ocp_user_sessions (user_id, session_token, ip_address, user_agent, created_at, last_activity)
+             VALUES (:uid, :tok, :ip, :ua, NOW(), NOW())
+             ON CONFLICT (session_token) DO UPDATE SET
+                 last_activity = NOW(),
+                 invalidated_at = NULL"
+        )->execute([
+            ':uid' => $userId,
+            ':tok' => $token,
+            ':ip'  => $_SERVER['REMOTE_ADDR'] ?? '0.0.0.0',
+            ':ua'  => $_SERVER['HTTP_USER_AGENT'] ?? '',
+        ]);
+    } catch (Exception $e) {
+        error_log('Failed to record session: ' . $e->getMessage());
+    }
+}
+
+/**
+ * Check if current session has been invalidated.
+ */
+function isSessionInvalidated(): bool {
+    try {
+        $token = session_id();
+        if ($token === '') return false;
+        $pdo = getDb();
+        $stmt = $pdo->prepare(
+            "SELECT invalidated_at FROM ocp_user_sessions WHERE session_token = :tok"
+        );
+        $stmt->execute([':tok' => $token]);
+        $row = $stmt->fetch();
+        return $row && $row['invalidated_at'] !== null;
+    } catch (Exception $e) {
+        error_log('Failed to check session invalidation: ' . $e->getMessage());
+        return false;
+    }
+}
+
+/**
+ * Logout and invalidate session.
+ */
+function logout(): void {
+    try {
+        $token = session_id();
+        if ($token !== '') {
+            $pdo = getDb();
+            $pdo->prepare(
+                "UPDATE ocp_user_sessions SET invalidated_at = NOW() WHERE session_token = :tok"
+            )->execute([':tok' => $token]);
+        }
+    } catch (Exception $e) {
+        error_log('Failed to invalidate session: ' . $e->getMessage());
+    }
+    $_SESSION = [];
+    if (ini_get('session.use_cookies')) {
+        $params = session_get_cookie_params();
+        setcookie(session_name(), '', [
+            'expires' => time() - 42000,
+            'path' => $params['path'],
+            'domain' => $params['domain'],
+            'secure' => $params['secure'],
+            'httponly' => $params['httponly'],
+            'samesite' => $params['samesite'] ?? 'Strict',
+        ]);
+    }
+    session_destroy();
 }

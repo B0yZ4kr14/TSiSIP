@@ -68,6 +68,7 @@ if ($userRole === 'admin' || $userRole === 'devops') {
         ['url' => 'dispatcher.php',   'label' => _('Dispatcher Targets'),   'icon' => 'route'],
         ['url' => 'rtpengine.php',    'label' => _('RTPengine Sessions'),   'icon' => 'broadcast'],
         ['url' => 'audit-log.php',    'label' => _('Audit Log & Compliance'), 'icon' => 'shield'],
+        ['url' => 'users.php',        'label' => _('User Management'),      'icon' => 'users'],
         ['url' => 'dialplan.php',     'label' => _('Dialplan'),             'icon' => 'list'],
         ['url' => 'domains.php',      'label' => _('SIP Domains'),          'icon' => 'globe'],
         ['url' => 'dialog.php',       'label' => _('Active Dialogs'),       'icon' => 'phone'],
