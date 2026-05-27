@@ -49,7 +49,11 @@ CREATE OR REPLACE FUNCTION fn_ocp_audit_log_immutable()
 RETURNS TRIGGER AS $$
 BEGIN
     IF (CURRENT_USER = 'tsisip_retention') THEN
-        RETURN OLD;
+        IF (TG_OP = 'DELETE') THEN
+            RETURN OLD;
+        ELSE
+            RETURN NEW;
+        END IF;
     END IF;
     RAISE EXCEPTION 'Audit log entries are immutable';
 END;
@@ -101,3 +105,47 @@ GRANT USAGE, SELECT ON SEQUENCE ocp_audit_log_id_seq TO opensips;
 -- Retention service role: DELETE required to bypass immutability trigger.
 -- SELECT is also required so the BEFORE DELETE trigger can access OLD.
 GRANT SELECT, DELETE ON ocp_audit_log TO tsisip_retention;
+
+-- -----------------------------------------------------------
+-- Hash chain trigger for tamper-evident audit trail
+-- -----------------------------------------------------------
+CREATE OR REPLACE FUNCTION fn_ocp_audit_log_hash_chain()
+RETURNS TRIGGER AS \$\$
+DECLARE
+    last_hash VARCHAR(64);
+    payload TEXT;
+BEGIN
+    SELECT hash INTO last_hash
+    FROM ocp_audit_log
+    ORDER BY id DESC
+    LIMIT 1;
+
+    IF last_hash IS NULL THEN
+        last_hash := 'genesis';
+    END IF;
+
+    NEW.prev_hash := last_hash;
+
+    payload := COALESCE(NEW.event_time::TEXT, '') || '|' ||
+               COALESCE(NEW.user_id::TEXT, '') || '|' ||
+               COALESCE(NEW.username, '') || '|' ||
+               COALESCE(NEW.action, '') || '|' ||
+               COALESCE(NEW.resource_type, '') || '|' ||
+               COALESCE(NEW.resource_id, '') || '|' ||
+               COALESCE(host(NEW.ip_address), '') || '|' ||
+               COALESCE(NEW.user_agent, '') || '|' ||
+               CASE WHEN NEW.success = true THEN '1' ELSE '0' END || '|' ||
+               COALESCE(NEW.details::TEXT, '') || '|' ||
+               NEW.prev_hash;
+
+    NEW.hash := encode(digest(payload, 'sha256'), 'hex');
+
+    RETURN NEW;
+END;
+\$\$ LANGUAGE plpgsql;
+
+DROP TRIGGER IF EXISTS ocp_audit_log_hash_chain ON ocp_audit_log;
+CREATE TRIGGER ocp_audit_log_hash_chain
+    BEFORE INSERT ON ocp_audit_log
+    FOR EACH ROW
+    EXECUTE FUNCTION fn_ocp_audit_log_hash_chain();

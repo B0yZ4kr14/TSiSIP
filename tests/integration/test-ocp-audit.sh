@@ -78,8 +78,8 @@ require_once '/var/www/html/common/audit.php';
 
 // Seed a chain of test events with deterministic details
 logAuditEvent('LOGIN', 'ocp_user', 'testuser', true, ['source' => 'integration-test', 'step' => 1]);
-logAuditEvent('SUBSCRIBER_CREATE', 'subscriber', 'sub-001', true, ['domain' => 'test.local', 'step' => 2]);
-logAuditEvent('CONFIG_VIEW', 'system', null, true, ['page' => 'dashboard', 'step' => 3]);
+logAuditEvent('SUBSCRIBER_CREATE', 'subscriber', 'sub-001', true, ['source' => 'integration-test', 'domain' => 'test.local', 'step' => 2]);
+logAuditEvent('CONFIG_VIEW', 'system', null, true, ['source' => 'integration-test', 'page' => 'dashboard', 'step' => 3]);
 logAuditEvent('LOGOUT', 'ocp_user', 'testuser', true, ['source' => 'integration-test', 'step' => 4]);
 
 echo "INSERT_OK\n";
@@ -212,20 +212,22 @@ OCP_INTERNAL_URL="http://localhost"
 FROM_DATE=$(date -d '-7 days' +%Y-%m-%d 2>/dev/null || date -v-7d +%Y-%m-%d)
 TO_DATE=$(date +%Y-%m-%d)
 
-# Simulate login as Admin using seed password from environment
-SEED_PASS="${OCP_SEED_ADMIN_PASS:-}"
-if [ -z "$SEED_PASS" ]; then
-    report_fail "Cannot test exports: OCP_SEED_ADMIN_PASS not set (extract from db/init/03-seed-data.sql)"
+# Create a temporary test user for authenticated export tests.
+TEST_USER="audit_test_user"
+TEST_PASS="testpass123"
+psql_exec "INSERT INTO ocp_users (username, email, password_hash, role, enabled, force_password_change)
+VALUES ('$TEST_USER', 'audit-test@tsiapp.io', crypt('$TEST_PASS', gen_salt('bf',12)), 'admin', true, false)
+ON CONFLICT (username) DO UPDATE SET password_hash = crypt('$TEST_PASS', gen_salt('bf',12)), enabled = true, force_password_change = false;"
+
+# Write credentials to a file to avoid shell-quoting issues
+printf 'username=%s&pass=%s' "$TEST_USER" "$TEST_PASS" > "$TMPDIR/login_payload.txt"
+docker compose -f "$COMPOSE_FILE" cp "$TMPDIR/login_payload.txt" "$OCP_SERVICE:/tmp/login_payload.txt"
+LOGIN_CODE=$(ocp_sh "curl -s -o /dev/null -w '%{http_code}' -c /tmp/audit-cookies.txt -d @/tmp/login_payload.txt '${OCP_INTERNAL_URL}/login.php'")
+if [ "$LOGIN_CODE" = "302" ] || [ "$LOGIN_CODE" = "200" ]; then
+    report_pass "Login simulated successfully (HTTP $LOGIN_CODE)"
 else
-    # Write credentials to a file to avoid shell-quoting issues
-    printf 'username=Admin&pass=%s' "$SEED_PASS" > "$TMPDIR/login_payload.txt"
-    docker compose -f "$COMPOSE_FILE" cp "$TMPDIR/login_payload.txt" "$OCP_SERVICE:/tmp/login_payload.txt"
-    LOGIN_CODE=$(ocp_sh "curl -s -o /dev/null -w '%{http_code}' -c /tmp/audit-cookies.txt -d @/tmp/login_payload.txt '${OCP_INTERNAL_URL}/login.php'")
-    if [ "$LOGIN_CODE" = "302" ] || [ "$LOGIN_CODE" = "200" ]; then
-        report_pass "Login simulated successfully (HTTP $LOGIN_CODE)"
-    else
-        report_fail "Login failed with HTTP $LOGIN_CODE"
-    fi
+    report_fail "Login failed with HTTP $LOGIN_CODE"
+fi
 
     # CSV export
     ocp_sh "curl -fsSL -b /tmp/audit-cookies.txt -o /tmp/audit-export.csv '${OCP_INTERNAL_URL}/audit-export.php?format=csv&from=${FROM_DATE}&to=${TO_DATE}'"
@@ -275,7 +277,6 @@ else
     else
         report_fail "TEXT export returned empty file"
     fi
-fi
 
 # ------------------------------------------------------------------
 # Cleanup (best-effort: remove integration-test events via retention role)
@@ -293,6 +294,9 @@ if echo "$CLEANUP_RESULT" | grep -qi 'immutable'; then
 else
     report_pass "Cleaned up test events"
 fi
+
+# Remove temporary test user
+psql_exec "DELETE FROM ocp_users WHERE username = '$TEST_USER';" > /dev/null 2>&1 || true
 
 # ------------------------------------------------------------------
 # Report

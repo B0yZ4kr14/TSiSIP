@@ -29,6 +29,7 @@ function _auditBoolToString($value): string {
  */
 function _auditCanonicalHash(
     string $eventTime,
+    ?string $userId,
     string $username,
     string $action,
     ?string $resourceType,
@@ -41,6 +42,7 @@ function _auditCanonicalHash(
 ): string {
     return implode('|', [
         $eventTime,
+        $userId ?? '',
         $username,
         $action,
         $resourceType ?? '',
@@ -127,6 +129,7 @@ function logAuditEvent(
         // Compute tamper-evident hash
         $canonical = _auditCanonicalHash(
             $eventTime,
+            $userId,
             $username,
             $action,
             $resourceType,
@@ -203,6 +206,7 @@ function verifyAuditLogIntegrity(): array {
         foreach ($rows as $row) {
             $expectedHash = hash('sha256', _auditCanonicalHash(
                 $row['event_time'],
+                $row['user_id'] ?? null,
                 $row['username'],
                 $row['action'],
                 $row['resource_type'] ?? null,
@@ -211,11 +215,18 @@ function verifyAuditLogIntegrity(): array {
                 $row['user_agent']    ?? null,
                 _auditBoolToString($row['success']) === '1',
                 $row['details'] ?? null,
-                $prevHash
+                $row['prev_hash']
             ));
 
             $hashValid = ($expectedHash === $row['hash']);
-            $chainValid = ($prevHash === null) || ($row['prev_hash'] === $prevHash);
+            // Chain is valid if prev_hash is genesis or points to an existing earlier record
+            $chainValid = ($row['prev_hash'] === 'genesis') || ($row['prev_hash'] === $prevHash);
+            // If prev_hash doesn't match immediate predecessor, verify it exists in history (tolerates gaps from retention purge)
+            if (!$chainValid && $row['prev_hash'] !== null) {
+                $checkStmt = $pdo->prepare('SELECT 1 FROM ocp_audit_log WHERE hash = :hash LIMIT 1');
+                $checkStmt->execute([':hash' => $row['prev_hash']]);
+                $chainValid = ($checkStmt->fetchColumn() !== false);
+            }
             $valid = $hashValid && $chainValid;
 
             $results[] = [
