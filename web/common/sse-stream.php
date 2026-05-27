@@ -4,6 +4,7 @@
  * Lightweight alternative to WebSocket for real-time updates.
  */
 require_once __DIR__ . '/config.php';
+require_once __DIR__ . '/csrf.php';
 require_once __DIR__ . '/mi-http.php';
 
 // Validate session via token
