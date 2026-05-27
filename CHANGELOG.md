@@ -9,6 +9,22 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Added
 
+#### Feature 031: OCP REST API v1
+- Public status endpoint (`GET /api/v1/status`) with CORS
+- Authenticated endpoints: `/api/v1/metrics`, `/api/v1/users`, `/api/v1/audit`
+- Bearer token authentication with bcrypt-hashed API keys (`ocp_api_keys`)
+- Rate limiting: 100 req/minute sliding window per key
+- Admin pages: `api-keys.php`, `api-docs.php`
+- Apache rewrite rules (`.htaccess`) for clean URI routing
+
+#### Feature 030: OCP User Management & RBAC
+- PostgreSQL schema extensions: `ocp_password_history`, `ocp_user_sessions`
+- Password policy enforcement (history, complexity, expiration)
+- Admin pages: `users.php`, `user-edit.php`, `user-delete.php`
+- Self-service profile page (`profile.php`) with password change
+- Session invalidation on password change
+- Role-based navigation (`role-nav.php`) with 6 roles: admin, devops, dentist, assistant, user, readonly
+
 #### Feature 029: OCP Frontend — 100% OpenSIPS 3.6 MI Parity
 - Generic MI action handler (`web/common/mi-action.php`) with 67 whitelisted commands
 - `mi-actions.js` helper with `attachReload`, `attachToggle`, `attachRowAction`
@@ -114,6 +130,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Cross-project consistency: `constitution.md`, `brownfield-scan-report.md`, `memorylint-report.md`, `remediation-summary.md`, and `security-compliance.md` synchronized with ground truth
 
 ### Fixed
+- **Audit log hash chain integrity**: trigger now uses `host(ip_address)` instead of `ip_address::TEXT` to avoid CIDR mask (`/32`) mismatch between PostgreSQL canonicalization and PHP read-back
+- **Immutability trigger**: `fn_ocp_audit_log_immutable()` returns `NEW` for UPDATE as `tsisip_retention` (was `OLD`, which silently cancelled updates)
+- **Test suite**: `((PASS++))` arithmetic expansion in `test-ocp-all.sh` returned exit code 1 under `set -e` when `PASS=0` — replaced with POSIX-safe `$((PASS + 1))`
 - `miHttpAvailable()` now uses POST instead of GET to avoid OpenSIPS MI HTTP error log spam
 - `.dockerignore` blocking `docs/wiki/` broke OCP Docker build — fixed by removing `docs/` exclusion
 - Brownfield residual findings B14-B16 (backup encryption, healthchecks, CI `latest` tag documentation)
