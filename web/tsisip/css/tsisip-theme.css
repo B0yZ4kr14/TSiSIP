@@ -811,3 +811,101 @@ body.tsisip-login::after {
   background-color: var(--tsisip-accent-success);
   box-shadow: 0 0 6px var(--tsisip-accent-success);
 }
+
+/* ==========================================================================
+   TSiSIP OCP — Real-time Page Enhancements
+   Added during Feature 002 backlog completion
+   ========================================================================== */
+
+/* Auto-refresh indicator */
+.tsisip-refresh-indicator {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    font-size: var(--tsisip-text-sm);
+    color: var(--tsisip-text-secondary);
+}
+
+.tsisip-refresh-indicator::before {
+    content: '';
+    display: inline-block;
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    background: var(--tsisip-status-ok);
+    animation: tsisip-pulse 2s infinite;
+}
+
+@keyframes tsisip-pulse {
+    0% { opacity: 1; transform: scale(1); }
+    50% { opacity: 0.5; transform: scale(1.2); }
+    100% { opacity: 1; transform: scale(1); }
+}
+
+/* Metric cards enhancements */
+.tsisip-metric-card {
+    transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.tsisip-metric-card:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(10, 22, 40, 0.08);
+}
+
+/* Status badges */
+.tsisip-badge--neutral {
+    background: var(--tsisip-surface-elevated);
+    color: var(--tsisip-text-secondary);
+    border: 1px solid var(--tsisip-border-subtle);
+}
+
+/* Section spacing for real-time pages */
+.tsisip-section {
+    margin-bottom: 24px;
+}
+
+.tsisip-section-title {
+    font-size: 1.125rem;
+    font-weight: 600;
+    color: var(--tsisip-text-primary);
+    margin-bottom: 16px;
+    padding-bottom: 8px;
+    border-bottom: 1px solid var(--tsisip-border-subtle);
+}
+
+/* Language selector in header */
+.tsisip-header form select {
+    background: var(--tsisip-surface-card);
+    border: 1px solid var(--tsisip-border-subtle);
+    border-radius: 4px;
+    color: var(--tsisip-text-primary);
+    font-size: 13px;
+    padding: 4px 8px;
+    cursor: pointer;
+}
+
+.tsisip-header form select:focus {
+    outline: 2px solid var(--tsisip-primary-blue);
+    outline-offset: 2px;
+}
+
+/* Topology SVG enhancements */
+.tsisip-dashboard-section svg {
+    max-width: 100%;
+    height: auto;
+}
+
+/* Failover page caution */
+.tsisip-caution-box {
+    background: #fef3c7;
+    border: 1px solid #f59e0b;
+    border-radius: 8px;
+    padding: 16px;
+    margin-bottom: 24px;
+}
+
+.tsisip-caution-box p {
+    margin: 0;
+    color: #92400e;
+    font-weight: 500;
+}
