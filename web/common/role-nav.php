@@ -119,6 +119,7 @@ $adminPages = [
     'header-routing' => _('Header Routing'),
     'users'          => _('Admin Users'),
     'audit-log'      => _('Audit Log'),
+    'system-events'  => _('System Events'),
 ];
 $adminVisible = ($isAdmin || $isDevOps);
 
