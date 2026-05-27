@@ -1235,3 +1235,44 @@ kbd {
     font-family: monospace;
     font-size: 0.85rem;
 }
+
+/* Recent Activity */
+.tsisip-activity-list {
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+}
+.tsisip-activity-item {
+    display: flex;
+    gap: 0.75rem;
+    padding: 0.5rem;
+    border-radius: 6px;
+    background: var(--tsisip-bg-secondary);
+    font-size: 0.85rem;
+    align-items: center;
+}
+.tsisip-activity-time {
+    color: var(--tsisip-text-secondary);
+    font-family: monospace;
+    min-width: 40px;
+}
+.tsisip-activity-user {
+    font-weight: 500;
+    min-width: 80px;
+}
+.tsisip-activity-action {
+    color: var(--tsisip-primary-blue);
+}
+.tsisip-activity-resource {
+    color: var(--tsisip-text-secondary);
+    margin-left: auto;
+}
+@media (max-width: 768px) {
+    .tsisip-activity-item {
+        flex-wrap: wrap;
+    }
+    .tsisip-activity-resource {
+        margin-left: 0;
+        width: 100%;
+    }
+}

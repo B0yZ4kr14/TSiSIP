@@ -24,6 +24,22 @@ $displayRole = isset($roleLabels[$userRole]) ? $roleLabels[$userRole] : $roleLab
  * System Management links (admin + devops)
     <!-- Bookmarks -->
     <div class="tsisip-dashboard-section" data-widget="bookmarks">
+    <!-- Recent Activity -->
+    <div class="tsisip-dashboard-section" data-widget="activity">
+        <h2 class="tsisip-section-title"><?php echo _('Recent Activity'); ?></h2>
+        <div class="tsisip-activity-list">
+            <?php
+            $recent = getRecentActivity(5);
+            foreach ($recent as $act): ?>
+                <div class="tsisip-activity-item">
+                    <span class="tsisip-activity-time"><?php echo htmlspecialchars(substr((string)$act['event_time'], 11, 5)); ?></span>
+                    <span class="tsisip-activity-user"><?php echo htmlspecialchars($act['username']); ?></span>
+                    <span class="tsisip-activity-action"><?php echo htmlspecialchars($act['action']); ?></span>
+                    <span class="tsisip-activity-resource"><?php echo htmlspecialchars(($act['resource_type'] ?? '') . '/' . ($act['resource_id'] ?? '')); ?></span>
+                </div>
+            <?php endforeach; ?>
+        </div>
+    </div>
         <h2 class="tsisip-section-title"><?php echo _('Bookmarks'); ?></h2>
         <div class="tsisip-btn-group">
             <?php
@@ -107,6 +123,22 @@ if (isset($roleNav[$userRole])) {
         <h2><?php echo _('System Management'); ?></h2>
     <!-- Bookmarks -->
     <div class="tsisip-dashboard-section" data-widget="bookmarks">
+    <!-- Recent Activity -->
+    <div class="tsisip-dashboard-section" data-widget="activity">
+        <h2 class="tsisip-section-title"><?php echo _('Recent Activity'); ?></h2>
+        <div class="tsisip-activity-list">
+            <?php
+            $recent = getRecentActivity(5);
+            foreach ($recent as $act): ?>
+                <div class="tsisip-activity-item">
+                    <span class="tsisip-activity-time"><?php echo htmlspecialchars(substr((string)$act['event_time'], 11, 5)); ?></span>
+                    <span class="tsisip-activity-user"><?php echo htmlspecialchars($act['username']); ?></span>
+                    <span class="tsisip-activity-action"><?php echo htmlspecialchars($act['action']); ?></span>
+                    <span class="tsisip-activity-resource"><?php echo htmlspecialchars(($act['resource_type'] ?? '') . '/' . ($act['resource_id'] ?? '')); ?></span>
+                </div>
+            <?php endforeach; ?>
+        </div>
+    </div>
         <h2 class="tsisip-section-title"><?php echo _('Bookmarks'); ?></h2>
         <div class="tsisip-btn-group">
             <?php
