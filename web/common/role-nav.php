@@ -19,9 +19,10 @@ $isReadOnly = ($userRole === 'readonly');
 // 1. SIP USERS (subscriber management)
 // -------------------------------------------------------------
 $sipUserPages = [
-    'subscribers' => _('Subscribers'),
-    'aliases'     => _('Aliases'),
-    'groups'      => _('Groups'),
+    'subscribers'      => _('Subscribers'),
+    'subscriber-stats' => _('Subscriber Stats'),
+    'aliases'          => _('Aliases'),
+    'groups'           => _('Groups'),
 ];
 // Role filter: readonly sees list only (handled in each module)
 $sipUserVisible = ($isAdmin || $isDevOps || $isDentist || $isAssist || $isUser || $isReadOnly);
@@ -41,15 +42,19 @@ $systemPages = [
     'dispatcher'        => _('Dispatcher'),
     'domains'           => _('Domains'),
     'dynamic-routing'   => _('Dynamic Routing'),
+    'gateway-health'    => _('Gateway Health'),
     'keepalived'        => _('Keepalived'),
     'load-balancer'     => _('Load Balancer'),
     'mi-commands'       => _('MI Commands'),
     'monit'             => _('Monit'),
     'rtpengine'         => _('RTPEngine'),
+    'rtpengine-status'  => _('RTPengine Status'),
     'rtpproxy'          => _('RTPProxy'),
     'siptrace'          => _('SIPtrace'),
     'smpp-gateway'      => _('SMPP Gateway'),
     'sockets-management'=> _('Sockets Management'),
+    'cache-manager'     => _('Cache Manager'),
+    'topology'          => _('Network Topology'),
     'tviewer'           => _('TViewer'),
     'statistics'        => _('Statistics'),
     'status-report'     => _('Status Report'),
@@ -115,12 +120,19 @@ $advancedVisible = ($isAdmin || $isDevOps || $isDentist || $isAssist || $isUser 
 // 8. ADMINISTRATION (tenants, routing, users, audit, wiki)
 // -------------------------------------------------------------
 $adminPages = [
-    'tenants'        => _('Tenants'),
-    'header-routing' => _('Header Routing'),
-    'users'          => _('Admin Users'),
-    'api-keys'       => _('API Keys'),
-    'audit-log'      => _('Audit Log'),
-    'system-events'  => _('System Events'),
+    'tenants'         => _('Tenants'),
+    'header-routing'  => _('Header Routing'),
+    'users'           => _('Admin Users'),
+    'api-keys'        => _('API Keys'),
+    'api-docs'        => _('API Docs'),
+    'audit-log'       => _('Audit Log'),
+    'alert-history'   => _('Alert History'),
+    'feedback-list'   => _('Feedback List'),
+    'reports'         => _('Reports'),
+    'scheduled-tasks' => _('Scheduled Tasks'),
+    'system-config'   => _('System Config'),
+    'system-events'   => _('System Events'),
+    'system-logs'     => _('System Logs'),
 ];
 $adminVisible = ($isAdmin || $isDevOps);
 
@@ -290,6 +302,31 @@ $allowedPages = isset($roleNav[$userRole]) ? $roleNav[$userRole] : $roleNav['rea
         <!-- Account -->
         <li class="tsisip-nav-heading" role="none">
             <span class="tsisip-nav-heading-text"><?php echo _('Account'); ?></span>
+        </li>
+        <li class="tsisip-nav-item<?php echo $currentPage === 'profile' ? ' is-active' : ''; ?>" role="none">
+            <a href="profile.php" class="tsisip-nav-link" role="menuitem">
+                <?php echo _('Profile'); ?>
+            </a>
+        </li>
+        <li class="tsisip-nav-item<?php echo $currentPage === 'notes' ? ' is-active' : ''; ?>" role="none">
+            <a href="notes.php" class="tsisip-nav-link" role="menuitem">
+                <?php echo _('My Notes'); ?>
+            </a>
+        </li>
+        <li class="tsisip-nav-item<?php echo $currentPage === 'feedback' ? ' is-active' : ''; ?>" role="none">
+            <a href="feedback.php" class="tsisip-nav-link" role="menuitem">
+                <?php echo _('Feedback'); ?>
+            </a>
+        </li>
+        <li class="tsisip-nav-item<?php echo $currentPage === 'help' ? ' is-active' : ''; ?>" role="none">
+            <a href="help.php" class="tsisip-nav-link" role="menuitem">
+                <?php echo _('Help'); ?>
+            </a>
+        </li>
+        <li class="tsisip-nav-item<?php echo $currentPage === 'about' ? ' is-active' : ''; ?>" role="none">
+            <a href="about.php" class="tsisip-nav-link" role="menuitem">
+                <?php echo _('About'); ?>
+            </a>
         </li>
         <li class="tsisip-nav-item<?php echo $currentPage === 'change-password' ? ' is-active' : ''; ?>" role="none">
             <a href="change-password.php" class="tsisip-nav-link" role="menuitem">
