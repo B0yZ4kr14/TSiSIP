@@ -5,7 +5,7 @@
 **Feature**: Custom Dashboard Layouts  
 **Short name**: custom-dashboard  
 **Created**: 2026-05-26  
-**Status**: Draft  
+**Status**: Complete  
 
 ### Context
 

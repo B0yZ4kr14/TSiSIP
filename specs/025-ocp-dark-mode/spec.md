@@ -5,7 +5,7 @@
 **Feature**: OCP Dark Mode  
 **Short name**: dark-mode  
 **Created**: 2026-05-26  
-**Status**: Draft  
+**Status**: Complete  
 
 ### Context
 

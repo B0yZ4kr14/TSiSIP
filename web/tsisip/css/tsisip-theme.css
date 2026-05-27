@@ -1276,3 +1276,57 @@ kbd {
         width: 100%;
     }
 }
+
+/* ==========================================================================
+   Dark Mode Focus Accessibility
+   Ensures all interactive elements have visible focus indicators
+   ========================================================================== */
+
+[data-theme="dark"] a:focus,
+[data-theme="dark"] button:focus,
+[data-theme="dark"] .tsisip-btn:focus,
+[data-theme="dark"] input:focus,
+[data-theme="dark"] select:focus,
+[data-theme="dark"] textarea:focus,
+[data-theme="dark"] [tabindex]:focus {
+  outline: 2px solid var(--tsisip-border-focus, #5B9BD5);
+  outline-offset: 2px;
+}
+
+[data-theme="dark"] a:focus:not(:focus-visible),
+[data-theme="dark"] button:focus:not(:focus-visible),
+[data-theme="dark"] .tsisip-btn:focus:not(:focus-visible) {
+  outline: none;
+}
+
+[data-theme="dark"] a:focus-visible,
+[data-theme="dark"] button:focus-visible,
+[data-theme="dark"] .tsisip-btn:focus-visible,
+[data-theme="dark"] input:focus-visible,
+[data-theme="dark"] select:focus-visible,
+[data-theme="dark"] textarea:focus-visible {
+  outline: 2px solid var(--tsisip-border-focus, #5B9BD5);
+  outline-offset: 2px;
+  box-shadow: 0 0 0 4px rgba(91, 155, 213, 0.25);
+}
+
+/* High contrast mode support */
+@media (prefers-contrast: more) {
+  [data-theme="dark"] a:focus,
+  [data-theme="dark"] button:focus,
+  [data-theme="dark"] .tsisip-btn:focus,
+  [data-theme="dark"] input:focus,
+  [data-theme="dark"] select:focus,
+  [data-theme="dark"] textarea:focus {
+    outline: 3px solid CanvasText;
+    outline-offset: 2px;
+  }
+}
+
+/* Reduced motion support */
+@media (prefers-reduced-motion: reduce) {
+  [data-theme="dark"] * {
+    transition: none !important;
+    animation: none !important;
+  }
+}

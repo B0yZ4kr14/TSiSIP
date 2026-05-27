@@ -26,13 +26,13 @@
 
 ## Phase 5: Accessibility
 
-- [ ] T013 Run axe-core contrast audit on dark mode
-- [ ] T014 Fix any contrast violations
-- [ ] T015 Verify focus indicators visible in dark mode
+- [x] T013 Run axe-core contrast audit on dark mode
+- [x] T014 Fix any contrast violations
+- [x] T015 Verify focus indicators visible in dark mode
 
 ## Phase 6: Validation
 
-- [ ] T016 Visual inspection of all pages in dark mode
-- [ ] T017 Test theme persistence across sessions
-- [ ] T018 Test system preference detection
-- [ ] T019 Update spec status to Complete
+- [x] T016 Visual inspection of all pages in dark mode
+- [x] T017 Test theme persistence across sessions
+- [x] T018 Test system preference detection
+- [x] T019 Update spec status to Complete

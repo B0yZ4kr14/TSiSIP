@@ -5,7 +5,7 @@
 **Feature**: WebSocket Real-time Updates  
 **Short name**: websocket-realtime  
 **Created**: 2026-05-26  
-**Status**: Draft  
+**Status**: Complete  
 
 ### Context
 
