@@ -80,6 +80,10 @@ require_once __DIR__ . '/common/header.php';
 ?>
 <div id="content" class="tsisip-dashboard">
     <h1><?php echo _('System Reports'); ?></h1>
+    <div style="float:right;margin-top:-3rem;">
+        <a href="common/export-report.php?type=logins&range=<?php echo $range; ?>&format=csv" class="tsisip-btn tsisip-btn-outline"><?php echo _('CSV'); ?></a>
+        <a href="common/export-report.php?type=logins&range=<?php echo $range; ?>&format=json" class="tsisip-btn tsisip-btn-outline"><?php echo _('JSON'); ?></a>
+    </div>
 
     <!-- Time Range Selector -->
     <div class="tsisip-dashboard-section">
