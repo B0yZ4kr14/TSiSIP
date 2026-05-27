@@ -59,7 +59,7 @@ msgstr ""
 
 #: web/address.php:85
 msgid "Add Trusted IP"
-msgstr "Add Trusted IP"
+msgstr "Añadir Trusted IP"
 
 #: web/address.php:90 web/audit-log.php:185 web/audit-log.php:236
 msgid "IP Address"
@@ -84,7 +84,7 @@ msgstr "Protocolo"
 
 #: web/address.php:116
 msgid "Add Address"
-msgstr "Add Address"
+msgstr "Añadir Address"
 
 #: web/address.php:121
 msgid "Trusted Addresses"
@@ -135,7 +135,7 @@ msgstr "Cualquier"
 
 #: web/address.php:135
 msgid "Delete this address?"
-msgstr "Delete this address?"
+msgstr "Eliminar this address?"
 
 #: web/address.php:139 web/aliases.php:151 web/call-center.php:203
 #: web/call-center.php:281 web/clusterer.php:238 web/config-table.php:186
@@ -664,7 +664,7 @@ msgstr "Records"
 
 #: web/cdr-viewer.php:139 web/dialog.php:114
 msgid "Start Time"
-msgstr "Start Time"
+msgstr "Iniciar Time"
 
 #: web/cdr-viewer.php:140
 msgid "End Time"
@@ -680,7 +680,7 @@ msgstr "Método"
 
 #: web/cdr-viewer.php:146
 msgid "Setup (ms)"
-msgstr "Setup (ms)"
+msgstr "Configurar (ms)"
 
 #: web/cdr-viewer.php:177
 msgid "No records found."
@@ -736,11 +736,11 @@ msgstr "Minimum 12 characters, with uppercase, lowercase, number, and symbol."
 
 #: web/change-password.php:171
 msgid "Confirm New Passphrase"
-msgstr "Confirm New Passphrase"
+msgstr "Confirmar New Passphrase"
 
 #: web/change-password.php:181
 msgid "Update Passphrase"
-msgstr "Update Passphrase"
+msgstr "Actualizar Passphrase"
 
 #: web/clusterer.php:39
 msgid "Cluster ID, Node ID, and URL are required."
@@ -1442,7 +1442,7 @@ msgstr "Dialplan Rules"
 
 #: web/dialplan.php:172 web/header-routing.php:97 web/header-routing.php:133
 msgid "Add Rule"
-msgstr "Add Rule"
+msgstr "Añadir Rule"
 
 #: web/dialplan.php:182 web/dialplan.php:218 web/dialplan.php:263
 msgid "Match Op"
@@ -1577,7 +1577,7 @@ msgstr "Activar"
 
 #: web/dispatcher.php:327
 msgid "Delete this destination?"
-msgstr "Delete this destination?"
+msgstr "Eliminar this destination?"
 
 #: web/domains.php:45
 msgid "Domain added."
@@ -1597,7 +1597,7 @@ msgstr "Domain deleted."
 
 #: web/domains.php:133
 msgid "Add Domain"
-msgstr "Add Domain"
+msgstr "Añadir Domain"
 
 #: web/domains.php:139 web/domains.php:158 web/domains.php:192
 #: web/groups.php:138 web/groups.php:185 web/subscribers.php:189
@@ -1616,7 +1616,7 @@ msgstr "Última Modificación"
 
 #: web/domains.php:176
 msgid "Delete this domain?"
-msgstr "Delete this domain?"
+msgstr "Eliminar this domain?"
 
 #: web/dynamic-routing.php:38
 msgid "Gateway ID and address are required."
@@ -2020,15 +2020,15 @@ msgstr "Iniciar Sesion"
 
 #: web/mi-commands.php:16
 msgid "Reload Dispatcher Sets"
-msgstr "Reload Dispatcher Sets"
+msgstr "Recargar Dispatcher Sets"
 
 #: web/mi-commands.php:17
 msgid "Reload Domains"
-msgstr "Reload Domains"
+msgstr "Recargar Domains"
 
 #: web/mi-commands.php:18
 msgid "Get Statistics"
-msgstr "Get Statistics"
+msgstr "Obtener Statistics"
 
 #: web/mi-commands.php:19
 msgid "List Active Dialogs"
@@ -2040,7 +2040,7 @@ msgstr "Terminate Dialog"
 
 #: web/mi-commands.php:21 web/tls-management.php:150
 msgid "Reload TLS Certificates"
-msgstr "Reload TLS Certificates"
+msgstr "Recargar TLS Certificates"
 
 #: web/mi-commands.php:48
 msgid "Command not in whitelist."
@@ -2068,7 +2068,7 @@ msgstr "MI Command Runner"
 
 #: web/mi-commands.php:142
 msgid "Execute Command"
-msgstr "Execute Command"
+msgstr "Ejecutar Command"
 
 #: web/mi-commands.php:147 web/mi-commands.php:203
 msgid "Command"
@@ -2232,7 +2232,7 @@ msgstr "DID mapping deleted."
 
 #: web/ocp/trunk-dids.php:174 web/trunk-dids.php:174
 msgid "Add DID Mapping"
-msgstr "Add DID Mapping"
+msgstr "Añadir DID Mapping"
 
 #: web/ocp/trunk-dids.php:180 web/ocp/trunk-dids.php:232
 #: web/ocp/trunk-dids.php:288 web/trunk-dids.php:180 web/trunk-dids.php:232
@@ -2248,11 +2248,11 @@ msgstr "Trunk Provider"
 
 #: web/ocp/trunk-dids.php:222 web/trunk-dids.php:222
 msgid "Create Mapping"
-msgstr "Create Mapping"
+msgstr "Crear Mapping"
 
 #: web/ocp/trunk-dids.php:272 web/trunk-dids.php:272
 msgid "Delete this mapping?"
-msgstr "Delete this mapping?"
+msgstr "Eliminar this mapping?"
 
 #: web/ocp/trunk-providers.php:41 web/trunk-providers.php:41
 msgid "Name and host are required."
@@ -2293,7 +2293,7 @@ msgstr "Trunk provider deleted."
 
 #: web/ocp/trunk-providers.php:234 web/trunk-providers.php:234
 msgid "Add Trunk Provider"
-msgstr "Add Trunk Provider"
+msgstr "Añadir Trunk Provider"
 
 #: web/ocp/trunk-providers.php:252 web/ocp/trunk-providers.php:301
 #: web/ocp/trunk-providers.php:370 web/trunk-providers.php:252
@@ -2324,11 +2324,11 @@ msgstr "Caller ID Prefix"
 
 #: web/ocp/trunk-providers.php:288 web/trunk-providers.php:288
 msgid "Create Provider"
-msgstr "Create Provider"
+msgstr "Crear Provider"
 
 #: web/ocp/trunk-providers.php:342 web/trunk-providers.php:342
 msgid "Delete this provider?"
-msgstr "Delete this provider?"
+msgstr "Eliminar this provider?"
 
 #: web/ocp/trunk-providers.php:384 web/trunk-providers.php:384
 msgid "Auth Password (leave blank to keep)"
@@ -2700,7 +2700,7 @@ msgstr "Updated: "
 
 #: web/statistics.php:354
 msgid "Update failed"
-msgstr "Update failed"
+msgstr "Actualizar failed"
 
 #: web/statistics.php:380
 msgid "OpenSIPS MI unreachable"
@@ -2800,7 +2800,7 @@ msgstr "Subscriber Management"
 
 #: web/subscribers.php:180
 msgid "Add New Subscriber"
-msgstr "Add New Subscriber"
+msgstr "Añadir New Subscriber"
 
 #: web/subscribers.php:197 web/subscribers.php:229 web/subscribers.php:291
 #: web/users.php:152 web/users.php:184 web/users.php:230
@@ -2809,11 +2809,11 @@ msgstr "Correo electrónico"
 
 #: web/subscribers.php:216
 msgid "Create Subscriber"
-msgstr "Create Subscriber"
+msgstr "Crear Subscriber"
 
 #: web/subscribers.php:262
 msgid "Delete this subscriber? This action cannot be undone."
-msgstr "Delete this subscriber? This action cannot be undone."
+msgstr "Eliminar this subscriber? This action cannot be undone."
 
 #: web/subscribers.php:287 web/users.php:234
 msgid "Password (leave blank to keep)"
@@ -2821,7 +2821,7 @@ msgstr "Password (leave blank to keep)"
 
 #: web/subscribers.php:311 web/tenants.php:186 web/users.php:253
 msgid "Save Changes"
-msgstr "Save Changes"
+msgstr "Guardar Changes"
 
 #: web/tenants.php:31
 msgid "Name and SIP domain are required."
@@ -2861,7 +2861,7 @@ msgstr "Tenant Management"
 
 #: web/tenants.php:106
 msgid "Add New Tenant"
-msgstr "Add New Tenant"
+msgstr "Añadir New Tenant"
 
 #: web/tenants.php:115 web/tenants.php:134 web/tenants.php:177
 msgid "SIP Domain"
@@ -2869,7 +2869,7 @@ msgstr "SIP Domain"
 
 #: web/tenants.php:124
 msgid "Create Tenant"
-msgstr "Create Tenant"
+msgstr "Crear Tenant"
 
 #: web/tenants.php:136
 msgid "Created"
@@ -2877,7 +2877,7 @@ msgstr "Created"
 
 #: web/tenants.php:158
 msgid "Delete this tenant?"
-msgstr "Delete this tenant?"
+msgstr "Eliminar this tenant?"
 
 #: web/tls-management.php:74
 msgid "TLS certificates reloaded successfully."
@@ -2913,11 +2913,11 @@ msgstr "CA File"
 
 #: web/tls-management.php:120
 msgid "Verify Cert"
-msgstr "Verify Cert"
+msgstr "Verificar Cert"
 
 #: web/tls-management.php:121
 msgid "Verify Depth"
-msgstr "Verify Depth"
+msgstr "Verificar Depth"
 
 #: web/tls-management.php:122
 msgid "CRL Check All"
@@ -3115,7 +3115,7 @@ msgstr ""
 
 #: web/userblacklist.php:80 web/userblacklist.php:102
 msgid "Add Entry"
-msgstr "Add Entry"
+msgstr "Añadir Entry"
 
 #: web/userblacklist.php:85
 msgid "Username (empty for global)"
@@ -3199,7 +3199,7 @@ msgstr "OCP User Management"
 
 #: web/users.php:143
 msgid "Add New User"
-msgstr "Add New User"
+msgstr "Añadir New User"
 
 #: web/users.php:160 web/users.php:185 web/users.php:238
 msgid "Role"
@@ -3207,7 +3207,7 @@ msgstr "Rol"
 
 #: web/users.php:173
 msgid "Create User"
-msgstr "Create User"
+msgstr "Crear User"
 
 #: web/users.php:179
 msgid "Users"
@@ -3223,7 +3223,7 @@ msgstr "Nunca"
 
 #: web/users.php:211
 msgid "Delete this user?"
-msgstr "Delete this user?"
+msgstr "Eliminar this user?"
 
 #: web/users.php:218
 msgid "Admin only"
