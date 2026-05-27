@@ -14,7 +14,7 @@ def _get_detector_url() -> str:
 
     Priority:
     1. DETECTOR_URL environment variable
-    2. Docker container IP for tsisip-anomaly-detector-1
+    2. Docker container IP for tsisip-anomaly_detector-1
     3. Fallback to http://localhost:8080
     """
     env_url = os.environ.get("DETECTOR_URL")
@@ -24,7 +24,7 @@ def _get_detector_url() -> str:
     try:
         result = subprocess.run(
             [
-                "docker", "inspect", "tsisip-anomaly-detector-1",
+                "docker", "inspect", "tsisip-anomaly_detector-1",
                 "--format", "{{range .NetworkSettings.Networks}}{{.IPAddress}}{{end}}",
             ],
             capture_output=True,

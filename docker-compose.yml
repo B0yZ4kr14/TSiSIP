@@ -747,6 +747,7 @@ services:
       QUOTA_SCHEDULE: '*/10 * * * *'
       BACKUP_RETENTION_DAYS: 30
       WAL_RETENTION_DAYS: 37
+      LGPD_RETENTION_DAYS: 30
       BACKUP_QUOTA_GB: 100
       PGHOST: postgres
       PGPORT: 5432
