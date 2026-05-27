@@ -70,6 +70,7 @@ if ($userRole === 'admin' || $userRole === 'devops') {
     ['url' => 'about.php',       'label' => _('About'),              'icon' => 'info'],
     ['url' => 'feedback.php',      'label' => _('Feedback'),            'icon' => 'message'],
     ['url' => 'feedback-list.php','label' => _('Feedback Mgmt'),       'icon' => 'list'],
+    ['url' => 'notes.php',       'label' => _('My Notes'),            'icon' => 'note'],
     ['url' => 'search.php',       'label' => _('Global Search'),       'icon' => 'search'],
     ['url' => 'system-health.php','label' => _('System Health'),     'icon' => 'health'],
     ['url' => 'api-docs.php',      'label' => _('API Documentation'),     'icon' => 'code'],
