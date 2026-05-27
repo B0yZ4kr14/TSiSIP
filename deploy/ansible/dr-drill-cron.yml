@@ -1,0 +1,34 @@
+---
+# TSiSIP Disaster Recovery Drill — Monthly Cron Job
+# Feature 032: Automated Backup Verification
+#
+# Install with: ansible-playbook -i inventory deploy/ansible/dr-drill-cron.yml
+
+- name: TSiSIP DR Drill Cron
+  hosts: tsisip_vps
+  become: yes
+  tasks:
+    - name: Ensure DR drill runs monthly
+      cron:
+        name: "TSiSIP monthly DR drill"
+        minute: "0"
+        hour: "3"
+        day: "1"
+        month: "*"
+        weekday: "*"
+        job: "/usr/bin/bash {{ project_dir | default('/opt/tsisip') }}/scripts/dr-drill.sh >> /var/log/tsisip-dr-drill.log 2>&1"
+        user: "{{ tsisip_user | default('tsisip') }}"
+        state: present
+
+    - name: Ensure logrotate for DR drill logs
+      copy:
+        dest: "/etc/logrotate.d/tsisip-dr-drill"
+        content: |
+          /var/log/tsisip-dr-drill.log {
+            daily
+            rotate 30
+            compress
+            missingok
+            notifempty
+          }
+        mode: '0644'

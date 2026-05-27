@@ -239,3 +239,42 @@ groups:
           summary: "Validation job has not succeeded in >25 hours"
           description: "Last successful validation was {{ $value | humanizeDuration }} ago"
           runbook_url: "https://docs.tsiapp.io/runbooks/backup-stale"
+
+  - name: tsisip-backup
+    interval: 60s
+    rules:
+      # Backup verification failure
+      - alert: TSiSIPBackupVerifyFailed
+        expr: tsisip_backup_verify_success == 0
+        for: 5m
+        labels:
+          severity: critical
+          service: backup
+        annotations:
+          summary: "TSiSIP backup verification failed"
+          description: "Latest backup verification failed or no successful verification in the last 5 minutes"
+          runbook_url: "https://docs.tsiapp.io/runbooks/backup-verification-failed"
+
+      # Backup age too old
+      - alert: TSiSIPBackupTooOld
+        expr: time() - tsisip_backup_last_timestamp > 90000
+        for: 5m
+        labels:
+          severity: warning
+          service: backup
+        annotations:
+          summary: "TSiSIP backup is too old"
+          description: "Latest backup is {{ $value | humanizeDuration }} old (threshold: 25h)"
+          runbook_url: "https://docs.tsiapp.io/runbooks/backup-too-old"
+
+      # Backup size anomaly (near zero)
+      - alert: TSiSIPBackupSizeAnomaly
+        expr: tsisip_backup_size_bytes < 1024
+        for: 5m
+        labels:
+          severity: warning
+          service: backup
+        annotations:
+          summary: "TSiSIP backup size anomaly"
+          description: "Latest backup size is {{ $value }} bytes (possible empty dump)"
+          runbook_url: "https://docs.tsiapp.io/runbooks/backup-size-anomaly"

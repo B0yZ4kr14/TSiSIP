@@ -174,16 +174,17 @@
 - **Menu Coverage**: 53+ pages exposed across 9 sections, zero orphan pages remaining
 - **OCP Tests**: 17/17 PASS, container healthy, zero broken links
 
-### Features Completed (029–031)
+### Features Completed (029–032)
 - **Feature 029**: Frontend Refactor — MI Parity complete (drag-and-drop dashboard, SSE expansion, MI data export)
 - **Feature 030**: OCP User Management & RBAC — complete implementation
 - **Feature 031**: OCP REST API — complete implementation with public status endpoint
+- **Feature 032**: Automated Backup Verification & DR Testing — backup checksums, restore verification, OCP dashboard, Prometheus alerts, monthly DR drills
 
 ### Stats Update
 - **Total Commits**: 615
 - **PHP Files**: 115
 - **OCP Coverage**: ~81% (26/32 OCP modules implemented)
-- **Integration Tests**: 109 PASS, 0 FAIL
+- **Integration Tests**: 96+ PASS, 0 FAIL
 
 ## Status: COMPLETE ✅
 All planned features for Q2 2026 have been implemented.

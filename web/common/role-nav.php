@@ -132,6 +132,7 @@ $adminPages = [
     'api-docs'        => _('API Docs'),
     'audit-log'       => _('Audit Log'),
     'audit-export'    => _('Audit Export'),
+    'backup-status'   => _('Backup Status'),
     'alert-history'   => _('Alert History'),
     'feedback-list'   => _('Feedback List'),
     'reports'         => _('Reports'),

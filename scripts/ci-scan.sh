@@ -189,6 +189,15 @@ else
     FAIL=1
 fi
 
+echo "[integration] Running Stage 9 backup verification tests..."
+LATEST_BACKUP=$(ls -t backups/tsisip_db_*.sql.gz 2>/dev/null | head -1)
+if [[ -n "$LATEST_BACKUP" ]] && bash scripts/verify-backup.sh --backup "$LATEST_BACKUP" >/dev/null 2>&1; then
+    echo "PASS: Backup verification"
+else
+    echo "FAIL: Backup verification failed (no backup found or restore error)"
+    FAIL=1
+fi
+
 echo "[integration] Running Stage 10 runbook tests..."
 if python3 -m pytest tests/integration/test_runbook_scale.py -v --tb=short >/dev/null 2>&1; then
     echo "PASS: Runbook integration tests"
