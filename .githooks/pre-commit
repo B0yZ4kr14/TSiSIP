@@ -1,0 +1,19 @@
+#!/usr/bin/env bash
+# TSiSIP Pre-commit Hook
+set -euo pipefail
+
+echo "Running pre-commit checks..."
+
+# Check for secrets
+git diff --cached --name-only | while read -r file; do
+    if grep -l 'password\|secret\|key' "$file" 2>/dev/null | grep -q -v 'secrets/'; then
+        echo "WARNING: $file may contain sensitive data"
+    fi
+done
+
+# Check PHP syntax
+for file in $(git diff --cached --name-only | grep '\.php$'); do
+    php -l "$file" || exit 1
+done
+
+echo "Pre-commit checks passed"
