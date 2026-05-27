@@ -1,26 +1,47 @@
 # Git
-.git/
+.git
 .gitignore
+.gitattributes
+
+# Documentation
+docs/
+*.md
+
+# Tests
+tests/
+.pytest_cache/
 
 # Secrets
 secrets/
 .env
 .env.*
-!.env.example
 
-# Local artifacts
+# Logs
+logs/
 *.log
-*.pid
 
-# Documentation (not needed in image)
-docs/*
-!docs/wiki/
-!docs/wiki/*.md
-*.md
+# Backups
+backups/
 
-# Speckit specs
-specs/
-.specify/
+# IDE
+.vscode/
+.idea/
+*.swp
+*.swo
 
-# Spec Kit Memory Hub
-.spec-kit-memory/
+# OS
+.DS_Store
+Thumbs.db
+
+# Node
+node_modules/
+package-lock.json
+
+# Build artifacts
+build/
+dist/
+
+# Docker
+Dockerfile*
+docker-compose*.yml
+.dockerignore
