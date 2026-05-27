@@ -148,4 +148,28 @@ require_once __DIR__ . '/common/header.php';
         <?php endif; ?>
     </section>
 </div>
+
+<script>
+(function() {
+    'use strict';
+    async function refreshData() {
+        try {
+            const resp = await fetch(window.location.href + '?ajax=1');
+            if (!resp.ok) throw new Error('HTTP ' + resp.status);
+            const data = await resp.json();
+            if (data.error) throw new Error(data.error);
+            // Update timestamp if present
+            const tsEl = document.getElementById('last-updated');
+            if (tsEl) {
+                tsEl.textContent = '<?php echo _('Updated: '); ?>' + new Date().toLocaleTimeString();
+            }
+        } catch (e) {
+            console.error('Auto-refresh failed:', e);
+        }
+    }
+    // Auto-refresh every 15 seconds
+    setInterval(refreshData, 15000);
+})();
+</script>
+
 <?php require_once __DIR__ . '/common/footer.php'; ?>
