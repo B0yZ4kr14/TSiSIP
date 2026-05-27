@@ -1,47 +1,64 @@
 # Contributing to TSiSIP
 
-## Commit Conventions
+## Getting Started
 
-We use [Conventional Commits](https://www.conventionalcommits.org/):
+1. Fork the repository
+2. Clone your fork
+3. Create a feature branch
+4. Make your changes
+5. Submit a pull request
 
-- `feat:` — new feature or module
-- `fix:` — bug fix
-- `docs:` — documentation changes
-- `refactor:` — code restructuring without behavior change
-- `test:` — test additions or fixes
-- `chore:` — build, tooling, dependency updates
-- `security:` — security fixes or hardening
+## Development Setup
 
-Example:
+```bash
+# Install dependencies
+docker compose build
+
+# Start development environment
+docker compose up -d
+
+# Run tests
+make test
 ```
-feat(ocp): add SIPtrace module with search and purge
 
-Implements siptrace viewer for OpenSIPS 3.6 LTS.
-Includes Call-ID filter, method filter, and admin-only purge.
+## Code Style
+
+- PHP: PSR-12
+- JavaScript: Standard
+- CSS: BEM methodology
+- SQL: lowercase keywords
+
+## Commit Messages
+
+Follow Conventional Commits:
+```
+feat: Add new feature
+fix: Fix bug
+docs: Update documentation
+test: Add tests
+chore: Maintenance task
 ```
 
-## Spec Workflow
+## Testing
 
-1. Every feature starts in `specs/NNN-feature-name/`
-2. Required files: `spec.md`, `plan.md`, `tasks.md`
-3. Optional: `blueprint.md` for architectural decisions
-4. Update `tasks.md` as work progresses
+- All changes must include tests
+- Integration tests in `tests/integration/`
+- Run `make test` before submitting
 
-## Agent Orchestration Rules
+## Documentation
 
-- Read `AGENTS.md` before making changes
-- Follow the documentation workflow in `docs/TSiSIP-AGENT-ORCHESTRATION-PLAYBOOK.md`
-- Use `requireRole('devops')` or `requireRole('admin')` for mutating OCP operations
-- Never commit secrets; use Docker secrets or environment templates
+- Update README for user-facing changes
+- Update admin guide for infrastructure changes
+- Update API reference for endpoint changes
 
-## Security
+## Review Process
 
-- Run `scripts/ci-scan.sh` before significant commits
-- Validate OpenSIPS config with `opensips -c`
-- Do not introduce `db_mysql`, `sanity`, or Kamailio-only modules
-- Keep PostgreSQL as the only database
+1. Automated tests must pass
+2. Code review by maintainers
+3. Documentation review
+4. Merge by maintainers
 
-## Docker-First Rule
+## Questions?
 
-All runtime components must be deliverable as Docker images.
-Do not add bare-metal or VM-first installation instructions.
+- GitHub Discussions
+- Email: devops@tsiapp.io
