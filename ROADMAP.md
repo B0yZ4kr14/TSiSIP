@@ -6,9 +6,9 @@
 - [x] OCP Rebrand (Feature 002)
 - [x] Dark Mode (Feature 025)
 - [x] i18n Support (EN, ES, PT)
-- [x] Mobile Responsive
-- [x] Real-time Updates (SSE)
-- [x] Custom Dashboard
+- [x] Mobile Responsive (Feature 027)
+- [x] Real-time Updates (SSE) (Feature 028)
+- [x] Custom Dashboard (Feature 028)
 - [x] Global Search
 - [x] User Profile
 - [x] Bookmarks
@@ -22,6 +22,10 @@
 - [x] Theme Presets
 - [x] Keyboard Shortcuts
 - [x] Guided Tour
+- [x] MI Parity — Gateway Health, Call Queue, Failover, Topology, Alert History (Feature 029)
+- [x] User Management & RBAC (Feature 030)
+- [x] REST API v1 — Status, Metrics, Users, Audit, Bearer Auth, Rate Limiting (Feature 031)
+- [x] Audit Log & Compliance Dashboard (Feature 016)
 
 ## Q3 2026
 
@@ -32,12 +36,12 @@
 - [ ] Custom Reports Builder
 - [ ] Multi-factor Authentication
 - [ ] LDAP/AD Integration
-- [ ] API Rate Limiting
+- [x] API Rate Limiting (Feature 031)
 - [ ] GraphQL API
 - [ ] Mobile App (PWA)
 - [ ] Voice Commands
 - [ ] AI-powered Insights
-- [ ] Automated Failover
+- [x] Automated Failover (Feature 029 — manual trigger via web UI)
 
 ## Q4 2026
 
