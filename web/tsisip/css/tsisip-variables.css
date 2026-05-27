@@ -63,6 +63,9 @@
     --tsisip-status-warn: #FF9800;
     --tsisip-status-error: #F44336;
     --tsisip-status-info: #2196F3;
+    --tsisip-warning-bg: #3d2800;
+    --tsisip-warning-border: #b38600;
+    --tsisip-warning-text: #ffd54f;
     --tsisip-status-neutral: #6B7B8D;
 
     --tsisip-shadow-sm: 0 1px 3px rgba(0, 0, 0, 0.3);

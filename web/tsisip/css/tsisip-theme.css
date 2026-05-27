@@ -897,8 +897,8 @@ body.tsisip-login::after {
 
 /* Failover page caution */
 .tsisip-caution-box {
-    background: #fef3c7;
-    border: 1px solid #f59e0b;
+    background: var(--tsisip-warning-bg, #fef3c7);
+    border: 1px solid var(--tsisip-warning-border, #f59e0b);
     border-radius: 8px;
     padding: 16px;
     margin-bottom: 24px;
@@ -906,7 +906,7 @@ body.tsisip-login::after {
 
 .tsisip-caution-box p {
     margin: 0;
-    color: #92400e;
+    color: var(--tsisip-warning-text, #92400e);
     font-weight: 500;
 }
 
