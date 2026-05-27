@@ -3,27 +3,74 @@ services:
   postgres:
     image: ghcr.io/b0yz4kr14/tsisip/postgres:test
     pull_policy: if_not_present
+    restart: unless-stopped
+    deploy:
+      resources:
+        limits:
+          memory: 2G
+        reservations:
+          memory: 1G
   rtpengine:
     image: tsisip/rtpengine:test
     pull_policy: if_not_present
+    restart: unless-stopped
+    deploy:
+      resources:
+        limits:
+          memory: 2G
   opensips:
     image: ghcr.io/b0yz4kr14/tsisip/opensips:test
     pull_policy: if_not_present
+    restart: unless-stopped
+    deploy:
+      resources:
+        limits:
+          memory: 1G
   asterisk_pbx_1:
     image: ghcr.io/b0yz4kr14/tsisip/asterisk:test
     pull_policy: if_not_present
+    restart: unless-stopped
+    deploy:
+      resources:
+        limits:
+          memory: 2G
   asterisk_pbx_2:
     image: ghcr.io/b0yz4kr14/tsisip/asterisk:test
     pull_policy: if_not_present
+    restart: unless-stopped
+    deploy:
+      resources:
+        limits:
+          memory: 2G
   ocp:
     image: tsisip/ocp:test
     pull_policy: if_not_present
+    restart: unless-stopped
+    deploy:
+      resources:
+        limits:
+          memory: 512M
   certbot:
     image: tsisip/certbot:test
     pull_policy: if_not_present
+    restart: unless-stopped
+    deploy:
+      resources:
+        limits:
+          memory: 256M
   certbot_exporter:
     image: tsisip/certbot_exporter:test
     pull_policy: if_not_present
+    restart: unless-stopped
+    deploy:
+      resources:
+        limits:
+          memory: 128M
   backup:
     image: tsisip/backup:test
     pull_policy: if_not_present
+    restart: unless-stopped
+    deploy:
+      resources:
+        limits:
+          memory: 1G

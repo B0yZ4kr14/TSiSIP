@@ -55,7 +55,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             logAuditEvent('PASSWORD_CHANGE', 'ocp_user', $_SESSION['ocp_username'] ?? 'unknown', true);
 
             // Dedicated password-change audit (security_constitution.md section 7)
-            $ip = '0.0.0.0';
+            $ip = 'unknown';
             if (!empty($_SERVER['HTTP_X_FORWARDED_FOR'])) {
                 $first = explode(',', $_SERVER['HTTP_X_FORWARDED_FOR'])[0];
                 $first = trim($first);
@@ -90,7 +90,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         logAuditEvent('PASSWORD_CHANGE', 'ocp_user', $_SESSION['ocp_username'] ?? 'unknown', false, ['reason' => $error]);
 
         // Dedicated password-change audit for failures
-        $failIp = '0.0.0.0';
+        $failIp = 'unknown';
         if (!empty($_SERVER['HTTP_X_FORWARDED_FOR'])) {
             $ff = explode(',', $_SERVER['HTTP_X_FORWARDED_FOR'])[0];
             $ff = trim($ff);

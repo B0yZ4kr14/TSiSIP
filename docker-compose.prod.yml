@@ -5,6 +5,12 @@ services:
     - db_internal
     restart: unless-stopped
     oom_score_adj: -500
+    deploy:
+      resources:
+        limits:
+          memory: 8G
+        reservations:
+          memory: 4G
     shm_size: 3gb
     command:
     - postgres

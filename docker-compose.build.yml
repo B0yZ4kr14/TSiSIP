@@ -6,51 +6,118 @@ services:
     build:
       context: .
       dockerfile: Dockerfile
+    restart: unless-stopped
+    deploy:
+      resources:
+        limits:
+          memory: 2G
   rtpengine:
     build:
       context: ./docker/rtpengine
       dockerfile: Dockerfile
+    restart: unless-stopped
+    deploy:
+      resources:
+        limits:
+          memory: 2G
   ocp:
     build:
       context: .
       dockerfile: docker/ocp/Dockerfile
+    restart: unless-stopped
+    deploy:
+      resources:
+        limits:
+          memory: 1G
   postgres:
     build:
       context: .
       dockerfile: docker/postgres/Dockerfile
+    restart: unless-stopped
+    deploy:
+      resources:
+        limits:
+          memory: 8G
+        reservations:
+          memory: 4G
   asterisk:
     build:
       context: ./docker/asterisk
       dockerfile: Dockerfile
+    restart: unless-stopped
+    deploy:
+      resources:
+        limits:
+          memory: 2G
   prometheus:
     build:
       context: ./docker/prometheus
       dockerfile: Dockerfile
+    restart: unless-stopped
+    deploy:
+      resources:
+        limits:
+          memory: 2G
   grafana:
     build:
       context: ./docker/grafana
       dockerfile: Dockerfile
+    restart: unless-stopped
+    deploy:
+      resources:
+        limits:
+          memory: 1G
   opensips_exporter:
     build:
       context: ./docker/opensips_exporter
       dockerfile: Dockerfile
+    restart: unless-stopped
+    deploy:
+      resources:
+        limits:
+          memory: 256M
   anomaly_detector:
     build:
       context: ./docker/anomaly_detector
       dockerfile: Dockerfile
+    restart: unless-stopped
+    deploy:
+      resources:
+        limits:
+          memory: 1G
   backup:
     build:
       context: ./docker/backup
       dockerfile: Dockerfile
+    restart: unless-stopped
+    deploy:
+      resources:
+        limits:
+          memory: 1G
   certbot:
     build:
       context: ./docker/certbot
       dockerfile: Dockerfile
+    restart: unless-stopped
+    deploy:
+      resources:
+        limits:
+          memory: 256M
   certbot_exporter:
     build:
       context: ./docker/certbot_exporter
       dockerfile: Dockerfile
+    restart: unless-stopped
+    deploy:
+      resources:
+        limits:
+          memory: 128M
   tailscale_cert:
     build:
       context: ./docker/tailscale_cert
       dockerfile: Dockerfile
+    restart: unless-stopped
+    deploy:
+      resources:
+        limits:
+          memory: 128M
