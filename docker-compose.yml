@@ -219,6 +219,8 @@ services:
   opensips:
     build: .
     image: tsisip/opensips:${TSISIP_IMAGE_TAG:?must be set}
+    # Dev tuning: 256MB shm + 32MB pkg per child (container limit 1G)
+    command: ["/usr/local/sbin/opensips", "-F", "-f", "/etc/opensips/opensips.cfg", "-m", "256", "-M", "32"]
     networks:
     - sip_edge
     - sip_internal
