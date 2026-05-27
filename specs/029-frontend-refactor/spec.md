@@ -5,7 +5,7 @@
 **Feature**: TSiSIP OCP Frontend — 100% OpenSIPS 3.6 MI Parity
 **Short name**: tsisip-ocp-mi-full-parity
 **Created**: 2026-05-27
-**Status**: In Progress
+**Status**: Complete
 **Last Updated**: 2026-05-27
 
 ### Context
