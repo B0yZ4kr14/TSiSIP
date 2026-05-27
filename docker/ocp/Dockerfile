@@ -24,7 +24,8 @@ RUN docker-php-ext-install \
     gettext
 
 # Enable Apache mod_rewrite for OCP pretty URLs
-RUN a2enmod rewrite
+RUN a2enmod rewrite \
+    && sed -i 's/AllowOverride None/AllowOverride All/' /etc/apache2/apache2.conf
 
 # Copy PHP session security hardening configuration
 # Aligns with CANONICAL-SPEC Section 17 Security Model

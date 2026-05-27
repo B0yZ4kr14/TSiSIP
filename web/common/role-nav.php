@@ -118,6 +118,7 @@ $adminPages = [
     'tenants'        => _('Tenants'),
     'header-routing' => _('Header Routing'),
     'users'          => _('Admin Users'),
+    'api-keys'       => _('API Keys'),
     'audit-log'      => _('Audit Log'),
     'system-events'  => _('System Events'),
 ];

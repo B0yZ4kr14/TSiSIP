@@ -91,6 +91,7 @@ if ($userRole === 'admin' || $userRole === 'devops') {
         ['url' => 'search.php',         'label' => _('Global Search'),       'icon' => 'search'],
         ['url' => 'system-health.php',  'label' => _('System Health'),     'icon' => 'health'],
         ['url' => 'api-docs.php',       'label' => _('API Documentation'),     'icon' => 'code'],
+        ['url' => 'api-keys.php',       'label' => _('API Keys'),              'icon' => 'key'],
         ['url' => 'reports.php',        'label' => _('System Reports'),       'icon' => 'chart'],
         ['url' => 'scheduled-tasks.php','label' => _('Scheduled Tasks'),  'icon' => 'schedule'],
         ['url' => 'cache-manager.php',  'label' => _('Cache Manager'),     'icon' => 'memory'],

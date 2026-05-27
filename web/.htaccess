@@ -1,8 +1,17 @@
 RewriteEngine On
 RewriteBase /
 
+# Pass Authorization header to PHP (required for Bearer token auth)
+RewriteCond %{HTTP:Authorization} ^(.*)
+RewriteRule .* - [e=HTTP_AUTHORIZATION:%1]
+
 # Redirect / to login.php (fallback if nginx exact match is bypassed)
 RewriteRule ^$ login.php [L,R=302]
+
+# API routes: /api/v1/... -> /api/index.php
+RewriteCond %{REQUEST_FILENAME} !-f
+RewriteCond %{REQUEST_FILENAME} !-d
+RewriteRule ^api/v1/(.*)$ api/index.php [L,QSA]
 
 # If the request is not for an existing file/directory,
 # and a .php version exists, serve that
