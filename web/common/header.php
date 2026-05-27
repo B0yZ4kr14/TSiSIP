@@ -4,6 +4,8 @@
  * Premium branded theme layer for the TSiSIP ecosystem
  */
 
+require_once __DIR__ . '/asset-functions.php';
+
 // Asset manifest loading with graceful fallback
 $manifestPath = __DIR__ . '/../tsisip/asset-manifest.json';
 $manifest = [];
@@ -14,16 +16,7 @@ if (file_exists($manifestPath)) {
     }
 }
 
-// Helper to resolve hashed asset path
-function tsisip_asset(string $logicalName, string $type = 'css'): string {
-    global $manifest;
-    if (isset($manifest['assets'][$type][$logicalName])) {
-        return 'tsisip/' . ($type === 'css' || $type === 'js' ? $type . '/' : 'assets/') . $manifest['assets'][$type][$logicalName];
-    }
-    // Fallback to unhashed path
-    $fallbackDir = $type === 'css' || $type === 'js' ? $type . '/' : 'assets/';
-    return 'tsisip/' . $fallbackDir . $logicalName;
-}
+// tsisip_asset() loaded from asset-functions.php
 
 // User role from OCP session (populated by login.php via config.php)
 $validRoles = ['admin', 'devops', 'dentist', 'assistant', 'user', 'readonly'];
