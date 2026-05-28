@@ -151,6 +151,32 @@ while (true) {
         $data['trunks'] = [];
     }
 
+    // Auto-healing events (Feature 036)
+
+    try {
+
+        $pdo = getDb();
+
+        $stmt = $pdo->query(
+
+            "SELECT id, action, setid, destination_id, new_snapshot, created_at
+
+             FROM dispatcher_change_log
+
+             WHERE action IN ('AUTO_ROLLBACK','AUTO_FAILOVER','AUTO_PROBE')
+
+             ORDER BY created_at DESC LIMIT 10"
+
+        );
+
+        $data['autoheal'] = $stmt->fetchAll(PDO::FETCH_ASSOC);
+
+    } catch (Throwable $e) {
+
+        $data['autoheal'] = [];
+
+    }
+
     // Anomaly detector status
     $anomalyUrl = 'http://anomaly_detector:8080/api/v1/status';
     $apiKey = getenv('ANOMALY_API_KEY') ?: '';

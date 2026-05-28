@@ -284,6 +284,13 @@ if (isset($roleNav[$userRole])) {
             <?php echo _('Feature 020 tools are now available: Dialog Viewer, MI Commands, Statistics, Dialplan, Domains, TLS Management, Gateway Health, Live Call Queue, Network Topology, Manual Failover, Alert History, RTPengine Status, Subscriber Statistics, System Configuration, and Help.'); ?>
         </p>
     </div>
+    <!-- Auto-Healing Events Widget (Feature 036) -->
+    <div class="tsisip-dashboard-section" id="autoheal-widget-section">
+        <h2><?php echo _('Auto-Healing Events'); ?></h2>
+        <div id="autoheal-events-widget" style="max-height:200px;overflow:auto;">
+            <div class="tsisip-text-muted"><?php echo _('Loading...'); ?></div>
+        </div>
+    </div>
 </div>
 
 <script>
@@ -363,10 +370,50 @@ if (isset($roleNav[$userRole])) {
         window.TSiSIPEvents.on('data', function(data) {
             updateAnomalyBanner(data);
             updateTrunkHealth(data);
+            updateAutohealEvents(data);
         });
     }
 
     // Load alerts on page load and every 30s
+    // Auto-healing events updater (Feature 036 SSE)
+
+    function updateAutohealEvents(data) {
+
+        const widget = document.getElementById('autoheal-events-widget');
+
+        if (!widget) return;
+
+        const events = data.autoheal || [];
+
+        if (events.length === 0) {
+
+            widget.innerHTML = '<div class="tsisip-text-muted"><?php echo _('No recent auto-healing events'); ?></div>';
+
+            return;
+
+        }
+
+        widget.innerHTML = '<ul class="tsisip-alert-list">' + events.map(e => {
+
+            const color = e.result === 'success' ? 'tsisip-alert--success' :
+
+                (e.result === 'failed' ? 'tsisip-alert--error' : 'tsisip-alert--warning');
+
+            return '<li class="tsisip-alert ' + color + '" style="margin-bottom:0.5rem;">' +
+
+                '<strong>' + (e.action || '?') + '</strong> — ' +
+
+                (e.destination || '?') + ' (' + (e.result || '?') + ')' +
+
+                '<br><small class="tsisip-text-muted">' + (e.created_at || '?') + '</small>' +
+
+                '</li>';
+
+        }).join('') + '</ul>';
+
+    }
+
+
     loadAlerts();
     setInterval(loadAlerts, 30000);
 })();

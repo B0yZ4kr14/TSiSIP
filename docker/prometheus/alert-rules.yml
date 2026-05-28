@@ -278,3 +278,39 @@ groups:
           summary: "TSiSIP backup size anomaly"
           description: "Latest backup size is {{ $value }} bytes (possible empty dump)"
           runbook_url: "https://docs.tsiapp.io/runbooks/backup-size-anomaly"
+
+      # Auto-healing failures
+      - alert: TSiSIPAutohealFailures
+        expr: increase(tsisip_autoheal_actions_total{result="failed"}[10m]) > 3
+        for: 2m
+        labels:
+          severity: critical
+          service: autoheal
+        annotations:
+          summary: "TSiSIP auto-healing is repeatedly failing"
+          description: "{{ $value }} auto-healing actions failed in the last 10 minutes"
+          runbook_url: "https://docs.tsiapp.io/runbooks/autoheal-failures"
+
+      # Circuit breaker open
+      - alert: TSiSIPAutohealCircuitBreakerOpen
+        expr: tsisip_autoheal_circuit_breaker_state == 1
+        for: 1m
+        labels:
+          severity: warning
+          service: autoheal
+        annotations:
+          summary: "TSiSIP auto-healing circuit breaker is open"
+          description: "Auto-healing circuit breaker has been open for more than 1 minute"
+          runbook_url: "https://docs.tsiapp.io/runbooks/autoheal-circuit-breaker"
+
+      # Unhealthy dispatcher destinations
+      - alert: TSiSIPDispatcherDestinationsUnhealthy
+        expr: tsisip_autoheal_destinations_unhealthy > 0
+        for: 2m
+        labels:
+          severity: warning
+          service: dispatcher
+        annotations:
+          summary: "TSiSIP dispatcher has unhealthy destinations"
+          description: "{{ $value }} dispatcher destination(s) are unhealthy"
+          runbook_url: "https://docs.tsiapp.io/runbooks/dispatcher-unhealthy"
