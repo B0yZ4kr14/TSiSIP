@@ -513,6 +513,74 @@ docker compose up -d postgres
 - PostgreSQL and Asterisk must never have published ports.
 - All SIP credentials are HA1 hashes only -- no plaintext passwords.
 
+## Post-Remediation Security Hardening (2026-05-28)
+
+The following hardening measures were applied in commit `802862a`. Operators must verify these constraints are preserved across redeploys.
+
+### C1 — WebSocket Ports Removed from Host Publish
+
+| Before | After |
+|---|---|
+| `8081:8080/tcp` and `4443:4443/tcp` published on host | WebSocket transports remain **internal-only** on `sip_edge` |
+
+**Impact**: Browser-based SIP clients (WebRTC) can no longer reach OpenSIPS directly from the public internet. WebRTC support is disabled by default. If required, use a reverse proxy or VPN tunnel.
+
+**Verification**:
+```bash
+docker compose config | grep -E '8080|4443' || echo "PASS: No host-published WS ports"
+```
+
+### C2 — node_exporter Isolated to monitoring Network
+
+| Before | After |
+|---|---|
+| `node_exporter` attached to `sip_internal` + host `/proc`, `/sys`, `/` mounts | `node_exporter` on dedicated `monitoring` network only |
+
+**Impact**: Host-level metrics collection no longer has access to the SIP internal control plane.
+
+**Verification**:
+```bash
+docker compose config | grep -A5 'node_exporter:' | grep 'sip_internal' && echo "FAIL" || echo "PASS"
+```
+
+### C3 — SQL Injection Guard on Pseudo-Variables
+
+All `sql_query` and `sql_query_one` calls in `opensips.cfg.tpl` now escape pseudo-variables via `$(pv{s.escape.common})` before interpolation.
+
+**Affected variables**: `$au`, `$fd`, `$fU`, `$si`, `$rm`, `$rd`, `$rU`
+
+**Verification**:
+```bash
+grep -c 's.escape.common' opensips/opensips.cfg.tpl
+# Expected: >= 6 occurrences
+```
+
+### C4 — MI HTTP Bound to Loopback Only
+
+| Before | After |
+|---|---|
+| `modparam("httpd", "ip", "${OPENSIPS_LISTEN_IP}")` — could bind to `0.0.0.0` | `modparam("httpd", "ip", "${MI_HTTP_IP}")` — defaults to `127.0.0.1` |
+
+**Impact**: The Management Interface (MI) over HTTP is no longer reachable on the public `sip_edge` network. Access is restricted to the container loopback or explicit internal IP.
+
+**Verification**:
+```bash
+grep 'MI_HTTP_IP' docker/entrypoint.sh opensips/opensips.cfg.tpl
+```
+
+### H1-H8 Summary
+
+| ID | Control | Verification |
+|---|---|---|
+| H1 | RTPengine `--listen-http` binds to `${RTPENGINE_INTERNAL_IP}` only | `grep 'listen-http' docker-compose.yml` |
+| H2 | `anomaly_detector` requires `X-API-Key` header on sensitive endpoints | `grep 'API_KEY' docker-compose.prod.yml` |
+| H3 | `HEADER_ROUTING` tenant-scoped fallback replaces hardcoded set `1` | `grep 'default_dispatcher_setid' opensips/opensips.cfg.tpl` |
+| H4 | `postgres_exporter` uses `sslmode=prefer` | `grep 'sslmode' docker-compose.yml` |
+| H5 | OpenSIPS TLS certs mount is `:ro` | `grep 'tls_certs.*ro' docker-compose.yml` |
+| H6 | `OPENSIPS_HOST` parameterized | `grep 'OPENSIPS_HOST' docker-compose.yml` |
+| H7 | `TRUNK_ROUTING` validates SIP domain format before SQL | `grep 'rejected invalid destination domain' opensips/opensips.cfg.tpl` |
+| H8 | `INBOUND_DID_ROUTING` validates E.164 DID format before SQL | `grep 'rejected invalid DID format' opensips/opensips.cfg.tpl` |
+
 ## Backup & Restore Operations
 
 ### Architecture
