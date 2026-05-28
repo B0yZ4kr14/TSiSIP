@@ -406,6 +406,35 @@ docker compose exec postgres pg_isready -U opensips
 docker compose exec ocp bash -c "curl -fsSL http://localhost/login.php | grep -q 'TSiSIP'"
 ```
 
+### System Health Dashboard (Feature 034)
+
+The OCP provides a real-time System Health dashboard at:
+
+- **Dashboard**: `https://tsiapp.io/TSiSIP/system-health.php`
+- **Main OCP**: `https://tsiapp.io/TSiSIP/dashboard.php`
+
+**Widgets available:**
+
+| Widget | Data Source | Refresh | Role Filter |
+|---|---|---|---|
+| Live Metrics (dialogs, RTP, memory, processes, etc.) | OpenSIPS MI HTTP | SSE every 5s | All roles |
+| Trunk Provider Health | PostgreSQL + SSE | SSE every 5s | Admin / DevOps |
+| Dispatcher Sets | OpenSIPS MI `ds_list` | SSE every 5s | All roles |
+| Anomaly Alert Banner | Anomaly Detector API | SSE every 5s | All roles |
+| Active Alerts | Alertmanager API | AJAX every 30s | Admin / DevOps |
+
+**Verification:**
+```bash
+# Check SSE endpoint is reachable (requires active session)
+curl -fsSL -H "Accept: text/event-stream" "http://localhost:8080/common/sse-stream.php?token=..."
+
+# Check alerts endpoint
+curl -fsSL "http://localhost:8080/api/v1/alerts.php"
+
+# Check metrics history endpoint
+curl -fsSL "http://localhost:8080/api/v1/metrics-history.php?metric=opensips_dialogs_active&hours=1"
+```
+
 ### Rebuilding After Config Changes
 
 **OpenSIPS config** (`opensips/opensips.cfg.tpl`):
