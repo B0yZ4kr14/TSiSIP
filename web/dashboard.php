@@ -99,6 +99,12 @@ if (isset($roleNav[$userRole])) {
         <span class="tsisip-dashboard-role"><?php echo htmlspecialchars($displayRole, ENT_QUOTES, 'UTF-8'); ?></span>
     </h1>
 
+    <!-- Anomaly Alert Banner -->
+    <div id="anomaly-banner" class="tsisip-alert" style="display:none;margin-bottom:1rem;">
+        <strong><?php echo _('Anomaly Detected'); ?>:</strong>
+        <span id="anomaly-text"></span>
+    </div>
+
     <!-- Live Metrics -->
     <div class="tsisip-dashboard-section">
         <h2><?php echo _('Live Metrics'); ?></h2>
@@ -137,6 +143,36 @@ if (isset($roleNav[$userRole])) {
             </div>
         </div>
     </div>
+
+    <?php if ($isAdmin || $isDevOps): ?>
+    <!-- Trunk Provider Health -->
+    <div class="tsisip-dashboard-section">
+        <h2><?php echo _('Trunk Providers'); ?></h2>
+        <div id="trunk-health-widget" class="tsisip-table-container">
+            <table class="tsisip-table">
+                <thead>
+                    <tr>
+                        <th><?php echo _('Name'); ?></th>
+                        <th><?php echo _('Host'); ?></th>
+                        <th><?php echo _('Status'); ?></th>
+                        <th><?php echo _('Max CPS'); ?></th>
+                    </tr>
+                </thead>
+                <tbody id="trunk-health-tbody">
+                    <tr><td colspan="4" class="tsisip-text-muted"><?php echo _('Loading...'); ?></td></tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+    <!-- Active Alerts from Alertmanager -->
+    <div class="tsisip-dashboard-section">
+        <h2><?php echo _('Active Alerts'); ?></h2>
+        <div id="alerts-widget">
+            <div class="tsisip-text-muted"><?php echo _('Loading alerts...'); ?></div>
+        </div>
+    </div>
+    <?php endif; ?>
 
     <?php if (!empty($systemLinks)): ?>
     <div class="tsisip-dashboard-section">
@@ -249,4 +285,91 @@ if (isset($roleNav[$userRole])) {
         </p>
     </div>
 </div>
+
+<script>
+(function() {
+    'use strict';
+
+    // Anomaly banner updater
+    function updateAnomalyBanner(data) {
+        const banner = document.getElementById('anomaly-banner');
+        const text = document.getElementById('anomaly-text');
+        if (!banner || !text) return;
+        const anomaly = data.anomaly || {};
+        const zScore = parseFloat(anomaly.z_score || 0);
+        if (zScore > 3.0) {
+            banner.style.display = 'block';
+            banner.className = 'tsisip-alert tsisip-alert--error';
+            text.textContent = 'RPS=' + (anomaly.current_rps || 0).toFixed(1) +
+                ' | Z=' + zScore.toFixed(2) + ' | Baseline=' + (anomaly.baseline_mean || 0).toFixed(1);
+        } else if (zScore > 2.0) {
+            banner.style.display = 'block';
+            banner.className = 'tsisip-alert tsisip-alert--warning';
+            text.textContent = 'Elevated traffic: RPS=' + (anomaly.current_rps || 0).toFixed(1) +
+                ' | Z=' + zScore.toFixed(2);
+        } else {
+            banner.style.display = 'none';
+        }
+    }
+
+    // Trunk health updater
+    function updateTrunkHealth(data) {
+        const tbody = document.getElementById('trunk-health-tbody');
+        if (!tbody) return;
+        const trunks = data.trunks || [];
+        if (trunks.length === 0) {
+            tbody.innerHTML = '<tr><td colspan="4" class="tsisip-text-muted">No trunk providers configured</td></tr>';
+            return;
+        }
+        tbody.innerHTML = trunks.map(t => {
+            const statusClass = t.enabled ? 'tsisip-badge-success' : 'tsisip-badge-error';
+            const statusText = t.enabled ? 'Up' : 'Down';
+            return '<tr>' +
+                '<td>' + (t.name || '') + '</td>' +
+                '<td>' + (t.host || '') + ':' + (t.port || '') + '</td>' +
+                '<td><span class="tsisip-badge ' + statusClass + '">' + statusText + '</span></td>' +
+                '<td>' + (t.max_cps || 0) + '</td>' +
+                '</tr>';
+        }).join('');
+    }
+
+    // Active alerts updater
+    function loadAlerts() {
+        const widget = document.getElementById('alerts-widget');
+        if (!widget) return;
+        fetch('api/v1/alerts.php')
+            .then(r => r.json())
+            .then(data => {
+                const alerts = data.alerts || [];
+                if (alerts.length === 0) {
+                    widget.innerHTML = '<div class="tsisip-text-muted">No active alerts</div>';
+                    return;
+                }
+                widget.innerHTML = '<ul class="tsisip-alert-list">' + alerts.map(a => {
+                    const severityClass = a.severity === 'critical' ? 'tsisip-alert--error' :
+                        (a.severity === 'warning' ? 'tsisip-alert--warning' : 'tsisip-alert--info');
+                    return '<li class="tsisip-alert ' + severityClass + '" style="margin-bottom:0.5rem;">' +
+                        '<strong>' + (a.name || '') + '</strong> — ' + (a.summary || '') +
+                        '</li>';
+                }).join('') + '</ul>';
+            })
+            .catch(() => {
+                widget.innerHTML = '<div class="tsisip-text-muted">Alerts unavailable</div>';
+            });
+    }
+
+    // Hook into existing SSE client
+    if (window.TSiSIPEvents) {
+        window.TSiSIPEvents.on('data', function(data) {
+            updateAnomalyBanner(data);
+            updateTrunkHealth(data);
+        });
+    }
+
+    // Load alerts on page load and every 30s
+    loadAlerts();
+    setInterval(loadAlerts, 30000);
+})();
+</script>
+
 <?php require_once __DIR__ . '/common/footer.php'; ?>

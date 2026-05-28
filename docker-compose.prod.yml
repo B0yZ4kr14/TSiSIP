@@ -218,6 +218,8 @@ services:
       DB_USER: opensips
       OCP_AUDIT_RETENTION_DAYS: ${OCP_AUDIT_RETENTION_DAYS:-90}
       ADMIN_API_URL: http://admin_api:8080/index.php
+      OPENSIPS_MI_URL: http://opensips:8888/mi
+      ANOMALY_API_KEY: ${ANOMALY_API_KEY:?must be set}
     secrets:
     - db_password
     - trunk_cred_key

@@ -261,6 +261,12 @@ table.tsisip-table,
   color: var(--tsisip-accent-info);
 }
 
+.tsisip-alert-list {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+
 /* ===== Login Page ===== */
 body.tsisip-login {
   background: linear-gradient(135deg, var(--tsisip-surface-header) 0%, var(--tsisip-primary-blue-dark) 50%, #0d1f33 100%);

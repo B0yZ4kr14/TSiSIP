@@ -140,6 +140,37 @@ while (true) {
         $data['usrloc_contacts'] = 0;
     }
 
+    // Trunk provider status (from PostgreSQL)
+    try {
+        $pdo = getDb();
+        $stmt = $pdo->query(
+            "SELECT id, name, host, port, enabled, max_cps FROM sip_trunk_providers ORDER BY priority"
+        );
+        $data['trunks'] = $stmt->fetchAll(PDO::FETCH_ASSOC);
+    } catch (Throwable $e) {
+        $data['trunks'] = [];
+    }
+
+    // Anomaly detector status
+    $anomalyUrl = 'http://anomaly_detector:8080/api/v1/status';
+    $apiKey = getenv('ANOMALY_API_KEY') ?: '';
+    $ctx = stream_context_create([
+        'http' => [
+            'method'  => 'GET',
+            'header'  => "X-API-Key: {$apiKey}\r\nAccept: application/json\r\n",
+            'timeout' => 2,
+        ],
+    ]);
+    $resp = @file_get_contents($anomalyUrl, false, $ctx);
+    if ($resp !== false) {
+        $decoded = json_decode($resp, true);
+        if (is_array($decoded)) {
+            $data['anomaly'] = $decoded;
+        }
+    } else {
+        $data['anomaly'] = ['current_rps' => 0, 'z_score' => 0];
+    }
+
     // Only send if data changed (or every 5th iteration ~25s)
     $json = json_encode($data);
     if ($json !== $lastData || $counter % 5 === 0) {
