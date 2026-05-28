@@ -57,12 +57,12 @@ header("Referrer-Policy: strict-origin-when-cross-origin");
     <header class="tsisip-header tsisip-wiki-header">
         <div class="tsisip-brand">
             <a href="../" class="logo-full" aria-label="<?php echo _('TSiSIP Home'); ?>">
-                <img src="<?php echo tsisip_asset('tsisip-logo-full-v2.svg', 'svg'); ?>"
+                <img src="<?php echo tsisip_asset('tsisip-logo-full-v2.svg', 'svg'); ?>" alt="<?php echo _('TSiSIP Logo'); ?>"
                      width="220" height="48"
                      alt="<?php echo _('TSiSIP Platform'); ?>">
             </a>
             <a href="../" class="logo-compact" aria-label="<?php echo _('TSiSIP Home'); ?>">
-                <img src="<?php echo tsisip_asset('tsisip-logo-compact-v2.svg', 'svg'); ?>"
+                <img src="<?php echo tsisip_asset('tsisip-logo-compact-v2.svg', 'svg'); ?>" alt="<?php echo _('TSiSIP Logo'); ?>"
                      width="48" height="48"
                      alt="<?php echo _('TSiSIP Platform'); ?>">
             </a>

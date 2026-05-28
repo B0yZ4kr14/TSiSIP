@@ -68,7 +68,7 @@ function tsisip_asset(string $logicalName, string $type = 'css'): string {
 <body class="tsisip-login">
     <div class="tsisip-login-card">
         <div class="logo">
-            <img src="<?php echo tsisip_asset('tsisip-logo-full-v2.svg', 'svg'); ?>"
+            <img src="<?php echo tsisip_asset('tsisip-logo-full-v2.svg', 'svg'); ?>" alt="<?php echo _('TSiSIP Logo'); ?>"
                  width="220" height="48"
                  alt="<?php echo _('TSiSIP Platform'); ?>">
         </div>

@@ -41,7 +41,7 @@ header("Referrer-Policy: strict-origin-when-cross-origin");
     <meta name="csrf-token" content="<?php echo htmlspecialchars(generateCsrfToken()); ?>">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta name="theme-color" content="#0A1628">
-    <title><?php echo _('TSiSIP — Control Panel'); ?></title>
+    <title><?php echo htmlspecialchars($pageTitle ?? _('TSiSIP — Control Panel'), ENT_QUOTES, 'UTF-8'); ?></title>
 
     <!-- OCP Base Styles -->
     <link rel="stylesheet" href="css/main.css">
@@ -61,12 +61,12 @@ header("Referrer-Policy: strict-origin-when-cross-origin");
     <header class="tsisip-header">
         <div class="tsisip-brand">
             <a href="./" class="logo-full" aria-label="<?php echo _('TSiSIP Home'); ?>">
-                <img src="<?php echo tsisip_asset('tsisip-logo-full-v2.svg', 'svg'); ?>"
+                <img src="<?php echo tsisip_asset('tsisip-logo-full-v2.svg', 'svg'); ?>" alt="<?php echo _('TSiSIP Logo'); ?>"
                      width="220" height="48"
                      alt="<?php echo _('TSiSIP Platform'); ?>">
             </a>
             <a href="./" class="logo-compact" aria-label="<?php echo _('TSiSIP Home'); ?>">
-                <img src="<?php echo tsisip_asset('tsisip-logo-compact-v2.svg', 'svg'); ?>"
+                <img src="<?php echo tsisip_asset('tsisip-logo-compact-v2.svg', 'svg'); ?>" alt="<?php echo _('TSiSIP Logo'); ?>"
                      width="48" height="48"
                      alt="<?php echo _('TSiSIP Platform'); ?>">
             </a>
