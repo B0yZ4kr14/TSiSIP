@@ -17,6 +17,37 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     } else {
         $user = authenticateUser($username, $password);
         if ($user !== null) {
+            // Feature 037: MFA check
+            $pdo = getDb();
+            $mfaStmt = $pdo->prepare("SELECT 1 FROM ocp_user_mfa WHERE user_id = :uid");
+            $mfaStmt->execute([':uid' => $user['id']]);
+            $mfaEnabled = (bool)$mfaStmt->fetchColumn();
+
+            if ($mfaEnabled) {
+                // Store pending auth and redirect to MFA verification
+                $_SESSION['mfa_pending_user_id'] = $user['id'];
+                $_SESSION['mfa_pending_username'] = $user['username'];
+                $_SESSION['mfa_pending_role'] = $user['role'];
+                $_SESSION['mfa_pending_force_password_change'] = $user['force_password_change'];
+                header('Location: mfa-verify.php');
+                exit;
+            }
+
+            // Check MFA policy enforcement
+            $policyStmt = $pdo->prepare("SELECT enforced FROM mfa_policy WHERE role = :role");
+            $policyStmt->execute([':role' => $user['role']]);
+            $policy = $policyStmt->fetch(PDO::FETCH_ASSOC);
+            if ($policy && $policy['enforced']) {
+                // Force enrollment
+                $_SESSION['mfa_pending_user_id'] = $user['id'];
+                $_SESSION['mfa_pending_username'] = $user['username'];
+                $_SESSION['mfa_pending_role'] = $user['role'];
+                $_SESSION['mfa_pending_force_password_change'] = $user['force_password_change'];
+                $_SESSION['mfa_enforcement_required'] = true;
+                header('Location: profile.php?mfa_enroll=1');
+                exit;
+            }
+
             session_regenerate_id(true);
             $_SESSION['ocp_user_id']    = $user['id'];
             $_SESSION['ocp_username']   = $user['username'];

@@ -178,6 +178,131 @@ require_once __DIR__ . '/common/header.php';
         </div>
     </div>
 
+    <!-- Two-Factor Authentication (Feature 037) -->
+    <div class="tsisip-dashboard-section" style="margin-top:1.5rem;" id="mfa-section">
+        <h2 class="tsisip-section-title"><?php echo _('Two-Factor Authentication'); ?></h2>
+        <div id="mfa-status">
+            <p class="tsisip-text-muted"><?php echo _('Loading MFA status...'); ?></p>
+        </div>
+        <div id="mfa-enroll" style="display:none;">
+            <div id="mfa-qr" style="margin:1rem 0;"></div>
+            <div class="tsisip-form-group">
+                <label for="mfa-verify-code"><?php echo _('Enter code from app to confirm'); ?></label>
+                <input type="text" id="mfa-verify-code" maxlength="6" pattern="[0-9]{6}" placeholder="000000" inputmode="numeric">
+            </div>
+            <div id="mfa-backup-codes" style="display:none; margin:1rem 0; padding:1rem; background:#f8f9fa; border-radius:4px;">
+                <h3><?php echo _('Save these backup codes'); ?></h3>
+                <p class="tsisip-text-muted"><?php echo _('Each code can only be used once. Store them securely.'); ?></p>
+                <pre id="mfa-backup-list" style="font-family:monospace; font-size:1.1rem; line-height:1.8;"></pre>
+            </div>
+            <button class="tsisip-btn tsisip-btn--primary" onclick="completeMfaEnroll()"><?php echo _('Enable 2FA'); ?></button>
+            <button class="tsisip-btn" onclick="cancelMfaEnroll()"><?php echo _('Cancel'); ?></button>
+        </div>
+        <div id="mfa-actions" style="display:none; margin-top:1rem;">
+            <button class="tsisip-btn tsisip-btn--danger" onclick="disableMfa()"><?php echo _('Disable 2FA'); ?></button>
+            <button class="tsisip-btn tsisip-btn--secondary" onclick="regenerateBackupCodes()"><?php echo _('Regenerate Backup Codes'); ?></button>
+        </div>
+    </div>
+
+    <script>
+    async function loadMfaStatus() {
+        try {
+            const res = await fetch('api/v1/mfa-status.php');
+            const data = await res.json();
+            const statusEl = document.getElementById('mfa-status');
+            const enrollEl = document.getElementById('mfa-enroll');
+            const actionsEl = document.getElementById('mfa-actions');
+            if (data.enabled) {
+                statusEl.innerHTML = '<span class="tsisip-badge tsisip-badge-success"><?php echo _('Enabled'); ?></span> <span class="tsisip-text-muted">(' + data.backup_codes_left + ' backup codes left)</span>';
+                actionsEl.style.display = 'block';
+            } else {
+                statusEl.innerHTML = '<span class="tsisip-badge tsisip-badge-error"><?php echo _('Not Enabled'); ?></span>';
+                statusEl.innerHTML += ' <button class="tsisip-btn tsisip-btn--primary" onclick="startMfaEnroll()"><?php echo _('Enable 2FA'); ?></button>';
+            }
+        } catch (e) {
+            document.getElementById('mfa-status').innerHTML = '<span class="tsisip-text-muted"><?php echo _('Unable to load MFA status'); ?></span>';
+        }
+    }
+
+    let mfaEnrollSecret = '';
+
+    async function startMfaEnroll() {
+        try {
+            const res = await fetch('api/v1/mfa-enroll.php');
+            const data = await res.json();
+            if (data.error) { alert(data.error); return; }
+            mfaEnrollSecret = data.secret;
+            document.getElementById('mfa-qr').innerHTML = data.qr_svg + '<p class="tsisip-text-muted" style="margin-top:0.5rem;"><?php echo _('Manual entry:'); ?> <code>' + data.manual_entry + '</code></p>';
+            document.getElementById('mfa-enroll').style.display = 'block';
+            document.getElementById('mfa-status').style.display = 'none';
+        } catch (e) {
+            alert('<?php echo _('Failed to start enrollment'); ?>');
+        }
+    }
+
+    async function completeMfaEnroll() {
+        const code = document.getElementById('mfa-verify-code').value.trim();
+        if (!/^\d{6}$/.test(code)) { alert('<?php echo _('Enter a 6-digit code'); ?>'); return; }
+        try {
+            const res = await fetch('api/v1/mfa-enroll.php', {
+                method: 'POST',
+                headers: {'Content-Type': 'application/json'},
+                body: JSON.stringify({code: code})
+            });
+            const data = await res.json();
+            if (data.success) {
+                document.getElementById('mfa-backup-list').textContent = data.backup_codes.join('\n');
+                document.getElementById('mfa-backup-codes').style.display = 'block';
+                document.getElementById('mfa-enroll').style.display = 'none';
+                loadMfaStatus();
+                alert('<?php echo _('2FA enabled successfully! Save your backup codes.'); ?>');
+            } else {
+                alert(data.error || '<?php echo _('Verification failed'); ?>');
+            }
+        } catch (e) {
+            alert('<?php echo _('Enrollment failed'); ?>');
+        }
+    }
+
+    function cancelMfaEnroll() {
+        document.getElementById('mfa-enroll').style.display = 'none';
+        document.getElementById('mfa-status').style.display = 'block';
+        mfaEnrollSecret = '';
+    }
+
+    async function disableMfa() {
+        if (!confirm('<?php echo _('Disable 2FA? You will need to re-enroll.'); ?>')) return;
+        const password = prompt('<?php echo _('Enter your password:'); ?>');
+        if (!password) return;
+        const code = prompt('<?php echo _('Enter current 2FA code:'); ?>');
+        if (!code) return;
+        try {
+            const res = await fetch('api/v1/mfa-disable.php', {
+                method: 'POST',
+                headers: {'Content-Type': 'application/json'},
+                body: JSON.stringify({password: password, code: code})
+            });
+            const data = await res.json();
+            if (data.success) {
+                alert('<?php echo _('2FA disabled'); ?>');
+                loadMfaStatus();
+            } else {
+                alert(data.error || '<?php echo _('Failed to disable'); ?>');
+            }
+        } catch (e) {
+            alert('<?php echo _('Request failed'); ?>');
+        }
+    }
+
+    async function regenerateBackupCodes() {
+        if (!confirm('<?php echo _('Regenerate backup codes? Old codes will be invalidated.'); ?>')) return;
+        // Re-use enrollment endpoint with existing secret
+        alert('<?php echo _('Please disable and re-enable 2FA to regenerate backup codes.'); ?>');
+    }
+
+    loadMfaStatus();
+    </script>
+
     <!-- Login History -->
     <div class="tsisip-dashboard-section" style="margin-top:1.5rem;">
         <h2 class="tsisip-section-title"><?php echo _('Recent Login History'); ?></h2>
