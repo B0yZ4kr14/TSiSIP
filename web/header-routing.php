@@ -82,15 +82,15 @@ $rules = $listStmt->fetchAll();
 
 require_once __DIR__ . '/common/header.php';
 ?>
-<div class="tsisip-dashboard">
+<div id="content" class="tsisip-dashboard">
     <h2><?php echo _('Header Routing Rules'); ?></h2>
     <p class="tsisip-text-muted"><?php echo _('Tenant-scoped header-based routing metadata for dynamic SIP request dispatching.'); ?></p>
 
     <?php if ($error): ?>
-        <div class="tsisip-alert tsisip-alert-error"><?php echo htmlspecialchars($error); ?></div>
+        <div class="tsisip-alert tsisip-alert--error"><?php echo htmlspecialchars($error); ?></div>
     <?php endif; ?>
     <?php if ($success): ?>
-        <div class="tsisip-alert tsisip-alert-success"><?php echo htmlspecialchars($success); ?></div>
+        <div class="tsisip-alert tsisip-alert--success"><?php echo htmlspecialchars($success); ?></div>
     <?php endif; ?>
 
     <div class="tsisip-dashboard-section">

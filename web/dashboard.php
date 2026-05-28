@@ -20,48 +20,6 @@ $roleLabels = [
 
 $displayRole = isset($roleLabels[$userRole]) ? $roleLabels[$userRole] : $roleLabels['readonly'];
 
-/* ------------------------------------------------------------------
- * System Management links (admin + devops)
-    <!-- Bookmarks -->
-    <div class="tsisip-dashboard-section" data-widget="bookmarks">
-    <!-- Recent Activity -->
-    <div class="tsisip-dashboard-section" data-widget="activity">
-        <h2 class="tsisip-section-title"><?php echo _('Recent Activity'); ?></h2>
-        <div class="tsisip-activity-list">
-            <?php
-            $recent = getRecentActivity(5);
-            foreach ($recent as $act): ?>
-                <div class="tsisip-activity-item">
-                    <span class="tsisip-activity-time"><?php echo htmlspecialchars(substr((string)$act['event_time'], 11, 5)); ?></span>
-                    <span class="tsisip-activity-user"><?php echo htmlspecialchars($act['username']); ?></span>
-                    <span class="tsisip-activity-action"><?php echo htmlspecialchars($act['action']); ?></span>
-                    <span class="tsisip-activity-resource"><?php echo htmlspecialchars(($act['resource_type'] ?? '') . '/' . ($act['resource_id'] ?? '')); ?></span>
-                </div>
-            <?php endforeach; ?>
-        </div>
-    </div>
-        <h2 class="tsisip-section-title"><?php echo _('Bookmarks'); ?></h2>
-        <div class="tsisip-btn-group">
-            <?php
-            $pdo = getDb();
-            $bmStmt = $pdo->prepare(
-                "SELECT page_url, page_label, icon FROM ocp_user_bookmarks
-                 WHERE user_id = :uid ORDER BY sort_order"
-            );
-            $bmStmt->execute([':uid' => $_SESSION['user_id'] ?? 0]);
-            $bookmarks = $bmStmt->fetchAll();
-            if (empty($bookmarks)): ?>
-                <span class="tsisip-text-muted"><?php echo _('No bookmarks yet. Click the star icon on any page to add it.'); ?></span>
-            <?php else:
-                foreach ($bookmarks as $bm): ?>
-                    <a href="<?php echo htmlspecialchars($bm['page_url']); ?>" class="tsisip-btn tsisip-btn-outline">
-                        <?php echo htmlspecialchars(_($bm['page_label'])); ?>
-                    </a>
-                <?php endforeach;
-            endif; ?>
-        </div>
-    </div>
- * ------------------------------------------------------------------ */
 $systemLinks = [];
 if ($userRole === 'admin' || $userRole === 'devops') {
     $systemLinks = [

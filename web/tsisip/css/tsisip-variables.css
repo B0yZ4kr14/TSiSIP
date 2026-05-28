@@ -28,6 +28,10 @@
   --tsisip-breakpoint-tablet: 1024px;
   --tsisip-breakpoint-mobile: 768px;
   --tsisip-asset-version: "dev";
+  --tsisip-danger: #dc2626;
+  --tsisip-success: #10b981;
+  --tsisip-warning: #f59e0b;
+  --tsisip-info: #0ea5e9;
 }
 
 /* ==========================================================================

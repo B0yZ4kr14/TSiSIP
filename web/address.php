@@ -70,7 +70,7 @@ $entries = $listStmt->fetchAll();
 
 require_once __DIR__ . '/common/header.php';
 ?>
-<div class="tsisip-dashboard">
+<div id="content" class="tsisip-dashboard">
     <div style="display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:8px;">
         <h2><?php echo _('IP Whitelist'); ?></h2>
         <?php if (isDevOpsOrHigher()): ?>
@@ -80,10 +80,10 @@ require_once __DIR__ . '/common/header.php';
     <p class="tsisip-text-muted"><?php echo _('Trusted gateway IPs for the OpenSIPS permissions module (check_source_address).'); ?></p>
 
     <?php if ($error): ?>
-        <div class="tsisip-alert tsisip-alert-error"><?php echo htmlspecialchars($error); ?></div>
+        <div class="tsisip-alert tsisip-alert--error"><?php echo htmlspecialchars($error); ?></div>
     <?php endif; ?>
     <?php if ($success): ?>
-        <div class="tsisip-alert tsisip-alert-success"><?php echo htmlspecialchars($success); ?></div>
+        <div class="tsisip-alert tsisip-alert--success"><?php echo htmlspecialchars($success); ?></div>
     <?php endif; ?>
 
     <div class="tsisip-dashboard-section">

@@ -4,7 +4,6 @@
  * Feature 032: Automated Backup Verification
  */
 require_once __DIR__ . '/common/config.php';
-require_once __DIR__ . '/common/auth.php';
 require_once __DIR__ . '/common/header.php';
 
 // Require admin or devops role
@@ -52,23 +51,23 @@ usort($backups, function ($a, $b) {
 
 $pageTitle = _('Backup Status');
 ?>
-<div class="container">
+<div id="content" class="container">
     <h1><?= htmlspecialchars($pageTitle) ?></h1>
     
-    <div class="stats-grid" style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 1rem; margin: 1rem 0;">
-        <div class="stat-card" style="background: #f8f9fa; padding: 1rem; border-radius: 8px;">
+    <div class="stats-grid" class="tsisip-dashboard-section">
+        <div class="stat-card" class="tsisip-card">
             <h3><?= _('Total Backups') ?></h3>
             <p style="font-size: 2rem; margin: 0;"><?= count($backups) ?></p>
         </div>
-        <div class="stat-card" style="background: #f8f9fa; padding: 1rem; border-radius: 8px;">
+        <div class="stat-card" class="tsisip-card">
             <h3><?= _('Total Storage') ?></h3>
             <p style="font-size: 2rem; margin: 0;"><?= number_format($totalSize / 1024 / 1024, 2) ?> MB</p>
         </div>
-        <div class="stat-card" style="background: #f8f9fa; padding: 1rem; border-radius: 8px;">
+        <div class="stat-card" class="tsisip-card">
             <h3><?= _('Latest Backup') ?></h3>
             <p style="font-size: 1.2rem; margin: 0;"><?= $backups[0]['timestamp'] ?? _('None') ?></p>
         </div>
-        <div class="stat-card" style="background: #f8f9fa; padding: 1rem; border-radius: 8px;">
+        <div class="stat-card" class="tsisip-card">
             <h3><?= _('Verified') ?></h3>
             <p style="font-size: 2rem; margin: 0;"><?= count(array_filter($backups, fn($b) => $b['verify_status'] === 'pass')) ?></p>
         </div>
@@ -78,28 +77,28 @@ $pageTitle = _('Backup Status');
     <table class="data-table" style="width: 100%; border-collapse: collapse;">
         <thead>
             <tr style="background: #e9ecef;">
-                <th style="padding: 0.75rem; text-align: left;"><?= _('File') ?></th>
-                <th style="padding: 0.75rem; text-align: left;"><?= _('Timestamp') ?></th>
-                <th style="padding: 0.75rem; text-align: right;"><?= _('Size') ?></th>
-                <th style="padding: 0.75rem; text-align: left;"><?= _('Age') ?></th>
-                <th style="padding: 0.75rem; text-align: center;"><?= _('Status') ?></th>
-                <th style="padding: 0.75rem; text-align: left;"><?= _('Verified At') ?></th>
+                <th class="tsisip-table-header"><?= _('File') ?></th>
+                <th class="tsisip-table-header"><?= _('Timestamp') ?></th>
+                <th class="tsisip-table-cell tsisip-text-right"><?= _('Size') ?></th>
+                <th class="tsisip-table-header"><?= _('Age') ?></th>
+                <th class="tsisip-table-cell tsisip-text-center"><?= _('Status') ?></th>
+                <th class="tsisip-table-header"><?= _('Verified At') ?></th>
             </tr>
         </thead>
         <tbody>
             <?php foreach ($backups as $backup): ?>
             <tr style="border-bottom: 1px solid #dee2e6;">
-                <td style="padding: 0.75rem; font-family: monospace; font-size: 0.85rem;"><?= htmlspecialchars($backup['file']) ?></td>
+                <td class="tsisip-table-cell tsisip-font-mono"><?= htmlspecialchars($backup['file']) ?></td>
                 <td style="padding: 0.75rem;"><?= htmlspecialchars($backup['timestamp']) ?></td>
-                <td style="padding: 0.75rem; text-align: right;"><?= htmlspecialchars($backup['size_human']) ?></td>
+                <td class="tsisip-table-cell tsisip-text-right"><?= htmlspecialchars($backup['size_human']) ?></td>
                 <td style="padding: 0.75rem;"><?= $backup['age_hours'] ?>h</td>
-                <td style="padding: 0.75rem; text-align: center;">
+                <td class="tsisip-table-cell tsisip-text-center">
                     <?php if ($backup['verify_status'] === 'pass'): ?>
-                        <span style="background: #d4edda; color: #155724; padding: 0.25rem 0.5rem; border-radius: 4px; font-size: 0.85rem;">PASS</span>
+                        <span class="tsisip-badge tsisip-badge--success">PASS</span>
                     <?php elseif ($backup['verify_status'] === 'fail'): ?>
-                        <span style="background: #f8d7da; color: #721c24; padding: 0.25rem 0.5rem; border-radius: 4px; font-size: 0.85rem;">FAIL</span>
+                        <span class="tsisip-badge tsisip-badge--error">FAIL</span>
                     <?php else: ?>
-                        <span style="background: #fff3cd; color: #856404; padding: 0.25rem 0.5rem; border-radius: 4px; font-size: 0.85rem;">PENDING</span>
+                        <span class="tsisip-badge tsisip-badge--warning">PENDING</span>
                     <?php endif; ?>
                 </td>
                 <td style="padding: 0.75rem; font-size: 0.85rem;"><?= $backup['verify_timestamp'] !== 'N/A' ? htmlspecialchars($backup['verify_timestamp']) : '-' ?></td>
@@ -107,7 +106,7 @@ $pageTitle = _('Backup Status');
             <?php endforeach; ?>
             <?php if (empty($backups)): ?>
             <tr>
-                <td colspan="6" style="padding: 2rem; text-align: center; color: #6c757d;"><?= _('No backups found') ?></td>
+                <td colspan="6" class="tsisip-empty-state"><?= _('No backups found') ?></td>
             </tr>
             <?php endif; ?>
         </tbody>
