@@ -30,12 +30,17 @@ class TestWebRTCSupport:
         assert "proto_wss" in dockerfile
         assert "libwebsockets-dev" in dockerfile
 
-    def test_compose_publishes_ws_ports(self):
-        """Docker Compose exposes WebSocket ports."""
+    def test_compose_does_not_publish_ws_ports_on_host(self):
+        """WebSocket ports are NOT published on host per canonical spec §5.
+        SIP signaling uses 5060/udp and 5060/tcp only. WS/WSS are internal."""
         with open("docker-compose.yml") as f:
             compose = f.read()
-        assert ':8080/tcp' in compose
-        assert ':4443/tcp' in compose
+        # Host-published port mappings for WS/WSS must not exist
+        assert ':8080/tcp' not in compose, "WebSocket port must not be published on host (C1)"
+        assert ':4443/tcp' not in compose, "WebSocket TLS port must not be published on host (C1)"
+        # Internal service names and network membership must still exist
+        assert "opensips:" in compose
+        assert "sip_edge" in compose
 
     def test_rtpengine_ice_support(self):
         """RTPengine config includes ICE-related flags for WebRTC."""
