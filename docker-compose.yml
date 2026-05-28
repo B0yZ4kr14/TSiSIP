@@ -92,7 +92,7 @@ services:
         reservations:
           memory: 64M
     environment:
-      DATA_SOURCE_URI: postgres:5432/opensips?sslmode=disable
+      DATA_SOURCE_URI: postgres:5432/opensips?sslmode=prefer
       DATA_SOURCE_USER: opensips
       DATA_SOURCE_PASS_FILE: /run/secrets/db_password
     secrets:
@@ -141,7 +141,7 @@ services:
   node_exporter:
     image: prom/node-exporter:v1.8.0@sha256:8a57af80a4c77ffb97749b44895248563616fcfd405b5370d5db35fe6c15e4ec
     networks:
-    - sip_internal
+    - monitoring
     restart: on-failure
     deploy:
       resources:
@@ -187,7 +187,7 @@ services:
     command:
     - --interface=${RTPENGINE_PRIVATE_IP}!${HOST_PUBLIC_IP}
     - --listen-ng=${RTPENGINE_INTERNAL_IP}:22222
-    - --listen-http=0.0.0.0:2225
+    - --listen-http=${RTPENGINE_INTERNAL_IP}:2225
     - --port-min=10000
     - --port-max=20000
     - --log-stderr
@@ -237,12 +237,12 @@ services:
     - 5060:5060/udp
     - 5060:5060/tcp
     - 5061:5061/tcp
-    - ${OPENSIPS_WS_PORT:-8081}:8080/tcp
-    - ${OPENSIPS_WSS_PORT:-4443}:4443/tcp
+    # WebSocket ports are NOT published per canonical spec §5
+    # (sip_edge network handles WS/WSS internally only)
     environment:
       OPENSIPS_LISTEN_IP: ${OPENSIPS_LISTEN_IP}
       HOST_PUBLIC_IP: ${HOST_PUBLIC_IP}
-      OPENSIPS_HOST: 127.0.0.1
+      OPENSIPS_HOST: ${OPENSIPS_HOST:-127.0.0.1}
       DB_HOST: pgbouncer
       DB_NAME: opensips
       DB_USER: opensips
@@ -257,7 +257,7 @@ services:
     - crl.pem
     - trunk_cred_key
     volumes:
-    - tls_certs:/certs/live:rw
+    - tls_certs:/certs/live:ro
     - opensips_state:/var/run/opensips
     depends_on:
       postgres:
@@ -524,6 +524,7 @@ services:
       ALERT_COOLDOWN_SECONDS: 300
       ALERTMANAGER_URL: http://alertmanager:9093/api/v1/alerts
       ENABLE_ALERTMANAGER: 'true'
+      API_KEY: ${ANOMALY_API_KEY:-change-me-in-production}
     cap_drop:
     - ALL
     security_opt:
@@ -802,6 +803,8 @@ networks:
   db_internal:
     driver: bridge
     internal: true
+  monitoring:
+    driver: bridge
 volumes:
   postgres_data: null
   backup_data: null

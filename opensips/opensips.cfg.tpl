@@ -81,7 +81,7 @@ loadmodule "uac_registrant.so"
 
 # --- BEGIN TLS ROTATION WAVE 3 ---
 # httpd binds to internal Docker networks only (port 8888 is NOT published in compose)
-modparam("httpd", "ip", "${OPENSIPS_LISTEN_IP}")
+modparam("httpd", "ip", "${MI_HTTP_IP}")
 modparam("httpd", "port", 8888)
 # mi_http root path for MI commands
 modparam("mi_http", "root", "mi")
@@ -443,7 +443,10 @@ route[AUTH] {
     if ($au != NULL && !rl_check("auth_$au", 10, "TAILDROP")) {
         xlog("L_WARN", "Auth rate limited for $au ($si)\n");
         # Add to userblacklist via SQL (async cleanup by external job)
-        sql_query("INSERT INTO userblacklist (username, domain, prefix, whitelist) VALUES ('$au', '$fd', 'auth_ban', 0) ON CONFLICT DO NOTHING");
+        # Escape pseudo-variables before SQL interpolation
+        $avp(esc_au) = $(au{s.escape.common});
+        $avp(esc_fd) = $(fd{s.escape.common});
+        sql_query("INSERT INTO userblacklist (username, domain, prefix, whitelist) VALUES ('$avp(esc_au)', '$avp(esc_fd)', 'auth_ban', 0) ON CONFLICT DO NOTHING");
         sl_send_reply(403, "Forbidden");
         exit;
     }
@@ -507,7 +510,12 @@ route[AUTH_AUDIT] {
         $var(safe_callid) = "INVALID";
     }
     # Insert auth audit record
-    sql_query("INSERT INTO auth_audit_log (event_time, username, domain, source_ip, sip_method, result, call_id) VALUES (NOW(), '$fU', '$fd', '$si', '$rm', '$var(audit_result)', '$var(safe_callid)')");
+    # Escape pseudo-variables before SQL interpolation
+    $avp(esc_fU) = $(fU{s.escape.common});
+    $avp(esc_fd) = $(fd{s.escape.common});
+    $avp(esc_si) = $(si{s.escape.common});
+    $avp(esc_rm) = $(rm{s.escape.common});
+    sql_query("INSERT INTO auth_audit_log (event_time, username, domain, source_ip, sip_method, result, call_id) VALUES (NOW(), '$avp(esc_fU)', '$avp(esc_fd)', '$avp(esc_si)', '$avp(esc_rm)', '$var(audit_result)', '$var(safe_callid)')");
 }
 
 route[HEADER_ROUTING] {
@@ -540,11 +548,19 @@ route[HEADER_ROUTING] {
         $avp(ra) = NULL;
     }
 
-    # 2. Fall back to subscriber routing_group
+    # 2. Fall back to subscriber routing_group, then tenant default_dispatcher_setid
     if ($var(ds_set) == 0) {
         $var(ds_set) = $avp(route_setid);
         if ($var(ds_set) == 0) {
-            $var(ds_set) = 1;
+            # Tenant-scoped fallback: query default_dispatcher_setid from tenants table (H3)
+            $avp(tenant_default_set) = 0;
+            sql_query_one("SELECT COALESCE(default_dispatcher_setid, 1) FROM tenants WHERE id = '$var(tenant_id)' AND enabled = true LIMIT 1", "$avp(tenant_default_set)");
+            if ($avp(tenant_default_set) != 0) {
+                $var(ds_set) = $avp(tenant_default_set);
+            } else {
+                $var(ds_set) = 1;
+                xlog("L_WARN", "HEADER_ROUTING: no tenant default_dispatcher_setid for $var(tenant_id), using hardcoded fallback 1\n");
+            }
         }
         xlog("L_INFO", "HEADER_ROUTING: fallback to subscriber routing_group -> set $var(ds_set) for tenant $var(tenant_id)\n");
     }
@@ -612,7 +628,9 @@ route[TRUNK_VERIFY] {
     # T2.3: Mutual TLS for trunks
     # Check if source IP is a registered trunk requiring mTLS
     $avp(trunk_check) = 0;
-    sql_query("SELECT 1 FROM trunk_ips WHERE ip_address = '$si' AND enabled = true AND require_mtls = true LIMIT 1", "$avp(trunk_check)");
+    # Escape pseudo-variables before SQL interpolation
+    $avp(esc_si) = $(si{s.escape.common});
+    sql_query("SELECT 1 FROM trunk_ips WHERE ip_address = '$avp(esc_si)' AND enabled = true AND require_mtls = true LIMIT 1", "$avp(trunk_check)");
     if ($rc == -1) {
         xlog("L_ERR", "TRUNK_VERIFY: database error for trunk lookup\n");
         sl_send_reply(480, "Temporarily Unavailable");
@@ -643,9 +661,18 @@ route[TRUNK_ROUTING] {
         return;
     }
 
+    # Validate destination domain format before SQL lookup (H7)
+    if (!($rd =~ "^[a-zA-Z0-9][-a-zA-Z0-9]*([.][a-zA-Z0-9][-a-zA-Z0-9]*)*$")) {
+        xlog("L_WARN", "TRUNK_ROUTING: rejected invalid destination domain format: $rd\n");
+        sl_send_reply(400, "Bad Request");
+        exit;
+    }
+
     # Check if destination is a local tenant domain
     $var(is_local_domain) = 0;
-    sql_query_one("SELECT 1 FROM tenants WHERE sip_domain = '$rd' AND enabled = true LIMIT 1", "$var(is_local_domain)");
+    # Escape pseudo-variables before SQL interpolation
+    $avp(esc_rd) = $(rd{s.escape.common});
+    sql_query_one("SELECT 1 FROM tenants WHERE sip_domain = '$avp(esc_rd)' AND enabled = true LIMIT 1", "$var(is_local_domain)");
     if ($rc == -1) {
         xlog("L_ERR", "TRUNK_ROUTING: DB error during local domain check for $rd\n");
         sl_send_reply(480, "Temporarily Unavailable");
@@ -875,7 +902,9 @@ route[INBOUND_DID_ROUTING] {
     # --- BEGIN TRUNK INTEGRATION WAVE 4: Inbound DID Routing ---
     # Only process INVITEs from known trunk IPs (check against sip_trunk_providers.host)
     $var(trunk_provider_id) = 0;
-    sql_query_one("SELECT id FROM sip_trunk_providers WHERE host = '$si' AND enabled = true LIMIT 1", "$var(trunk_provider_id)");
+    # Escape pseudo-variables before SQL interpolation
+    $avp(esc_si) = $(si{s.escape.common});
+    sql_query_one("SELECT id FROM sip_trunk_providers WHERE host = '$avp(esc_si)' AND enabled = true LIMIT 1", "$var(trunk_provider_id)");
     if ($rc == -1) {
         xlog("L_ERR", "INBOUND_DID_ROUTING: DB error during trunk lookup for $si\n");
         sl_send_reply(480, "Temporarily Unavailable");
@@ -889,9 +918,18 @@ route[INBOUND_DID_ROUTING] {
 
     xlog("L_INFO", "INBOUND_DID_ROUTING: trunk-originated INVITE from $si (provider=$var(trunk_provider_id))\n");
 
+    # Validate DID number format (E.164: optional +, 3-15 digits) before SQL lookup (H8)
+    if (!($rU =~ "^[+]?[0-9]{3,15}$")) {
+        xlog("L_WARN", "INBOUND_DID_ROUTING: rejected invalid DID format: $rU\n");
+        sl_send_reply(400, "Bad Request");
+        exit;
+    }
+
     # Query DID mapping for the called number (RURI user part)
     $var(did_setid) = 0;
-    sql_query_one("SELECT tenant_id::VARCHAR(36), dispatcher_setid FROM sip_trunk_did_mappings WHERE did_number = '$rU' AND enabled = true LIMIT 1", "$var(tenant_id);$var(did_setid)");
+    # Escape pseudo-variables before SQL interpolation
+    $avp(esc_rU) = $(rU{s.escape.common});
+    sql_query_one("SELECT tenant_id::VARCHAR(36), dispatcher_setid FROM sip_trunk_did_mappings WHERE did_number = '$avp(esc_rU)' AND enabled = true LIMIT 1", "$var(tenant_id);$var(did_setid)");
     if ($rc == -1) {
         xlog("L_ERR", "INBOUND_DID_ROUTING: DB error during DID lookup for $rU\n");
         sl_send_reply(480, "Temporarily Unavailable");

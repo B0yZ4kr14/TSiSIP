@@ -50,8 +50,16 @@ if [ ! -f /certs/live/server.crt ]; then
     chmod 600 /certs/live/server.key 2>/dev/null || true
 fi
 
+# SECURITY: mi_http must not bind to 0.0.0.0 (C4). Force loopback if unset or wildcard.
+MI_HTTP_IP="${MI_HTTP_IP:-127.0.0.1}"
+if [ "${OPENSIPS_LISTEN_IP}" = "0.0.0.0" ]; then
+    MI_HTTP_IP="127.0.0.1"
+fi
+export MI_HTTP_IP
+
 envsubst '
   $OPENSIPS_LISTEN_IP
+  $MI_HTTP_IP
   $HOST_PUBLIC_IP
   $DB_HOST
   $DB_NAME

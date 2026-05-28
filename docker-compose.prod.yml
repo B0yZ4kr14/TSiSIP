@@ -76,7 +76,7 @@ services:
     command:
     - --interface=${RTPENGINE_PRIVATE_IP}!${HOST_PUBLIC_IP}
     - --listen-ng=${RTPENGINE_INTERNAL_IP}:22222
-    - --listen-http=0.0.0.0:2225
+    - --listen-http=${RTPENGINE_INTERNAL_IP}:2225
     - --port-min=10000
     - --port-max=20000
     - --log-stderr
@@ -129,7 +129,7 @@ services:
     environment:
       OPENSIPS_LISTEN_IP: ${OPENSIPS_LISTEN_IP}
       HOST_PUBLIC_IP: ${HOST_PUBLIC_IP}
-      OPENSIPS_HOST: 127.0.0.1
+      OPENSIPS_HOST: ${OPENSIPS_HOST:-127.0.0.1}
       DB_HOST: pgbouncer
       DB_NAME: opensips
       DB_USER: opensips
@@ -143,7 +143,7 @@ services:
     - server.key
     - crl.pem
     volumes:
-    - tls_certs:/certs/live:rw
+    - tls_certs:/certs/live:ro
     depends_on:
       postgres:
         condition: service_healthy
@@ -379,6 +379,7 @@ services:
       ANOMALY_Z_THRESHOLD: 3.0
       BASELINE_WINDOW_HOURS: 24
       ALERT_COOLDOWN_SECONDS: 300
+      API_KEY: ${ANOMALY_API_KEY:?must be set}
     ports:
     - 127.0.0.1:8080:8080
     depends_on:

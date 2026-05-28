@@ -28,6 +28,15 @@ BASELINE_WINDOW_HOURS = int(os.environ.get("BASELINE_WINDOW_HOURS", "24"))
 ALERT_COOLDOWN_SECONDS = int(os.environ.get("ALERT_COOLDOWN_SECONDS", "300"))
 ALERTMANAGER_URL = os.environ.get("ALERTMANAGER_URL", "http://alertmanager:9093/api/v1/alerts")
 ENABLE_ALERTMANAGER = os.environ.get("ENABLE_ALERTMANAGER", "true").lower() == "true"
+API_KEY = os.environ.get("API_KEY", "")
+
+
+def require_api_key():
+    """Require X-API-Key header for sensitive endpoints."""
+    if API_KEY:
+        provided = request.headers.get("X-API-Key", "")
+        if not provided or provided != API_KEY:
+            return jsonify({"error": "Unauthorized"}), 401
 
 # Prometheus metrics
 ANOMALY_ALERTS = Counter(
@@ -185,6 +194,9 @@ def metrics():
 
 @app.route("/api/v1/event", methods=["POST"])
 def receive_event():
+    auth_error = require_api_key()
+    if auth_error:
+        return auth_error
     """Receive OpenSIPS event."""
     data = request.get_json() or {}
     detector.record_event(
@@ -197,6 +209,9 @@ def receive_event():
 
 @app.route("/api/v1/status")
 def status():
+    auth_error = require_api_key()
+    if auth_error:
+        return auth_error
     """Get current detector status."""
     mean, stddev = detector.baseline.get_stats()
     return jsonify({
