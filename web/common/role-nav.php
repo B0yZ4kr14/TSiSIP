@@ -60,6 +60,7 @@ $systemPages = [
     'cache-manager'     => _('Cache Manager'),
     'system-health'     => _('System Health'),
     'topology'          => _('Network Topology'),
+    'topology-hiding'   => _('Topology Hiding'),
     'tviewer'           => _('TViewer'),
     'statistics'        => _('Statistics'),
     'status-report'     => _('Status Report'),
@@ -140,6 +141,9 @@ $adminPages = [
     'system-config'   => _('System Config'),
     'system-events'   => _('System Events'),
     'system-logs'     => _('System Logs'),
+    'gateway-health'  => _('Gateway Health'),
+    'health'          => _('Health Check'),
+    'healthcheck-audit' => _('Healthcheck Audit'),
 ];
 $adminVisible = ($isAdmin || $isDevOps);
 

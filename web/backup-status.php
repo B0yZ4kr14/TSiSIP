@@ -51,7 +51,7 @@ usort($backups, function ($a, $b) {
 
 $pageTitle = _('Backup Status');
 ?>
-<div id="content" class="container">
+<div id="content" class="tsisip-dashboard">
     <h1><?= htmlspecialchars($pageTitle) ?></h1>
     
     <div class="stats-grid" class="tsisip-dashboard-section">

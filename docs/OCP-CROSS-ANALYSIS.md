@@ -1,6 +1,6 @@
 # OCP Cross-Analysis: OpenSIPS Control Panel vs TSiSIP Frontend
 
-**Date**: 2026-05-19  
+**Date**: 2026-05-19 (updated 2026-05-28)  
 **OCP Reference Version**: 9.3.6 (OpenSIPS Control Panel)  
 **TSiSIP Frontend**: `web/` directory (PHP 8.2 + Apache)  
 **Analysis Method**: Firecrawl documentation scrape + filesystem audit  
@@ -87,8 +87,8 @@ Based on filesystem audit of `web/`:
 | File | Description | OCP Equivalent | Status |
 |---|---|---|---|
 | `subscribers.php` | Full CRUD on subscriber table + HA1 generation | Provision Users | ✅ Implemented |
-| — | Aliases management | Provision Aliases | ❌ Missing |
-| — | Groups management | Provision Groups | ❌ Missing |
+| `aliases.php` | Aliases management | Provision Aliases | ✅ Implemented |
+| `groups.php` | Groups management | Provision Groups | ✅ Implemented |
 
 ### 2.4 System Section
 | File | Description | OCP Equivalent | Status |
@@ -96,26 +96,26 @@ Based on filesystem audit of `web/`:
 | `cdr-viewer.php` | Read-only filtered CDR query | CDR Viewer | ✅ Implemented |
 | `dispatcher.php` | Full CRUD on dispatcher table | Dispatcher | ✅ Implemented |
 | `rtpengine.php` | D3.js chart stub for RTPengine sessions | RTPEngine | ⚠️ Stub only |
-| — | IP-based access permissions | Addresses | ❌ Missing |
-| — | Call center flows/agents/calls | Call Center | ❌ Missing |
-| — | Cluster management | Clusterer | ❌ Missing |
-| — | Config table settings | Config | ❌ Missing |
-| — | Ongoing calls viewer | Dialog | ❌ Missing |
-| — | Dialplan rules | Dialplan | ❌ Missing |
-| — | SIP domains | Domains | ❌ Missing |
-| — | Gateway routing / LCR | Dynamic Routing | ❌ Missing |
-| — | KeepAlive monitor | Keepalived | ❌ Missing |
-| — | Load balancer provisioning | Load Balancer | ❌ Missing |
-| — | MI command runner | MI Commands | ❌ Missing |
-| — | Monit integration | Monit | ❌ Missing |
-| — | RTPproxy management | RTPProxy | ❌ Missing |
-| — | SIP trace viewer | SIPtrace | ❌ Missing |
-| — | Statistics viewer/charter | Statistics Monitor | ❌ Missing |
-| — | Dynamic sockets | Sockets Management | ❌ Missing |
-| — | Status report viewer | Status Report | ❌ Missing |
-| — | TLS certificates | TLS Management | ❌ Missing |
-| — | UAC client registrations | UAC Registrant | ❌ Missing |
-| — | SMPP SMS centers | SMPP Gateway | ❌ Missing |
+| `address.php` | IP-based access permissions | Addresses | ✅ Implemented |
+| `call-center.php` | Call center flows/agents/calls | Call Center | ✅ Implemented |
+| `clusterer.php` | Cluster management | Clusterer | ✅ Implemented |
+| `config-table.php` | Config table settings | Config | ✅ Implemented |
+| `dialog.php` | Ongoing calls viewer | Dialog | ✅ Implemented |
+| `dialplan.php` | Dialplan rules CRUD | Dialplan | ✅ Implemented |
+| `domains.php` | SIP domains management | Domains | ✅ Implemented |
+| `dynamic-routing.php` | Gateway routing / LCR | Dynamic Routing | ✅ Implemented |
+| `keepalived.php` | KeepAlive daemon monitor | Keepalived | ✅ Implemented |
+| `load-balancer.php` | Load balancer provisioning | Load Balancer | ✅ Implemented |
+| `mi-commands.php` | MI command runner | MI Commands | ✅ Implemented |
+| `monit.php` | Monit integration | Monit | ✅ Implemented |
+| `rtpproxy.php` | RTPproxy management | RTPProxy | ✅ Implemented |
+| `siptrace.php` | SIP trace viewer | SIPtrace | ✅ Implemented |
+| `statistics.php` | Statistics viewer/charter | Statistics Monitor | ✅ Implemented |
+| `sockets-management.php` | Dynamic sockets | Sockets Management | ✅ Implemented |
+| `status-report.php` | Status report viewer | Status Report | ✅ Implemented |
+| `tls-management.php` | TLS certificates | TLS Management | ✅ Implemented |
+| `uac-registrant.php` | UAC client registrations | UAC Registrant | ✅ Implemented |
+| `smpp-gateway.php` | SMPP SMS centers | SMPP Gateway | ✅ Implemented |
 
 ### 2.5 TSiSIP-Specific Tools (Not in OCP)
 | File | Description | Notes |
@@ -151,10 +151,10 @@ Based on filesystem audit of `web/`:
 |---|---|---|---|
 | Global Config | 4 | 0 | 0% |
 | Dashboard | 1 | 1 | 100% |
-| SIP Users | 3 | 1 | 33% |
-| System (Core) | 23 | 3 | 13% |
+| SIP Users | 3 | 3 | 100% |
+| System (Core) | 23 | 22 | 96% |
 | Generic | 1 | 0 | 0% |
-| **OCP Total** | **32** | **5** | **16%** |
+| **OCP Total** | **32** | **26** | **81%** |
 
 ### 3.2 TSiSIP Custom Tools
 

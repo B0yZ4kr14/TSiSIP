@@ -844,12 +844,28 @@ body.tsisip-login::after {
 
 /* Metric cards enhancements */
 .tsisip-metric-card {
+    background: var(--tsisip-surface-card);
+    border: 1px solid var(--tsisip-border-subtle);
+    border-radius: 8px;
+    padding: 12px;
+    text-align: center;
     transition: transform 0.2s ease, box-shadow 0.2s ease;
 }
 
 .tsisip-metric-card:hover {
     transform: translateY(-2px);
     box-shadow: 0 4px 12px rgba(10, 22, 40, 0.08);
+}
+
+.tsisip-metric-card__label {
+    font-size: var(--tsisip-text-sm);
+    color: var(--tsisip-text-secondary);
+}
+
+.tsisip-metric-card__value {
+    font-size: 1.5rem;
+    font-weight: 700;
+    color: var(--tsisip-primary-blue);
 }
 
 /* Status badges */
@@ -1275,6 +1291,39 @@ kbd {
         margin-left: 0;
         width: 100%;
     }
+}
+
+/* ==========================================================================
+   Light Mode Focus Accessibility
+   Ensures all interactive elements have visible focus indicators
+   ========================================================================== */
+
+a:focus,
+button:focus,
+.tsisip-btn:focus,
+input:focus,
+select:focus,
+textarea:focus,
+[tabindex]:focus {
+  outline: 2px solid var(--tsisip-border-focus, #5B9BD5);
+  outline-offset: 2px;
+}
+
+a:focus:not(:focus-visible),
+button:focus:not(:focus-visible),
+.tsisip-btn:focus:not(:focus-visible) {
+  outline: none;
+}
+
+a:focus-visible,
+button:focus-visible,
+.tsisip-btn:focus-visible,
+input:focus-visible,
+select:focus-visible,
+textarea:focus-visible {
+  outline: 2px solid var(--tsisip-border-focus, #5B9BD5);
+  outline-offset: 2px;
+  box-shadow: 0 0 0 4px rgba(91, 155, 213, 0.25);
 }
 
 /* ==========================================================================

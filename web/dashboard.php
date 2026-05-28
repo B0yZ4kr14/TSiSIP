@@ -103,37 +103,37 @@ if (isset($roleNav[$userRole])) {
     <div class="tsisip-dashboard-section">
         <h2><?php echo _('Live Metrics'); ?></h2>
         <div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(140px,1fr));gap:12px;">
-            <div class="tsisip-metric-card" style="background:var(--tsisip-surface-card);border:1px solid var(--tsisip-border-subtle);border-radius:8px;padding:12px;text-align:center;">
-                <div style="font-size:var(--tsisip-text-sm);color:var(--tsisip-text-secondary);"><?php echo _('Dialogs'); ?></div>
-                <div style="font-size:1.5rem;font-weight:700;color:var(--tsisip-primary-blue);" data-sse-field="dialogs">0</div>
+            <div class="tsisip-metric-card">
+                <div class="tsisip-metric-card__label"><?php echo _('Dialogs'); ?></div>
+                <div class="tsisip-metric-card__value" data-sse-field="dialogs">0</div>
             </div>
-            <div class="tsisip-metric-card" style="background:var(--tsisip-surface-card);border:1px solid var(--tsisip-border-subtle);border-radius:8px;padding:12px;text-align:center;">
-                <div style="font-size:var(--tsisip-text-sm);color:var(--tsisip-text-secondary);"><?php echo _('RTP Sessions'); ?></div>
-                <div style="font-size:1.5rem;font-weight:700;color:var(--tsisip-primary-blue);" data-sse-field="rtpengine.sessions">0</div>
+            <div class="tsisip-metric-card">
+                <div class="tsisip-metric-card__label"><?php echo _('RTP Sessions'); ?></div>
+                <div class="tsisip-metric-card__value" data-sse-field="rtpengine.sessions">0</div>
             </div>
-            <div class="tsisip-metric-card" style="background:var(--tsisip-surface-card);border:1px solid var(--tsisip-border-subtle);border-radius:8px;padding:12px;text-align:center;">
-                <div style="font-size:var(--tsisip-text-sm);color:var(--tsisip-text-secondary);"><?php echo _('Pkg Mem'); ?></div>
-                <div style="font-size:1.5rem;font-weight:700;color:var(--tsisip-primary-blue);" data-sse-field="memory.pkg_pct" data-sse-format="percent">0%</div>
+            <div class="tsisip-metric-card">
+                <div class="tsisip-metric-card__label"><?php echo _('Pkg Mem'); ?></div>
+                <div class="tsisip-metric-card__value" data-sse-field="memory.pkg_pct" data-sse-format="percent">0%</div>
             </div>
-            <div class="tsisip-metric-card" style="background:var(--tsisip-surface-card);border:1px solid var(--tsisip-border-subtle);border-radius:8px;padding:12px;text-align:center;">
-                <div style="font-size:var(--tsisip-text-sm);color:var(--tsisip-text-secondary);"><?php echo _('Shm Mem'); ?></div>
-                <div style="font-size:1.5rem;font-weight:700;color:var(--tsisip-primary-blue);" data-sse-field="memory.shm_pct" data-sse-format="percent">0%</div>
+            <div class="tsisip-metric-card">
+                <div class="tsisip-metric-card__label"><?php echo _('Shm Mem'); ?></div>
+                <div class="tsisip-metric-card__value" data-sse-field="memory.shm_pct" data-sse-format="percent">0%</div>
             </div>
-            <div class="tsisip-metric-card" style="background:var(--tsisip-surface-card);border:1px solid var(--tsisip-border-subtle);border-radius:8px;padding:12px;text-align:center;">
-                <div style="font-size:var(--tsisip-text-sm);color:var(--tsisip-text-secondary);"><?php echo _('Processes'); ?></div>
-                <div style="font-size:1.5rem;font-weight:700;color:var(--tsisip-primary-blue);" data-sse-field="processes">0</div>
+            <div class="tsisip-metric-card">
+                <div class="tsisip-metric-card__label"><?php echo _('Processes'); ?></div>
+                <div class="tsisip-metric-card__value" data-sse-field="processes">0</div>
             </div>
-            <div class="tsisip-metric-card" style="background:var(--tsisip-surface-card);border:1px solid var(--tsisip-border-subtle);border-radius:8px;padding:12px;text-align:center;">
-                <div style="font-size:var(--tsisip-text-sm);color:var(--tsisip-text-secondary);"><?php echo _('Blocked IPs'); ?></div>
-                <div style="font-size:1.5rem;font-weight:700;color:var(--tsisip-primary-blue);" data-sse-field="pike_blocked">0</div>
+            <div class="tsisip-metric-card">
+                <div class="tsisip-metric-card__label"><?php echo _('Blocked IPs'); ?></div>
+                <div class="tsisip-metric-card__value" data-sse-field="pike_blocked">0</div>
             </div>
-            <div class="tsisip-metric-card" style="background:var(--tsisip-surface-card);border:1px solid var(--tsisip-border-subtle);border-radius:8px;padding:12px;text-align:center;">
-                <div style="font-size:var(--tsisip-text-sm);color:var(--tsisip-text-secondary);"><?php echo _('TCP Conns'); ?></div>
-                <div style="font-size:1.5rem;font-weight:700;color:var(--tsisip-primary-blue);" data-sse-field="tcp_connections">0</div>
+            <div class="tsisip-metric-card">
+                <div class="tsisip-metric-card__label"><?php echo _('TCP Conns'); ?></div>
+                <div class="tsisip-metric-card__value" data-sse-field="tcp_connections">0</div>
             </div>
-            <div class="tsisip-metric-card" style="background:var(--tsisip-surface-card);border:1px solid var(--tsisip-border-subtle);border-radius:8px;padding:12px;text-align:center;">
-                <div style="font-size:var(--tsisip-text-sm);color:var(--tsisip-text-secondary);"><?php echo _('Blacklists'); ?></div>
-                <div style="font-size:1.5rem;font-weight:700;color:var(--tsisip-primary-blue);" data-sse-field="blacklists">0</div>
+            <div class="tsisip-metric-card">
+                <div class="tsisip-metric-card__label"><?php echo _('Blacklists'); ?></div>
+                <div class="tsisip-metric-card__value" data-sse-field="blacklists">0</div>
             </div>
         </div>
     </div>
