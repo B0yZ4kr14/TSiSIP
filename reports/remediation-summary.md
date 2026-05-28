@@ -94,3 +94,33 @@ Host: 62 GiB total (97% utilized by other workloads — investigate before deplo
 ---
 
 *All critical and high findings resolved. Medium findings addressed where actionable without host-level changes.*
+
+---
+
+## Brownfield Security Findings — 2026-05-28 Remediation
+
+### CRITICAL Findings
+
+| ID | Finding | Status | Fix |
+|----|---------|--------|-----|
+| C1 | OpenSIPS WebSocket ports published on host (8081/tcp, 4443/tcp) | **FIXED** | Removed port mappings from `docker-compose.yml`; WS/WSS internal-only per spec §5 |
+| C2 | `node_exporter` mounts host `/proc`, `/sys`, `/` with `pid: host` + `sip_internal` access | **FIXED** | Removed `sip_internal` network; moved to isolated `monitoring` network |
+| C3 | OpenSIPS `sql_query` uses pseudo-variables (`$fd`, `$rd`, `$rU`, `$si`) directly in SQL without escaping | **FIXED** | Applied `$(pv{s.escape.common})` transformation to all pseudo-variables before SQL interpolation in 6 queries |
+| C4 | MI HTTP bound to `0.0.0.0` via `${OPENSIPS_LISTEN_IP}` — reachable on `sip_edge` (public) | **FIXED** | Introduced `MI_HTTP_IP` env var (defaults to `127.0.0.1`); forced loopback when `OPENSIPS_LISTEN_IP=0.0.0.0`; updated `entrypoint.sh` envsubst |
+
+### HIGH Findings
+
+| ID | Finding | Status | Fix |
+|----|---------|--------|-----|
+| H1 | RTPengine `--listen-http=0.0.0.0:2225` exposes HTTP management on all interfaces | **FIXED** | Changed to `--listen-http=${RTPENGINE_INTERNAL_IP}:2225` in compose files |
+| H2 | `anomaly_detector` publishes host loopback port without documented auth | **FIXED** | Added `X-API-Key` header auth to `/api/v1/event` and `/api/v1/status` endpoints; `ANOMALY_API_KEY` required in prod |
+| H3 | `HEADER_ROUTING` hard-codes dispatcher set `1` fallback instead of tenant-scoped lookup | **FIXED** | Replaced hardcoded `1` with `sql_query_one` lookup of `tenants.default_dispatcher_setid`; falls back to `1` only if tenant has no default |
+| H4 | `postgres_exporter` uses `sslmode=disable` | **FIXED** | Changed to `sslmode=prefer` |
+| H5 | `opensips` mounts `tls_certs:/certs/live:rw` (should be `:ro`) | **FIXED** | Changed to `:ro` in `docker-compose.yml` and `docker-compose.prod.yml` |
+| H6 | `OPENSIPS_HOST: 127.0.0.1` hardcoded across all compose profiles | **FIXED** | Parameterized to `${OPENSIPS_HOST:-127.0.0.1}` |
+| H7 | `TRUNK_ROUTING` uses unvalidated `$rd` in SQL | **FIXED** | Added SIP domain format regex validation (`^[a-zA-Z0-9][-a-zA-Z0-9]*(\.[a-zA-Z0-9][-a-zA-Z0-9]*)*$`) before SQL; escape applied |
+| H8 | `INBOUND_DID_ROUTING` uses unvalidated `$rU` (DID number) in SQL | **FIXED** | Added E.164 format regex validation (`^[+]?[0-9]{3,15}$`) before SQL; escape applied |
+
+---
+
+*All CRITICAL and HIGH brownfield findings resolved as of commit `802862a`.*
