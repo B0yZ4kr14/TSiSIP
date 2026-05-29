@@ -21,20 +21,20 @@
 - [x] T35.2.4 Add destination modal with form validation
 - [x] T35.2.5 Add delete confirmation modal
 - [x] T35.2.6 Add "History" tab with rollback UI
-- [ ] T35.2.7 Add CSV import modal with preview
+- [x] T35.2.7 Add CSV import modal with preview
 - [ ] T35.2.8 Add CSV export button
 
 ## Phase 3: Integration & Security
 
 - [x] T35.3.1 Enforce admin/devops role on all mutating endpoints
-- [ ] T35.3.2 Implement rate limit (5 reloads/min per session)
+- [x] T35.3.2 Implement rate limit (5 reloads/min per session)
 - [x] T35.3.3 Add CSRF validation to AJAX endpoints
 - [x] T35.3.4 Add dispatcher.reload` event to SSE stream
-- [ ] T35.3.5 Verify transaction safety under concurrent reloads
+- [x] T35.3.5 Verify transaction safety under concurrent reloads
 
 ## Phase 4: Testing & Validation
 
-- [ ] T35.4.1 Write PHP endpoint unit tests with mock MI
+- [x] T35.4.1 Write PHP endpoint unit tests with mock MI
 - [ ] T35.4.2 Write CSV parser validation tests
 - [ ] T35.4.3 Write end-to-end add → reload → verify test
 - [ ] T35.4.4 Write OPTIONS probe test (valid/invalid destinations)

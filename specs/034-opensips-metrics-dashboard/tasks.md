@@ -33,7 +33,7 @@
 ## Phase 4: Testing & Validation
 
 - [x] T34.4.1 Write PHP unit tests for endpoints with mock MI responses
-- [ ] T34.4.2 Write frontend D3.js rendering tests
+- [x] T34.4.2 Write frontend D3.js rendering tests
 - [x] T34.4.3 Write role-based visibility tests
 - [x] T34.4.4 Write end-to-end SSE streaming integration test
 - [x] T34.4.5 Write anomaly banner trigger test
