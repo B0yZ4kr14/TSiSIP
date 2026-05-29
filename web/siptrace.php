@@ -19,17 +19,21 @@ $success = '';
 $canPurge = ($userRole === 'admin');
 
 if ($_SERVER['REQUEST_METHOD'] === 'POST' && $canPurge) {
-    $action = $_POST['action'] ?? '';
-    if ($action === 'purge') {
-        $days = intval($_POST['days'] ?? 30);
-        try {
-            $stmt = $pdo->prepare('DELETE FROM sip_trace WHERE time_stamp < NOW() - INTERVAL \'? days\'');
-            $stmt->execute([$days]);
-            $deleted = $stmt->rowCount();
-            $success = sprintf(_('Purged %d trace records older than %d days.'), $deleted, $days);
-            logAuditEvent('SIPTRACE_PURGE', 'siptrace', "days=$days", true, ['deleted' => $deleted]);
-        } catch (PDOException $e) {
-            $error = _('Database error: ') . $e->getMessage();
+    if (!validateCsrfToken($_POST['csrf_token'] ?? null)) {
+        $error = _('Invalid CSRF token.');
+    } else {
+        $action = $_POST['action'] ?? '';
+        if ($action === 'purge') {
+            $days = intval($_POST['days'] ?? 30);
+            try {
+                $stmt = $pdo->prepare('DELETE FROM sip_trace WHERE time_stamp < NOW() - INTERVAL \'? days\'');
+                $stmt->execute([$days]);
+                $deleted = $stmt->rowCount();
+                $success = sprintf(_('Purged %d trace records older than %d days.'), $deleted, $days);
+                logAuditEvent('SIPTRACE_PURGE', 'siptrace', "days=$days", true, ['deleted' => $deleted]);
+            } catch (PDOException $e) {
+                $error = _('Database error: ') . $e->getMessage();
+            }
         }
     }
 }

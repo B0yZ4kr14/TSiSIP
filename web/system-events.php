@@ -1,7 +1,12 @@
 <?php
 require_once __DIR__ . '/common/config.php';
+require_once __DIR__ . '/common/csrf.php';
+
 requireAuth();
 checkPasswordChange();
+requireRole('admin');
+
+logAuditEvent('CONFIG_VIEW', 'system', 'system-events', true);
 
 $pageTitle = _('System Events');
 

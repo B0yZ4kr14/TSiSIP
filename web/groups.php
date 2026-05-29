@@ -10,6 +10,7 @@ require_once __DIR__ . '/common/pagination.php';
 
 requireAuth();
 checkPasswordChange();
+requireRole('admin');
 
 $pdo = getDb();
 $error = '';

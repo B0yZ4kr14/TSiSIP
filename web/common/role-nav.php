@@ -32,7 +32,6 @@ $sipUserVisible = ($isAdmin || $isDevOps || $isDentist || $isAssist || $isUser |
 // 2. SYSTEM (OpenSIPS provisioning & monitoring)
 // -------------------------------------------------------------
 $systemPages = [
-    'dashboard'         => _('Dashboard'),
     'address'           => _('Addresses'),
     'call-center'       => _('Call Center'),
     'call-queue'        => _('Call Queue'),
@@ -60,7 +59,6 @@ $systemPages = [
     'cache-manager'     => _('Cache Manager'),
     'system-health'     => _('System Health'),
     'topology'          => _('Network Topology'),
-    'topology-hiding'   => _('Topology Hiding'),
     'tviewer'           => _('TViewer'),
     'statistics'        => _('Statistics'),
     'status-report'     => _('Status Report'),
@@ -101,7 +99,7 @@ $securityPages = [
     'pike-monitor' => _('Pike Monitor'),
     'ratelimit'    => _('Rate Limit'),
 ];
-$securityVisible = ($isAdmin || $isDevOps || $isDentist || $isAssist || $isUser || $isReadOnly);
+$securityVisible = ($isAdmin || $isDevOps || $isDentist || $isAssist);
 
 // -------------------------------------------------------------
 // 6. NAT & PRESENCE
@@ -120,7 +118,7 @@ $advancedPages = [
     'hash-tables'  => _('Hash Tables'),
     'avp-inspector'=> _('AVP Inspector'),
 ];
-$advancedVisible = ($isAdmin || $isDevOps || $isDentist || $isAssist || $isUser || $isReadOnly);
+$advancedVisible = ($isAdmin || $isDevOps || $isDentist || $isAssist);
 
 // -------------------------------------------------------------
 // 8. ADMINISTRATION (tenants, routing, users, audit, wiki)
@@ -142,8 +140,6 @@ $adminPages = [
     'system-events'   => _('System Events'),
     'system-logs'     => _('System Logs'),
     'gateway-health'  => _('Gateway Health'),
-    'health'          => _('Health Check'),
-    'healthcheck-audit' => _('Healthcheck Audit'),
 ];
 $adminVisible = ($isAdmin || $isDevOps);
 

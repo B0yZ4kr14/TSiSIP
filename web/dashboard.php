@@ -198,8 +198,17 @@ if (isset($roleNav[$userRole])) {
     <?php if (!empty($systemLinks)): ?>
     <div class="tsisip-dashboard-section">
         <h2><?php echo _('System Management'); ?></h2>
-    <!-- Bookmarks -->
-    <div class="tsisip-dashboard-section" data-widget="bookmarks">
+        <div class="tsisip-dashboard-links">
+            <?php foreach ($systemLinks as $link): ?>
+                <a href="<?php echo htmlspecialchars($link['url'], ENT_QUOTES, 'UTF-8'); ?>"
+                   class="tsisip-btn tsisip-btn-primary">
+                    <?php echo htmlspecialchars($link['label'], ENT_QUOTES, 'UTF-8'); ?>
+                </a>
+            <?php endforeach; ?>
+        </div>
+    </div>
+    <?php endif; ?>
+
     <!-- Recent Activity -->
     <div class="tsisip-dashboard-section" data-widget="activity">
         <h2 class="tsisip-section-title"><?php echo _('Recent Activity'); ?></h2>
@@ -216,6 +225,9 @@ if (isset($roleNav[$userRole])) {
             <?php endforeach; ?>
         </div>
     </div>
+
+    <!-- Bookmarks -->
+    <div class="tsisip-dashboard-section" data-widget="bookmarks">
         <h2 class="tsisip-section-title"><?php echo _('Bookmarks'); ?></h2>
         <div class="tsisip-btn-group">
             <?php
@@ -237,16 +249,6 @@ if (isset($roleNav[$userRole])) {
             endif; ?>
         </div>
     </div>
-        <div class="tsisip-dashboard-links">
-            <?php foreach ($systemLinks as $link): ?>
-                <a href="<?php echo htmlspecialchars($link['url'], ENT_QUOTES, 'UTF-8'); ?>"
-                   class="tsisip-btn tsisip-btn-primary">
-                    <?php echo htmlspecialchars($link['label'], ENT_QUOTES, 'UTF-8'); ?>
-                </a>
-            <?php endforeach; ?>
-        </div>
-    </div>
-    <?php endif; ?>
 
     <?php if (!empty($runtimeLinks)): ?>
     <div class="tsisip-dashboard-section">

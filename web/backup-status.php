@@ -4,15 +4,20 @@
  * Feature 032: Automated Backup Verification
  */
 require_once __DIR__ . '/common/config.php';
-require_once __DIR__ . '/common/header.php';
+require_once __DIR__ . '/common/csrf.php';
+
+requireAuth();
+checkPasswordChange();
 
 // Require admin or devops role
-if (!$user || ($user['role'] !== 'admin' && $user['role'] !== 'devops')) {
+if ($userRole !== 'admin' && $userRole !== 'devops') {
     header('HTTP/1.1 403 Forbidden');
     echo '<p class="error">' . _('Access denied') . '</p>';
     require_once __DIR__ . '/common/footer.php';
     exit;
 }
+
+require_once __DIR__ . '/common/header.php';
 
 $backupDir = realpath(__DIR__ . '/../backups');
 if (!$backupDir || !is_dir($backupDir)) {
@@ -54,20 +59,20 @@ $pageTitle = _('Backup Status');
 <div id="content" class="tsisip-dashboard">
     <h1><?= htmlspecialchars($pageTitle) ?></h1>
     
-    <div class="stats-grid" class="tsisip-dashboard-section">
-        <div class="stat-card" class="tsisip-card">
+    <div class="stats-grid tsisip-dashboard-section">
+        <div class="stat-card tsisip-card">
             <h3><?= _('Total Backups') ?></h3>
             <p style="font-size: 2rem; margin: 0;"><?= count($backups) ?></p>
         </div>
-        <div class="stat-card" class="tsisip-card">
+        <div class="stat-card tsisip-card">
             <h3><?= _('Total Storage') ?></h3>
             <p style="font-size: 2rem; margin: 0;"><?= number_format($totalSize / 1024 / 1024, 2) ?> MB</p>
         </div>
-        <div class="stat-card" class="tsisip-card">
+        <div class="stat-card tsisip-card">
             <h3><?= _('Latest Backup') ?></h3>
             <p style="font-size: 1.2rem; margin: 0;"><?= $backups[0]['timestamp'] ?? _('None') ?></p>
         </div>
-        <div class="stat-card" class="tsisip-card">
+        <div class="stat-card tsisip-card">
             <h3><?= _('Verified') ?></h3>
             <p style="font-size: 2rem; margin: 0;"><?= count(array_filter($backups, fn($b) => $b['verify_status'] === 'pass')) ?></p>
         </div>
