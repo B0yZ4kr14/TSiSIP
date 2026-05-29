@@ -48,4 +48,4 @@ function requireCsrfForMutation(): void {
         echo json_encode(['error' => 'Invalid or missing CSRF token']);
         exit;
     }
-}}
+}
