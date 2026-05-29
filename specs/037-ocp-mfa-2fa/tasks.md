@@ -47,7 +47,7 @@
 - [x] T5.2: Integration test: rate limiting blocks brute force
 - [x] T5.3: Integration test: replay protection (same code rejected)
 - [x] T5.4: Integration test: no plaintext secrets in DB
-- [ ] T5.5: End-to-end test with Google Authenticator app simulation
+- [x] T5.5: End-to-end test with Google Authenticator app simulation
 
 ## Phase 6: Deploy & Documentation
 

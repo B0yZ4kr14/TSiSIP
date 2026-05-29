@@ -30,7 +30,7 @@
 - [x] T3.4: Log `AUTO_ROLLBACK` action to `dispatcher_change_log`
 - [x] T3.5: Graceful degradation when MI HTTP is unreachable
 - [x] T3.6: Integration test: auto-rollback on destination degradation
-- [ ] T3.7: Integration test: no rollback when multiple destinations fail
+- [x] T3.7: Integration test: no rollback when multiple destinations fail
 
 ## Phase 4: Anomaly Correlation
 
