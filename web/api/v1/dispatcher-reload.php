@@ -54,6 +54,10 @@ if (!$result['success']) {
 // Log audit
 logAuditEvent('CONFIG_CHANGE', 'dispatcher', 'reload', true, ['action' => 'RELOAD', 'mi_result' => 'success']);
 
+// Broadcast SSE event (T35.3.4)
+$_SESSION['dispatcher_reload_broadcast'] = true;
+$_SESSION['dispatcher_reload_event'] = ['reloaded_at' => time(), 'by' => $_SESSION['ocp_username'] ?? 'unknown'];
+
 http_response_code(200);
 header('Content-Type: application/json');
 echo json_encode(['success' => true, 'message' => 'Dispatcher reload triggered', 'mi_response' => $result['data']]);

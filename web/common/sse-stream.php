@@ -197,6 +197,12 @@ while (true) {
         $data['anomaly'] = ['current_rps' => 0, 'z_score' => 0];
     }
 
+    // dispatcher.reload event (Feature 035)
+    if (!empty($_SESSION['dispatcher_reload_event'])) {
+        $data['dispatcher_reload'] = $_SESSION['dispatcher_reload_event'];
+        unset($_SESSION['dispatcher_reload_event']);
+    }
+
     // Only send if data changed (or every 5th iteration ~25s)
     $json = json_encode($data);
     if ($json !== $lastData || $counter % 5 === 0) {
@@ -207,6 +213,12 @@ while (true) {
     // Send heartbeat
     if ($counter % 6 === 0) {
         echo "event: heartbeat\ndata: " . time() . "\n\n";
+    }
+
+    // dispatcher.reload event broadcast
+    if (!empty($_SESSION['dispatcher_reload_broadcast'])) {
+        echo "event: dispatcher.reload\ndata: " . json_encode(['reloaded_at' => time()]) . "\n\n";
+        unset($_SESSION['dispatcher_reload_broadcast']);
     }
 
     if (connection_aborted()) {

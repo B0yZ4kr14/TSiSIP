@@ -1836,3 +1836,96 @@ To restore from backup in production:
    ```bash
    python3 -m pytest tests/integration/ -k "opensips" -v
    ```
+
+---
+
+## Multi-Factor Authentication (MFA) Procedures (Feature 037)
+
+### User MFA Enrollment
+1. User logs in and is redirected to profile if MFA is enforced for their role.
+2. User scans QR code with authenticator app.
+3. User enters 6-digit code to verify.
+4. Backup codes are displayed once; user must save them securely.
+
+### Admin MFA Reset
+1. Navigate to **User Management** (`users.php`).
+2. Find user with MFA badge (green "2FA").
+3. Click **Reset MFA** button.
+4. Confirm deletion — MFA secret and backup codes are permanently removed.
+5. User must re-enroll on next login if policy requires MFA.
+
+### MFA Policy Enforcement
+- Roles can be configured via **API** `POST /api/v1/mfa-policy.php`:
+  ```json
+  {"role": "admin", "enforced": true, "grace_days": 0}
+  ```
+- Admins are forced to enroll immediately.
+- DevOps can have optional MFA.
+- Other roles default to disabled.
+
+### Backup Code Recovery
+1. On MFA verification screen, click **Use a backup code**.
+2. Enter one of the 8 single-use codes.
+3. Code is marked as used and cannot be reused.
+
+### Security Notes
+- MFA secrets are encrypted with AES-256-GCM.
+- Backup codes are hashed with bcrypt.
+- Rate limit: 5 attempts per 15 minutes, lockout after 3 failures.
+- All MFA events are logged to `audit_log`.
+
+---
+
+## Auto-Healing Procedures (Feature 036)
+
+### Manual Trigger
+```bash
+# Dry-run (no changes)
+docker exec tsisip-ocp-1 php /var/www/html/cli/auto-healer.php --dry-run
+
+# Live execution
+docker exec tsisip-ocp-1 php /var/www/html/cli/auto-healer.php
+```
+
+### Automatic Execution
+- Cron runs every 2 minutes via `docker/ocp/cron/auto-healer.sh`.
+- Logs are written to `/var/log/auto-healer.log` inside the container.
+
+### Circuit Breaker
+- Opens after 3 consecutive failed auto-heal actions.
+- Remains open for 30 minutes (configurable via `autoheal_config`).
+- Prevents flapping during prolonged outages.
+
+### Anomaly Detection
+- Auto-healer detects correlated attacks (dispatcher failures + pike blocks).
+- Memory pressure anomalies during failover events.
+- Dialog spikes above threshold.
+- All anomalies are recorded in `dispatcher_health_log` with `destination = 'ANOMALY'`.
+
+### Prometheus Metrics
+- Endpoint: `/api/v1/metrics-autoheal.php`
+- Metrics: `autoheal_probes_total`, `autoheal_failures_total`, `autoheal_actions_total`
+
+---
+
+## Dispatcher Management Procedures (Feature 035)
+
+### Add Destination
+1. Navigate to **Dispatcher** (`dispatcher.php`).
+2. Click **+ Add** button.
+3. Fill form: SIP URI, setid, weight, priority.
+4. Submit — DB transaction + MI reload atomically.
+5. If MI reload fails, DB is automatically rolled back.
+
+### Rollback
+1. In **Changelog & Rollback** section, find the change.
+2. Click **Rollback** button.
+3. Confirm — old snapshot is restored and MI is reloaded.
+
+### Rate Limits
+- Max 5 dispatcher reloads per minute per session.
+- Returns HTTP 429 with `Retry-After` header if exceeded.
+
+### CSV Import/Export
+- **Export**: Click **Export CSV** — downloads `dispatcher-export.csv`.
+- **Import**: Select CSV file, preview, confirm.
