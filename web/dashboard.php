@@ -165,6 +165,27 @@ if (isset($roleNav[$userRole])) {
         </div>
     </div>
 
+    <!-- Dispatcher Health -->
+    <div class="tsisip-dashboard-section">
+        <h2><?php echo _('Dispatcher Health'); ?></h2>
+        <div id="dispatcher-health-widget" class="tsisip-table-container">
+            <table class="tsisip-table">
+                <thead>
+                    <tr>
+                        <th><?php echo _('Set'); ?></th>
+                        <th><?php echo _('Destination'); ?></th>
+                        <th><?php echo _('State'); ?></th>
+                        <th><?php echo _('Probe'); ?></th>
+                        <th><?php echo _('Weight'); ?></th>
+                    </tr>
+                </thead>
+                <tbody id="dispatcher-health-tbody">
+                    <tr><td colspan="5" class="tsisip-text-muted"><?php echo _('Loading...'); ?></td></tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+
     <!-- Active Alerts from Alertmanager -->
     <div class="tsisip-dashboard-section">
         <h2><?php echo _('Active Alerts'); ?></h2>
@@ -319,6 +340,28 @@ if (isset($roleNav[$userRole])) {
         }
     }
 
+    // Dispatcher health updater
+    function updateDispatcherHealth(data) {
+        const tbody = document.getElementById('dispatcher-health-tbody');
+        if (!tbody) return;
+        const gateways = data.gateways || [];
+        if (gateways.length === 0) {
+            tbody.innerHTML = '<tr><td colspan="5" class="tsisip-text-muted">No dispatcher destinations</td></tr>';
+            return;
+        }
+        tbody.innerHTML = gateways.map(g => {
+            const stateMap = { 'Active': 'success', 'Inactive': 'error', 'Probing': 'warning', 'Disabled': 'muted' };
+            const stateClass = 'tsisip-badge-' + (stateMap[g.state] || 'muted');
+            return '<tr>' +
+                '<td>' + (g.setid || 0) + '</td>' +
+                '<td>' + (g.uri || '') + '</td>' +
+                '<td><span class="tsisip-badge ' + stateClass + '">' + (g.state || 'Unknown') + '</span></td>' +
+                '<td>●</td>' +
+                '<td>—</td>' +
+                '</tr>';
+        }).join('');
+    }
+
     // Trunk health updater
     function updateTrunkHealth(data) {
         const tbody = document.getElementById('trunk-health-tbody');
@@ -370,6 +413,7 @@ if (isset($roleNav[$userRole])) {
         window.TSiSIPEvents.on('data', function(data) {
             updateAnomalyBanner(data);
             updateTrunkHealth(data);
+            updateDispatcherHealth(data);
             updateAutohealEvents(data);
         });
     }

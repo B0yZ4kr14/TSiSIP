@@ -1929,3 +1929,44 @@ docker exec tsisip-ocp-1 php /var/www/html/cli/auto-healer.php
 ### CSV Import/Export
 - **Export**: Click **Export CSV** — downloads `dispatcher-export.csv`.
 - **Import**: Select CSV file, preview, confirm.
+
+---
+
+## Dashboard Widgets (Feature 034)
+
+### Live Metrics
+- Real-time SIP metrics via SSE (Server-Sent Events):
+  - Active dialogs
+  - RTPengine sessions
+  - Memory usage (pkg/shm)
+  - Blocked IPs (pike)
+  - TCP connections
+  - Blacklists
+- 5-minute sparkline history for trend analysis
+- Stale indicator: values turn gray after 15s without update
+
+### Dispatcher Health
+- Grid view of all dispatcher destination groups
+- Columns: Set ID, Destination URI, State, Probe, Weight
+- Real-time updates via SSE
+- Color-coded states: Active (green), Inactive (red), Probing (yellow), Disabled (gray)
+
+### Trunk Provider Health
+- Table with provider status, host:port, max CPS
+- Shows enabled/disabled state
+- Updates every SSE cycle
+
+### Active Alerts
+- Prometheus Alertmanager integration
+- Shows critical/warning/info alerts
+- Auto-refreshes every 30 seconds
+- Color-coded by severity
+
+### Auto-Healing Events
+- Real-time feed of auto-healer actions
+- Shows: AUTO_FAILOVER, AUTO_ROLLBACK, AUTO_PROBE
+- Color-coded: success (green), failed (red), warning (yellow)
+
+### Role-Based Visibility
+- Admin/DevOps: All widgets visible
+- Readonly: Live Metrics only (no trunk/alerts/autoheal)
