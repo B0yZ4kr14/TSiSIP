@@ -22,31 +22,31 @@ The TSiSIP OCP provides a comprehensive web UI for managing OpenSIPS, users, and
 
 ## Functional Requirements
 
-### FR-001: API Key Management
+### FR-031-001: API Key Management
 - Admins can generate, revoke, and view API keys
 - Keys are bcrypt-hashed in database
 - Keys have optional expiration date
 - Keys are scoped (read-only or read-write)
 
-### FR-002: System Status Endpoint
+### FR-031-002: System Status Endpoint
 - GET /api/v1/status — OpenSIPS, RTPengine, PostgreSQL health
 - Returns JSON with status indicators
 
-### FR-003: Metrics Endpoint
+### FR-031-003: Metrics Endpoint
 - GET /api/v1/metrics — Current MI statistics
 - Returns JSON with dialogs, memory, processes, etc.
 
-### FR-004: User Management Endpoints
+### FR-031-004: User Management Endpoints
 - GET /api/v1/users — List users
 - POST /api/v1/users — Create user
 - PATCH /api/v1/users/:id — Update user
 - DELETE /api/v1/users/:id — Soft delete user
 
-### FR-005: Audit Log Endpoint
+### FR-031-005: Audit Log Endpoint
 - GET /api/v1/audit — Query audit log
 - Supports date range, action type, user filters
 
-### FR-006: Error Handling
+### FR-031-006: Error Handling
 - Consistent JSON error responses
 - Proper HTTP status codes
 - Rate limiting (100 req/min per key)

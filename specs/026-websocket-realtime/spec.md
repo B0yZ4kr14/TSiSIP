@@ -39,7 +39,7 @@ Replace AJAX polling with WebSocket connections for real-time data push from ser
 
 ## Functional Requirements
 
-### FR-001: WebSocket Server
+### FR-026-001: WebSocket Server
 **Description**: A WebSocket server pushes MI data to connected clients.  
 **Acceptance Criteria**:
 - Built on existing PHP infrastructure (no new services)
@@ -47,14 +47,14 @@ Replace AJAX polling with WebSocket connections for real-time data push from ser
 - Listens on internal Docker network only
 - Authenticates connections via session token
 
-### FR-002: Client Connection
+### FR-026-002: Client Connection
 **Description**: Browser connects to WebSocket on page load.  
 **Acceptance Criteria**:
 - Automatic connection on real-time pages
 - Graceful fallback to polling if WebSocket unavailable
 - Visual connection status indicator
 
-### FR-003: Data Push
+### FR-026-003: Data Push
 **Description**: Server pushes data when MI values change.  
 **Acceptance Criteria**:
 - Push gateway status changes
@@ -62,7 +62,7 @@ Replace AJAX polling with WebSocket connections for real-time data push from ser
 - Push rtpengine session changes
 - Debounce rapid changes (max 1 push per second)
 
-### FR-004: Connection Management
+### FR-026-004: Connection Management
 **Description**: Handle multiple clients and reconnections.  
 **Acceptance Criteria**:
 - Support 50+ concurrent connections

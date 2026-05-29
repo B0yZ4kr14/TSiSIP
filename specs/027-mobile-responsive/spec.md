@@ -41,7 +41,7 @@ Make the OCP fully functional and usable on mobile devices (phones and tablets).
 
 ## Functional Requirements
 
-### FR-001: Responsive Grid
+### FR-027-001: Responsive Grid
 **Description**: Layout adapts to screen width.  
 **Acceptance Criteria**:
 - Breakpoints: 320px (phone), 768px (tablet), 1024px (desktop)
@@ -49,7 +49,7 @@ Make the OCP fully functional and usable on mobile devices (phones and tablets).
 - Sidebar becomes hamburger menu on mobile
 - Tables support horizontal scroll
 
-### FR-002: Touch-friendly UI
+### FR-027-002: Touch-friendly UI
 **Description**: All interactive elements work with touch.  
 **Acceptance Criteria**:
 - Minimum tap target size: 44x44px
@@ -57,7 +57,7 @@ Make the OCP fully functional and usable on mobile devices (phones and tablets).
 - Dropdowns use native mobile controls
 - Modals are full-screen on mobile
 
-### FR-003: Performance
+### FR-027-003: Performance
 **Description**: Pages load quickly on mobile networks.  
 **Acceptance Criteria**:
 - First Contentful Paint < 2s on 3G
@@ -65,7 +65,7 @@ Make the OCP fully functional and usable on mobile devices (phones and tablets).
 - Lazy load D3.js only on chart pages
 - Optimize images with srcset
 
-### FR-004: Viewport Optimization
+### FR-027-004: Viewport Optimization
 **Description**: Proper viewport meta and zoom behavior.  
 **Acceptance Criteria**:
 - `viewport` meta tag set correctly

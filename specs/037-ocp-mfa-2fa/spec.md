@@ -69,7 +69,7 @@ Implement TOTP-based Multi-Factor Authentication (MFA) for the TSiSIP OCP with t
 
 ## Functional Requirements
 
-### FR-001: TOTP Secret Generation & QR Code
+### FR-037-001: TOTP Secret Generation & QR Code
 **Description**: Generate RFC 6238 compliant TOTP secrets and display QR codes for enrollment.
 **Acceptance Criteria**:
 - Secrets are 32-byte base32 encoded strings.
@@ -77,7 +77,7 @@ Implement TOTP-based Multi-Factor Authentication (MFA) for the TSiSIP OCP with t
 - QR codes are rendered as SVG (no external image dependencies).
 - Secret is stored encrypted in the database (AES-256-GCM with app-level key).
 
-### FR-002: TOTP Verification
+### FR-037-002: TOTP Verification
 **Description**: Validate 6-digit TOTP codes during login.
 **Acceptance Criteria**:
 - Accept codes within ±1 time window (30-second periods) to handle clock skew.
@@ -85,7 +85,7 @@ Implement TOTP-based Multi-Factor Authentication (MFA) for the TSiSIP OCP with t
 - Rate limit: max 5 attempts per 15 minutes per user.
 - Store last used timestamp to prevent immediate code reuse.
 
-### FR-003: Backup/Recovery Codes
+### FR-037-003: Backup/Recovery Codes
 **Description**: Generate and manage single-use backup codes.
 **Acceptance Criteria**:
 - Generate 10 codes per enrollment, 12 characters each (alphanumeric, uppercase).
@@ -93,7 +93,7 @@ Implement TOTP-based Multi-Factor Authentication (MFA) for the TSiSIP OCP with t
 - Each code can be used only once; marked as consumed after use.
 - Display codes only once during enrollment; allow regeneration.
 
-### FR-004: MFA Policy & Enforcement
+### FR-037-004: MFA Policy & Enforcement
 **Description**: Configurable MFA requirement per user role.
 **Acceptance Criteria**:
 - New table `mfa_policy` with columns: `role`, `enforced` (boolean), `grace_period_days`.
@@ -101,7 +101,7 @@ Implement TOTP-based Multi-Factor Authentication (MFA) for the TSiSIP OCP with t
 - During login, if role is enforced and MFA not enrolled, redirect to enrollment page.
 - Grace period: new users have N days to enroll before being blocked.
 
-### FR-005: Self-Service MFA Management
+### FR-037-005: Self-Service MFA Management
 **Description**: Users can manage their own MFA settings from the profile page.
 **Acceptance Criteria**:
 - Enable MFA: show QR code, verify first code, display backup codes.
@@ -109,7 +109,7 @@ Implement TOTP-based Multi-Factor Authentication (MFA) for the TSiSIP OCP with t
 - Regenerate backup codes: invalidate old codes, generate new set.
 - Regenerate TOTP secret: invalidate old secret and all backup codes.
 
-### FR-006: Admin MFA Management
+### FR-037-006: Admin MFA Management
 **Description**: Admins can manage MFA for other users.
 **Acceptance Criteria**:
 - Reset MFA for a user (remove secret and backup codes, force re-enrollment).
@@ -117,7 +117,7 @@ Implement TOTP-based Multi-Factor Authentication (MFA) for the TSiSIP OCP with t
 - Modify global MFA policy (which roles are enforced).
 - All admin actions logged to audit trail.
 
-### FR-007: Audit & Logging
+### FR-037-007: Audit & Logging
 **Description**: All MFA-related events are auditable.
 **Acceptance Criteria**:
 - Log events: `MFA_ENABLED`, `MFA_DISABLED`, `MFA_VERIFIED`, `MFA_FAILED`, `BACKUP_CODE_USED`, `MFA_RESET_BY_ADMIN`.

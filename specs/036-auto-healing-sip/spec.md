@@ -67,7 +67,7 @@ Build an **Auto-Healing layer** that bridges anomaly detection, dispatcher healt
 
 ## Functional Requirements
 
-### FR-001: Health Monitoring Service
+### FR-036-001: Health Monitoring Service
 **Description**: A background PHP CLI service (`auto-healer.php`) runs every 60 seconds via cron or loop.
 **Acceptance Criteria**:
 - Polls MI `ds_list` for all dispatcher sets and destinations.
@@ -75,7 +75,7 @@ Build an **Auto-Healing layer** that bridges anomaly detection, dispatcher healt
 - Records probe results (reachable, code, rtt_ms) in a new table `dispatcher_health_log`.
 - Tracks consecutive failure count per destination.
 
-### FR-002: Auto-Rollback Decision Engine
+### FR-036-002: Auto-Rollback Decision Engine
 **Description**: When a destination fails health checks, the engine checks if a recent manual change may have caused it.
 **Acceptance Criteria**:
 - Queries `dispatcher_change_log` for the most recent `ADD`/`UPDATE` affecting the failed destination.
@@ -84,7 +84,7 @@ Build an **Auto-Healing layer** that bridges anomaly detection, dispatcher healt
 - Calls `dispatcher-rollback.php` logic programmatically (not via HTTP).
 - Inserts a new `dispatcher_change_log` entry with action `AUTO_ROLLBACK`.
 
-### FR-003: Auto-Failover State Management
+### FR-036-003: Auto-Failover State Management
 **Description**: When consecutive probe failures exceed threshold, mark destination inactive via MI.
 **Acceptance Criteria**:
 - Threshold is configurable (default: 5 failures over 10 minutes).
@@ -92,14 +92,14 @@ Build an **Auto-Healing layer** that bridges anomaly detection, dispatcher healt
 - Updates PostgreSQL `dispatcher.state` to maintain consistency.
 - Does NOT delete or remove the destination — only disables it.
 
-### FR-004: Anomaly Correlation
+### FR-036-004: Anomaly Correlation
 **Description**: Correlate anomaly detector events with dispatcher sets.
 **Acceptance Criteria**:
 - Queries anomaly detector `/api/v1/status` for active anomalies.
 - Maps anomaly source IP patterns to dispatcher destinations via `attrs` or setid.
 - When correlation confidence > 0.7, triggers increased probing (state=2).
 
-### FR-005: OCP Dashboard Widget
+### FR-036-005: OCP Dashboard Widget
 **Description**: Display auto-healing events in the OCP dashboard.
 **Acceptance Criteria**:
 - New widget on `dashboard.php`: "Auto-Healing Events".
@@ -107,14 +107,14 @@ Build an **Auto-Healing layer** that bridges anomaly detection, dispatcher healt
 - Color-coded: green (success), yellow (probing), red (failed).
 - Link to `dispatcher.php` for manual intervention.
 
-### FR-006: Audit and Alerting
+### FR-036-006: Audit and Alerting
 **Description**: All auto-healing actions are auditable and alertable.
 **Acceptance Criteria**:
 - Every action logged to `dispatcher_change_log` with `action = AUTO_ROLLBACK | AUTO_FAILOVER | AUTO_PROBE`.
 - Prometheus metric `tsisip_autoheal_actions_total` incremented per action type.
 - Alertmanager rule fires if `tsisip_autoheal_actions_total{result="failed"} > 3` in 10m.
 
-### FR-007: Circuit Breaker
+### FR-036-007: Circuit Breaker
 **Description**: Prevent flapping when auto-healing repeatedly fails.
 **Acceptance Criteria**:
 - Circuit breaker opens after 3 consecutive failed auto-healing actions.

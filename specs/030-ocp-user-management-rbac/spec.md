@@ -22,35 +22,35 @@ The TSiSIP OCP has role-based access control but lacks a dedicated admin UI for 
 
 ## Functional Requirements
 
-### FR-001: User List Page
+### FR-030-001: User List Page
 - Paginated table with username, role, email, last login, status
 - Search, filter, sort
 
-### FR-002: Create User
+### FR-030-002: Create User
 - Form with username, email, role, password
 - Username uniqueness validation
 - Password complexity: min 8 chars, 1 upper, 1 lower, 1 digit
 - Force password change on first login
 
-### FR-003: Edit User
+### FR-030-003: Edit User
 - Change role, email, reset password
 - Enable/disable account
 - Cannot edit own role
 
-### FR-004: Delete User
+### FR-030-004: Delete User
 - Confirmation modal
 - Soft delete
 - Cannot delete last admin or self
 
-### FR-005: Password Policy
+### FR-030-005: Password Policy
 - bcrypt cost 12
 - Password history (last 5)
 - Expiration 90 days
 
-### FR-006: Session Invalidation
+### FR-030-006: Session Invalidation
 - Clear sessions on disable/delete
 
-### FR-007: Self-Service Profile
+### FR-030-007: Self-Service Profile
 - Change password with verification
 - Update email
 - View login history

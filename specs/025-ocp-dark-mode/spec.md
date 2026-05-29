@@ -39,7 +39,7 @@ Provide a toggleable dark mode for the entire OCP interface that respects user p
 
 ## Functional Requirements
 
-### FR-001: Dark Mode Toggle
+### FR-025-001: Dark Mode Toggle
 **Description**: A toggle switch in the header allows users to switch between light and dark modes.  
 **Acceptance Criteria**:
 - Toggle is visible on all pages
@@ -47,7 +47,7 @@ Provide a toggleable dark mode for the entire OCP interface that respects user p
 - Clicking toggle switches mode immediately without page reload
 - Preference is saved to `localStorage` and server-side session
 
-### FR-002: CSS Variable System
+### FR-025-002: CSS Variable System
 **Description**: All colors use CSS custom properties that can be overridden for dark mode.  
 **Acceptance Criteria**:
 - Light mode variables in `:root`
@@ -55,21 +55,21 @@ Provide a toggleable dark mode for the entire OCP interface that respects user p
 - No hardcoded colors in CSS
 - All existing pages use variables
 
-### FR-003: System Preference Detection
+### FR-025-003: System Preference Detection
 **Description**: If no user preference is set, detect system preference.  
 **Acceptance Criteria**:
 - Check `window.matchMedia('(prefers-color-scheme: dark)')` on load
 - Apply dark mode if system prefers dark
 - Do not override explicit user preference
 
-### FR-004: Theme Persistence
+### FR-025-004: Theme Persistence
 **Description**: Theme preference persists across sessions.  
 **Acceptance Criteria**:
 - Save preference to `localStorage`
 - Save preference to server session via AJAX
 - Restore on page load from `localStorage` first, then session
 
-### FR-005: Accessibility
+### FR-025-005: Accessibility
 **Description**: Dark mode meets WCAG 2.1 AA contrast requirements.  
 **Acceptance Criteria**:
 - All text has contrast ratio >= 4.5:1

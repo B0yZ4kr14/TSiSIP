@@ -40,7 +40,7 @@ Allow users to customize their dashboard layout by adding, removing, and rearran
 
 ## Functional Requirements
 
-### FR-001: Widget Library
+### FR-028-001: Widget Library
 **Description**: A library of available dashboard widgets.  
 **Acceptance Criteria**:
 - System Status widget (existing)
@@ -50,7 +50,7 @@ Allow users to customize their dashboard layout by adding, removing, and rearran
 - Quick Actions widget
 - Metrics Sparkline widget
 
-### FR-002: Drag-and-Drop
+### FR-028-002: Drag-and-Drop
 **Description**: Users can rearrange widgets via drag-and-drop.  
 **Acceptance Criteria**:
 - HTML5 drag-and-drop API
@@ -58,7 +58,7 @@ Allow users to customize their dashboard layout by adding, removing, and rearran
 - Snap-to-grid layout
 - Persist layout order
 
-### FR-003: Layout Persistence
+### FR-028-003: Layout Persistence
 **Description**: Layout saved per user.  
 **Acceptance Criteria**:
 - Save to `ocp_user_preferences` table
@@ -66,7 +66,7 @@ Allow users to customize their dashboard layout by adding, removing, and rearran
 - Default layout for new users
 - Reset to default option
 
-### FR-004: Widget Configuration
+### FR-028-004: Widget Configuration
 **Description**: Some widgets have configurable options.  
 **Acceptance Criteria**:
 - Refresh interval setting
