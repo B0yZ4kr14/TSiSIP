@@ -10,7 +10,7 @@ echo "=== Test: OCP Profile + Search Pages ==="
 # Login
 curl -s -c "$COOKIE_JAR" -b "$COOKIE_JAR" \
   -X POST "$BASE/login.php" \
-  -d "username=admin&password=${TSISIP_OCP_ADMIN_PASSWORD:?must be set}" \
+  -d "username=testadmin&password=testpass123" \
   -L | grep -q "dashboard" && echo "[PASS] Login"
 
 # Profile page

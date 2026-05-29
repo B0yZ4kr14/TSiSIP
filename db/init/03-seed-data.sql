@@ -92,4 +92,18 @@ VALUES (
 )
 ON CONFLICT (username) DO NOTHING;
 
+-- OCP Test Administrative User (for CI/integration tests only)
+-- WARNING: This user has a known password for automated testing.
+-- It is NOT intended for production use. Disable or remove in production.
+INSERT INTO ocp_users (username, email, password_hash, role, enabled, force_password_change)
+VALUES (
+    'testadmin',
+    'testadmin@tsisip.local',
+    crypt('testpass123', gen_salt('bf', 12)),
+    'admin',
+    true,
+    false
+)
+ON CONFLICT (username) DO NOTHING;
+
 -- Feature 017: Sample trunk provider and DID mapping for dev testing
