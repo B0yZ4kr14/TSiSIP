@@ -30,7 +30,7 @@
 - [x] T3.4: Create `web/api/v1/mfa-regenerate-backup.php`
 - [x] T3.5: Display backup codes during enrollment (one-time only)
 - [x] T3.6: Integration test: self-service enrollment
-- [ ] T3.7: Integration test: self-service disable
+- [x] T3.7: Integration test: self-service disable
 
 ## Phase 4: Admin & Policy
 
@@ -51,7 +51,7 @@
 
 ## Phase 6: Deploy & Documentation
 
-- [ ] T6.1: Update `docs/TSiSIP-OPERATOR-RUNBOOK.md` with MFA procedures
+- [x] T6.1: Update TSiSIP-OPERATOR-RUNBOOK.md` with MFA procedures
 - [x] T6.2: Deploy to VPS
 - [x] T6.3: Final validation on VPS
 - [x] T6.4: Merge to main, tag release
