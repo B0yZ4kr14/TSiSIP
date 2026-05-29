@@ -226,7 +226,7 @@ LOGIN_RESULT=$(ocp_sh "
     fi
     curl -fsSL -c /tmp/audit-cookies.txt -b /tmp/audit-cookies.txt \\
         -X POST \"${OCP_INTERNAL_URL}/login.php\" \\
-        -d \"username=${TEST_USER}\&password=${TEST_PASS}\&csrf_token=\${CSRF_TOKEN}\" \\
+        -d \"username=${TEST_USER}\&pass=${TEST_PASS}\&csrf_token=\${CSRF_TOKEN}\" \\
         -L | grep -q dashboard && echo LOGIN_OK || echo LOGIN_FAIL
 ")
 if echo "$LOGIN_RESULT" | grep -q "LOGIN_OK"; then
