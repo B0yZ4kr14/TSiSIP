@@ -55,7 +55,7 @@ if [ "$AUTH_AVAILABLE" = true ]; then
     echo ""
     echo "[test] Checking for data-theme attribute..."
     DASHBOARD_BODY=$(ocp_sh "curl -fsSL -b ${COOKIE_JAR_CTR} 'http://localhost/dashboard.php'")
-    if echo "$DASHBOARD_BODY" | grep -q 'data-theme='; then
+    if echo "$DASHBOARD_BODY" | grep 'data-theme=' > /dev/null 2>&1; then
         report_pass "data-theme attribute present on <html>"
     else
         report_fail "data-theme attribute missing on <html>"
@@ -63,7 +63,7 @@ if [ "$AUTH_AVAILABLE" = true ]; then
 
     echo ""
     echo "[test] Checking for theme-toggle.js..."
-    if echo "$DASHBOARD_BODY" | grep -q 'theme-toggle.js'; then
+    if echo "$DASHBOARD_BODY" | grep 'theme-toggle.js' > /dev/null 2>&1; then
         report_pass "theme-toggle.js included"
     else
         report_fail "theme-toggle.js not included"
@@ -71,7 +71,7 @@ if [ "$AUTH_AVAILABLE" = true ]; then
 
     echo ""
     echo "[test] Checking for theme toggle button..."
-    if echo "$DASHBOARD_BODY" | grep -q 'id="theme-toggle"'; then
+    if echo "$DASHBOARD_BODY" | grep 'id="theme-toggle"' > /dev/null 2>&1; then
         report_pass "Theme toggle button present"
     else
         report_fail "Theme toggle button missing"
@@ -79,7 +79,7 @@ if [ "$AUTH_AVAILABLE" = true ]; then
 
     echo ""
     echo "[test] Checking system preference detection..."
-    if echo "$DASHBOARD_BODY" | grep -q 'prefers-color-scheme'; then
+    if echo "$DASHBOARD_BODY" | grep 'prefers-color-scheme' > /dev/null 2>&1; then
         report_pass "System preference detection present"
     else
         report_fail "System preference detection missing"
@@ -88,7 +88,7 @@ else
     echo ""
     echo "[test] Checking system preference detection (public asset)..."
     TOGGLE_JS=$(ocp_sh "curl -fsSL 'http://localhost/tsisip/js/theme-toggle.js'")
-    if echo "$TOGGLE_JS" | grep -q 'prefers-color-scheme'; then
+    if echo "$TOGGLE_JS" | grep 'prefers-color-scheme' > /dev/null 2>&1; then
         report_pass "System preference detection present"
     else
         report_fail "System preference detection missing"
@@ -100,7 +100,7 @@ fi
 echo ""
 echo "[test] Checking dark mode CSS variables..."
 STYLE_BODY=$(ocp_sh "curl -fsSL 'http://localhost/tsisip/css/tsisip-variables.css'")
-if echo "$STYLE_BODY" | grep -q '\[data-theme="dark"\]'; then
+if echo "$STYLE_BODY" | grep '\[data-theme="dark"\]' > /dev/null 2>&1; then
     report_pass "Dark mode CSS variables present"
 else
     report_fail "Dark mode CSS variables missing"
@@ -109,7 +109,7 @@ fi
 echo ""
 echo "[test] Checking dark mode focus accessibility..."
 THEME_CSS=$(ocp_sh "curl -fsSL 'http://localhost/tsisip/css/tsisip-theme.css'")
-if echo "$THEME_CSS" | grep -q '\[data-theme="dark"\] a:focus'; then
+if echo "$THEME_CSS" | grep '\[data-theme="dark"\] a:focus' > /dev/null 2>&1; then
     report_pass "Dark mode focus styles present"
 else
     report_fail "Dark mode focus styles missing"
@@ -118,14 +118,14 @@ fi
 echo ""
 echo "[test] Checking dark mode contrast compliance..."
 # Verify text-muted has sufficient contrast (updated to #8B9BAD)
-if echo "$STYLE_BODY" | grep -q 'text-muted.*#8B9BAD'; then
+if echo "$STYLE_BODY" | grep 'text-muted.*#8B9BAD' > /dev/null 2>&1; then
     report_pass "Dark mode text-muted contrast compliant"
 else
     report_fail "Dark mode text-muted contrast not compliant"
 fi
 
 # Verify text-tertiary has sufficient contrast (updated to #8595A7)
-if echo "$STYLE_BODY" | grep -q 'text-tertiary.*#8595A7'; then
+if echo "$STYLE_BODY" | grep 'text-tertiary.*#8595A7' > /dev/null 2>&1; then
     report_pass "Dark mode text-tertiary contrast compliant"
 else
     report_fail "Dark mode text-tertiary contrast not compliant"

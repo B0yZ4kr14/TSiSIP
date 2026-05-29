@@ -110,7 +110,7 @@ echo "[test] Verifying immutability trigger blocks UPDATE..."
 UPDATE_RESULT=$(docker compose -f "$COMPOSE_FILE" exec -T "$PG_SERVICE" \
     psql -U "$DB_USER" -d "$DB_NAME" -t -A \
     -c "UPDATE ocp_audit_log SET action = 'TEST_MUTATION' WHERE id = (SELECT MIN(id) FROM ocp_audit_log);" 2>&1 || true)
-if echo "$UPDATE_RESULT" | grep -qi 'immutable'; then
+if echo "$UPDATE_RESULT" | grep -i 'immutable' > /dev/null 2>&1; then
     report_pass "UPDATE blocked by immutability trigger"
 else
     report_fail "UPDATE was not blocked: $UPDATE_RESULT"
@@ -121,7 +121,7 @@ echo "[test] Verifying immutability trigger blocks DELETE (app role)..."
 DELETE_RESULT=$(docker compose -f "$COMPOSE_FILE" exec -T "$PG_SERVICE" \
     psql -U "$DB_USER" -d "$DB_NAME" -t -A \
     -c "DELETE FROM ocp_audit_log WHERE id = (SELECT MIN(id) FROM ocp_audit_log);" 2>&1 || true)
-if echo "$DELETE_RESULT" | grep -qi 'immutable'; then
+if echo "$DELETE_RESULT" | grep -i 'immutable' > /dev/null 2>&1; then
     report_pass "DELETE blocked by immutability trigger (app role)"
 else
     report_fail "DELETE was not blocked: $DELETE_RESULT"
@@ -237,7 +237,7 @@ if [ "$AUTH_AVAILABLE" = true ]; then
     ocp_sh "curl -fsSL -b ${COOKIE_JAR_CTR} -o /tmp/audit-export.csv '${OCP_INTERNAL_URL}/audit-export.php?format=csv&from=${FROM_DATE}&to=${TO_DATE}'"
     if ocp_sh "test -s /tmp/audit-export.csv"; then
         CSV_HEADER=$(ocp_sh "head -n 1 /tmp/audit-export.csv")
-        if echo "$CSV_HEADER" | grep -qi 'timestamp.*action.*user'; then
+        if echo "$CSV_HEADER" | grep -i 'timestamp.*action.*user' > /dev/null 2>&1; then
             report_pass "CSV export returned valid header"
         else
             report_fail "CSV export unexpected header: $CSV_HEADER"
@@ -272,7 +272,7 @@ if [ "$AUTH_AVAILABLE" = true ]; then
     ocp_sh "curl -fsSL -b ${COOKIE_JAR_CTR} -o /tmp/audit-export.txt '${OCP_INTERNAL_URL}/audit-export.php?format=text&from=${FROM_DATE}&to=${TO_DATE}'"
     if ocp_sh "test -s /tmp/audit-export.txt"; then
         TXT_HEADER=$(ocp_sh "head -n 1 /tmp/audit-export.txt")
-        if echo "$TXT_HEADER" | grep -q '========'; then
+        if echo "$TXT_HEADER" | grep '========' > /dev/null 2>&1; then
             report_pass "TEXT export returned valid header"
         else
             report_fail "TEXT export unexpected header: $TXT_HEADER"

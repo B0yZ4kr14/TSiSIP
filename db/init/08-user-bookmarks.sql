@@ -1,7 +1,7 @@
 -- User bookmarks table for quick access to favorite pages
 CREATE TABLE IF NOT EXISTS ocp_user_bookmarks (
     id SERIAL PRIMARY KEY,
-    user_id INT NOT NULL REFERENCES ocp_users(id) ON DELETE CASCADE,
+    user_id UUID NOT NULL REFERENCES ocp_users(id) ON DELETE CASCADE,
     page_url VARCHAR(255) NOT NULL,
     page_label VARCHAR(100) NOT NULL,
     icon VARCHAR(50) DEFAULT 'star',

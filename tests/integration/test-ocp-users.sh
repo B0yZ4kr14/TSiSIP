@@ -90,7 +90,7 @@ if [ "$AUTH_AVAILABLE" = true ]; then
     echo ""
     echo "[test] User list page..."
     BODY=$(ocp_sh "curl -fsSL -b ${COOKIE_JAR_CTR} 'http://localhost/users.php'")
-    if echo "$BODY" | grep -q 'User Management'; then
+    if echo "$BODY" | grep 'User Management' > /dev/null 2>&1; then
         report_pass "User list page accessible"
     else
         report_fail "User list page not accessible"
@@ -99,7 +99,7 @@ if [ "$AUTH_AVAILABLE" = true ]; then
     echo ""
     echo "[test] User edit page..."
     BODY=$(ocp_sh "curl -fsSL -b ${COOKIE_JAR_CTR} 'http://localhost/user-edit.php?id=1'")
-    if echo "$BODY" | grep -q 'Edit User'; then
+    if echo "$BODY" | grep 'Edit User' > /dev/null 2>&1; then
         report_pass "User edit page accessible"
     else
         report_fail "User edit page not accessible"
@@ -108,7 +108,7 @@ if [ "$AUTH_AVAILABLE" = true ]; then
     echo ""
     echo "[test] Profile self-service..."
     BODY=$(ocp_sh "curl -fsSL -b ${COOKIE_JAR_CTR} 'http://localhost/profile.php'")
-    if echo "$BODY" | grep -q 'Change Password' && echo "$BODY" | grep -q 'Update Email'; then
+    if echo "$BODY" | grep 'Change Password' > /dev/null 2>&1 && echo "$BODY" | grep 'Update Email' > /dev/null 2>&1; then
         report_pass "Profile self-service forms present"
     else
         report_fail "Profile self-service forms missing"
