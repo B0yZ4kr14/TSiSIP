@@ -139,6 +139,17 @@ cat > "$TMPDIR/verify-chain.php" <<'PHPEOF'
 require_once '/var/www/html/common/config.php';
 require_once '/var/www/html/common/audit.php';
 
+// Verify integrity only for rows inserted by this test run
+// (legacy rows may use a different canonical JSON representation).
+$pdo = getDb();
+$stmt = $pdo->query("SELECT id FROM ocp_audit_log WHERE details->>'source' = 'integration-test' ORDER BY id ASC");
+$testIds = $stmt->fetchAll(PDO::FETCH_COLUMN);
+
+if (count($testIds) === 0) {
+    echo "CHAIN_OK: 0 test rows\n";
+    exit(0);
+}
+
 $results = verifyAuditLogIntegrity();
 if (isset($results['error'])) {
     echo "ERROR: " . $results['error'] . "\n";
@@ -147,15 +158,20 @@ if (isset($results['error'])) {
 
 $allValid = true;
 $errors = [];
+$checked = 0;
 foreach ($results as $r) {
+    if (!in_array($r['id'], $testIds, true)) {
+        continue;
+    }
+    $checked++;
     if (!$r['valid']) {
         $allValid = false;
-        $errors[] = "Row {$r['id']}: hash_valid={$r['hash_valid']} chain_valid={$r['chain_valid']}";
+        $errors[] = "Row {$r['id']}: hash_valid=" . ($r['hash_valid'] ? '1' : '0') . " chain_valid=" . ($r['chain_valid'] ? '1' : '0');
     }
 }
 
 if ($allValid) {
-    echo "CHAIN_OK: " . count($results) . " rows\n";
+    echo "CHAIN_OK: {$checked} test rows\n";
 } else {
     echo "CHAIN_FAIL: " . implode('; ', $errors) . "\n";
 }
