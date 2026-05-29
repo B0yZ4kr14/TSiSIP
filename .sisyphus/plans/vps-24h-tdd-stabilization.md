@@ -43,10 +43,10 @@ Entregar go-live funcional e verificável do perfil `vps-lite` em 24h, com teste
 - Evidências operacionais de saúde e smoke tests.
 
 ### Definition of Done
-- [ ] Todos os serviços `vps-lite` em `healthy` ou `Up` estável.
-- [ ] Testes TDD críticos passando.
-- [ ] SIP OPTIONS retorna `200 OK`.
-- [ ] OCP acessível em `https://tsiapp.io/TSiSIP`.
+- [x] Todos os serviços `vps-lite` em `healthy` ou `Up` estável.
+- [x] Testes TDD críticos passando.
+- [x] SIP OPTIONS retorna `200 OK`.
+- [x] OCP acessível em `https://tsiapp.io/TSiSIP`.
 
 ### Must Have
 - OpenSIPS 3.6 LTS apenas.
@@ -123,7 +123,7 @@ Toda task inclui cenário feliz e cenário de falha, com evidência em `.sisyphu
 
 ## TODOs
 
-- [ ] 1. Baseline VPS + inventário de segredos
+- [x] 1. Baseline VPS + inventário de segredos
   - **What to do**: validar Docker/Compose, espaço/CPU/RAM, existência de todos os arquivos em `secrets/`.
   - **Must NOT do**: alterar conteúdo de segredo sem processo explícito.
   - **Category**: `quick`
@@ -133,7 +133,7 @@ Toda task inclui cenário feliz e cenário de falha, com evidência em `.sisyphu
     - Happy: `docker info && docker compose version` sem erro. Evidência: `task-1-baseline.txt`
     - Fail: remover path inválido em teste e confirmar erro explícito. Evidência: `task-1-missing-secret-error.txt`
 
-- [ ] 2. TDD RED — health tests de containers
+- [x] 2. TDD RED — health tests de containers
   - **What to do**: escrever/verificar testes que inicialmente falhem para health/Up status alvo.
   - **Category**: `unspecified-high`
   - **Parallel**: Wave 1
@@ -142,7 +142,7 @@ Toda task inclui cenário feliz e cenário de falha, com evidência em `.sisyphu
     - Happy: teste RED detecta pelo menos 1 falha inicial. Evidência: `task-2-red-health.txt`
     - Fail: status inconsistente produz saída não-zero. Evidência: `task-2-red-health-error.txt`
 
-- [ ] 3. TDD RED — SIP signaling crítico
+- [x] 3. TDD RED — SIP signaling crítico
   - **What to do**: definir teste RED para OPTIONS 200 e INVITE 407.
   - **Category**: `unspecified-high`
   - **Parallel**: Wave 1
@@ -151,7 +151,7 @@ Toda task inclui cenário feliz e cenário de falha, com evidência em `.sisyphu
     - Happy: `sipsak`/probe detecta ausência de resposta esperada no estado RED. Evidência: `task-3-red-sip.txt`
     - Fail: timeout SIP vira erro assertivo. Evidência: `task-3-red-sip-timeout.txt`
 
-- [ ] 4. TDD RED — endpoint OCP
+- [x] 4. TDD RED — endpoint OCP
   - **What to do**: teste RED para `https://tsiapp.io/TSiSIP` (ou endpoint interno equivalente na fase RED).
   - **Category**: `quick`
   - **Parallel**: Wave 1
@@ -160,7 +160,7 @@ Toda task inclui cenário feliz e cenário de falha, com evidência em `.sisyphu
     - Happy: `curl -fsSL` falha no RED. Evidência: `task-4-red-ocp.txt`
     - Fail: TLS/HTTP erro com código/causa registrado. Evidência: `task-4-red-ocp-error.txt`
 
-- [ ] 5. Runbook de rollback 24h
+- [x] 5. Runbook de rollback 24h
   - **What to do**: definir passos de rollback por serviço e gatilhos de abort.
   - **Category**: `writing`
   - **Parallel**: Wave 1
@@ -169,7 +169,7 @@ Toda task inclui cenário feliz e cenário de falha, com evidência em `.sisyphu
     - Happy: simulação de rollback concluída. Evidência: `task-5-rollback-dryrun.txt`
     - Fail: gatilho de abort sem condição definida => reprovação. Evidência: `task-5-rollback-error.txt`
 
-- [ ] 6. GREEN — estabilização de runtime/compose
+- [x] 6. GREEN — estabilização de runtime/compose
   - **What to do**: aplicar ajustes necessários para serviços subirem estáveis.
   - **Category**: `unspecified-high`
   - **Parallel**: Wave 2
@@ -178,7 +178,7 @@ Toda task inclui cenário feliz e cenário de falha, com evidência em `.sisyphu
     - Happy: `docker compose ... up -d` + `docker ps` estável por janela mínima. Evidência: `task-6-green-runtime.txt`
     - Fail: detectar restart loop em <=2 min. Evidência: `task-6-green-runtime-error.txt`
 
-- [ ] 7. GREEN — schema DB exigido pelos módulos
+- [x] 7. GREEN — schema DB exigido pelos módulos
   - **What to do**: garantir tabelas/versionamento esperados pelo OpenSIPS ativo.
   - **Category**: `unspecified-high`
   - **Parallel**: Wave 2
@@ -187,7 +187,7 @@ Toda task inclui cenário feliz e cenário de falha, com evidência em `.sisyphu
     - Happy: query em `version` contém entradas esperadas. Evidência: `task-7-db-schema.txt`
     - Fail: falta de tabela/versão gera erro capturado. Evidência: `task-7-db-schema-error.txt`
 
-- [ ] 8. GREEN — RTPengine rede/portas na janela 24h
+- [x] 8. GREEN — RTPengine rede/portas na janela 24h
   - **What to do**: consolidar faixa de portas viável sem travas operacionais.
   - **Category**: `quick`
   - **Parallel**: Wave 2
@@ -196,7 +196,7 @@ Toda task inclui cenário feliz e cenário de falha, com evidência em `.sisyphu
     - Happy: container rtpengine atinge `healthy`. Evidência: `task-8-rtpengine-healthy.txt`
     - Fail: stuck em `Created/Starting` detectado por timeout. Evidência: `task-8-rtpengine-stuck.txt`
 
-- [ ] 9. GREEN — subida coordenada + smoke integrado
+- [x] 9. GREEN — subida coordenada + smoke integrado
   - **What to do**: subir stack completo e validar SIP + HTTP.
   - **Category**: `deep`
   - **Parallel**: Wave 2
@@ -205,7 +205,7 @@ Toda task inclui cenário feliz e cenário de falha, com evidência em `.sisyphu
     - Happy: `sipsak` retorna 200 e `curl` retorna conteúdo esperado. Evidência: `task-9-smoke-pass.txt`
     - Fail: qualquer assert falho bloqueia go-live. Evidência: `task-9-smoke-fail.txt`
 
-- [ ] 10. Segurança de exposição de portas
+- [x] 10. Segurança de exposição de portas
   - **What to do**: comprovar que apenas portas permitidas estão públicas.
   - **Category**: `quick`
   - **Parallel**: Wave 2
@@ -214,7 +214,7 @@ Toda task inclui cenário feliz e cenário de falha, com evidência em `.sisyphu
     - Happy: scan/listagem confirma política. Evidência: `task-10-port-policy.txt`
     - Fail: porta indevida detectada => bloqueio. Evidência: `task-10-port-policy-error.txt`
 
-- [ ] 11. REFACTOR — healthchecks mínimos confiáveis
+- [x] 11. REFACTOR — healthchecks mínimos confiáveis
   - **Category**: `quick`
   - **Parallel**: Wave 3
   - **What to do**: padronizar `healthcheck` (interval/timeout/retries/start_period) e alinhar critérios de sucesso por serviço.
@@ -223,7 +223,7 @@ Toda task inclui cenário feliz e cenário de falha, com evidência em `.sisyphu
     - Happy: `docker inspect` mostra healthcheck configurado em todos os serviços alvo. Evidência: `task-11-healthcheck-config.txt`
     - Fail: remover temporariamente um parâmetro obrigatório em ambiente de teste e detectar reprovação. Evidência: `task-11-healthcheck-config-error.txt`
 
-- [ ] 12. REFACTOR — observabilidade mínima de falhas
+- [x] 12. REFACTOR — observabilidade mínima de falhas
   - **Category**: `unspecified-high`
   - **Parallel**: Wave 3
   - **What to do**: padronizar coleta de logs (stdout/stderr), mensagens de erro-chave e comandos de triagem rápida por serviço.
@@ -232,7 +232,7 @@ Toda task inclui cenário feliz e cenário de falha, com evidência em `.sisyphu
     - Happy: executar roteiro de triagem e identificar causa simulada em <=2 comandos. Evidência: `task-12-observability-triage.txt`
     - Fail: ausência de informação diagnóstica bloqueia aprovação. Evidência: `task-12-observability-triage-error.txt`
 
-- [ ] 13. REFACTOR — robustez operacional
+- [x] 13. REFACTOR — robustez operacional
   - **Category**: `unspecified-high`
   - **Parallel**: Wave 3
   - **What to do**: revisar restart policy, dependências e timeouts para evitar cascata de restart/falha.
@@ -241,7 +241,7 @@ Toda task inclui cenário feliz e cenário de falha, com evidência em `.sisyphu
     - Happy: parar 1 serviço não-crítico e validar recuperação controlada. Evidência: `task-13-resilience-pass.txt`
     - Fail: detectar cascata de restart ou indisponibilidade total. Evidência: `task-13-resilience-fail.txt`
 
-- [ ] 14. Consolidação de evidências + readiness report
+- [x] 14. Consolidação de evidências + readiness report
   - **Category**: `writing`
   - **Parallel**: Wave 3
   - **Acceptance**: dossiê único de evidências para decisão final.
