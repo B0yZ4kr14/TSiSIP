@@ -237,7 +237,7 @@ if [ "$AUTH_AVAILABLE" = true ]; then
     ocp_sh "curl -fsSL -b ${COOKIE_JAR_CTR} -o /tmp/audit-export.csv '${OCP_INTERNAL_URL}/audit-export.php?format=csv&from=${FROM_DATE}&to=${TO_DATE}'"
     if ocp_sh "test -s /tmp/audit-export.csv"; then
         CSV_HEADER=$(ocp_sh "head -n 1 /tmp/audit-export.csv")
-        if echo "$CSV_HEADER" | grep -i 'timestamp.*action.*user' > /dev/null 2>&1; then
+        if echo "$CSV_HEADER" | grep -i 'event_time.*action.*user' > /dev/null 2>&1; then
             report_pass "CSV export returned valid header"
         else
             report_fail "CSV export unexpected header: $CSV_HEADER"

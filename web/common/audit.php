@@ -118,12 +118,17 @@ function logAuditEvent(
         // matches the normalized format used during integrity verification.
         $eventTime = (new DateTimeImmutable('now', new DateTimeZone('UTC')))->format('c');
 
-        // Encode details safely
+        // Encode details safely and normalize to match PostgreSQL jsonb
+        // text representation so hash verification is deterministic.
         $detailsJson = null;
         if ($details !== null) {
             $detailsJson = json_encode($details, JSON_UNESCAPED_SLASHES | JSON_UNESCAPED_UNICODE);
             if ($detailsJson === false) {
                 $detailsJson = '{}';
+            }
+            $decoded = json_decode($detailsJson, true);
+            if ($decoded !== null) {
+                $detailsJson = json_encode($decoded);
             }
         }
 
@@ -215,6 +220,15 @@ function verifyAuditLogIntegrity(): array {
                 // keep raw value
             }
 
+            // Normalize jsonb details to match the canonical form used at insert time
+            $details = $row['details'] ?? null;
+            if ($details !== null) {
+                $decoded = json_decode($details, true);
+                if ($decoded !== null) {
+                    $details = json_encode($decoded);
+                }
+            }
+
             $expectedHash = hash('sha256', _auditCanonicalHash(
                 $eventTime,
                 $row['user_id'] ?? null,
@@ -225,7 +239,7 @@ function verifyAuditLogIntegrity(): array {
                 $row['ip_address'],
                 $row['user_agent']    ?? null,
                 _auditBoolToString($row['success']) === '1',
-                $row['details'] ?? null,
+                $details,
                 $row['prev_hash']
             ));
 
