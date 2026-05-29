@@ -24,8 +24,13 @@ ocp_login() {
         curl_host="-H Host:${host_header}"
     fi
 
+    local curl_insecure=""
+    if [ "${CURL_INSECURE:-}" = "true" ] || [ "${CURL_INSECURE:-}" = "1" ]; then
+        curl_insecure="-k"
+    fi
+
     local login_page
-    login_page=$(curl -fsSL ${curl_host} -c "$cookie_jar" -b "$cookie_jar" "${base_url}/login.php" 2>/dev/null)
+    login_page=$(curl -fsSL ${curl_insecure} ${curl_host} -c "$cookie_jar" -b "$cookie_jar" "${base_url}/login.php" 2>/dev/null)
 
     local csrf_token
     csrf_token=$(echo "$login_page" | grep -oE 'name="csrf_token" value="[^"]+"' | sed 's/.*value="\([^"]*\)".*/\1/' | head -1)
@@ -36,7 +41,7 @@ ocp_login() {
     fi
 
     local response
-    response=$(curl -fsSL ${curl_host} -c "$cookie_jar" -b "$cookie_jar" \
+    response=$(curl -fsSL ${curl_insecure} ${curl_host} -c "$cookie_jar" -b "$cookie_jar" \
         -X POST "${base_url}/login.php" \
         -d "username=${username}&pass=${password}&csrf_token=${csrf_token}" \
         -L 2>/dev/null)
