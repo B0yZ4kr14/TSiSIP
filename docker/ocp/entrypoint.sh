@@ -1,5 +1,5 @@
 #!/bin/sh
-set -eu
+set -euo pipefail
 
 # Fix secret permissions so www-data can read them
 for secret in db_password auth_secret topology_secret trunk_cred_key; do

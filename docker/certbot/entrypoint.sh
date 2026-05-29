@@ -1,5 +1,5 @@
 #!/bin/sh
-set -eu
+set -euo pipefail
 
 CERT_DIR="/etc/letsencrypt"
 LIVE_DIR="/certs/live"

@@ -1,5 +1,5 @@
 #!/bin/sh
-set -eu
+set -euo pipefail
 
 # Render prometheus.yml from template using envsubst
 envsubst < /etc/prometheus/prometheus.yml.tpl > /etc/prometheus/rendered/prometheus.yml

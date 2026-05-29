@@ -14,8 +14,6 @@ requireRole('devops');
 logAuditEvent('CONFIG_VIEW', 'system', 'call-queue', true);
 
 // --- Fetch transaction count via MI statistics ---
-// OpenSIPS 3.6 TM module does not export a 't_list' MI command.
-// Use tm:inuse_statistics to get the count of active transactions.
 $transactionCount = 0;
 $tmResult = miHttpCall('get_statistics', ['tm:inuse_transactions']);
 if ($tmResult['success'] && is_array($tmResult['data'])) {

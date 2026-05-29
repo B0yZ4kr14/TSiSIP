@@ -700,9 +700,9 @@ services:
     deploy:
       resources:
         limits:
-          memory: 64M
+          memory: 128M
         reservations:
-          memory: 32M
+          memory: 64M
     environment:
       CERT_PATH: /certs/live/server.crt
       CERT_PATHS: /nginx/ssl/tsiapp.io.crt

@@ -30,7 +30,8 @@ if ($reportType === 'logins') {
          FROM ocp_audit_log
          WHERE event_time > NOW() - INTERVAL '{$interval}'
          GROUP BY hour
-         ORDER BY hour"
+         ORDER BY hour
+         LIMIT 5000"
     );
     $stmt->execute();
     $data = $stmt->fetchAll();
@@ -42,7 +43,8 @@ if ($reportType === 'logins') {
          FROM ocp_audit_log
          WHERE event_time > NOW() - INTERVAL '{$interval}'
          GROUP BY username
-         ORDER BY events DESC"
+         ORDER BY events DESC
+         LIMIT 5000"
     );
     $stmt->execute();
     $data = $stmt->fetchAll();

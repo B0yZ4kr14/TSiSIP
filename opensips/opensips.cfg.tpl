@@ -32,6 +32,10 @@ mpath="/usr/local/lib64/opensips/modules/"
 #        Example: (1GB - 512MB) / 8 children = ~64MB per child.
 # not a config file variable. Set via CMD in Dockerfile/docker-compose.yml.
 
+# Fixed children count for predictable memory sizing inside containers.
+# VPS profile may override via docker-compose command args if needed.
+children = 8
+
 # --- Modules ---
 loadmodule "db_postgres.so"
 loadmodule "sqlops.so"

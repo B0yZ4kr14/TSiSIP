@@ -1,5 +1,5 @@
 #!/bin/sh
-set -eu
+set -euo pipefail
 
 CERT_DIR="/certs/live"
 TS_HOSTNAME="${TS_HOSTNAME:-tsisip}"

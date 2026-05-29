@@ -1,5 +1,24 @@
 # TSiSIP Changelog — May 2026
 
+## [1.0.2] - 2026-05-29
+
+### Critical Fixes
+- **M1-VPS**: OpenSIPS VPS `-M` reduced from 64→48 MB to fit within 1G container limit (was 1088 MB calculated, now 944 MB)
+- **M7**: Explicit `children = 8` added to `opensips.cfg.tpl` for predictable memory sizing
+- **V21**: Python `requests` aligned to 2.32.3 across all containers (opensips_exporter already correct)
+
+### Security & Hardening
+- **B21-FU**: `set -euo pipefail` added to 5 bash entrypoints (admin_api, certbot, ocp, prometheus, tailscale_cert/renew.sh)
+- **N2**: `HOST_PUBLIC_IP` fallback `:-127.0.0.1` removed from VPS compose; now required (`:?must be set`)
+- **N3**: Stale `t_list` comment removed from `web/call-queue.php`
+
+### Performance & Memory
+- **M14**: Defense-in-depth `LIMIT 5000` added to `export-report.php` GROUP BY queries
+- **M15**: certbot_exporter limit 64M→128M in `docker-compose.yml` and `docker-compose.vps.yml`
+
+### Documentation
+- `docs/memory/DECISIONS.md` updated with AD-024-4 (VARCHAR(36) tenant_id) and AD-024-5 (credential columns)
+
 ## [1.0.1] - 2026-05-29
 
 ### Security & Hardening

@@ -1,5 +1,5 @@
 #!/bin/sh
-set -eu
+set -euo pipefail
 
 # Fix secret permissions so www-data can read them
 for secret in db_password proxy_api_secret; do

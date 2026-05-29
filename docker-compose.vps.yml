@@ -123,8 +123,8 @@ services:
 
   opensips:
     image: ghcr.io/b0yz4kr14/tsisip/opensips:${TSISIP_IMAGE_TAG:?must be set}
-    # VPS tuning: 640MB shm + 80MB pkg per child (container limit 1G)
-    command: ["/usr/local/sbin/opensips", "-F", "-f", "/etc/opensips/opensips.cfg", "-m", "512", "-M", "64"]
+    # VPS tuning: 512MB shm + 48MB pkg per child (container limit 1G, 9 processes max)
+    command: ["/usr/local/sbin/opensips", "-F", "-f", "/etc/opensips/opensips.cfg", "-m", "512", "-M", "48"]
     pull_policy: missing
     networks: [sip_edge, sip_internal, db_internal]
     restart: unless-stopped
@@ -141,7 +141,7 @@ services:
       - "5061:5061/tcp"
     environment:
       OPENSIPS_LISTEN_IP: ${OPENSIPS_LISTEN_IP:-0.0.0.0}
-      HOST_PUBLIC_IP: ${HOST_PUBLIC_IP:-127.0.0.1}
+      HOST_PUBLIC_IP: ${HOST_PUBLIC_IP:?must be set}
       RTPENGINE_HOST: rtpengine
       DB_HOST: pgbouncer
       DB_NAME: opensips
@@ -372,9 +372,9 @@ services:
     deploy:
       resources:
         limits:
-          memory: 64M
+          memory: 128M
         reservations:
-          memory: 32M
+          memory: 64M
     dns:
       - 8.8.8.8
       - 1.1.1.1
