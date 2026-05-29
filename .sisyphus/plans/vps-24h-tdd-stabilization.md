@@ -253,10 +253,10 @@ Toda task inclui cenário feliz e cenário de falha, com evidência em `.sisyphu
 
 ## Final Verification Wave
 
-- [ ] F1. Plan compliance audit — `oracle`
-- [ ] F2. Code/config quality review — `unspecified-high`
-- [ ] F3. Automated E2E QA execution — `unspecified-high`
-- [ ] F4. Scope fidelity check — `deep`
+- [x] F1. Plan compliance audit — `oracle`
+- [x] F2. Code/config quality review — `unspecified-high`
+- [x] F3. Automated E2E QA execution — `unspecified-high`
+- [x] F4. Scope fidelity check — `deep`
 
 ---
 
@@ -276,7 +276,7 @@ curl -fsSL https://tsiapp.io/TSiSIP
 ```
 
 ### Final Checklist
-- [ ] Must Have completo
-- [ ] Must NOT Have preservado
-- [ ] TDD evidenciado (RED→GREEN→REFACTOR)
-- [ ] Aprovação explícita do usuário após F1-F4
+- [x] Must Have completo
+- [x] Must NOT Have preservado
+- [x] TDD evidenciado (RED→GREEN→REFACTOR)
+- [x] Aprovação explícita do usuário após F1-F4
