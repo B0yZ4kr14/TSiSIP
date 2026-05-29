@@ -53,7 +53,7 @@
 
 - [ ] T6.1: E2E test: simulate destination failure, verify auto-failover
 - [x] T6.2: E2E test: simulate bad dispatcher change, verify auto-rollback
-- [ ] T6.3: E2E test: circuit breaker stress test
+- [x] T6.3: E2E test: circuit breaker stress test
 - [ ] T6.4: Performance test: auto-healer MI latency < 1s per cycle
 - [ ] T6.5: Security review: verify no new privileges required
 - [ ] T6.6: Update operator runbook with auto-healing procedures

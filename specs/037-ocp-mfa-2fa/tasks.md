@@ -36,10 +36,10 @@
 
 - [x] T4.1: Add MFA status column to `users.php`
 - [x] T4.2: Create web/api/v1/mfa-reset.php` — admin reset MFA for user
-- [ ] T4.3: Create `web/api/v1/mfa-policy.php` — admin manage policy
-- [ ] T4.4: Implement policy enforcement redirect on login
+- [x] T4.3: Create web/api/v1/mfa-policy.php` — admin manage policy
+- [x] T4.4: Implement policy enforcement redirect on login
 - [x] T4.5: Integration test: admin reset MFA
-- [ ] T4.6: Integration test: policy enforcement
+- [x] T4.6: Integration test: policy enforcement
 
 ## Phase 5: Audit & Testing
 

@@ -28,7 +28,7 @@
 
 - [x] T35.3.1 Enforce admin/devops role on all mutating endpoints
 - [ ] T35.3.2 Implement rate limit (5 reloads/min per session)
-- [ ] T35.3.3 Add CSRF validation to AJAX endpoints
+- [x] T35.3.3 Add CSRF validation to AJAX endpoints
 - [ ] T35.3.4 Add `dispatcher.reload` event to SSE stream
 - [ ] T35.3.5 Verify transaction safety under concurrent reloads
 

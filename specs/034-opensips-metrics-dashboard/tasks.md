@@ -26,7 +26,7 @@
 - [ ] T34.3.1 Integrate widgets into `dashboard.php` with role-based visibility
 - [ ] T34.3.2 Verify MI HTTP loopback restriction (C4)
 - [ ] T34.3.3 Verify anomaly detector auth header via Docker env (H2)
-- [ ] T34.3.4 Add CSRF validation to AJAX endpoints
+- [x] T34.3.4 Add CSRF validation to AJAX endpoints
 - [x] T34.3.5 Implement SSE reconnection with exponential backoff
 - [ ] T34.3.6 Implement fallback AJAX polling for browsers without EventSource
 
@@ -37,7 +37,7 @@
 - [ ] T34.4.3 Write role-based visibility tests
 - [x] T34.4.4 Write end-to-end SSE streaming integration test
 - [ ] T34.4.5 Write anomaly banner trigger test
-- [ ] T34.4.6 Write graceful degradation test (kill SSE, verify stale indicator)
+- [x] T34.4.6 Write graceful degradation test (kill SSE, verify stale indicator)
 - [ ] T34.4.7 Performance test: 50 concurrent SSE connections
 - [ ] T34.4.8 Update operator runbook with new dashboard features
 
