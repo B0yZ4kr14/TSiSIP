@@ -8,6 +8,7 @@
 require_once __DIR__ . '/../../common/config.php';
 require_once __DIR__ . '/../../common/csrf.php';
 require_once __DIR__ . '/../../common/audit.php';
+require_once __DIR__ . '/../../common/mi-http.php';
 
 requireAuth();
 requireCsrfForMutation();
@@ -107,6 +108,7 @@ switch ($method) {
             exit;
         }
         try {
+            $pdo->beginTransaction();
             $stmt = $pdo->prepare(
                 "INSERT INTO dispatcher (setid, destination, socket, state, probe_mode, weight, priority, attrs, description)
                  VALUES (:setid, :dest, :socket, :state, :probe, :weight, :priority, :attrs, :desc)
@@ -124,12 +126,27 @@ switch ($method) {
                 ':desc' => $data['description'],
             ]);
             $newId = (int)$stmt->fetchColumn();
+
+            // Attempt MI reload; rollback DB if MI fails
+            $miResult = miHttpCall('ds_reload', []);
+            if (!$miResult['success']) {
+                $pdo->rollBack();
+                http_response_code(502);
+                header('Content-Type: application/json');
+                echo json_encode(['error' => 'OpenSIPS MI reload failed: ' . ($miResult['error'] ?? 'unknown')]);
+                exit;
+            }
+
+            $pdo->commit();
             logChange($pdo, 'ADD', $data['setid'], $newId, null, $data);
             logAuditEvent('CONFIG_CHANGE', 'dispatcher', (string)$newId, true, ['action' => 'ADD', 'setid' => $data['setid'], 'destination' => $data['destination']]);
             http_response_code(201);
             header('Content-Type: application/json');
             echo json_encode(['id' => $newId, 'data' => $data]);
         } catch (Exception $e) {
+            if ($pdo->inTransaction()) {
+                $pdo->rollBack();
+            }
             http_response_code(500);
             echo json_encode(['error' => 'Insert failed: ' . $e->getMessage()]);
         }
@@ -150,11 +167,13 @@ switch ($method) {
             exit;
         }
         try {
+            $pdo->beginTransaction();
             // Fetch old snapshot
             $oldStmt = $pdo->prepare("SELECT * FROM dispatcher WHERE id = :id");
             $oldStmt->execute([':id' => $id]);
             $old = $oldStmt->fetch(PDO::FETCH_ASSOC);
             if (!$old) {
+                $pdo->rollBack();
                 http_response_code(404);
                 echo json_encode(['error' => 'Destination not found']);
                 exit;
@@ -176,11 +195,25 @@ switch ($method) {
                 ':attrs' => $data['attrs'],
                 ':desc' => $data['description'],
             ]);
+
+            // Attempt MI reload; rollback DB if MI fails
+            $miResult = miHttpCall('ds_reload', []);
+            if (!$miResult['success']) {
+                $pdo->rollBack();
+                http_response_code(502);
+                echo json_encode(['error' => 'OpenSIPS MI reload failed: ' . ($miResult['error'] ?? 'unknown')]);
+                exit;
+            }
+
+            $pdo->commit();
             logChange($pdo, 'UPDATE', $data['setid'], $id, $old, $data);
             logAuditEvent('CONFIG_CHANGE', 'dispatcher', (string)$id, true, ['action' => 'UPDATE', 'setid' => $data['setid']]);
             http_response_code(200);
             echo json_encode(['id' => $id, 'data' => $data]);
         } catch (Exception $e) {
+            if ($pdo->inTransaction()) {
+                $pdo->rollBack();
+            }
             http_response_code(500);
             echo json_encode(['error' => 'Update failed: ' . $e->getMessage()]);
         }
@@ -194,20 +227,36 @@ switch ($method) {
             exit;
         }
         try {
+            $pdo->beginTransaction();
             $oldStmt = $pdo->prepare("SELECT * FROM dispatcher WHERE id = :id");
             $oldStmt->execute([':id' => $id]);
             $old = $oldStmt->fetch(PDO::FETCH_ASSOC);
             if (!$old) {
+                $pdo->rollBack();
                 http_response_code(404);
                 echo json_encode(['error' => 'Destination not found']);
                 exit;
             }
             $stmt = $pdo->prepare("DELETE FROM dispatcher WHERE id = :id");
             $stmt->execute([':id' => $id]);
+
+            // Attempt MI reload; rollback DB if MI fails
+            $miResult = miHttpCall('ds_reload', []);
+            if (!$miResult['success']) {
+                $pdo->rollBack();
+                http_response_code(502);
+                echo json_encode(['error' => 'OpenSIPS MI reload failed: ' . ($miResult['error'] ?? 'unknown')]);
+                exit;
+            }
+
+            $pdo->commit();
             logChange($pdo, 'DELETE', (int)$old['setid'], $id, $old, null);
             logAuditEvent('CONFIG_CHANGE', 'dispatcher', (string)$id, true, ['action' => 'DELETE', 'setid' => $old['setid']]);
             http_response_code(204);
         } catch (Exception $e) {
+            if ($pdo->inTransaction()) {
+                $pdo->rollBack();
+            }
             http_response_code(500);
             echo json_encode(['error' => 'Delete failed: ' . $e->getMessage()]);
         }
