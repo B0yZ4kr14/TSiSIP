@@ -419,4 +419,69 @@ if (isset($roleNav[$userRole])) {
 })();
 </script>
 
+<!-- Feature 034: Historical Mini-Charts (Sparklines) -->
+<div class="tsisip-dashboard-section" id="sparkline-section">
+    <h2><?php echo _('Trends'); ?></h2>
+    <div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(280px,1fr));gap:12px;">
+        <div class="tsisip-metric-card">
+            <div class="tsisip-metric-card__label"><?php echo _('Dialogs (5m)'); ?></div>
+            <div class="tsisip-sparkline" id="sparkline-dialogs" style="height:60px;"></div>
+        </div>
+        <div class="tsisip-metric-card">
+            <div class="tsisip-metric-card__label"><?php echo _('RTP Sessions (5m)'); ?></div>
+            <div class="tsisip-sparkline" id="sparkline-rtp" style="height:60px;"></div>
+        </div>
+        <div class="tsisip-metric-card">
+            <div class="tsisip-metric-card__label"><?php echo _('Pkg Memory (5m)'); ?></div>
+            <div class="tsisip-sparkline" id="sparkline-pkgmem" style="height:60px;"></div>
+        </div>
+        <div class="tsisip-metric-card">
+            <div class="tsisip-metric-card__label"><?php echo _('Blocked IPs (5m)'); ?></div>
+            <div class="tsisip-sparkline" id="sparkline-pike" style="height:60px;"></div>
+        </div>
+    </div>
+</div>
+
+<script>
+(function() {
+    'use strict';
+    const sparkData = { dialogs: [], rtp: [], pkgmem: [], pike: [] };
+    const maxPoints = 60;
+
+    function updateSparklines(data) {
+        sparkData.dialogs.push(parseInt(data.dialogs || 0));
+        sparkData.rtp.push(parseInt(data['rtpengine.sessions'] || 0));
+        sparkData.pkgmem.push(parseFloat(data['memory.pkg_pct'] || 0));
+        sparkData.pike.push(parseInt(data.pike_blocked || 0));
+        for (const key of Object.keys(sparkData)) {
+            if (sparkData[key].length > maxPoints) sparkData[key].shift();
+            drawSparkline('sparkline-' + key, sparkData[key], key === 'pkgmem' ? '#dc3545' : '#0d6efd');
+        }
+    }
+
+    function drawSparkline(id, values, color) {
+        const el = document.getElementById(id);
+        if (!el || values.length < 2) return;
+        const w = el.clientWidth || 260;
+        const h = 60;
+        const min = Math.min(...values);
+        const max = Math.max(...values);
+        const range = max - min || 1;
+        const step = w / (values.length - 1);
+        let d = 'M0,' + (h - ((values[0] - min) / range) * h);
+        for (let i = 1; i < values.length; i++) {
+            d += ' L' + (i * step) + ',' + (h - ((values[i] - min) / range) * h);
+        }
+        el.innerHTML = '<svg width="' + w + '" height="' + h + '" style="overflow:visible">' +
+            '<path d="' + d + '" fill="none" stroke="' + color + '" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>' +
+            '<circle cx="' + ((values.length - 1) * step) + '" cy="' + (h - ((values[values.length - 1] - min) / range) * h) + '" r="3" fill="' + color + '"/>' +
+            '</svg>';
+    }
+
+    if (window.TSiSIPEvents) {
+        window.TSiSIPEvents.on('data', function(data) { updateSparklines(data); });
+    }
+})();
+</script>
+
 <?php require_once __DIR__ . '/common/footer.php'; ?>

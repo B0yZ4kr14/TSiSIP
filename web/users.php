@@ -44,8 +44,11 @@ if (in_array($sort, $validSort, true)) {
 }
 $dir = ($_GET['dir'] ?? 'asc') === 'desc' ? 'DESC' : 'ASC';
 
-$sql = "SELECT id, username, email, role, enabled, force_password_change, last_login_at, created_at
-        FROM ocp_users WHERE " . implode(' AND ', $where) . " ORDER BY {$orderBy} {$dir}";
+$sql = "SELECT u.id, u.username, u.email, u.role, u.enabled, u.force_password_change, u.last_login_at, u.created_at,
+        CASE WHEN m.user_id IS NOT NULL AND m.enabled = true THEN true ELSE false END AS mfa_enabled
+        FROM ocp_users u
+        LEFT JOIN ocp_user_mfa m ON m.user_id = u.id
+        WHERE " . implode(' AND ', $where) . " ORDER BY {$orderBy} {$dir}";
 $stmt = $pdo->prepare($sql);
 $stmt->execute($params);
 $users = $stmt->fetchAll();
@@ -100,6 +103,7 @@ require_once __DIR__ . '/common/header.php';
                 <th><a href="?sort=email&dir=<?php echo $dir==='ASC'?'desc':'asc'; ?>&search=<?php echo urlencode($search); ?>&role=<?php echo urlencode($roleFilter); ?>&status=<?php echo urlencode($statusFilter); ?>"><?php echo _('Email'); ?></a></th>
                 <th><a href="?sort=role&dir=<?php echo $dir==='ASC'?'desc':'asc'; ?>&search=<?php echo urlencode($search); ?>&role=<?php echo urlencode($roleFilter); ?>&status=<?php echo urlencode($statusFilter); ?>"><?php echo _('Role'); ?></a></th>
                 <th><?php echo _('Status'); ?></th>
+                <th><?php echo _('MFA'); ?></th>
                 <th><?php echo _('Force PW Change'); ?></th>
                 <th><a href="?sort=last_login_at&dir=<?php echo $dir==='ASC'?'desc':'asc'; ?>&search=<?php echo urlencode($search); ?>&role=<?php echo urlencode($roleFilter); ?>&status=<?php echo urlencode($statusFilter); ?>"><?php echo _('Last Login'); ?></a></th>
                 <th><?php echo _('Actions'); ?></th>
@@ -118,6 +122,13 @@ require_once __DIR__ . '/common/header.php';
                             <span class="tsisip-badge tsisip-badge-error"><?php echo _('Inactive'); ?></span>
                         <?php endif; ?>
                     </td>
+                    <td>
+                        <?php if ($u['mfa_enabled']): ?>
+                            <span class="tsisip-badge tsisip-badge-success" title="<?php echo _('MFA Enabled'); ?>">2FA</span>
+                        <?php else: ?>
+                            <span class="tsisip-badge tsisip-badge-outline" title="<?php echo _('MFA Disabled'); ?>">—</span>
+                        <?php endif; ?>
+                    </td>
                     <td><?php echo $u['force_password_change'] ? _('Yes') : _('No'); ?></td>
                     <td><?php echo $u['last_login_at'] ? htmlspecialchars(substr($u['last_login_at'], 0, 16)) : '-'; ?></td>
                     <td>
@@ -128,6 +139,13 @@ require_once __DIR__ . '/common/header.php';
                                 <input type="hidden" name="csrf_token" value="<?php echo htmlspecialchars(generateCsrfToken()); ?>">
                                 <button type="submit" class="tsisip-btn tsisip-btn-sm tsisip-btn-error"><?php echo _('Delete'); ?></button>
                             </form>
+                            <?php if ($u['mfa_enabled']): ?>
+                                <form method="post" action="api/v1/mfa-reset.php" style="display:inline;" onsubmit="return confirm('<?php echo _('Reset MFA for'); ?> <?php echo htmlspecialchars($u['username']); ?>?');">
+                                    <input type="hidden" name="user_id" value="<?php echo $u['id']; ?>">
+                                    <input type="hidden" name="csrf_token" value="<?php echo htmlspecialchars(generateCsrfToken()); ?>">
+                                    <button type="submit" class="tsisip-btn tsisip-btn-sm tsisip-btn-warning"><?php echo _('Reset MFA'); ?></button>
+                                </form>
+                            <?php endif; ?>
                         <?php else: ?>
                             <span class="tsisip-text-muted">(<?php echo _('You'); ?>)</span>
                         <?php endif; ?>
@@ -135,7 +153,7 @@ require_once __DIR__ . '/common/header.php';
                 </tr>
             <?php endforeach; ?>
             <?php if (empty($users)): ?>
-                <tr><td colspan="7" class="tsisip-text-muted"><?php echo _('No users found.'); ?></td></tr>
+                <tr><td colspan="8" class="tsisip-text-muted"><?php echo _('No users found.'); ?></td></tr>
             <?php endif; ?>
         </tbody>
     </table>

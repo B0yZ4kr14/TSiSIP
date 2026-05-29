@@ -128,6 +128,72 @@ function getRecentFailureCount(PDO $pdo, int $destId, int $windowMin): int {
     return (int)$stmt->fetchColumn();
 }
 
+/**
+ * Detect anomalies by correlating dispatcher failures with
+ * pike blocked IPs, memory pressure, and dialog counts.
+ * Returns array of anomaly descriptors.
+ */
+function detectAnomalies(PDO $pdo): array {
+    $anomalies = [];
+    // Check if dispatcher failures correlate with pike blocks
+    $stmt = $pdo->query(
+        "SELECT COUNT(*) FROM dispatcher_health_log
+         WHERE reachable = false AND checked_at > NOW() - INTERVAL '5 minutes'"
+    );
+    $failures5m = (int)$stmt->fetchColumn();
+    $stmt = $pdo->query(
+        "SELECT COUNT(*) FROM pike_blocked_ips WHERE blocked_at > NOW() - INTERVAL '5 minutes'"
+    );
+    $pike5m = (int)$stmt->fetchColumn();
+    if ($failures5m >= 3 && $pike5m >= 5) {
+        $anomalies[] = [
+            'type' => 'correlated_attack',
+            'severity' => 'high',
+            'message' => "{$failures5m} dispatcher failures correlated with {$pike5m} pike blocks in 5m",
+        ];
+    }
+    // Check memory pressure anomaly
+    $stmt = $pdo->query(
+        "SELECT AVG((new_snapshot->>'memory.pkg_pct')::numeric) FROM dispatcher_change_log
+         WHERE action = 'AUTO_FAILOVER' AND created_at > NOW() - INTERVAL '15 minutes'"
+    );
+    $avgMem = (float)($stmt->fetchColumn() ?? 0);
+    if ($avgMem > 80) {
+        $anomalies[] = [
+            'type' => 'memory_pressure',
+            'severity' => 'critical',
+            'message' => 'Memory pressure detected during auto-failover events (avg ' . round($avgMem, 1) . '%)',
+        ];
+    }
+    // Check dialog spike anomaly
+    $stmt = $pdo->query(
+        "SELECT value FROM autoheal_config WHERE key = 'dialog_spike_threshold'"
+    );
+    $dialogThreshold = (int)($stmt->fetchColumn() ?? 5000);
+    $stmt = $pdo->query(
+        "SELECT COUNT(*) FROM active_dialogs WHERE state = 4 AND start_time > NOW() - INTERVAL '2 minutes'"
+    );
+    $activeDialogs = (int)($stmt->fetchColumn() ?? 0);
+    if ($activeDialogs > $dialogThreshold) {
+        $anomalies[] = [
+            'type' => 'dialog_spike',
+            'severity' => 'warning',
+            'message' => "Active dialog spike: {$activeDialogs} > threshold {$dialogThreshold}",
+        ];
+    }
+    return $anomalies;
+}
+
+function recordAnomalies(PDO $pdo, array $anomalies): void {
+    foreach ($anomalies as $a) {
+        $stmt = $pdo->prepare(
+            "INSERT INTO dispatcher_health_log (destination_id, setid, destination, probe_status, rtt_ms, failure_count, action_taken)
+             VALUES (0, 0, 'ANOMALY', :severity, NULL, 0, :msg)"
+        );
+        $stmt->execute([':severity' => $a['severity'], ':msg' => $a['message']]);
+    }
+}
+
 function isCircuitBreakerOpen(PDO $pdo, int $threshold, int $cooldownMin): bool {
     $stmt = $pdo->prepare(
         "SELECT COUNT(*) FROM dispatcher_change_log
