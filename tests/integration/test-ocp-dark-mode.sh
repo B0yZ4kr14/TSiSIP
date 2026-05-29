@@ -79,7 +79,8 @@ if [ "$AUTH_AVAILABLE" = true ]; then
 
     echo ""
     echo "[test] Checking system preference detection..."
-    if echo "$DASHBOARD_BODY" | grep 'prefers-color-scheme' > /dev/null 2>&1; then
+    TOGGLE_JS=$(ocp_sh "curl -fsSL 'http://localhost/tsisip/js/theme-toggle.js'")
+    if echo "$TOGGLE_JS" | grep 'prefers-color-scheme' > /dev/null 2>&1; then
         report_pass "System preference detection present"
     else
         report_fail "System preference detection missing"
@@ -133,7 +134,8 @@ fi
 
 echo ""
 echo "[test] Checking theme persistence endpoint..."
-if ocp_sh "curl -fsSL -o /dev/null -w '%{http_code}' 'http://localhost/common/set-theme.php'" | grep -q '200\|302\|400'; then
+HTTP_CODE=$(ocp_sh "curl -sSL -o /dev/null -w '%{http_code}' 'http://localhost/common/set-theme.php' 2>/dev/null" || echo '')
+if echo "$HTTP_CODE" | grep -E '200|302|400' > /dev/null 2>&1; then
     report_pass "Theme persistence endpoint accessible"
 else
     report_fail "Theme persistence endpoint not accessible"
