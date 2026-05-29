@@ -275,7 +275,7 @@ function getFlash(): ?array {
 /**
  * Record an active session in the database.
  */
-function recordSession(int $userId): void {
+function recordSession(string $userId): void {
     try {
         $pdo = getDb();
         $token = session_id();
