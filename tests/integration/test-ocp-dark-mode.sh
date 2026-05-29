@@ -55,7 +55,7 @@ fi
 if [ "$AUTH_AVAILABLE" = true ]; then
     echo ""
     echo "[test] Checking for data-theme attribute..."
-    DASHBOARD_BODY=$(ocp_sh "curl -s -b /tmp/darkmode-cookies.txt 'http://localhost/dashboard.php'")
+    DASHBOARD_BODY=$(ocp_sh "curl -s ${HOST_HEADER:+-H "Host: $HOST_HEADER"} -b /tmp/darkmode-cookies.txt 'http://localhost/dashboard.php'")
     if echo "$DASHBOARD_BODY" | grep -q 'data-theme='; then
         report_pass "data-theme attribute present on <html>"
     else

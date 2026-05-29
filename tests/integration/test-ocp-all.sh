@@ -3,6 +3,7 @@
 set -euo pipefail
 
 BASE="${TSISIP_BASE_URL:-http://localhost}"
+HOST_HEADER="${TSISIP_HOST_HEADER:-}"
 echo "=== TSiSIP OCP Integration Test Suite ==="
 echo "Target: $BASE"
 echo "Time: $(date)"

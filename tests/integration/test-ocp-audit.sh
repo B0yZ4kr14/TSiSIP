@@ -230,7 +230,7 @@ else
 fi
 
     # CSV export
-    ocp_sh "curl -fsSL -b /tmp/audit-cookies.txt -o /tmp/audit-export.csv '${OCP_INTERNAL_URL}/audit-export.php?format=csv&from=${FROM_DATE}&to=${TO_DATE}'"
+    ocp_sh "curl -fsSL ${HOST_HEADER:+-H "Host: $HOST_HEADER"} -b /tmp/audit-cookies.txt -o /tmp/audit-export.csv '${OCP_INTERNAL_URL}/audit-export.php?format=csv&from=${FROM_DATE}&to=${TO_DATE}'"
     if ocp_sh "test -s /tmp/audit-export.csv"; then
         CSV_HEADER=$(ocp_sh "head -n 1 /tmp/audit-export.csv")
         if echo "$CSV_HEADER" | grep -q 'id,event_time'; then
@@ -243,7 +243,7 @@ fi
     fi
 
     # JSON export
-    ocp_sh "curl -fsSL -b /tmp/audit-cookies.txt -o /tmp/audit-export.json '${OCP_INTERNAL_URL}/audit-export.php?format=json&from=${FROM_DATE}&to=${TO_DATE}'"
+    ocp_sh "curl -fsSL ${HOST_HEADER:+-H "Host: $HOST_HEADER"} -b /tmp/audit-cookies.txt -o /tmp/audit-export.json '${OCP_INTERNAL_URL}/audit-export.php?format=json&from=${FROM_DATE}&to=${TO_DATE}'"
     if ocp_sh "test -s /tmp/audit-export.json"; then
         FIRST_CHAR=$(ocp_sh "head -c 1 /tmp/audit-export.json")
         if [ "$FIRST_CHAR" = "[" ]; then
@@ -256,7 +256,7 @@ fi
     fi
 
     # Filtered export (action=LOGIN)
-    ocp_sh "curl -fsSL -b /tmp/audit-cookies.txt -o /tmp/audit-export-filtered.csv '${OCP_INTERNAL_URL}/audit-export.php?format=csv&action=LOGIN&from=${FROM_DATE}&to=${TO_DATE}'"
+    ocp_sh "curl -fsSL ${HOST_HEADER:+-H "Host: $HOST_HEADER"} -b /tmp/audit-cookies.txt -o /tmp/audit-export-filtered.csv '${OCP_INTERNAL_URL}/audit-export.php?format=csv&action=LOGIN&from=${FROM_DATE}&to=${TO_DATE}'"
     FILTERED_ROWS=$(ocp_sh "wc -l < /tmp/audit-export-filtered.csv")
     # Header + at least one data row
     if [ "${FILTERED_ROWS:-0}" -ge 2 ]; then
@@ -266,7 +266,7 @@ fi
     fi
 
     # TEXT export
-    ocp_sh "curl -fsSL -b /tmp/audit-cookies.txt -o /tmp/audit-export.txt '${OCP_INTERNAL_URL}/audit-export.php?format=text&from=${FROM_DATE}&to=${TO_DATE}'"
+    ocp_sh "curl -fsSL ${HOST_HEADER:+-H "Host: $HOST_HEADER"} -b /tmp/audit-cookies.txt -o /tmp/audit-export.txt '${OCP_INTERNAL_URL}/audit-export.php?format=text&from=${FROM_DATE}&to=${TO_DATE}'"
     if ocp_sh "test -s /tmp/audit-export.txt"; then
         TXT_HEADER=$(ocp_sh "head -n 1 /tmp/audit-export.txt")
         if echo "$TXT_HEADER" | grep -q '========'; then

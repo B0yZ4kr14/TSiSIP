@@ -3,18 +3,19 @@
 set -euo pipefail
 
 BASE="${TSISIP_BASE_URL:-http://localhost}"
+HOST_HEADER="${TSISIP_HOST_HEADER:-}"
 COOKIE_JAR="/tmp/test_cookies_$$"
 
 echo "=== Test: OCP System Health ==="
 
 # Login
-curl -s -c "$COOKIE_JAR" -b "$COOKIE_JAR" \
+curl -s ${HOST_HEADER:+-H "Host: $HOST_HEADER"} -c "$COOKIE_JAR" -b "$COOKIE_JAR" \
   -X POST "$BASE/login.php" \
   -d "username=testadmin&password=testpass123" \
   -L | grep -q "dashboard" && echo "[PASS] Login"
 
 # System health page
-HEALTH=$(curl -s -c "$COOKIE_JAR" -b "$COOKIE_JAR" "$BASE/system-health.php")
+HEALTH=$(curl -s ${HOST_HEADER:+-H "Host: $HOST_HEADER"} -c "$COOKIE_JAR" -b "$COOKIE_JAR" "$BASE/system-health.php")
 echo "$HEALTH" | grep -q "System Health" && echo "[PASS] System health loads"
 echo "$HEALTH" | grep -q "OpenSIPS" && echo "[PASS] Shows OpenSIPS component"
 echo "$HEALTH" | grep -q "RTPengine" && echo "[PASS] Shows RTPengine component"

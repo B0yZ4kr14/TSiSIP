@@ -90,7 +90,7 @@ fi
 if [ "$AUTH_AVAILABLE" = true ]; then
     echo ""
     echo "[test] User list page..."
-    BODY=$(ocp_sh "curl -s -b /tmp/users-cookies.txt 'http://localhost/users.php'")
+    BODY=$(ocp_sh "curl -s ${HOST_HEADER:+-H "Host: $HOST_HEADER"} -b /tmp/users-cookies.txt 'http://localhost/users.php'")
     if echo "$BODY" | grep -q 'User Management'; then
         report_pass "User list page accessible"
     else
@@ -99,7 +99,7 @@ if [ "$AUTH_AVAILABLE" = true ]; then
 
     echo ""
     echo "[test] User edit page..."
-    BODY=$(ocp_sh "curl -s -b /tmp/users-cookies.txt 'http://localhost/user-edit.php?id=1'")
+    BODY=$(ocp_sh "curl -s ${HOST_HEADER:+-H "Host: $HOST_HEADER"} -b /tmp/users-cookies.txt 'http://localhost/user-edit.php?id=1'")
     if echo "$BODY" | grep -q 'Edit User'; then
         report_pass "User edit page accessible"
     else
@@ -108,7 +108,7 @@ if [ "$AUTH_AVAILABLE" = true ]; then
 
     echo ""
     echo "[test] Profile self-service..."
-    BODY=$(ocp_sh "curl -s -b /tmp/users-cookies.txt 'http://localhost/profile.php'")
+    BODY=$(ocp_sh "curl -s ${HOST_HEADER:+-H "Host: $HOST_HEADER"} -b /tmp/users-cookies.txt 'http://localhost/profile.php'")
     if echo "$BODY" | grep -q 'Change Password' && echo "$BODY" | grep -q 'Update Email'; then
         report_pass "Profile self-service forms present"
     else
