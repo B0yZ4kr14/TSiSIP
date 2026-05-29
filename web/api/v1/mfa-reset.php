@@ -5,8 +5,10 @@
  */
 
 require_once __DIR__ . '/../../common/config.php';
+require_once __DIR__ . '/../../common/csrf.php';
 
 requireAuth();
+requireCsrfForMutation();
 checkPasswordChange();
 
 $userRole = $_SESSION['ocp_user_role'] ?? 'readonly';

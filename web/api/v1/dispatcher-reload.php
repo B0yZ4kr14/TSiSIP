@@ -5,10 +5,12 @@
  */
 
 require_once __DIR__ . '/../../common/config.php';
+require_once __DIR__ . '/../../common/csrf.php';
 require_once __DIR__ . '/../../common/mi-http.php';
 require_once __DIR__ . '/../../common/audit.php';
 
 requireAuth();
+requireCsrfForMutation();
 checkPasswordChange();
 
 $userRole = $_SESSION['user_role'] ?? 'readonly';

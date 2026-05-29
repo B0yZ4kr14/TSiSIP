@@ -30,4 +30,22 @@ function validateCsrfToken(?string $token): bool {
  */
 function csrfInput(): string {
     $token = htmlspecialchars(generateCsrfToken(), ENT_QUOTES, 'UTF-8');
-    return '<input type="hidden" name="csrf_token" value="' . $token . '">';}
+    return '<input type="hidden" name="csrf_token" value="' . $token . '">';
+}
+
+/**
+ * Require a valid CSRF token for mutating requests (POST/PUT/DELETE).
+ * Returns 403 if token is missing or invalid.
+ */
+function requireCsrfForMutation(): void {
+    if ($_SERVER['REQUEST_METHOD'] === 'GET' || $_SERVER['REQUEST_METHOD'] === 'HEAD') {
+        return;
+    }
+    $token = $_SERVER['HTTP_X_CSRF_TOKEN'] ?? ($_POST['csrf_token'] ?? '');
+    if (!validateCsrfToken($token)) {
+        http_response_code(403);
+        header('Content-Type: application/json');
+        echo json_encode(['error' => 'Invalid or missing CSRF token']);
+        exit;
+    }
+}}

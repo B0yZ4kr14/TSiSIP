@@ -63,6 +63,12 @@ require_once __DIR__ . '/common/header.php';
 <div id="content" class="tsisip-dashboard">
     <h1><?php echo _('User Profile'); ?></h1>
 
+    <?php if (!empty($_SESSION['mfa_enforcement_required']) || !empty($_GET['mfa_enroll'])): ?>
+        <div class="tsisip-alert tsisip-alert--warning">
+            <?php echo _('MFA is required for your role. Please set up two-factor authentication below before continuing.'); ?>
+        </div>
+    <?php endif; ?>
+
     <div class="tsisip-dashboard-grid" style="grid-template-columns:1fr 2fr;">
         <!-- Left: User Info -->
         <div class="tsisip-dashboard-section">

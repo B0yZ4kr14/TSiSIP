@@ -5,9 +5,11 @@
  */
 
 require_once __DIR__ . '/../../common/config.php';
+require_once __DIR__ . '/../../common/csrf.php';
 require_once __DIR__ . '/../../lib/totp.php';
 
 requireAuth();
+requireCsrfForMutation();
 checkPasswordChange();
 
 $userId = $_SESSION['ocp_user_id'] ?? null;
