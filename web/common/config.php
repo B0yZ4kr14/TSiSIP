@@ -34,6 +34,7 @@ bind_textdomain_codeset('tsisip', 'UTF-8');
 textdomain('tsisip');
 
 require_once __DIR__ . '/audit.php';
+require_once __DIR__ . '/csrf.php';
 
 // --- Database Configuration ---
 $dbHost = getenv('DB_HOST') ?: 'postgres';
