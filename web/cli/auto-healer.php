@@ -358,5 +358,14 @@ foreach ($destinations as $dest) {
     }
 }
 
+// Detect and record anomalies
+$anomalies = detectAnomalies($pdo);
+if (!empty($anomalies)) {
+    recordAnomalies($pdo, $anomalies);
+    foreach ($anomalies as $a) {
+        logMsg("ANOMALY [{$a['severity']}]: {$a['message']}");
+    }
+}
+
 logMsg('Auto-healer cycle complete');
 exit(0);
