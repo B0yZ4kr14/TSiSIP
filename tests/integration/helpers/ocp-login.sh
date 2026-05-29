@@ -46,13 +46,13 @@ ocp_login() {
         -d "username=${username}&pass=${password}&csrf_token=${csrf_token}" \
         -L 2>/dev/null)
 
-    if echo "$response" | grep -qi "dashboard\|overview\|sign out\|logout"; then
+    if [[ "$response" == *[Dd]ashboard* ]] || [[ "$response" == *[Oo]verview* ]] || [[ "$response" == *[Ss]ign[[:space:]]out* ]] || [[ "$response" == *[Ll]ogout* ]]; then
         echo "[PASS] Login successful"
         return 0
-    elif echo "$response" | grep -qi "invalid credentials\|authentication failed"; then
+    elif [[ "$response" == *[Ii]nvalid[[:space:]]credentials* ]] || [[ "$response" == *[Aa]uthentication[[:space:]]failed* ]]; then
         echo "[FAIL] Invalid credentials" >&2
         return 1
-    elif echo "$response" | grep -qi "mfa.*verify\|two.factor\|2fa"; then
+    elif [[ "$response" == *[Mm][Ff][Aa]*verify* ]] || [[ "$response" == *[Tt]wo[[:space:]]factor* ]] || [[ "$response" == *2[Ff][Aa]* ]]; then
         echo "[PASS] Login successful (MFA required)"
         return 0
     else

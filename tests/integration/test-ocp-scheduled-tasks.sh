@@ -21,13 +21,13 @@ if [ -n "$HOST_HEADER" ]; then
     CURL_HOST="-H Host:$HOST_HEADER"
 fi
 
-CURL_INSECURE=""
+CURL_INSECURE_FLAG=""
 if [ "${CURL_INSECURE:-}" = "true" ] || [ "${CURL_INSECURE:-}" = "1" ]; then
-    CURL_INSECURE="-k"
+    CURL_INSECURE_FLAG="-k"
 fi
 
 # Scheduled tasks page
-TASKS=$(curl -fsSL ${CURL_INSECURE} ${CURL_HOST} -c "$COOKIE_JAR" -b "$COOKIE_JAR" "$BASE/scheduled-tasks.php")
+TASKS=$(curl -fsSL ${CURL_INSECURE_FLAG} ${CURL_HOST} -c "$COOKIE_JAR" -b "$COOKIE_JAR" "$BASE/scheduled-tasks.php")
 echo "$TASKS" | grep -q "Scheduled Tasks" && echo "[PASS] Page loads"
 echo "$TASKS" | grep -q "Database Backup" && echo "[PASS] Shows backup task"
 echo "$TASKS" | grep -q "System Monitor" && echo "[PASS] Shows monitor task"

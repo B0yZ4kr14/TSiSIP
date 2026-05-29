@@ -21,13 +21,13 @@ if [ -n "$HOST_HEADER" ]; then
     CURL_HOST="-H Host:$HOST_HEADER"
 fi
 
-CURL_INSECURE=""
+CURL_INSECURE_FLAG=""
 if [ "${CURL_INSECURE:-}" = "true" ] || [ "${CURL_INSECURE:-}" = "1" ]; then
-    CURL_INSECURE="-k"
+    CURL_INSECURE_FLAG="-k"
 fi
 
 # System logs page
-LOGS=$(curl -fsSL ${CURL_INSECURE} ${CURL_HOST} -c "$COOKIE_JAR" -b "$COOKIE_JAR" "$BASE/system-logs.php")
+LOGS=$(curl -fsSL ${CURL_INSECURE_FLAG} ${CURL_HOST} -c "$COOKIE_JAR" -b "$COOKIE_JAR" "$BASE/system-logs.php")
 echo "$LOGS" | grep -q "System Logs" && echo "[PASS] Page loads"
 echo "$LOGS" | grep -q "Log File" && echo "[PASS] Shows log selector"
 echo "$LOGS" | grep -q "Lines" && echo "[PASS] Shows line count input"

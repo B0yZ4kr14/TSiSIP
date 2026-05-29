@@ -21,13 +21,13 @@ if [ -n "$HOST_HEADER" ]; then
     CURL_HOST="-H Host:$HOST_HEADER"
 fi
 
-CURL_INSECURE=""
+CURL_INSECURE_FLAG=""
 if [ "${CURL_INSECURE:-}" = "true" ] || [ "${CURL_INSECURE:-}" = "1" ]; then
-    CURL_INSECURE="-k"
+    CURL_INSECURE_FLAG="-k"
 fi
 
 # Reports page
-REPORTS=$(curl -fsSL ${CURL_INSECURE} ${CURL_HOST} -c "$COOKIE_JAR" -b "$COOKIE_JAR" "$BASE/reports.php")
+REPORTS=$(curl -fsSL ${CURL_INSECURE_FLAG} ${CURL_HOST} -c "$COOKIE_JAR" -b "$COOKIE_JAR" "$BASE/reports.php")
 echo "$REPORTS" | grep -q "System Reports" && echo "[PASS] Reports page loads"
 echo "$REPORTS" | grep -q "Last Hour" && echo "[PASS] Time range buttons"
 echo "$REPORTS" | grep -q "Most Active Users" && echo "[PASS] Active users section"
@@ -35,7 +35,7 @@ echo "$REPORTS" | grep -q "Action Distribution" && echo "[PASS] Action distribut
 
 # Test different time ranges
 for range in 1h 7d 30d; do
-    R=$(curl -fsSL ${CURL_INSECURE} ${CURL_HOST} -c "$COOKIE_JAR" -b "$COOKIE_JAR" "$BASE/reports.php?range=$range")
+    R=$(curl -fsSL ${CURL_INSECURE_FLAG} ${CURL_HOST} -c "$COOKIE_JAR" -b "$COOKIE_JAR" "$BASE/reports.php?range=$range")
     echo "$R" | grep -q "System Reports" && echo "[PASS] Range $range works"
 done
 
