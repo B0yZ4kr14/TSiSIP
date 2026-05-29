@@ -70,3 +70,9 @@ HEALTHCHECK --interval=30s --timeout=5s --start-period=20s --retries=3 \
 EXPOSE 80
 
 ENTRYPOINT ["/usr/local/bin/ocp-entrypoint.sh"]
+
+# Feature 036: Auto-healer cron job
+COPY docker/ocp/cron/auto-healer.sh /usr/local/bin/auto-healer.sh
+RUN chmod +x /usr/local/bin/auto-healer.sh \
+    && echo "* * * * * root /usr/local/bin/auto-healer.sh >/dev/null 2>&1" > /etc/cron.d/tsisip-auto-healer \
+    && chmod 0644 /etc/cron.d/tsisip-auto-healer

@@ -2,20 +2,20 @@
 
 ## Phase 1: Backend APIs
 
-- [ ] T35.1.1 Create `web/api/v1/dispatcher-crud.php` (GET/POST/PUT/DELETE)
+- [x] T35.1.1 Create `web/api/v1/dispatcher-crud.php` (GET/POST/PUT/DELETE)
 - [ ] T35.1.2 Add SIP URI validation helper
-- [ ] T35.1.3 Create `web/api/v1/dispatcher-reload.php` with MI ds_reload
+- [x] T35.1.3 Create `web/api/v1/dispatcher-reload.php` with MI ds_reload
 - [ ] T35.1.4 Implement DB transaction + MI rollback on failure
-- [ ] T35.1.5 Create `web/api/v1/dispatcher-probe.php` (OPTIONS probe)
-- [ ] T35.1.6 Create `dispatcher_change_log` table migration
-- [ ] T35.1.7 Create `web/api/v1/dispatcher-rollback.php`
-- [ ] T35.1.8 Create `web/api/v1/dispatcher-import.php` (CSV parser)
-- [ ] T35.1.9 Create `web/api/v1/dispatcher-export.php` (CSV generator)
-- [ ] T35.1.10 Add audit logging to all endpoints
+- [x] T35.1.5 Create `web/api/v1/dispatcher-probe.php` (OPTIONS probe)
+- [x] T35.1.6 Create `dispatcher_change_log` table migration
+- [x] T35.1.7 Create `web/api/v1/dispatcher-rollback.php`
+- [x] T35.1.8 Create `web/api/v1/dispatcher-import.php` (CSV parser)
+- [x] T35.1.9 Create `web/api/v1/dispatcher-export.php` (CSV generator)
+- [x] T35.1.10 Add audit logging to all endpoints
 
 ## Phase 2: Frontend Admin UI
 
-- [ ] T35.2.1 Enhance `web/dispatcher.php` with CRUD table
+- [x] T35.2.1 Enhance `web/dispatcher.php` with CRUD table
 - [ ] T35.2.2 Add "Apply Changes" reload button with state management
 - [ ] T35.2.3 Add probe status icons to destination rows
 - [ ] T35.2.4 Add destination modal with form validation
