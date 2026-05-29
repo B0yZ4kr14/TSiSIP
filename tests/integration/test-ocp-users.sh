@@ -6,6 +6,8 @@ SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 PROJECT_ROOT="$(cd "$SCRIPT_DIR/../.." && pwd)"
 COMPOSE_FILE="${COMPOSE_FILE:-$PROJECT_ROOT/docker-compose.yml}"
 OCP_SERVICE="${OCP_SERVICE:-ocp}"
+DB_NAME="${DB_NAME:-opensips}"
+DB_USER="${DB_USER:-opensips}"
 
 PASS=0
 FAIL=0
