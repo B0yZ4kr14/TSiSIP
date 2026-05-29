@@ -174,7 +174,7 @@ require_once __DIR__ . '/common/header.php';
                 <td><?php echo (int)$d['setid']; ?></td>
                 <td><?php echo htmlspecialchars($d['destination']); ?></td>
                 <td><?php echo stateBadge((int)$d['state']); ?></td>
-                <td><?php echo (int)$d['probe_mode']; ?></td>
+                <td><?php echo probeBadge((int)$d['probe_mode']); ?></td>
                 <td><?php echo htmlspecialchars((string)$d['weight']); ?></td>
                 <td><?php echo (int)$d['priority']; ?></td>
                 <td><?php echo htmlspecialchars($d['attrs'] ?? ''); ?></td>
@@ -340,6 +340,16 @@ function stateBadge(int $state): string {
     ];
     [$cls, $label] = $map[$state] ?? ['disabled', _('Unknown')];
     return "<span class=\"tsisip-state-badge tsisip-state-badge--{$cls}\">" . htmlspecialchars($label) . "</span>";
+}
+
+function probeBadge(int $probeMode): string {
+    $map = [
+        0 => ['disabled', '○', _('Disabled')],
+        1 => ['active', '●', _('Enabled')],
+        2 => ['probing', '◐', _('On-Demand')],
+    ];
+    [$cls, $icon, $label] = $map[$probeMode] ?? ['disabled', '?', _('Unknown')];
+    return "<span class=\"tsisip-state-badge tsisip-state-badge--{$cls}\" title=\"" . htmlspecialchars($label) . "\">{$icon}</span>";
 }
 ?>
 
