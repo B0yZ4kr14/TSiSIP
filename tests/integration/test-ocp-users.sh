@@ -31,6 +31,7 @@ source "${SCRIPT_DIR}/helpers/ocp-login.sh"
 BASE="${TSISIP_BASE_URL:-http://localhost}"
 if ocp_login "$BASE" "testadmin" "$COOKIE_JAR_HOST"; then
     sed -i 's|/TSiSIP|/|g' "$COOKIE_JAR_HOST"
+    sed -i 's|tsiapp.io|localhost|g' "$COOKIE_JAR_HOST"
     docker compose -f "$COMPOSE_FILE" cp "$COOKIE_JAR_HOST" "${OCP_SERVICE}:${COOKIE_JAR_CTR}"
     report_pass "Admin login + cookie copy"
     AUTH_AVAILABLE=true
