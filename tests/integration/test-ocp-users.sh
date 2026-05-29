@@ -98,7 +98,8 @@ if [ "$AUTH_AVAILABLE" = true ]; then
 
     echo ""
     echo "[test] User edit page..."
-    BODY=$(ocp_sh "curl -fsSL -b ${COOKIE_JAR_CTR} 'http://localhost/user-edit.php?id=1'")
+    TESTADMIN_ID=$(docker compose -f "$COMPOSE_FILE" exec -T postgres psql -U "$DB_USER" -d "$DB_NAME" -t -A -c "SELECT id FROM ocp_users WHERE username = 'testadmin' LIMIT 1;")
+    BODY=$(ocp_sh "curl -fsSL -b ${COOKIE_JAR_CTR} 'http://localhost/user-edit.php?id=${TESTADMIN_ID}'")
     if echo "$BODY" | grep 'Edit User' > /dev/null 2>&1; then
         report_pass "User edit page accessible"
     else

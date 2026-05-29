@@ -14,7 +14,7 @@ $theme    = $_SESSION['theme']    ?? 'light';
 $lang     = $_SESSION['lang']     ?? 'en_US';
 
 $pdo = getDb();
-$stmt = $pdo->prepare("SELECT id, email, created_at, last_login FROM ocp_users WHERE username = :u");
+$stmt = $pdo->prepare("SELECT id, email, created_at, last_login_at FROM ocp_users WHERE username = :u");
 $stmt->execute([':u' => $username]);
 $userData = $stmt->fetch();
 
@@ -95,7 +95,7 @@ require_once __DIR__ . '/common/header.php';
             </div>
             <div class="tsisip-data-row">
                 <span class="tsisip-data-label"><?php echo _('Last Login'); ?></span>
-                <span class="tsisip-data-value"><?php echo htmlspecialchars((string) ($userData['last_login'] ?? '—')); ?></span>
+                <span class="tsisip-data-value"><?php echo htmlspecialchars((string) ($userData['last_login_at'] ?? '—')); ?></span>
             </div>
         </div>
 

@@ -133,12 +133,15 @@ CREATE TABLE IF NOT EXISTS ocp_users (
     role VARCHAR(32) NOT NULL DEFAULT 'readonly'
         CHECK (role IN ('admin', 'devops', 'dentist', 'assistant', 'user', 'readonly')),
     enabled BOOLEAN NOT NULL DEFAULT TRUE,
+    is_active BOOLEAN NOT NULL DEFAULT TRUE,
     failed_attempts INTEGER NOT NULL DEFAULT 0,
     locked_until TIMESTAMPTZ,
     last_login_at TIMESTAMPTZ,
     force_password_change BOOLEAN NOT NULL DEFAULT TRUE,
+    password_changed_at TIMESTAMPTZ,
     created_at TIMESTAMPTZ NOT NULL DEFAULT NOW(),
-    updated_at TIMESTAMPTZ NOT NULL DEFAULT NOW()
+    updated_at TIMESTAMPTZ NOT NULL DEFAULT NOW(),
+    deleted_at TIMESTAMPTZ
 );
 
 CREATE INDEX IF NOT EXISTS idx_ocp_users_enabled

@@ -14,7 +14,7 @@ $pdo = getDb();
 $flash = getFlash();
 
 // Build query
-$where = ["deleted_at IS NULL"];
+$where = ["1=1"];
 $params = [];
 
 $search = $_GET['search'] ?? '';
@@ -45,7 +45,7 @@ if (in_array($sort, $validSort, true)) {
 $dir = ($_GET['dir'] ?? 'asc') === 'desc' ? 'DESC' : 'ASC';
 
 $sql = "SELECT u.id, u.username, u.email, u.role, u.enabled, u.force_password_change, u.last_login_at, u.created_at,
-        CASE WHEN m.user_id IS NOT NULL AND m.enabled = true THEN true ELSE false END AS mfa_enabled
+        CASE WHEN m.user_id IS NOT NULL THEN true ELSE false END AS mfa_enabled
         FROM ocp_users u
         LEFT JOIN ocp_user_mfa m ON m.user_id = u.id
         WHERE " . implode(' AND ', $where) . " ORDER BY {$orderBy} {$dir}";
