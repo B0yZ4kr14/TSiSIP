@@ -21,8 +21,13 @@ if [ -n "$HOST_HEADER" ]; then
     CURL_HOST="-H Host:$HOST_HEADER"
 fi
 
+CURL_INSECURE=""
+if [ "${CURL_INSECURE:-}" = "true" ] || [ "${CURL_INSECURE:-}" = "1" ]; then
+    CURL_INSECURE="-k"
+fi
+
 # System health page
-HEALTH=$(curl -fsSL ${CURL_HOST} -c "$COOKIE_JAR" -b "$COOKIE_JAR" "$BASE/system-health.php")
+HEALTH=$(curl -fsSL ${CURL_INSECURE} ${CURL_HOST} -c "$COOKIE_JAR" -b "$COOKIE_JAR" "$BASE/system-health.php")
 echo "$HEALTH" | grep -q "System Health" && echo "[PASS] System health loads"
 echo "$HEALTH" | grep -q "OpenSIPS" && echo "[PASS] Shows OpenSIPS component"
 echo "$HEALTH" | grep -q "RTPengine" && echo "[PASS] Shows RTPengine component"

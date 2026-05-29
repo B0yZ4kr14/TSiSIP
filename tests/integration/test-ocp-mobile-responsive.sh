@@ -21,13 +21,18 @@ if [ -n "$HOST_HEADER" ]; then
     CURL_HOST="-H Host:$HOST_HEADER"
 fi
 
+CURL_INSECURE=""
+if [ "${CURL_INSECURE:-}" = "true" ] || [ "${CURL_INSECURE:-}" = "1" ]; then
+    CURL_INSECURE="-k"
+fi
+
 # Check viewport meta tag
-DASHBOARD=$(curl -fsSL ${CURL_HOST} -c "$COOKIE_JAR" -b "$COOKIE_JAR" "$BASE/dashboard.php")
+DASHBOARD=$(curl -fsSL ${CURL_INSECURE} ${CURL_HOST} -c "$COOKIE_JAR" -b "$COOKIE_JAR" "$BASE/dashboard.php")
 echo "$DASHBOARD" | grep -q 'name="viewport"' && echo "[PASS] Viewport meta present"
 echo "$DASHBOARD" | grep -q 'tsisip-mobile-menu-toggle' && echo "[PASS] Mobile menu toggle present"
 
 # Check responsive CSS
-CSS=$(curl -fsSL ${CURL_HOST} -c "$COOKIE_JAR" -b "$COOKIE_JAR" "$BASE/tsisip/css/tsisip-theme.css")
+CSS=$(curl -fsSL ${CURL_INSECURE} ${CURL_HOST} -c "$COOKIE_JAR" -b "$COOKIE_JAR" "$BASE/tsisip/css/tsisip-theme.css")
 echo "$CSS" | grep -q '@media (max-width: 768px)' && echo "[PASS] Tablet breakpoint exists"
 echo "$CSS" | grep -q '@media (max-width: 480px)' && echo "[PASS] Phone breakpoint exists"
 echo "$CSS" | grep -q 'min-height: 44px' && echo "[PASS] Touch target size set"

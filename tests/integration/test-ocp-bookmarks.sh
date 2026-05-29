@@ -21,19 +21,24 @@ if [ -n "$HOST_HEADER" ]; then
     CURL_HOST="-H Host:$HOST_HEADER"
 fi
 
+CURL_INSECURE=""
+if [ "${CURL_INSECURE:-}" = "true" ] || [ "${CURL_INSECURE:-}" = "1" ]; then
+    CURL_INSECURE="-k"
+fi
+
 # Dashboard shows bookmarks section
-DASH=$(curl -fsSL ${CURL_HOST} -c "$COOKIE_JAR" -b "$COOKIE_JAR" "$BASE/dashboard.php")
+DASH=$(curl -fsSL ${CURL_INSECURE} ${CURL_HOST} -c "$COOKIE_JAR" -b "$COOKIE_JAR" "$BASE/dashboard.php")
 echo "$DASH" | grep -q "Bookmarks" && echo "[PASS] Bookmarks section visible"
 
 # Toggle bookmark
-BM=$(curl -fsSL ${CURL_HOST} -c "$COOKIE_JAR" -b "$COOKIE_JAR" \
+BM=$(curl -fsSL ${CURL_INSECURE} ${CURL_HOST} -c "$COOKIE_JAR" -b "$COOKIE_JAR" \
   -X POST "$BASE/common/bookmark-toggle.php" \
   -H "Content-Type: application/json" \
   -d '{"url":"gateway-health.php","label":"Gateway Health"}')
 echo "$BM" | grep -q "bookmarked" && echo "[PASS] Bookmark toggle works"
 
 # API docs page
-API=$(curl -fsSL ${CURL_HOST} -c "$COOKIE_JAR" -b "$COOKIE_JAR" "$BASE/api-docs.php")
+API=$(curl -fsSL ${CURL_INSECURE} ${CURL_HOST} -c "$COOKIE_JAR" -b "$COOKIE_JAR" "$BASE/api-docs.php")
 echo "$API" | grep -q "API Documentation" && echo "[PASS] API docs loads"
 echo "$API" | grep -q "mi-http.php" && echo "[PASS] Documents MI endpoint"
 

@@ -23,7 +23,7 @@ if [ -n "$HOST_HEADER" ]; then
 fi
 
 # Profile page
-PROFILE=$(curl -fsSL ${CURL_HOST} -c "$COOKIE_JAR" -b "$COOKIE_JAR" "${BASE}/profile.php")
+PROFILE=$(curl -fsSL ${CURL_INSECURE} ${CURL_HOST} -c "$COOKIE_JAR" -b "$COOKIE_JAR" "${BASE}/profile.php")
 echo "$PROFILE" | grep -q "User Profile" && echo "[PASS] Profile page loads"
 echo "$PROFILE" | grep -q "Account Information" && echo "[PASS] Profile shows account info"
 echo "$PROFILE" | grep -q "Preferences" && echo "[PASS] Profile shows preferences"
@@ -32,18 +32,18 @@ echo "$PROFILE" | grep -q "English" && echo "[PASS] Profile has language buttons
 echo "$PROFILE" | grep -q "Change Password" && echo "[PASS] Profile has change password link"
 
 # Search page (no query)
-SEARCH=$(curl -fsSL ${CURL_HOST} -c "$COOKIE_JAR" -b "$COOKIE_JAR" "${BASE}/search.php")
+SEARCH=$(curl -fsSL ${CURL_INSECURE} ${CURL_HOST} -c "$COOKIE_JAR" -b "$COOKIE_JAR" "${BASE}/search.php")
 echo "$SEARCH" | grep -q "Global Search" && echo "[PASS] Search page loads"
 echo "$SEARCH" | grep -q "Subscribers" && echo "[PASS] Search has subscribers section"
 echo "$SEARCH" | grep -q "Audit Logs" && echo "[PASS] Search has audit logs section"
 echo "$SEARCH" | grep -q "Dialogs" && echo "[PASS] Search has dialogs section"
 
 # Search with query
-SEARCH_Q=$(curl -fsSL ${CURL_HOST} -c "$COOKIE_JAR" -b "$COOKIE_JAR" "${BASE}/search.php?q=admin")
+SEARCH_Q=$(curl -fsSL ${CURL_INSECURE} ${CURL_HOST} -c "$COOKIE_JAR" -b "$COOKIE_JAR" "${BASE}/search.php?q=admin")
 echo "$SEARCH_Q" | grep -q "Subscribers" && echo "[PASS] Search with query works"
 
 # Header profile link
-HEADER=$(curl -fsSL ${CURL_HOST} -c "$COOKIE_JAR" -b "$COOKIE_JAR" "${BASE}/dashboard.php")
+HEADER=$(curl -fsSL ${CURL_INSECURE} ${CURL_HOST} -c "$COOKIE_JAR" -b "$COOKIE_JAR" "${BASE}/dashboard.php")
 echo "$HEADER" | grep -q 'href="profile.php"' && echo "[PASS] Header links to profile"
 
 rm -f "$COOKIE_JAR"
