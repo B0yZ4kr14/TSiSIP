@@ -225,5 +225,10 @@ while (true) {
         break;
     }
 
+    // Periodic garbage collection to mitigate memory leaks in long-running SSE loop
+    if ($counter % 12 === 0) {
+        gc_collect_cycles();
+    }
+
     sleep(5);
 }

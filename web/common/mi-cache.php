@@ -7,6 +7,7 @@
 class MICache {
     private static array $cache = [];
     private static int $defaultTtl = 5;
+    private static int $maxEntries = 100;
 
     public static function get(string $key) {
         $now = time();
@@ -20,6 +21,10 @@ class MICache {
     }
 
     public static function set(string $key, $data, int $ttl = null): void {
+        // Evict oldest entries if cache exceeds max size
+        if (count(self::$cache) >= self::$maxEntries) {
+            self::$cache = array_slice(self::$cache, (int)(self::$maxEntries / 2), null, true);
+        }
         self::$cache[$key] = [
             'data' => $data,
             'expires' => time() + ($ttl ?? self::$defaultTtl),

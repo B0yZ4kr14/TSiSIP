@@ -484,6 +484,7 @@ deployer() {
     # ── 4e: Wait for containers ──
     info "Deployer: waiting for containers to stabilize..."
     # Allow containers time to start and stabilize before health checks
+    # (OpenSIPS + RTPengine + PostgreSQL sequential init; 10s covers cold-start on 1 vCPU)
     sleep 10
 
     info "Deployer: complete"

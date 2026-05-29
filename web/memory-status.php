@@ -81,6 +81,8 @@ if (!empty($_GET['sse']) && $_GET['sse'] === '1') {
         if (connection_aborted()) {
             break;
         }
+        // Periodic garbage collection to mitigate memory leaks in long-running SSE loop
+        gc_collect_cycles();
         sleep(5);
     }
     exit;

@@ -94,7 +94,7 @@ services:
     deploy:
       resources:
         limits:
-          memory: 1G
+          memory: 1536M
         reservations:
           memory: 512M
     ports:
@@ -106,7 +106,7 @@ services:
       - rtpengine
       - --interface=${RTPENGINE_PRIVATE_IP}!${HOST_PUBLIC_IP}
       - --listen-ng=${RTPENGINE_INTERNAL_IP}:22222
-      - --listen-http=0.0.0.0:2225
+      - --listen-http=${RTPENGINE_INTERNAL_IP}:2225
       - --port-min=10000
       - --port-max=10999
       - --log-stderr
@@ -124,7 +124,7 @@ services:
   opensips:
     image: ghcr.io/b0yz4kr14/tsisip/opensips:${TSISIP_IMAGE_TAG:?must be set}
     # VPS tuning: 640MB shm + 80MB pkg per child (container limit 1G)
-    command: ["/usr/local/sbin/opensips", "-F", "-f", "/etc/opensips/opensips.cfg", "-m", "512", "-M", "48"]
+    command: ["/usr/local/sbin/opensips", "-F", "-f", "/etc/opensips/opensips.cfg", "-m", "512", "-M", "64"]
     pull_policy: missing
     networks: [sip_edge, sip_internal, db_internal]
     restart: unless-stopped
@@ -158,7 +158,7 @@ services:
       - trunk_cred_key
     volumes:
       - ./opensips/opensips.cfg.tpl:/etc/opensips/opensips.cfg.tpl:ro
-      - tls_certs:/certs/live:rw
+      - tls_certs:/certs/live:ro
     depends_on:
       postgres:
         condition: service_healthy

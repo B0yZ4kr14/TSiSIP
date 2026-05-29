@@ -109,13 +109,13 @@ services:
     deploy:
       resources:
         limits:
-          memory: 2G
+          memory: 3G
         reservations:
           memory: 1G
   opensips:
     image: ghcr.io/b0yz4kr14/tsisip/opensips:${TSISIP_IMAGE_TAG:?must be set}
-    # Production tuning: 1GB shm + 128MB pkg per child (container limit 2G)
-    command: ["/usr/local/sbin/opensips", "-F", "-f", "/etc/opensips/opensips.cfg", "-m", "1024", "-M", "96"]
+    # Production tuning: 1GB shm + 64MB pkg per child (container limit 3G)
+    command: ["/usr/local/sbin/opensips", "-F", "-f", "/etc/opensips/opensips.cfg", "-m", "1024", "-M", "64"]
     networks:
     - sip_edge
     - sip_internal
@@ -172,7 +172,7 @@ services:
     deploy:
       resources:
         limits:
-          memory: 2G
+          memory: 3G
         reservations:
           memory: 1G
 
@@ -525,7 +525,7 @@ services:
           memory: 256M
 
   tailscale_cert:
-    image: tsisip/tailscale_cert:${TSISIP_IMAGE_TAG:?must be set}
+    image: ghcr.io/b0yz4kr14/tsisip/tailscale_cert:${TSISIP_IMAGE_TAG:?must be set}
     networks:
     - sip_internal
     restart: unless-stopped
@@ -583,6 +583,8 @@ services:
     deploy:
       resources:
         limits:
+          memory: 128M
+        reservations:
           memory: 64M
 
   backup:

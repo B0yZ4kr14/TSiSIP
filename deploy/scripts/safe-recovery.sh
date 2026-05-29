@@ -50,6 +50,7 @@ for phase in "${PHASES[@]}"; do
     docker compose -f "$COMPOSE_FILE" up -d $phase
     # Wait for containers in this phase to initialize and report healthy
     # before proceeding to the next phase (prevents OOM from parallel startup)
+    # 10s covers PostgreSQL shared-memory init + schema migration on cold boot
     sleep 10
     info "  RAM livre: $(free -m | awk 'NR==2{print $7}') MB"
 done
@@ -79,6 +80,7 @@ fi
 # ─── 5. Health checks ───
 info "Health checks..."
 # Brief pause for health endpoints to become ready before probing
+# (Apache/PHP inside OCP container needs ~5s after container start)
 sleep 5
 
 HEALTH_URLS=(

@@ -1,4 +1,4 @@
-FROM pgbouncer/pgbouncer@sha256:aa8a38b7b33e5fe70c679053f97a8e55c74d52b00c195f0880845e52b50ce516
+FROM pgbouncer/pgbouncer:1.22.0@sha256:aa8a38b7b33e5fe70c679053f97a8e55c74d52b00c195f0880845e52b50ce516
 
 # Install envsubst for template rendering
 USER root

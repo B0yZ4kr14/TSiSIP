@@ -23,6 +23,7 @@ const CB_FAILURE_THRESHOLD = 3;
 const CB_WINDOW_SECONDS = 30;
 const CB_OPEN_SECONDS = 60;
 const CACHE_TTL_SECONDS = 5;
+const CACHE_MAX_ENTRIES = 100;
 
 /**
  * Check whether the OpenSIPS MI HTTP endpoint is reachable.
@@ -150,6 +151,10 @@ function miHttpCall(string $method, array $params = []): array
     $cbOpenUntil = 0;
 
     $data = $decoded['result'] ?? $decoded;
+    // Evict oldest entries if cache exceeds max size (LRU-ish: clear half on overflow)
+    if (count($miCache) >= CACHE_MAX_ENTRIES) {
+        $miCache = array_slice($miCache, (int)(CACHE_MAX_ENTRIES / 2), null, true);
+    }
     $miCache[$cacheKey] = [
         'data'    => $data,
         'expires' => $now + CACHE_TTL_SECONDS,

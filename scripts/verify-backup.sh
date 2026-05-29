@@ -77,6 +77,7 @@ echo "Waiting for PostgreSQL..."
 for i in {1..30}; do
     docker exec "$VERIFY_CONTAINER" pg_isready -U opensips -d opensips >/dev/null 2>&1 && { echo "  Ready"; break; }
     [[ $i -eq 30 ]] && { echo "  FAIL"; docker rm -f "$VERIFY_CONTAINER" >/dev/null 2>&1; [[ "$CLEANUP" == true ]] && rm -f "$WORK_FILE"; exit 1; }
+    # Wait for async filesystem sync after tarball extraction
     sleep 1
 done
 

@@ -1,5 +1,28 @@
 # TSiSIP Changelog — May 2026
 
+## [1.0.1] - 2026-05-29
+
+### Security & Hardening
+- **B17**: RTPengine HTTP stats interface bound to `${RTPENGINE_INTERNAL_IP}` in VPS profile (was `0.0.0.0`)
+- **B18**: OpenSIPS TLS cert mount changed from `rw` to `ro` in VPS profile
+- **B21**: `ANOMALY_API_KEY` changed from weak fallback to required (`:?must be set`)
+
+### Performance & Memory
+- **M1-M3**: OpenSIPS memory tuning: dev shm 256MB→512MB, prod limit 2G→3G, VPS limit 1G→1.5G
+- **M4**: certbot_exporter limit 64M→128M with reservation
+- **M5**: `gc_collect_cycles()` added to SSE long-polling loops
+- **M6**: MI cache capped at 100 entries with LRU eviction
+
+### Configuration & Consistency
+- **B22**: Added `ANOMALY_API_KEY`, `MI_HTTP_IP`, `OPENSIPS_HOST` to `.env.example`
+- **B23/B24**: Added `ghcr.io/b0yz4kr14/` registry prefix to `tailscale_cert` images
+- **V21**: PgBouncer semantic version tag added (`1.22.0`)
+- **V29**: `.python-version` corrected to `3.12.3`
+
+### Documentation
+- All deploy/script `sleep` statements documented with justification comments
+- Consolidated audit report: `docs/CONSOLIDATED-AUDIT-2026-05-29.md`
+
 ## [1.0.0] - 2026-05-19
 
 ### Added

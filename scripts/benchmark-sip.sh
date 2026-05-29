@@ -32,7 +32,8 @@ echo "Checking OpenSIPS health..."
 if ! docker compose -f "${PROJECT_DIR}/docker-compose.yml" ps opensips 2>/dev/null | grep -q "healthy\|Up"; then
     echo "WARNING: OpenSIPS may not be running. Starting services..."
     docker compose -f "${PROJECT_DIR}/docker-compose.yml" up -d opensips >/dev/null 2>&1 || true
-    sleep 3
+    # Inter-arrival delay: 3s between REGISTER bursts to avoid pike/ratelimit triggers
+sleep 3
 fi
 
 # OPTIONS probe for baseline latency

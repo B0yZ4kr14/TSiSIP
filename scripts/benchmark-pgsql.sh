@@ -17,7 +17,8 @@ echo ""
 if ! docker compose -f "${PROJECT_DIR}/docker-compose.yml" ps postgres 2>/dev/null | grep -q "healthy\|Up"; then
     echo "WARNING: PostgreSQL may not be running. Starting services..."
     docker compose -f "${PROJECT_DIR}/docker-compose.yml" up -d postgres >/dev/null 2>&1 || true
-    sleep 3
+    # Warmup delay: allow PostgreSQL to warm shared_buffers before benchmark queries
+sleep 3
 fi
 
 # Single-query latency test

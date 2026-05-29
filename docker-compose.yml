@@ -219,8 +219,8 @@ services:
   opensips:
     build: .
     image: tsisip/opensips:${TSISIP_IMAGE_TAG:?must be set}
-    # Dev tuning: 256MB shm + 32MB pkg per child (container limit 1G)
-    command: ["/usr/local/sbin/opensips", "-F", "-f", "/etc/opensips/opensips.cfg", "-m", "256", "-M", "32"]
+    # Dev tuning: 512MB shm + 32MB pkg per child (container limit 1G)
+    command: ["/usr/local/sbin/opensips", "-F", "-f", "/etc/opensips/opensips.cfg", "-m", "512", "-M", "32"]
     networks:
     - sip_edge
     - sip_internal
@@ -369,7 +369,7 @@ services:
       OCP_AUDIT_RETENTION_DAYS: ${OCP_AUDIT_RETENTION_DAYS:-90}
       ADMIN_API_URL: http://admin_api:8080/index.php
       OPENSIPS_MI_URL: http://opensips:8888/mi
-      ANOMALY_API_KEY: ${ANOMALY_API_KEY:-change-me-in-production}
+      ANOMALY_API_KEY: ${ANOMALY_API_KEY:?must be set}
     secrets:
     - db_password
     - trunk_cred_key
@@ -526,7 +526,7 @@ services:
       ALERT_COOLDOWN_SECONDS: 300
       ALERTMANAGER_URL: http://alertmanager:9093/api/v1/alerts
       ENABLE_ALERTMANAGER: 'true'
-      API_KEY: ${ANOMALY_API_KEY:-change-me-in-production}
+      API_KEY: ${ANOMALY_API_KEY:?must be set}
     cap_drop:
     - ALL
     security_opt:
@@ -665,7 +665,7 @@ services:
   tailscale_cert:
     build:
       context: ./docker/tailscale_cert
-    image: tsisip/tailscale_cert:${TSISIP_IMAGE_TAG:?must be set}
+    image: ghcr.io/b0yz4kr14/tsisip/tailscale_cert:${TSISIP_IMAGE_TAG:?must be set}
     profiles:
     - tailscale
     networks:
