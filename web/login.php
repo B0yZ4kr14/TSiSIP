@@ -76,6 +76,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         }
     }
 }
+}
 
 $manifestPath = __DIR__ . '/tsisip/asset-manifest.json';
 $manifest = [];
