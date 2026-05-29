@@ -22,7 +22,7 @@
 - [x] T35.2.5 Add delete confirmation modal
 - [x] T35.2.6 Add "History" tab with rollback UI
 - [x] T35.2.7 Add CSV import modal with preview
-- [ ] T35.2.8 Add CSV export button
+- [x] T35.2.8 Add CSV export button
 
 ## Phase 3: Integration & Security
 
@@ -42,7 +42,7 @@
 - [ ] T35.4.6 Write bulk import test
 - [ ] T35.4.7 Write role-based access test
 - [ ] T35.4.8 Performance test: reload with 50 destinations < 2s
-- [ ] T35.4.9 Update operator runbook with dispatcher management section
+- [x] T35.4.9 Update operator runbook with dispatcher management section
 
 ## Dependencies
 
