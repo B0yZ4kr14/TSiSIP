@@ -40,7 +40,7 @@ function hashPassword(string $password): string {
 /**
  * Check if password was used in the last N changes.
  */
-function isPasswordInHistory(PDO $pdo, int $userId, string $password, int $historyLimit = 5): bool {
+function isPasswordInHistory(PDO $pdo, string $userId, string $password, int $historyLimit = 5): bool {
     $stmt = $pdo->prepare(
         "SELECT password_hash FROM ocp_password_history
          WHERE user_id = :uid
@@ -60,7 +60,7 @@ function isPasswordInHistory(PDO $pdo, int $userId, string $password, int $histo
 /**
  * Record password change in history.
  */
-function recordPasswordHistory(PDO $pdo, int $userId, string $hash): void {
+function recordPasswordHistory(PDO $pdo, string $userId, string $hash): void {
     $stmt = $pdo->prepare(
         "INSERT INTO ocp_password_history (user_id, password_hash, changed_at)
          VALUES (:uid, :hash, NOW())"
@@ -71,7 +71,7 @@ function recordPasswordHistory(PDO $pdo, int $userId, string $hash): void {
 /**
  * Check if user's password has expired (default 90 days).
  */
-function isPasswordExpired(PDO $pdo, int $userId, int $maxAgeDays = 90): bool {
+function isPasswordExpired(PDO $pdo, string $userId, int $maxAgeDays = 90): bool {
     $stmt = $pdo->prepare(
         "SELECT password_changed_at FROM ocp_users WHERE id = :uid"
     );

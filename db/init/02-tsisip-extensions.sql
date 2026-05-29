@@ -392,7 +392,7 @@ CREATE TRIGGER trunk_registration_sync
 -- Track password hash history for reuse prevention
 CREATE TABLE IF NOT EXISTS ocp_password_history (
     id          SERIAL PRIMARY KEY,
-    user_id     INTEGER NOT NULL REFERENCES ocp_users(id) ON DELETE CASCADE,
+    user_id     UUID NOT NULL REFERENCES ocp_users(id) ON DELETE CASCADE,
     password_hash VARCHAR(255) NOT NULL,
     changed_at  TIMESTAMP WITH TIME ZONE DEFAULT NOW() NOT NULL
 );
