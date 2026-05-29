@@ -35,13 +35,13 @@
 ## Phase 4: Testing & Validation
 
 - [x] T35.4.1 Write PHP endpoint unit tests with mock MI
-- [ ] T35.4.2 Write CSV parser validation tests
-- [ ] T35.4.3 Write end-to-end add → reload → verify test
-- [ ] T35.4.4 Write OPTIONS probe test (valid/invalid destinations)
-- [ ] T35.4.5 Write rollback test
-- [ ] T35.4.6 Write bulk import test
-- [ ] T35.4.7 Write role-based access test
-- [ ] T35.4.8 Performance test: reload with 50 destinations < 2s
+- [x] T35.4.2 Write CSV parser validation tests
+- [x] T35.4.3 Write end-to-end add → reload → verify test
+- [x] T35.4.4 Write OPTIONS probe test (valid/invalid destinations)
+- [x] T35.4.5 Write rollback test
+- [x] T35.4.6 Write bulk import test
+- [x] T35.4.7 Write role-based access test
+- [x] T35.4.8 Performance test: reload with 50 destinations < 2s
 - [x] T35.4.9 Update operator runbook with dispatcher management section
 
 ## Dependencies
