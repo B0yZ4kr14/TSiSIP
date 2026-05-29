@@ -28,7 +28,7 @@
 - [ ] T34.3.3 Verify anomaly detector auth header via Docker env (H2)
 - [x] T34.3.4 Add CSRF validation to AJAX endpoints
 - [x] T34.3.5 Implement SSE reconnection with exponential backoff
-- [ ] T34.3.6 Implement fallback AJAX polling for browsers without EventSource
+- [x] T34.3.6 Implement fallback AJAX polling for browsers without EventSource
 
 ## Phase 4: Testing & Validation
 

@@ -5,7 +5,7 @@
 - [x] T35.1.1 Create `web/api/v1/dispatcher-crud.php` (GET/POST/PUT/DELETE)
 - [x] T35.1.2 Add SIP URI validation helper
 - [x] T35.1.3 Create `web/api/v1/dispatcher-reload.php` with MI ds_reload
-- [ ] T35.1.4 Implement DB transaction + MI rollback on failure
+- [x] T35.1.4 Implement DB transaction + MI rollback on failure
 - [x] T35.1.5 Create `web/api/v1/dispatcher-probe.php` (OPTIONS probe)
 - [x] T35.1.6 Create `dispatcher_change_log` table migration
 - [x] T35.1.7 Create `web/api/v1/dispatcher-rollback.php`
