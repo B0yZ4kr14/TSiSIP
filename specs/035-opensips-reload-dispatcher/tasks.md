@@ -16,11 +16,11 @@
 ## Phase 2: Frontend Admin UI
 
 - [x] T35.2.1 Enhance `web/dispatcher.php` with CRUD table
-- [ ] T35.2.2 Add "Apply Changes" reload button with state management
+- [x] T35.2.2 Add "Apply Changes" reload button with state management
 - [x] T35.2.3 Add probe status icons to destination rows
-- [ ] T35.2.4 Add destination modal with form validation
-- [ ] T35.2.5 Add delete confirmation modal
-- [ ] T35.2.6 Add "History" tab with rollback UI
+- [x] T35.2.4 Add destination modal with form validation
+- [x] T35.2.5 Add delete confirmation modal
+- [x] T35.2.6 Add "History" tab with rollback UI
 - [ ] T35.2.7 Add CSV import modal with preview
 - [ ] T35.2.8 Add CSV export button
 
