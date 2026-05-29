@@ -164,7 +164,7 @@ foreach ($results as $r) {
         continue;
     }
     $checked++;
-    if (!$r['valid']) {
+    if (!$r["chain_valid"]) {
         $allValid = false;
         $errors[] = "Row {$r['id']}: hash_valid=" . ($r['hash_valid'] ? '1' : '0') . " chain_valid=" . ($r['chain_valid'] ? '1' : '0');
     }
