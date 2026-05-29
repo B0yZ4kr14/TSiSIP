@@ -21,6 +21,10 @@ if (!empty($_SERVER['HTTP_X_REQUESTED_WITH']) && strtolower($_SERVER['HTTP_X_REQ
 }
 
 // Redirect for regular POST
-$referer = $_SERVER['HTTP_REFERER'] ?? 'dashboard.php';
+$referer = $_SERVER['HTTP_REFERER'] ?? '/dashboard.php';
+// Ensure referer is an absolute path to avoid resolving relative to /common/
+if (!str_starts_with($referer, '/')) {
+    $referer = '/' . $referer;
+}
 header('Location: ' . $referer);
 exit;
