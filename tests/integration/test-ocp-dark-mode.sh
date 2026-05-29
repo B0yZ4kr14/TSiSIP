@@ -32,30 +32,35 @@ if ! docker compose -f "$COMPOSE_FILE" ps "$OCP_SERVICE" 2>/dev/null | grep -qE 
 fi
 report_pass "Prerequisites"
 
-SEED_PASS="${OCP_SEED_ADMIN_PASS:-}"
 AUTH_AVAILABLE=false
 
-if [ -n "$SEED_PASS" ]; then
-    TMPDIR="$(mktemp -d)"
-    trap 'rm -rf "$TMPDIR"' EXIT
+# Use testadmin for integration tests
+TEST_USER="testadmin"
+TEST_PASS="testpass123"
 
-    printf 'username=Admin&pass=%s' "$SEED_PASS" > "$TMPDIR/login_payload.txt"
-    docker compose -f "$COMPOSE_FILE" cp "$TMPDIR/login_payload.txt" "$OCP_SERVICE:/tmp/login_payload.txt"
-    LOGIN_CODE=$(ocp_sh "curl -s -o /dev/null -w '%{http_code}' -c /tmp/darkmode-cookies.txt -d @/tmp/login_payload.txt 'http://localhost/login.php'")
-    if [ "$LOGIN_CODE" = "302" ] || [ "$LOGIN_CODE" = "200" ]; then
-        report_pass "Admin login successful"
-        AUTH_AVAILABLE=true
-    else
-        report_fail "Admin login failed (HTTP $LOGIN_CODE)"
+LOGIN_RESULT=$(ocp_sh "
+    LOGIN_PAGE=\$(curl -fsSL -c /tmp/darkmode-cookies.txt -b /tmp/darkmode-cookies.txt \"http://localhost/login.php\")
+    CSRF_TOKEN=\$(echo \"\$LOGIN_PAGE\" | grep -o 'name=\"csrf_token\" value=\"[^\"]*\"' | sed 's/.*value=\"\\([^\"]*\\)\".*/\\1/')
+    if [ -z \"\$CSRF_TOKEN\" ]; then
+        echo CSRF_FAIL
+        exit 1
     fi
+    curl -fsSL -c /tmp/darkmode-cookies.txt -b /tmp/darkmode-cookies.txt \\
+        -X POST \"http://localhost/login.php\" \\
+        -d \"username=${TEST_USER}\&password=${TEST_PASS}\&csrf_token=\${CSRF_TOKEN}\" \\
+        -L | grep -q dashboard && echo LOGIN_OK || echo LOGIN_FAIL
+")
+if echo "$LOGIN_RESULT" | grep -q "LOGIN_OK"; then
+    report_pass "Admin login successful"
+    AUTH_AVAILABLE=true
 else
-    echo "  NOTE: OCP_SEED_ADMIN_PASS not set — skipping authenticated tests"
+    report_fail "Admin login failed: $LOGIN_RESULT"
 fi
 
 if [ "$AUTH_AVAILABLE" = true ]; then
     echo ""
     echo "[test] Checking for data-theme attribute..."
-    DASHBOARD_BODY=$(ocp_sh "curl -s ${HOST_HEADER:+-H "Host: $HOST_HEADER"} -b /tmp/darkmode-cookies.txt 'http://localhost/dashboard.php'")
+    DASHBOARD_BODY=$(ocp_sh "curl -fsSL -b /tmp/darkmode-cookies.txt 'http://localhost/dashboard.php'")
     if echo "$DASHBOARD_BODY" | grep -q 'data-theme='; then
         report_pass "data-theme attribute present on <html>"
     else

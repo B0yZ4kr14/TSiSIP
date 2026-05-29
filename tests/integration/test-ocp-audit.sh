@@ -212,25 +212,31 @@ OCP_INTERNAL_URL="http://localhost"
 FROM_DATE=$(date -d '-7 days' +%Y-%m-%d 2>/dev/null || date -v-7d +%Y-%m-%d)
 TO_DATE=$(date +%Y-%m-%d)
 
-# Create a temporary test user for authenticated export tests.
-TEST_USER="audit_test_user"
+# Use testadmin for authenticated export tests
+TEST_USER="testadmin"
 TEST_PASS="testpass123"
-psql_exec "INSERT INTO ocp_users (username, email, password_hash, role, enabled, force_password_change)
-VALUES ('$TEST_USER', 'audit-test@tsiapp.io', crypt('$TEST_PASS', gen_salt('bf',12)), 'admin', true, false)
-ON CONFLICT (username) DO UPDATE SET password_hash = crypt('$TEST_PASS', gen_salt('bf',12)), enabled = true, force_password_change = false;"
 
-# Write credentials to a file to avoid shell-quoting issues
-printf 'username=%s&pass=%s' "$TEST_USER" "$TEST_PASS" > "$TMPDIR/login_payload.txt"
-docker compose -f "$COMPOSE_FILE" cp "$TMPDIR/login_payload.txt" "$OCP_SERVICE:/tmp/login_payload.txt"
-LOGIN_CODE=$(ocp_sh "curl -s -o /dev/null -w '%{http_code}' -c /tmp/audit-cookies.txt -d @/tmp/login_payload.txt '${OCP_INTERNAL_URL}/login.php'")
-if [ "$LOGIN_CODE" = "302" ] || [ "$LOGIN_CODE" = "200" ]; then
-    report_pass "Login simulated successfully (HTTP $LOGIN_CODE)"
+# Login with CSRF token handling inside container
+LOGIN_RESULT=$(ocp_sh "
+    LOGIN_PAGE=\$(curl -fsSL -c /tmp/audit-cookies.txt -b /tmp/audit-cookies.txt \"${OCP_INTERNAL_URL}/login.php\")
+    CSRF_TOKEN=\$(echo \"\$LOGIN_PAGE\" | grep -o 'name=\"csrf_token\" value=\"[^\"]*\"' | sed 's/.*value=\"\\([^\"]*\\)\".*/\\1/')
+    if [ -z \"\$CSRF_TOKEN\" ]; then
+        echo CSRF_FAIL
+        exit 1
+    fi
+    curl -fsSL -c /tmp/audit-cookies.txt -b /tmp/audit-cookies.txt \\
+        -X POST \"${OCP_INTERNAL_URL}/login.php\" \\
+        -d \"username=${TEST_USER}\&password=${TEST_PASS}\&csrf_token=\${CSRF_TOKEN}\" \\
+        -L | grep -q dashboard && echo LOGIN_OK || echo LOGIN_FAIL
+")
+if echo "$LOGIN_RESULT" | grep -q "LOGIN_OK"; then
+    report_pass "Login simulated successfully"
 else
-    report_fail "Login failed with HTTP $LOGIN_CODE"
+    report_fail "Login failed: $LOGIN_RESULT"
 fi
 
     # CSV export
-    ocp_sh "curl -fsSL ${HOST_HEADER:+-H "Host: $HOST_HEADER"} -b /tmp/audit-cookies.txt -o /tmp/audit-export.csv '${OCP_INTERNAL_URL}/audit-export.php?format=csv&from=${FROM_DATE}&to=${TO_DATE}'"
+    ocp_sh "curl -fsSL -b /tmp/audit-cookies.txt -o /tmp/audit-export.csv '${OCP_INTERNAL_URL}/audit-export.php?format=csv&from=${FROM_DATE}&to=${TO_DATE}'"
     if ocp_sh "test -s /tmp/audit-export.csv"; then
         CSV_HEADER=$(ocp_sh "head -n 1 /tmp/audit-export.csv")
         if echo "$CSV_HEADER" | grep -q 'id,event_time'; then
@@ -243,7 +249,7 @@ fi
     fi
 
     # JSON export
-    ocp_sh "curl -fsSL ${HOST_HEADER:+-H "Host: $HOST_HEADER"} -b /tmp/audit-cookies.txt -o /tmp/audit-export.json '${OCP_INTERNAL_URL}/audit-export.php?format=json&from=${FROM_DATE}&to=${TO_DATE}'"
+    ocp_sh "curl -fsSL -b /tmp/audit-cookies.txt -o /tmp/audit-export.json '${OCP_INTERNAL_URL}/audit-export.php?format=json&from=${FROM_DATE}&to=${TO_DATE}'"
     if ocp_sh "test -s /tmp/audit-export.json"; then
         FIRST_CHAR=$(ocp_sh "head -c 1 /tmp/audit-export.json")
         if [ "$FIRST_CHAR" = "[" ]; then
@@ -256,7 +262,7 @@ fi
     fi
 
     # Filtered export (action=LOGIN)
-    ocp_sh "curl -fsSL ${HOST_HEADER:+-H "Host: $HOST_HEADER"} -b /tmp/audit-cookies.txt -o /tmp/audit-export-filtered.csv '${OCP_INTERNAL_URL}/audit-export.php?format=csv&action=LOGIN&from=${FROM_DATE}&to=${TO_DATE}'"
+    ocp_sh "curl -fsSL -b /tmp/audit-cookies.txt -o /tmp/audit-export-filtered.csv '${OCP_INTERNAL_URL}/audit-export.php?format=csv&action=LOGIN&from=${FROM_DATE}&to=${TO_DATE}'"
     FILTERED_ROWS=$(ocp_sh "wc -l < /tmp/audit-export-filtered.csv")
     # Header + at least one data row
     if [ "${FILTERED_ROWS:-0}" -ge 2 ]; then
@@ -266,7 +272,7 @@ fi
     fi
 
     # TEXT export
-    ocp_sh "curl -fsSL ${HOST_HEADER:+-H "Host: $HOST_HEADER"} -b /tmp/audit-cookies.txt -o /tmp/audit-export.txt '${OCP_INTERNAL_URL}/audit-export.php?format=text&from=${FROM_DATE}&to=${TO_DATE}'"
+    ocp_sh "curl -fsSL -b /tmp/audit-cookies.txt -o /tmp/audit-export.txt '${OCP_INTERNAL_URL}/audit-export.php?format=text&from=${FROM_DATE}&to=${TO_DATE}'"
     if ocp_sh "test -s /tmp/audit-export.txt"; then
         TXT_HEADER=$(ocp_sh "head -n 1 /tmp/audit-export.txt")
         if echo "$TXT_HEADER" | grep -q '========'; then
@@ -286,7 +292,7 @@ fi
 
 echo ""
 echo "[cleanup] Removing temporary test user..."
-psql_exec "DELETE FROM ocp_users WHERE username = '$TEST_USER';" > /dev/null 2>&1 || true
+# testadmin is a shared test user; do not delete
 report_pass "Cleaned up test user"
 
 # Note: We intentionally do NOT delete audit log rows here. Middle-row
