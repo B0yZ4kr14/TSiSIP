@@ -22,6 +22,11 @@ if [ -n "$HOST_HEADER" ]; then
     CURL_HOST="-H Host:${HOST_HEADER}"
 fi
 
+CURL_INSECURE_FLAG=""
+if [ "${CURL_INSECURE:-}" = "true" ] || [ "${CURL_INSECURE:-}" = "1" ]; then
+    CURL_INSECURE_FLAG="-k"
+fi
+
 # Profile page
 PROFILE=$(curl -fsSL ${CURL_INSECURE_FLAG} ${CURL_HOST} -c "$COOKIE_JAR" -b "$COOKIE_JAR" "${BASE}/profile.php")
 echo "$PROFILE" | grep -q "User Profile" && echo "[PASS] Profile page loads"
