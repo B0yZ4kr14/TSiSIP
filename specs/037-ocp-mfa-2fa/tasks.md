@@ -34,24 +34,24 @@
 
 ## Phase 4: Admin & Policy
 
-- [ ] T4.1: Add MFA status column to `users.php`
-- [ ] T4.2: Create `web/api/v1/mfa-reset.php` — admin reset MFA for user
+- [x] T4.1: Add MFA status column to `users.php`
+- [x] T4.2: Create web/api/v1/mfa-reset.php` — admin reset MFA for user
 - [ ] T4.3: Create `web/api/v1/mfa-policy.php` — admin manage policy
 - [ ] T4.4: Implement policy enforcement redirect on login
-- [ ] T4.5: Integration test: admin reset MFA
+- [x] T4.5: Integration test: admin reset MFA
 - [ ] T4.6: Integration test: policy enforcement
 
 ## Phase 5: Audit & Testing
 
 - [ ] T5.1: Add `logAuditEvent()` calls for all MFA events
-- [ ] T5.2: Integration test: rate limiting blocks brute force
-- [ ] T5.3: Integration test: replay protection (same code rejected)
-- [ ] T5.4: Integration test: no plaintext secrets in DB
+- [x] T5.2: Integration test: rate limiting blocks brute force
+- [x] T5.3: Integration test: replay protection (same code rejected)
+- [x] T5.4: Integration test: no plaintext secrets in DB
 - [ ] T5.5: End-to-end test with Google Authenticator app simulation
 
 ## Phase 6: Deploy & Documentation
 
 - [ ] T6.1: Update `docs/TSiSIP-OPERATOR-RUNBOOK.md` with MFA procedures
-- [ ] T6.2: Deploy to VPS
-- [ ] T6.3: Final validation on VPS
-- [ ] T6.4: Merge to main, tag release
+- [x] T6.2: Deploy to VPS
+- [x] T6.3: Final validation on VPS
+- [x] T6.4: Merge to main, tag release

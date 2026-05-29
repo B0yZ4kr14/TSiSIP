@@ -34,20 +34,20 @@
 
 ## Phase 4: Anomaly Correlation
 
-- [ ] T4.1: Query anomaly detector `/api/v1/status`
-- [ ] T4.2: Map anomaly patterns to dispatcher sets/destinations
-- [ ] T4.3: Implement increased probe frequency (state=2) on correlation
-- [ ] T4.4: Correlation confidence threshold (default 0.7)
-- [ ] T4.5: Integration test: anomaly correlation increases probing
+- [x] T4.1: Query anomaly detector `/api/v1/status`
+- [x] T4.2: Map anomaly patterns to dispatcher sets/destinations
+- [x] T4.3: Implement increased probe frequency (state=2) on correlation
+- [x] T4.4: Correlation confidence threshold (default 0.7)
+- [x] T4.5: Integration test: anomaly correlation increases probing
 
 ## Phase 5: OCP Widget & Prometheus Metrics
 
 - [x] T5.1: Create `web/api/v1/autoheal-events.php` SSE endpoint
 - [x] T5.2: Create `web/api/v1/metrics-autoheal.php` Prometheus endpoint
 - [x] T5.3: Add auto-healing widget to `web/dashboard.php`
-- [ ] T5.4: Add Alertmanager rule for failed auto-heal actions
-- [ ] T5.5: Integration test: SSE endpoint emits events
-- [ ] T5.6: Integration test: Prometheus metrics are scrapable
+- [x] T5.4: Add Alertmanager rule for failed auto-heal actions
+- [x] T5.5: Integration test: SSE endpoint emits events
+- [x] T5.6: Integration test: Prometheus metrics are scrapable
 
 ## Phase 6: Integration & E2E Validation
 

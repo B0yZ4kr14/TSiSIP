@@ -3,7 +3,7 @@
 ## Phase 1: Backend APIs
 
 - [x] T35.1.1 Create `web/api/v1/dispatcher-crud.php` (GET/POST/PUT/DELETE)
-- [ ] T35.1.2 Add SIP URI validation helper
+- [x] T35.1.2 Add SIP URI validation helper
 - [x] T35.1.3 Create `web/api/v1/dispatcher-reload.php` with MI ds_reload
 - [ ] T35.1.4 Implement DB transaction + MI rollback on failure
 - [x] T35.1.5 Create `web/api/v1/dispatcher-probe.php` (OPTIONS probe)
@@ -26,7 +26,7 @@
 
 ## Phase 3: Integration & Security
 
-- [ ] T35.3.1 Enforce admin/devops role on all mutating endpoints
+- [x] T35.3.1 Enforce admin/devops role on all mutating endpoints
 - [ ] T35.3.2 Implement rate limit (5 reloads/min per session)
 - [ ] T35.3.3 Add CSRF validation to AJAX endpoints
 - [ ] T35.3.4 Add `dispatcher.reload` event to SSE stream
