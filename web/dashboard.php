@@ -4,6 +4,7 @@
  * Role-aware landing page after login with system management links.
  */
 require_once __DIR__ . '/common/config.php';
+require_once __DIR__ . '/common/user-prefs.php';
 requireAuth();
 checkPasswordChange();
 logAuditEvent('CONFIG_VIEW', 'system', 'dashboard', true);
@@ -99,6 +100,19 @@ if (isset($roleNav[$userRole])) {
         <span class="tsisip-dashboard-role"><?php echo htmlspecialchars($displayRole, ENT_QUOTES, 'UTF-8'); ?></span>
     </h1>
 
+    <!-- Dashboard Layout Controls -->
+    <div class="tsisip-dashboard-controls" style="margin-bottom:1rem;">
+        <button type="button" id="dashboard-edit-btn" class="tsisip-btn tsisip-btn-secondary" onclick="dashboardToggleEdit()">
+            <?php echo _('Edit Layout'); ?>
+        </button>
+        <button type="button" id="dashboard-save-btn" class="tsisip-btn tsisip-btn-primary" style="display:none;" onclick="dashboardSaveLayout()">
+            <?php echo _('Save Layout'); ?>
+        </button>
+        <button type="button" id="dashboard-reset-btn" class="tsisip-btn tsisip-btn-outline" style="display:none;" onclick="dashboardResetLayout()">
+            <?php echo _('Reset Layout'); ?>
+        </button>
+    </div>
+
     <!-- Anomaly Alert Banner -->
     <div id="anomaly-banner" class="tsisip-alert" style="display:none;margin-bottom:1rem;">
         <strong><?php echo _('Anomaly Detected'); ?>:</strong>
@@ -106,7 +120,7 @@ if (isset($roleNav[$userRole])) {
     </div>
 
     <!-- Live Metrics -->
-    <div class="tsisip-dashboard-section">
+    <div class="tsisip-dashboard-section" data-widget-id="live-metrics">
         <h2><?php echo _('Live Metrics'); ?></h2>
         <div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(140px,1fr));gap:12px;">
             <div class="tsisip-metric-card">
@@ -146,7 +160,7 @@ if (isset($roleNav[$userRole])) {
 
     <?php if ($isAdmin || $isDevOps): ?>
     <!-- Trunk Provider Health -->
-    <div class="tsisip-dashboard-section">
+    <div class="tsisip-dashboard-section" data-widget-id="trunk-providers">
         <h2><?php echo _('Trunk Providers'); ?></h2>
         <div id="trunk-health-widget" class="tsisip-table-container">
             <table class="tsisip-table">
@@ -166,7 +180,7 @@ if (isset($roleNav[$userRole])) {
     </div>
 
     <!-- Dispatcher Health -->
-    <div class="tsisip-dashboard-section">
+    <div class="tsisip-dashboard-section" data-widget-id="dispatcher-health">
         <h2><?php echo _('Dispatcher Health'); ?></h2>
         <div id="dispatcher-health-widget" class="tsisip-table-container">
             <table class="tsisip-table">
@@ -187,7 +201,7 @@ if (isset($roleNav[$userRole])) {
     </div>
 
     <!-- Active Alerts from Alertmanager -->
-    <div class="tsisip-dashboard-section">
+    <div class="tsisip-dashboard-section" data-widget-id="active-alerts">
         <h2><?php echo _('Active Alerts'); ?></h2>
         <div id="alerts-widget">
             <div class="tsisip-text-muted"><?php echo _('Loading alerts...'); ?></div>
@@ -196,7 +210,7 @@ if (isset($roleNav[$userRole])) {
     <?php endif; ?>
 
     <?php if (!empty($systemLinks)): ?>
-    <div class="tsisip-dashboard-section">
+    <div class="tsisip-dashboard-section" data-widget-id="system-management">
         <h2><?php echo _('System Management'); ?></h2>
         <div class="tsisip-dashboard-links">
             <?php foreach ($systemLinks as $link): ?>
@@ -236,7 +250,7 @@ if (isset($roleNav[$userRole])) {
                 "SELECT page_url, page_label, icon FROM ocp_user_bookmarks
                  WHERE user_id = :uid ORDER BY sort_order"
             );
-            $bmStmt->execute([':uid' => $_SESSION['user_id'] ?? 0]);
+            $bmStmt->execute([':uid' => $_SESSION['ocp_user_id'] ?? 0]);
             $bookmarks = $bmStmt->fetchAll();
             if (empty($bookmarks)): ?>
                 <span class="tsisip-text-muted"><?php echo _('No bookmarks yet. Click the star icon on any page to add it.'); ?></span>
@@ -251,7 +265,7 @@ if (isset($roleNav[$userRole])) {
     </div>
 
     <?php if (!empty($runtimeLinks)): ?>
-    <div class="tsisip-dashboard-section">
+    <div class="tsisip-dashboard-section" data-widget-id="runtime">
         <h2><?php echo _('Runtime'); ?></h2>
         <div class="tsisip-dashboard-links">
             <?php foreach ($runtimeLinks as $link): ?>
@@ -265,7 +279,7 @@ if (isset($roleNav[$userRole])) {
     <?php endif; ?>
 
     <?php if (!empty($securityLinks)): ?>
-    <div class="tsisip-dashboard-section">
+    <div class="tsisip-dashboard-section" data-widget-id="security">
         <h2><?php echo _('Security'); ?></h2>
         <div class="tsisip-dashboard-links">
             <?php foreach ($securityLinks as $link): ?>
@@ -278,7 +292,7 @@ if (isset($roleNav[$userRole])) {
     </div>
     <?php endif; ?>
 
-    <div class="tsisip-dashboard-section">
+    <div class="tsisip-dashboard-section" data-widget-id="documentation">
         <h2><?php echo _('Documentation & Wiki'); ?></h2>
         <?php if (!empty($wikiLinks)): ?>
             <div class="tsisip-dashboard-links">
@@ -294,7 +308,7 @@ if (isset($roleNav[$userRole])) {
         <?php endif; ?>
     </div>
 
-    <div class="tsisip-dashboard-section">
+    <div class="tsisip-dashboard-section" data-widget-id="system-status">
         <h2><?php echo _('System Status'); ?></h2>
         <p><?php echo _('TSiSIP Control Panel is operational.'); ?></p>
         <ul class="tsisip-status-list">
@@ -527,6 +541,136 @@ if (isset($roleNav[$userRole])) {
     if (window.TSiSIPEvents) {
         window.TSiSIPEvents.on('data', function(data) { updateSparklines(data); });
     }
+})();
+</script>
+
+<!-- Dashboard Drag-and-Drop Script -->
+<script>
+(function() {
+    'use strict';
+    const dashboard = document.querySelector('.tsisip-dashboard');
+    let isEditing = false;
+    let originalOrder = [];
+
+    function getWidgets() {
+        return Array.from(dashboard.querySelectorAll('[data-widget-id]'));
+    }
+
+    function loadSavedLayout() {
+        const saved = <?php echo json_encode(getUserPreference('dashboard_layout', null)); ?>;
+        if (!saved || !Array.isArray(saved)) return;
+        const widgets = getWidgets();
+        const map = new Map(widgets.map(w => [w.getAttribute('data-widget-id'), w]));
+        saved.forEach(id => {
+            const w = map.get(id);
+            if (w) dashboard.appendChild(w);
+        });
+    }
+
+    window.dashboardToggleEdit = function() {
+        isEditing = !isEditing;
+        const widgets = getWidgets();
+        document.getElementById('dashboard-edit-btn').style.display = isEditing ? 'none' : 'inline-block';
+        document.getElementById('dashboard-save-btn').style.display = isEditing ? 'inline-block' : 'none';
+        document.getElementById('dashboard-reset-btn').style.display = isEditing ? 'inline-block' : 'none';
+
+        widgets.forEach(w => {
+            w.draggable = isEditing;
+            w.style.cursor = isEditing ? 'move' : '';
+            w.style.border = isEditing ? '2px dashed #3498db' : '';
+            w.style.marginBottom = isEditing ? '8px' : '';
+        });
+
+        if (isEditing) {
+            originalOrder = widgets.map(w => w.getAttribute('data-widget-id'));
+        }
+    };
+
+    window.dashboardSaveLayout = function() {
+        const order = getWidgets().map(w => w.getAttribute('data-widget-id'));
+        fetch('common/save-dashboard.php', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ dashboard: order })
+        })
+        .then(r => r.json())
+        .then(data => {
+            if (data.success) {
+                alert('<?php echo _('Layout saved successfully.'); ?>');
+                window.dashboardToggleEdit();
+            } else {
+                alert('<?php echo _('Failed to save layout.'); ?>');
+            }
+        })
+        .catch(() => alert('<?php echo _('Network error while saving layout.'); ?>'));
+    };
+
+    window.dashboardResetLayout = function() {
+        const widgets = getWidgets();
+        const map = new Map(widgets.map(w => [w.getAttribute('data-widget-id'), w]));
+        originalOrder.forEach(id => {
+            const w = map.get(id);
+            if (w) dashboard.appendChild(w);
+        });
+        window.dashboardToggleEdit();
+    };
+
+    // Drag-and-drop handlers
+    let dragSrcEl = null;
+
+    function handleDragStart(e) {
+        dragSrcEl = this;
+        e.dataTransfer.effectAllowed = 'move';
+        e.dataTransfer.setData('text/plain', this.getAttribute('data-widget-id'));
+        this.style.opacity = '0.6';
+    }
+
+    function handleDragOver(e) {
+        e.preventDefault();
+        e.dataTransfer.dropEffect = 'move';
+        return false;
+    }
+
+    function handleDragEnter(e) {
+        this.style.backgroundColor = '#e8f4fd';
+    }
+
+    function handleDragLeave(e) {
+        this.style.backgroundColor = '';
+    }
+
+    function handleDrop(e) {
+        e.stopPropagation();
+        e.preventDefault();
+        if (dragSrcEl !== this) {
+            const allWidgets = getWidgets();
+            const srcIndex = allWidgets.indexOf(dragSrcEl);
+            const tgtIndex = allWidgets.indexOf(this);
+            if (srcIndex < tgtIndex) {
+                this.parentNode.insertBefore(dragSrcEl, this.nextSibling);
+            } else {
+                this.parentNode.insertBefore(dragSrcEl, this);
+            }
+        }
+        return false;
+    }
+
+    function handleDragEnd(e) {
+        this.style.opacity = '1';
+        getWidgets().forEach(w => { w.style.backgroundColor = ''; });
+    }
+
+    getWidgets().forEach(w => {
+        w.addEventListener('dragstart', handleDragStart);
+        w.addEventListener('dragover', handleDragOver);
+        w.addEventListener('dragenter', handleDragEnter);
+        w.addEventListener('dragleave', handleDragLeave);
+        w.addEventListener('drop', handleDrop);
+        w.addEventListener('dragend', handleDragEnd);
+    });
+
+    // Load saved layout on page load
+    loadSavedLayout();
 })();
 </script>
 

@@ -384,3 +384,22 @@ CREATE TRIGGER trunk_registration_sync
     AFTER INSERT OR UPDATE OR DELETE ON sip_trunk_providers
     FOR EACH ROW
     EXECUTE FUNCTION sync_trunk_registrations();
+
+-- ============================================================================
+-- Feature 030: Password Policy — History & Expiration
+-- ============================================================================
+
+-- Track password hash history for reuse prevention
+CREATE TABLE IF NOT EXISTS ocp_password_history (
+    id          SERIAL PRIMARY KEY,
+    user_id     INTEGER NOT NULL REFERENCES ocp_users(id) ON DELETE CASCADE,
+    password_hash VARCHAR(255) NOT NULL,
+    changed_at  TIMESTAMP WITH TIME ZONE DEFAULT NOW() NOT NULL
+);
+
+CREATE INDEX IF NOT EXISTS idx_ocp_password_history_user
+    ON ocp_password_history(user_id, changed_at DESC);
+
+-- Add password change timestamp to users table
+ALTER TABLE ocp_users
+    ADD COLUMN IF NOT EXISTS password_changed_at TIMESTAMP WITH TIME ZONE;

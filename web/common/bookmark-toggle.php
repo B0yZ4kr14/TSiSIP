@@ -25,7 +25,7 @@ if (!$url || !$label) {
 }
 
 $pdo = getDb();
-$userId = $_SESSION['user_id'] ?? 0;
+$userId = $_SESSION['ocp_user_id'] ?? 0;
 
 // Check if already bookmarked
 $check = $pdo->prepare("SELECT id FROM ocp_user_bookmarks WHERE user_id = :uid AND page_url = :url");

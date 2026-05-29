@@ -5,6 +5,7 @@
 
 require_once __DIR__ . '/common/config.php';
 require_once __DIR__ . '/common/csrf.php';
+require_once __DIR__ . '/common/password-policy.php';
 requireAuth();
 
 $mustChange = !empty($_SESSION['ocp_force_password_change']);
@@ -41,16 +42,20 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
         if (!$row || !password_verify($current, $row['password_hash'])) {
             $error = _('Current passphrase is incorrect.');
+        } elseif (isPasswordInHistory($pdo, $_SESSION['ocp_user_id'], $new, 5)) {
+            $error = _('This passphrase has been used recently. Please choose a different one.');
         } else {
             $newHash = password_hash($new, PASSWORD_BCRYPT, ['cost' => 12]);
             $upd = $pdo->prepare(
                 "UPDATE ocp_users
                  SET password_hash = :hash,
                      force_password_change = FALSE,
+                     password_changed_at = NOW(),
                      updated_at = NOW()
                  WHERE id = :id"
             );
             $upd->execute([':hash' => $newHash, ':id' => $_SESSION['ocp_user_id']]);
+            recordPasswordHistory($pdo, $_SESSION['ocp_user_id'], $newHash);
 
             logAuditEvent('PASSWORD_CHANGE', 'ocp_user', $_SESSION['ocp_username'] ?? 'unknown', true);
 

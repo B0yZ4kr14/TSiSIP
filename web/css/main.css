@@ -66,3 +66,64 @@ header {
   color: #fff;
   border-color: #2980b9;
 }
+
+/* ============================================================
+   Mobile & Tablet Responsive Fallbacks
+   Ensure basic usability even if tsisip-theme.css fails to load.
+   ============================================================ */
+
+/* Tablets and small desktops */
+@media (max-width: 1024px) {
+  #sidebar {
+    width: 200px;
+  }
+  #content {
+    margin-left: 200px;
+  }
+}
+
+/* Mobile phones */
+@media (max-width: 768px) {
+  #sidebar {
+    width: 100%;
+    float: none;
+    min-height: auto;
+    display: none; /* hidden by default on mobile; toggled via JS */
+  }
+  #sidebar.is-open {
+    display: block;
+  }
+  #content {
+    margin-left: 0;
+    padding: 12px;
+  }
+  header {
+    padding: 10px 12px;
+  }
+  .dataTable {
+    display: block;
+    overflow-x: auto;
+    white-space: nowrap;
+  }
+  .dataTable th,
+  .dataTable td {
+    padding: 6px 8px;
+    font-size: 13px;
+  }
+  .btn {
+    padding: 8px 12px; /* larger touch target */
+    font-size: 14px;
+  }
+}
+
+/* Very small phones */
+@media (max-width: 360px) {
+  #content {
+    padding: 8px;
+  }
+  .dataTable th,
+  .dataTable td {
+    padding: 4px 6px;
+    font-size: 12px;
+  }
+}

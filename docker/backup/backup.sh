@@ -105,4 +105,9 @@ if [ -x /usr/local/bin/replicate.sh ]; then
     /usr/local/bin/replicate.sh || log "WARNING: Offsite replication failed (see replicate.log)"
 fi
 
+# Write detailed backup metrics for Prometheus
+if [ -x /usr/local/bin/backup-metrics.sh ]; then
+    /usr/local/bin/backup-metrics.sh
+fi
+
 exit 0

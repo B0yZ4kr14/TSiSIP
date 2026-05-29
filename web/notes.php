@@ -9,7 +9,7 @@ requireAuth();
 checkPasswordChange();
 
 $pdo = getDb();
-$userId = $_SESSION['user_id'] ?? 0;
+$userId = $_SESSION['ocp_user_id'] ?? 0;
 
 // Create note
 if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['title'])) {

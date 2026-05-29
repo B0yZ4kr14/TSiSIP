@@ -21,7 +21,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
              VALUES (:uid, :user, :type, :msg, NOW())"
         );
         $stmt->execute([
-            ':uid' => $_SESSION['user_id'] ?? 0,
+            ':uid' => $_SESSION['ocp_user_id'] ?? 0,
             ':user' => $_SESSION['username'] ?? 'unknown',
             ':type' => $type,
             ':msg' => $message,

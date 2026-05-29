@@ -21,7 +21,7 @@ if (!$input) {
 }
 
 $pdo = getDb();
-$userId = $_SESSION['user_id'] ?? 0;
+$userId = $_SESSION['ocp_user_id'] ?? ($_SESSION['user_id'] ?? 0);
 
 // Support both old 'widgets' format and new 'dashboard' format
 $prefValue = isset($input['dashboard']) ? $input['dashboard'] : (isset($input['widgets']) ? $input['widgets'] : null);

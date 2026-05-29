@@ -5,6 +5,7 @@
  */
 
 require_once __DIR__ . '/common/config.php';
+require_once __DIR__ . '/common/password-policy.php';
 
 if (empty($_SESSION['mfa_pending_user_id'])) {
     header('Location: login.php');
@@ -34,13 +35,24 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     }
 
     if ($matched) {
+        // Check password expiration (same logic as login.php)
+        $forceChange = $_SESSION['mfa_pending_force_password_change'] ?? false;
+        if (isPasswordExpired($pdo, $userId, 90)) {
+            $forceChange = true;
+        }
+
         $_SESSION['ocp_user_id'] = $userId;
         $_SESSION['ocp_username'] = $_SESSION['mfa_pending_username'];
         $_SESSION['ocp_user_role'] = $_SESSION['mfa_pending_role'];
-        unset($_SESSION['mfa_pending_user_id'], $_SESSION['mfa_pending_username'], $_SESSION['mfa_pending_role']);
+        $_SESSION['ocp_force_password_change'] = $forceChange;
+        unset($_SESSION['mfa_pending_user_id'], $_SESSION['mfa_pending_username'], $_SESSION['mfa_pending_role'], $_SESSION['mfa_pending_force_password_change']);
         session_regenerate_id(true);
         logAuditEvent('BACKUP_CODE_USED', 'user', $userId, true);
-        header('Location: dashboard.php');
+        if ($forceChange) {
+            header('Location: change-password.php');
+        } else {
+            header('Location: dashboard.php');
+        }
         exit;
     } else {
         logAuditEvent('BACKUP_CODE_USED', 'user', $userId, false);

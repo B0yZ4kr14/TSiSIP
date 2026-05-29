@@ -9,7 +9,7 @@ function getUserPreference(string $key, $default = null) {
         "SELECT preference_value FROM ocp_user_preferences
          WHERE user_id = :uid AND preference_key = :key"
     );
-    $stmt->execute([':uid' => $_SESSION['user_id'] ?? 0, ':key' => $key]);
+    $stmt->execute([':uid' => $_SESSION['ocp_user_id'] ?? 0, ':key' => $key]);
     $row = $stmt->fetch();
     if ($row) {
         $val = json_decode($row['preference_value'], true);
@@ -28,7 +28,7 @@ function setUserPreference(string $key, $value): void {
              updated_at = NOW()"
     );
     $stmt->execute([
-        ':uid' => $_SESSION['user_id'] ?? 0,
+        ':uid' => $_SESSION['ocp_user_id'] ?? 0,
         ':key' => $key,
         ':val' => is_string($value) ? $value : json_encode($value),
     ]);

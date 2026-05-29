@@ -5,16 +5,21 @@
  */
 
 require_once __DIR__ . '/common/config.php';
+require_once __DIR__ . '/common/csrf.php';
+require_once __DIR__ . '/common/password-policy.php';
 
 $error = '';
 
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-    $username = $_POST['username'] ?? '';
-    $password = $_POST['pass'] ?? '';
-
-    if ($username === '' || $password === '') {
-        $error = _('Username and passphrase are required.');
+    if (!validateCsrfToken($_POST['csrf_token'] ?? null)) {
+        $error = _('Invalid or expired session. Please refresh the page and try again.');
     } else {
+        $username = $_POST['username'] ?? '';
+        $password = $_POST['pass'] ?? '';
+
+        if ($username === '' || $password === '') {
+            $error = _('Username and passphrase are required.');
+        } else {
         $user = authenticateUser($username, $password);
         if ($user !== null) {
             // Feature 037: MFA check
@@ -31,6 +36,11 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                 $_SESSION['mfa_pending_force_password_change'] = $user['force_password_change'];
                 header('Location: mfa-verify.php');
                 exit;
+            }
+
+            // Check password expiration
+            if (isPasswordExpired($pdo, $user['id'], 90)) {
+                $user['force_password_change'] = true;
             }
 
             // Check MFA policy enforcement
@@ -111,6 +121,7 @@ function tsisip_asset(string $logicalName, string $type = 'css'): string {
             </div>
         <?php endif; ?>
         <form method="POST" action="">
+            <?php echo csrfInput(); ?>
             <div class="tsisip-form-group">
                 <label for="username" class="tsisip-sr-only"><?php echo _('Username'); ?></label>
                 <input type="text"
