@@ -23,23 +23,22 @@ fi
 report_pass "Prerequisites"
 
 AUTH_AVAILABLE=false
+COOKIE_JAR_HOST="/tmp/users_cookies_host_$$"
+COOKIE_JAR_CTR="/tmp/users_cookies_ctr"
 
-# Use testadmin for integration tests
-TEST_USER="testadmin"
-TEST_PASS="testpass123"
-
-# Source login helper and perform login from host
 source "${SCRIPT_DIR}/helpers/ocp-login.sh"
-HOST_COOKIE_JAR="/tmp/users-host-cookies.txt"
-rm -f "$HOST_COOKIE_JAR"
 
-if TSISIP_BASE_URL="https://localhost/TSiSIP" TSISIP_HOST_HEADER="tsiapp.io" TSISIP_OCP_ADMIN_PASSWORD="$TEST_PASS" CURL_INSECURE=true ocp_login "https://localhost/TSiSIP" "$TEST_USER" "$HOST_COOKIE_JAR" >/dev/null 2>&1; then
-    docker compose -f "$COMPOSE_FILE" cp "$HOST_COOKIE_JAR" "$OCP_SERVICE:/tmp/users-cookies.txt"
-    report_pass "Admin login"
+BASE="${TSISIP_BASE_URL:-http://localhost}"
+if ocp_login "$BASE" "testadmin" "$COOKIE_JAR_HOST"; then
+    sed -i 's|/TSiSIP|/|g' "$COOKIE_JAR_HOST"
+    docker compose -f "$COMPOSE_FILE" cp "$COOKIE_JAR_HOST" "${OCP_SERVICE}:${COOKIE_JAR_CTR}"
+    report_pass "Admin login + cookie copy"
     AUTH_AVAILABLE=true
 else
     report_fail "Admin login failed"
 fi
+
+rm -f "$COOKIE_JAR_HOST"
 
 # Test 1: Password policy library exists (public asset)
 echo ""
@@ -89,7 +88,7 @@ fi
 if [ "$AUTH_AVAILABLE" = true ]; then
     echo ""
     echo "[test] User list page..."
-    BODY=$(ocp_sh "curl -fsSL -b /tmp/users-cookies.txt 'http://localhost/users.php'")
+    BODY=$(ocp_sh "curl -fsSL -b ${COOKIE_JAR_CTR} 'http://localhost/users.php'")
     if echo "$BODY" | grep -q 'User Management'; then
         report_pass "User list page accessible"
     else
@@ -98,7 +97,7 @@ if [ "$AUTH_AVAILABLE" = true ]; then
 
     echo ""
     echo "[test] User edit page..."
-    BODY=$(ocp_sh "curl -fsSL -b /tmp/users-cookies.txt 'http://localhost/user-edit.php?id=1'")
+    BODY=$(ocp_sh "curl -fsSL -b ${COOKIE_JAR_CTR} 'http://localhost/user-edit.php?id=1'")
     if echo "$BODY" | grep -q 'Edit User'; then
         report_pass "User edit page accessible"
     else
@@ -107,7 +106,7 @@ if [ "$AUTH_AVAILABLE" = true ]; then
 
     echo ""
     echo "[test] Profile self-service..."
-    BODY=$(ocp_sh "curl -fsSL -b /tmp/users-cookies.txt 'http://localhost/profile.php'")
+    BODY=$(ocp_sh "curl -fsSL -b ${COOKIE_JAR_CTR} 'http://localhost/profile.php'")
     if echo "$BODY" | grep -q 'Change Password' && echo "$BODY" | grep -q 'Update Email'; then
         report_pass "Profile self-service forms present"
     else
@@ -118,12 +117,13 @@ else
     echo "[test] Skipping authenticated UI tests (no credentials)"
 fi
 
+ocp_sh "rm -f ${COOKIE_JAR_CTR}" 2>/dev/null || true
+
 echo ""
 echo "=== User Management Test Report ==="
 echo "Passed: $PASS"
 echo "Failed: $FAIL"
 if [ "$FAIL" -gt 0 ]; then
-    echo "=== CI SCAN FAILED ==="
     exit 1
 fi
 echo "=== ALL TESTS PASSED ==="

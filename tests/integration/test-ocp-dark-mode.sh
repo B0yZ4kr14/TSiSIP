@@ -33,28 +33,27 @@ fi
 report_pass "Prerequisites"
 
 AUTH_AVAILABLE=false
+COOKIE_JAR_HOST="/tmp/darkmode_cookies_host_$$"
+COOKIE_JAR_CTR="/tmp/darkmode_cookies_ctr"
 
-# Use testadmin for integration tests
-TEST_USER="testadmin"
-TEST_PASS="testpass123"
-
-# Source login helper and perform login from host
 source "${SCRIPT_DIR}/helpers/ocp-login.sh"
-HOST_COOKIE_JAR="/tmp/darkmode-host-cookies.txt"
-rm -f "$HOST_COOKIE_JAR"
 
-if TSISIP_BASE_URL="https://localhost/TSiSIP" TSISIP_HOST_HEADER="tsiapp.io" TSISIP_OCP_ADMIN_PASSWORD="$TEST_PASS" CURL_INSECURE=true ocp_login "https://localhost/TSiSIP" "$TEST_USER" "$HOST_COOKIE_JAR" >/dev/null 2>&1; then
-    docker compose -f "$COMPOSE_FILE" cp "$HOST_COOKIE_JAR" "$OCP_SERVICE:/tmp/darkmode-cookies.txt"
-    report_pass "Admin login successful"
+BASE="${TSISIP_BASE_URL:-http://localhost}"
+if ocp_login "$BASE" "testadmin" "$COOKIE_JAR_HOST"; then
+    sed -i 's|/TSiSIP|/|g' "$COOKIE_JAR_HOST"
+    docker compose -f "$COMPOSE_FILE" cp "$COOKIE_JAR_HOST" "${OCP_SERVICE}:${COOKIE_JAR_CTR}"
+    report_pass "Admin login + cookie copy"
     AUTH_AVAILABLE=true
 else
     report_fail "Admin login failed"
 fi
 
+rm -f "$COOKIE_JAR_HOST"
+
 if [ "$AUTH_AVAILABLE" = true ]; then
     echo ""
     echo "[test] Checking for data-theme attribute..."
-    DASHBOARD_BODY=$(ocp_sh "curl -fsSL -b /tmp/darkmode-cookies.txt 'http://localhost/dashboard.php'")
+    DASHBOARD_BODY=$(ocp_sh "curl -fsSL -b ${COOKIE_JAR_CTR} 'http://localhost/dashboard.php'")
     if echo "$DASHBOARD_BODY" | grep -q 'data-theme='; then
         report_pass "data-theme attribute present on <html>"
     else
@@ -87,7 +86,7 @@ if [ "$AUTH_AVAILABLE" = true ]; then
 else
     echo ""
     echo "[test] Checking system preference detection (public asset)..."
-    TOGGLE_JS=$(ocp_sh "curl -s 'http://localhost/tsisip/js/theme-toggle.js'")
+    TOGGLE_JS=$(ocp_sh "curl -fsSL 'http://localhost/tsisip/js/theme-toggle.js'")
     if echo "$TOGGLE_JS" | grep -q 'prefers-color-scheme'; then
         report_pass "System preference detection present"
     else
@@ -99,7 +98,7 @@ fi
 
 echo ""
 echo "[test] Checking dark mode CSS variables..."
-STYLE_BODY=$(ocp_sh "curl -s 'http://localhost/tsisip/css/tsisip-variables.css'")
+STYLE_BODY=$(ocp_sh "curl -fsSL 'http://localhost/tsisip/css/tsisip-variables.css'")
 if echo "$STYLE_BODY" | grep -q '\[data-theme="dark"\]'; then
     report_pass "Dark mode CSS variables present"
 else
@@ -108,7 +107,7 @@ fi
 
 echo ""
 echo "[test] Checking dark mode focus accessibility..."
-THEME_CSS=$(ocp_sh "curl -s 'http://localhost/tsisip/css/tsisip-theme.css'")
+THEME_CSS=$(ocp_sh "curl -fsSL 'http://localhost/tsisip/css/tsisip-theme.css'")
 if echo "$THEME_CSS" | grep -q '\[data-theme="dark"\] a:focus'; then
     report_pass "Dark mode focus styles present"
 else
@@ -133,11 +132,13 @@ fi
 
 echo ""
 echo "[test] Checking theme persistence endpoint..."
-if ocp_sh "curl -s -o /dev/null -w '%{http_code}' 'http://localhost/common/set-theme.php'" | grep -q '200\|302\|400'; then
+if ocp_sh "curl -fsSL -o /dev/null -w '%{http_code}' 'http://localhost/common/set-theme.php'" | grep -q '200\|302\|400'; then
     report_pass "Theme persistence endpoint accessible"
 else
     report_fail "Theme persistence endpoint not accessible"
 fi
+
+ocp_sh "rm -f ${COOKIE_JAR_CTR}" 2>/dev/null || true
 
 echo ""
 echo "=== Dark Mode Test Report ==="

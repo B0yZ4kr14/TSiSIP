@@ -212,28 +212,31 @@ OCP_INTERNAL_URL="http://localhost"
 FROM_DATE=$(date -d '-7 days' +%Y-%m-%d 2>/dev/null || date -v-7d +%Y-%m-%d)
 TO_DATE=$(date +%Y-%m-%d)
 
-# Use testadmin for authenticated export tests
-TEST_USER="testadmin"
-TEST_PASS="testpass123"
+# Authenticate from host, copy cookies into container for export tests
+AUTH_AVAILABLE=false
+COOKIE_JAR_HOST="/tmp/audit_cookies_host_$$"
+COOKIE_JAR_CTR="/tmp/audit_cookies_ctr"
 
-# Login from host and copy cookies to container
-SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 source "${SCRIPT_DIR}/helpers/ocp-login.sh"
-HOST_COOKIE_JAR="/tmp/audit-host-cookies.txt"
-rm -f "$HOST_COOKIE_JAR"
 
-if TSISIP_BASE_URL="https://localhost/TSiSIP" TSISIP_HOST_HEADER="tsiapp.io" TSISIP_OCP_ADMIN_PASSWORD="$TEST_PASS" CURL_INSECURE=true ocp_login "https://localhost/TSiSIP" "$TEST_USER" "$HOST_COOKIE_JAR" >/dev/null 2>&1; then
-    docker compose -f "$COMPOSE_FILE" cp "$HOST_COOKIE_JAR" "$OCP_SERVICE:/tmp/audit-cookies.txt"
-    report_pass "Login simulated successfully"
+BASE="${TSISIP_BASE_URL:-http://localhost}"
+if ocp_login "$BASE" "testadmin" "$COOKIE_JAR_HOST"; then
+    sed -i 's|/TSiSIP|/|g' "$COOKIE_JAR_HOST"
+    docker compose -f "$COMPOSE_FILE" cp "$COOKIE_JAR_HOST" "${OCP_SERVICE}:${COOKIE_JAR_CTR}"
+    report_pass "Admin login + cookie copy"
+    AUTH_AVAILABLE=true
 else
-    report_fail "Login failed"
+    report_fail "Admin login failed"
 fi
 
+rm -f "$COOKIE_JAR_HOST"
+
+if [ "$AUTH_AVAILABLE" = true ]; then
     # CSV export
-    ocp_sh "curl -fsSL -b /tmp/audit-cookies.txt -o /tmp/audit-export.csv '${OCP_INTERNAL_URL}/audit-export.php?format=csv&from=${FROM_DATE}&to=${TO_DATE}'"
+    ocp_sh "curl -fsSL -b ${COOKIE_JAR_CTR} -o /tmp/audit-export.csv '${OCP_INTERNAL_URL}/audit-export.php?format=csv&from=${FROM_DATE}&to=${TO_DATE}'"
     if ocp_sh "test -s /tmp/audit-export.csv"; then
         CSV_HEADER=$(ocp_sh "head -n 1 /tmp/audit-export.csv")
-        if echo "$CSV_HEADER" | grep -q 'id,event_time'; then
+        if echo "$CSV_HEADER" | grep -qi 'timestamp.*action.*user'; then
             report_pass "CSV export returned valid header"
         else
             report_fail "CSV export unexpected header: $CSV_HEADER"
@@ -243,7 +246,7 @@ fi
     fi
 
     # JSON export
-    ocp_sh "curl -fsSL -b /tmp/audit-cookies.txt -o /tmp/audit-export.json '${OCP_INTERNAL_URL}/audit-export.php?format=json&from=${FROM_DATE}&to=${TO_DATE}'"
+    ocp_sh "curl -fsSL -b ${COOKIE_JAR_CTR} -o /tmp/audit-export.json '${OCP_INTERNAL_URL}/audit-export.php?format=json&from=${FROM_DATE}&to=${TO_DATE}'"
     if ocp_sh "test -s /tmp/audit-export.json"; then
         FIRST_CHAR=$(ocp_sh "head -c 1 /tmp/audit-export.json")
         if [ "$FIRST_CHAR" = "[" ]; then
@@ -256,9 +259,8 @@ fi
     fi
 
     # Filtered export (action=LOGIN)
-    ocp_sh "curl -fsSL -b /tmp/audit-cookies.txt -o /tmp/audit-export-filtered.csv '${OCP_INTERNAL_URL}/audit-export.php?format=csv&action=LOGIN&from=${FROM_DATE}&to=${TO_DATE}'"
+    ocp_sh "curl -fsSL -b ${COOKIE_JAR_CTR} -o /tmp/audit-export-filtered.csv '${OCP_INTERNAL_URL}/audit-export.php?format=csv&action=LOGIN&from=${FROM_DATE}&to=${TO_DATE}'"
     FILTERED_ROWS=$(ocp_sh "wc -l < /tmp/audit-export-filtered.csv")
-    # Header + at least one data row
     if [ "${FILTERED_ROWS:-0}" -ge 2 ]; then
         report_pass "Filtered CSV export returned $((FILTERED_ROWS - 1)) data row(s)"
     else
@@ -266,7 +268,7 @@ fi
     fi
 
     # TEXT export
-    ocp_sh "curl -fsSL -b /tmp/audit-cookies.txt -o /tmp/audit-export.txt '${OCP_INTERNAL_URL}/audit-export.php?format=text&from=${FROM_DATE}&to=${TO_DATE}'"
+    ocp_sh "curl -fsSL -b ${COOKIE_JAR_CTR} -o /tmp/audit-export.txt '${OCP_INTERNAL_URL}/audit-export.php?format=text&from=${FROM_DATE}&to=${TO_DATE}'"
     if ocp_sh "test -s /tmp/audit-export.txt"; then
         TXT_HEADER=$(ocp_sh "head -n 1 /tmp/audit-export.txt")
         if echo "$TXT_HEADER" | grep -q '========'; then
@@ -277,6 +279,12 @@ fi
     else
         report_fail "TEXT export returned empty file"
     fi
+
+    ocp_sh "rm -f ${COOKIE_JAR_CTR}" 2>/dev/null || true
+else
+    echo ""
+    echo "[test] Skipping authenticated export tests (no credentials)"
+fi
 
 # ------------------------------------------------------------------
 # Cleanup (best-effort: remove integration-test events via retention role)

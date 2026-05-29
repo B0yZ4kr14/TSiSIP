@@ -5,6 +5,7 @@
  */
 require_once __DIR__ . '/common/config.php';
 require_once __DIR__ . '/common/user-prefs.php';
+require_once __DIR__ . '/common/recent-activity.php';
 requireAuth();
 checkPasswordChange();
 logAuditEvent('CONFIG_VIEW', 'system', 'dashboard', true);
