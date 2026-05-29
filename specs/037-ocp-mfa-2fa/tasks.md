@@ -43,7 +43,7 @@
 
 ## Phase 5: Audit & Testing
 
-- [ ] T5.1: Add `logAuditEvent()` calls for all MFA events
+- [x] T5.1: Add `logAuditEvent()` calls for all MFA events
 - [x] T5.2: Integration test: rate limiting blocks brute force
 - [x] T5.3: Integration test: replay protection (same code rejected)
 - [x] T5.4: Integration test: no plaintext secrets in DB
