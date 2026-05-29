@@ -8,6 +8,7 @@ Must run inside a container on the sip_edge network.
 """
 
 import hashlib
+import os
 import socket
 import subprocess
 import sys
@@ -44,7 +45,10 @@ def send_msg(msg, expected_codes, timeout=10, my_ip=None, my_port=None):
 
 def main():
     # HA1 for devuser@dev.tsisip.local (from seed data)
-    ha1 = hashlib.md5(b"devuser:dev.tsisip.local:devpass123").hexdigest()
+    password = os.environ.get('TSISIP_TEST_PASSWORD')
+    if not password:
+        raise EnvironmentError('TSISIP_TEST_PASSWORD must be set in the environment.')
+    ha1 = hashlib.md5(f"devuser:dev.tsisip.local:{password}".encode()).hexdigest()
     my_ip = get_my_ip()
     my_port = 15062
 

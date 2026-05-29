@@ -115,7 +115,9 @@ def test_invite_407():
 def test_invite_authenticated():
     import os
     username = 'devuser'
-    password = os.environ.get('TSISIP_TEST_PASSWORD', 'devpass')
+    password = os.environ.get('TSISIP_TEST_PASSWORD')
+    if not password:
+        raise EnvironmentError('TSISIP_TEST_PASSWORD must be set in the environment. No default password is permitted.')
     domain = 'dev.tsisip.local'
     to_user = '1000'
 

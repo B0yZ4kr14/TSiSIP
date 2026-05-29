@@ -3,7 +3,7 @@
 # Healthy if a backup is currently running (lockfile exists)
 # OR if there's at least one encrypted backup newer than 24h (1440 min).
 
-set -eo pipefail
+set -euo pipefail
 
 if [ -f /tmp/backup.lock ]; then
     exit 0

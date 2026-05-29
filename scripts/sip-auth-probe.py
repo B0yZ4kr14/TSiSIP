@@ -77,7 +77,7 @@ def main() -> int:
     parser.add_argument("--port", type=int, default=5096)
     parser.add_argument("--user", default="devuser")
     parser.add_argument("--domain", default="dev.tsisip.local")
-    parser.add_argument("--password", default="devpass")
+    parser.add_argument("--password", required=True)
     parser.add_argument("--uri", default="sip:1000@dev.tsisip.local")
     args = parser.parse_args()
 

@@ -10,7 +10,7 @@ echo "=== Test: OCP System Health ==="
 # Login
 curl -s -c "$COOKIE_JAR" -b "$COOKIE_JAR" \
   -X POST "$BASE/login.php" \
-  -d "username=admin&password=admin123" \
+  -d "username=admin&password=${TSISIP_OCP_ADMIN_PASSWORD:?must be set}" \
   -L | grep -q "dashboard" && echo "[PASS] Login"
 
 # System health page
