@@ -216,23 +216,17 @@ TO_DATE=$(date +%Y-%m-%d)
 TEST_USER="testadmin"
 TEST_PASS="testpass123"
 
-# Login with CSRF token handling inside container
-LOGIN_RESULT=$(ocp_sh "
-    LOGIN_PAGE=\$(curl -fsSL -c /tmp/audit-cookies.txt -b /tmp/audit-cookies.txt \"${OCP_INTERNAL_URL}/login.php\")
-    CSRF_TOKEN=\$(echo \"\$LOGIN_PAGE\" | grep -o 'name=\"csrf_token\" value=\"[^\"]*\"' | sed 's/.*value=\"\\([^\"]*\\)\".*/\\1/')
-    if [ -z \"\$CSRF_TOKEN\" ]; then
-        echo CSRF_FAIL
-        exit 1
-    fi
-    curl -fsSL -c /tmp/audit-cookies.txt -b /tmp/audit-cookies.txt \\
-        -X POST \"${OCP_INTERNAL_URL}/login.php\" \\
-        -d \"username=${TEST_USER}\&pass=${TEST_PASS}\&csrf_token=\${CSRF_TOKEN}\" \\
-        -L | grep -q dashboard && echo LOGIN_OK || echo LOGIN_FAIL
-")
-if echo "$LOGIN_RESULT" | grep -q "LOGIN_OK"; then
+# Login from host and copy cookies to container
+SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+source "${SCRIPT_DIR}/helpers/ocp-login.sh"
+HOST_COOKIE_JAR="/tmp/audit-host-cookies.txt"
+rm -f "$HOST_COOKIE_JAR"
+
+if TSISIP_BASE_URL="https://localhost/TSiSIP" TSISIP_HOST_HEADER="tsiapp.io" TSISIP_OCP_ADMIN_PASSWORD="$TEST_PASS" CURL_INSECURE=true ocp_login "https://localhost/TSiSIP" "$TEST_USER" "$HOST_COOKIE_JAR" >/dev/null 2>&1; then
+    docker compose -f "$COMPOSE_FILE" cp "$HOST_COOKIE_JAR" "$OCP_SERVICE:/tmp/audit-cookies.txt"
     report_pass "Login simulated successfully"
 else
-    report_fail "Login failed: $LOGIN_RESULT"
+    report_fail "Login failed"
 fi
 
     # CSV export

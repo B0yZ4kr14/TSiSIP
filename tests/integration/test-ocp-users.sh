@@ -28,23 +28,17 @@ AUTH_AVAILABLE=false
 TEST_USER="testadmin"
 TEST_PASS="testpass123"
 
-LOGIN_RESULT=$(ocp_sh "
-    LOGIN_PAGE=\$(curl -fsSL -c /tmp/users-cookies.txt -b /tmp/users-cookies.txt \"http://localhost/login.php\")
-    CSRF_TOKEN=\$(echo \"\$LOGIN_PAGE\" | grep -o 'name=\"csrf_token\" value=\"[^\"]*\"' | sed 's/.*value=\"\\([^\"]*\\)\".*/\\1/')
-    if [ -z \"\$CSRF_TOKEN\" ]; then
-        echo CSRF_FAIL
-        exit 1
-    fi
-    curl -fsSL -c /tmp/users-cookies.txt -b /tmp/users-cookies.txt \\
-        -X POST \"http://localhost/login.php\" \\
-        -d \"username=${TEST_USER}\&pass=${TEST_PASS}\&csrf_token=\${CSRF_TOKEN}\" \\
-        -L | grep -q dashboard && echo LOGIN_OK || echo LOGIN_FAIL
-")
-if echo "$LOGIN_RESULT" | grep -q "LOGIN_OK"; then
+# Source login helper and perform login from host
+source "${SCRIPT_DIR}/helpers/ocp-login.sh"
+HOST_COOKIE_JAR="/tmp/users-host-cookies.txt"
+rm -f "$HOST_COOKIE_JAR"
+
+if TSISIP_BASE_URL="https://localhost/TSiSIP" TSISIP_HOST_HEADER="tsiapp.io" TSISIP_OCP_ADMIN_PASSWORD="$TEST_PASS" CURL_INSECURE=true ocp_login "https://localhost/TSiSIP" "$TEST_USER" "$HOST_COOKIE_JAR" >/dev/null 2>&1; then
+    docker compose -f "$COMPOSE_FILE" cp "$HOST_COOKIE_JAR" "$OCP_SERVICE:/tmp/users-cookies.txt"
     report_pass "Admin login"
     AUTH_AVAILABLE=true
 else
-    report_fail "Admin login failed: $LOGIN_RESULT"
+    report_fail "Admin login failed"
 fi
 
 # Test 1: Password policy library exists (public asset)
