@@ -469,6 +469,7 @@ docker compose up -d postgres
    ```bash
    docker compose exec opensips opensips -c -f /etc/opensips/opensips.cfg
    ```
+   > **OpenSIPS 3.6.6+**: `children` is no longer a config file directive. Worker counts are set via `-n` (UDP) and `-N` (TCP) command-line flags in `docker-compose.yml`. If upgrading from 3.6.5, remove `children = N` from the template.
 3. Check env vars in `.env`:
    ```bash
    cat .env

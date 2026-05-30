@@ -55,10 +55,18 @@ Alertmanager:9093
 Operator
 ```
 
+## Compatibility Notes (OpenSIPS 3.6.6)
+
+| Decision | Rationale |
+|----------|-----------|
+| `-n 8 -N 8` flags instead of `children = 8` | OpenSIPS 3.6.6 removed `children` as a config file directive; use command-line flags `-n` (UDP workers) and `-N` (TCP workers) |
+| `curl_timeout` instead of `read_timeout` | `rest_client` module uses `curl_timeout` (libcurl), not `read_timeout` |
+| `$var(json_body)` instead of `$json_body` | `$json_body` requires the `json` module; `$var(name)` is core-supported and avoids extra module dependency |
+
 ## Rejected Patterns
 
 | Rejected | Canonical |
 |----------|-----------|
-| OpenSIPS `evi` TCP socket (complex, firewall issues) | HTTP POST via `http_client` module |
+| OpenSIPS `evi` TCP socket (complex, firewall issues) | HTTP POST via `rest_client` module |
 | Direct email from detector | Alertmanager as central router |
 | Anomaly auto-ban (risk of false positives) | Alert only, manual remediation |
