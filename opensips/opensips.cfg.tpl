@@ -32,10 +32,6 @@ mpath="/usr/local/lib64/opensips/modules/"
 #        Example: (1GB - 512MB) / 8 children = ~64MB per child.
 # not a config file variable. Set via CMD in Dockerfile/docker-compose.yml.
 
-# Fixed children count for predictable memory sizing inside containers.
-# VPS profile may override via docker-compose command args if needed.
-children = 8
-
 # --- Modules ---
 loadmodule "db_postgres.so"
 loadmodule "sqlops.so"
@@ -120,7 +116,7 @@ modparam("dispatcher", "ds_probing_threshold", 2)
 modparam("dispatcher", "persistent_state", 1)
 
 modparam("rest_client", "connection_timeout", 2)
-modparam("rest_client", "read_timeout", 3)
+modparam("rest_client", "curl_timeout", 3)
 
 # T3.1: Load-based dispatcher routing
 modparam("dispatcher", "ds_ping_from", "sip:healthcheck@localhost")
@@ -1001,22 +997,22 @@ event_route[E_PIKE_BLOCKED] {
     # T4.1: Auto-ban pike-blocked sources for extended protection (1h TTL)
     cache_store("local", "ban_list_$param(src_ip)", "pike_blocked", 3600);
     # T038: Forward to anomaly detector
-    $json_body = "{\"event_type\":\"pike_blocked\",\"source_ip\":\"" + $param(src_ip) + "\",\"limit\":\"" + $param(limit) + "\",\"timestamp\":" + $Ts + "}";
-    rest_post("http://anomaly-detector:8080/api/v1/event", "$json_body", "Content-Type: application/json", "$avp(ad_resp)");
+    $var(json_body) = "{\"event_type\":\"pike_blocked\",\"source_ip\":\"" + $param(src_ip) + "\",\"limit\":\"" + $param(limit) + "\",\"timestamp\":" + $Ts + "}";
+    rest_post("http://anomaly-detector:8080/api/v1/event", "$var(json_body)", "Content-Type: application/json", "$avp(ad_resp)");
 }
 
 event_route[E_AUTH_FAILURE] {
     xlog("L_WARN", "E_AUTH_FAILURE: user=$param(credentials) src=$si\n");
     # T038: Forward to anomaly detector
-    $json_body = "{\"event_type\":\"auth_failure\",\"source_ip\":\"" + $si + "\",\"user\":\"" + $param(credentials) + "\",\"timestamp\":" + $Ts + "}";
-    rest_post("http://anomaly-detector:8080/api/v1/event", "$json_body", "Content-Type: application/json", "$avp(ad_resp)");
+    $var(json_body) = "{\"event_type\":\"auth_failure\",\"source_ip\":\"" + $si + "\",\"user\":\"" + $param(credentials) + "\",\"timestamp\":" + $Ts + "}";
+    rest_post("http://anomaly-detector:8080/api/v1/event", "$var(json_body)", "Content-Type: application/json", "$avp(ad_resp)");
 }
 
 event_route[E_DISPATCHER_STATUS] {
     xlog("L_INFO", "E_DISPATCHER_STATUS: address=$param(address) status=$param(status)\n");
     # T038: Forward to anomaly detector
-    $json_body = "{\"event_type\":\"dispatcher_status\",\"address\":\"" + $param(address) + "\",\"status\":\"" + $param(status) + "\",\"timestamp\":" + $Ts + "}";
-    rest_post("http://anomaly-detector:8080/api/v1/event", "$json_body", "Content-Type: application/json", "$avp(ad_resp)");
+    $var(json_body) = "{\"event_type\":\"dispatcher_status\",\"address\":\"" + $param(address) + "\",\"status\":\"" + $param(status) + "\",\"timestamp\":" + $Ts + "}";
+    rest_post("http://anomaly-detector:8080/api/v1/event", "$var(json_body)", "Content-Type: application/json", "$avp(ad_resp)");
 
     # --- BEGIN TRUNK INTEGRATION WAVE 5: Trunk Health Monitoring ---
     # Track trunk provider health from dispatcher OPTIONS probes (setid 100)
