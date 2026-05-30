@@ -998,21 +998,21 @@ event_route[E_PIKE_BLOCKED] {
     cache_store("local", "ban_list_$param(src_ip)", "pike_blocked", 3600);
     # T038: Forward to anomaly detector
     $var(json_body) = "{\"event_type\":\"pike_blocked\",\"source_ip\":\"" + $param(src_ip) + "\",\"limit\":\"" + $param(limit) + "\",\"timestamp\":" + $Ts + "}";
-    rest_post("http://anomaly-detector:8080/api/v1/event", "$var(json_body)", "Content-Type: application/json", "$avp(ad_resp)");
+    rest_post("http://anomaly-detector:8080/api/v1/event", "$var(json_body)", "Content-Type: application/json", $avp(ad_resp));
 }
 
 event_route[E_AUTH_FAILURE] {
     xlog("L_WARN", "E_AUTH_FAILURE: user=$param(credentials) src=$si\n");
     # T038: Forward to anomaly detector
     $var(json_body) = "{\"event_type\":\"auth_failure\",\"source_ip\":\"" + $si + "\",\"user\":\"" + $param(credentials) + "\",\"timestamp\":" + $Ts + "}";
-    rest_post("http://anomaly-detector:8080/api/v1/event", "$var(json_body)", "Content-Type: application/json", "$avp(ad_resp)");
+    rest_post("http://anomaly-detector:8080/api/v1/event", "$var(json_body)", "Content-Type: application/json", $avp(ad_resp));
 }
 
 event_route[E_DISPATCHER_STATUS] {
     xlog("L_INFO", "E_DISPATCHER_STATUS: address=$param(address) status=$param(status)\n");
     # T038: Forward to anomaly detector
-    $var(json_body) = "{\"event_type\":\"dispatcher_status\",\"address\":\"" + $param(address) + "\",\"status\":\"" + $param(status) + "\",\"timestamp\":" + $Ts + "}";
-    rest_post("http://anomaly-detector:8080/api/v1/event", "$var(json_body)", "Content-Type: application/json", "$avp(ad_resp)");
+    $var(json_body) = "{\"event_type\":\"dispatcher_status\",\"source_ip\":\"" + $param(address) + "\",\"status\":\"" + $param(status) + "\",\"timestamp\":" + $Ts + "}";
+    rest_post("http://anomaly-detector:8080/api/v1/event", "$var(json_body)", "Content-Type: application/json", $avp(ad_resp));
 
     # --- BEGIN TRUNK INTEGRATION WAVE 5: Trunk Health Monitoring ---
     # Track trunk provider health from dispatcher OPTIONS probes (setid 100)
