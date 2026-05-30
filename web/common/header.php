@@ -77,7 +77,7 @@ header("Referrer-Policy: strict-origin-when-cross-origin");
         </a>
     </nav>
 
-    <button class="tsisip-btn tsisip-btn-icon" id="bookmark-btn" title="Bookmark this page" style="background:none;border:none;cursor:pointer;font-size:1.2rem;">☆</button>
+    <button type="button" class="tsisip-btn tsisip-btn-icon" id="bookmark-btn" title="Bookmark this page" aria-label="Bookmark this page" style="background:none;border:none;cursor:pointer;font-size:1.2rem;">☆</button>
     <a href="wiki/"
        class="tsisip-btn tsisip-btn-icon"
        title="<?php echo _('Open Documentation Wiki'); ?>"

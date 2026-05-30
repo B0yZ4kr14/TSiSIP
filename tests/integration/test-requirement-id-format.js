@@ -57,7 +57,7 @@ for (const dir of specDirs) {
   }
 
   // Flag flat IDs (e.g., FR-001 without -XXX suffix) that are NOT part of a scoped ID
-  const flatPattern = /FR-(\d{3})(?!-\d{3})/g;
+  const flatPattern = /(?<![A-Z])FR-(\d{3})(?!-\d{3})/g;
   let flatMatch;
   const flatSet = new Set();
   while ((flatMatch = flatPattern.exec(content)) !== null) {

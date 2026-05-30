@@ -128,10 +128,10 @@ require_once __DIR__ . '/common/header.php';
 <!-- Toolbar -->
 <div class="tsisip-dispatcher__toolbar">
     <?php if ($canEdit): ?>
-    <button class="tsisip-btn tsisip-btn--primary" id="btn-add" onclick="openModal('add')">
+    <button type="button" class="tsisip-btn tsisip-btn--primary" id="btn-add" onclick="openModal('add')">
         <?php echo _('Add Destination'); ?>
     </button>
-    <button class="tsisip-btn tsisip-btn--secondary" id="btn-reload" onclick="doReload()">
+    <button type="button" class="tsisip-btn tsisip-btn--secondary" id="btn-reload" onclick="doReload()">
         <?php echo _('Reload MI'); ?>
     </button>
     <?php endif; ?>
@@ -181,13 +181,13 @@ require_once __DIR__ . '/common/header.php';
                 <td><?php echo htmlspecialchars($d['description'] ?? ''); ?></td>
                 <?php if ($canEdit): ?>
                 <td>
-                    <button class="tsisip-btn tsisip-btn--sm" onclick='openEdit(<?php echo json_encode($d, JSON_HEX_TAG|JSON_HEX_APOS); ?>)'>
+                    <button type="button" class="tsisip-btn tsisip-btn--sm" onclick='openEdit(<?php echo json_encode($d, JSON_HEX_TAG|JSON_HEX_APOS); ?>)'>
                         <?php echo _('Edit'); ?>
                     </button>
-                    <button class="tsisip-btn tsisip-btn--sm" onclick="doProbe(<?php echo (int)$d['setid']; ?>, '<?php echo htmlspecialchars($d['destination'], ENT_QUOTES); ?>')">
+                    <button type="button" class="tsisip-btn tsisip-btn--sm" onclick="doProbe(<?php echo (int)$d['setid']; ?>, '<?php echo htmlspecialchars($d['destination'], ENT_QUOTES); ?>')">
                         <?php echo _('Probe'); ?>
                     </button>
-                    <button class="tsisip-btn tsisip-btn--sm tsisip-btn--danger" onclick="doDelete(<?php echo (int)$d['id']; ?>)">
+                    <button type="button" class="tsisip-btn tsisip-btn--sm tsisip-btn--danger" onclick="doDelete(<?php echo (int)$d['id']; ?>)">
                         <?php echo _('Del'); ?>
                     </button>
                 </td>
@@ -239,7 +239,7 @@ require_once __DIR__ . '/common/header.php';
                     </td>
                     <td>
                         <?php if ($canEdit && !$c['reverted_at'] && $c['rollback_payload']): ?>
-                        <button class="tsisip-btn tsisip-btn--sm tsisip-btn--danger" onclick="openRollback(<?php echo (int)$c['id']; ?>)">
+                        <button type="button" class="tsisip-btn tsisip-btn--sm tsisip-btn--danger" onclick="openRollback(<?php echo (int)$c['id']; ?>)">
                             <?php echo _('Rollback'); ?>
                         </button>
                         <?php endif; ?>
