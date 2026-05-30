@@ -41,13 +41,14 @@ def _get_detector_url() -> str:
 
 
 def _send_events(base_url: str, event_type: str, count: int, source_ip: str = "192.0.2.1"):
+    import time as _time
     for i in range(count):
         resp = requests.post(
             f"{base_url}/api/v1/event",
-            json={"event_type": event_type, "source_ip": source_ip, "sip_method": "INVITE"},
+            json={"event_type": event_type, "source_ip": source_ip, "sip_method": "INVITE", "timestamp": int(_time.time())},
             timeout=5
         )
-        assert resp.status_code == 200
+        assert resp.status_code in (200, 202)
 
 
 class TestAnomalyDetector:
@@ -64,13 +65,31 @@ class TestAnomalyDetector:
         assert data["status"] == "healthy"
 
     def test_receive_event(self, detector_url):
+        import time as _time
         resp = requests.post(
             f"{detector_url}/api/v1/event",
-            json={"event_type": "E_AUTH_FAILURE", "source_ip": "192.0.2.1", "sip_method": "INVITE"},
+            json={"event_type": "auth_failure", "source_ip": "192.0.2.1", "sip_method": "INVITE", "timestamp": int(_time.time())},
             timeout=5
         )
-        assert resp.status_code == 200
-        assert resp.json()["status"] == "ok"
+        assert resp.status_code == 202
+        assert resp.json()["status"] == "accepted"
+
+    def test_receive_event_rejects_unknown_type(self, detector_url):
+        import time as _time
+        resp = requests.post(
+            f"{detector_url}/api/v1/event",
+            json={"event_type": "unknown_event", "source_ip": "192.0.2.1", "timestamp": int(_time.time())},
+            timeout=5
+        )
+        assert resp.status_code == 400
+
+    def test_receive_event_rejects_missing_fields(self, detector_url):
+        resp = requests.post(
+            f"{detector_url}/api/v1/event",
+            json={"event_type": "auth_failure"},
+            timeout=5
+        )
+        assert resp.status_code == 400
 
     def test_metrics_endpoint(self, detector_url):
         resp = requests.get(f"{detector_url}/metrics", timeout=5)

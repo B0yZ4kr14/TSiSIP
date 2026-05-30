@@ -58,6 +58,7 @@ loadmodule "userblacklist.so"
 loadmodule "cachedb_local.so"
 # TLS modules (carregados mesmo que socket TLS esteja comentado)
 loadmodule "tls_mgm.so"
+loadmodule "http_client.so"
 loadmodule "tls_openssl.so"
 loadmodule "proto_udp.so"
 loadmodule "proto_tcp.so"
@@ -117,6 +118,9 @@ modparam("dispatcher", "ds_ping_interval", 30)
 modparam("dispatcher", "ds_probing_mode", 1)
 modparam("dispatcher", "ds_probing_threshold", 2)
 modparam("dispatcher", "persistent_state", 1)
+
+modparam("http_client", "connection_timeout", 2)
+modparam("http_client", "curl_timeout", 3)
 
 # T3.1: Load-based dispatcher routing
 modparam("dispatcher", "ds_ping_from", "sip:healthcheck@localhost")
@@ -996,14 +1000,23 @@ event_route[E_PIKE_BLOCKED] {
     xlog("L_WARN", "E_PIKE_BLOCKED: source=$param(src_ip) limit=$param(limit)\n");
     # T4.1: Auto-ban pike-blocked sources for extended protection (1h TTL)
     cache_store("local", "ban_list_$param(src_ip)", "pike_blocked", 3600);
+    # T038: Forward to anomaly detector
+    $json_body = "{\"event_type\":\"pike_blocked\",\"source_ip\":\"" + $param(src_ip) + "\",\"limit\":\"" + $param(limit) + "\",\"timestamp\":" + $Ts + "}";
+    http_client_query("http://anomaly-detector:8080/api/v1/event", "$json_body", "$avp(ad_resp)", "Content-Type: application/json");
 }
 
 event_route[E_AUTH_FAILURE] {
     xlog("L_WARN", "E_AUTH_FAILURE: user=$param(credentials) src=$si\n");
+    # T038: Forward to anomaly detector
+    $json_body = "{\"event_type\":\"auth_failure\",\"source_ip\":\"" + $si + "\",\"user\":\"" + $param(credentials) + "\",\"timestamp\":" + $Ts + "}";
+    http_client_query("http://anomaly-detector:8080/api/v1/event", "$json_body", "$avp(ad_resp)", "Content-Type: application/json");
 }
 
 event_route[E_DISPATCHER_STATUS] {
     xlog("L_INFO", "E_DISPATCHER_STATUS: address=$param(address) status=$param(status)\n");
+    # T038: Forward to anomaly detector
+    $json_body = "{\"event_type\":\"dispatcher_status\",\"address\":\"" + $param(address) + "\",\"status\":\"" + $param(status) + "\",\"timestamp\":" + $Ts + "}";
+    http_client_query("http://anomaly-detector:8080/api/v1/event", "$json_body", "$avp(ad_resp)", "Content-Type: application/json");
 
     # --- BEGIN TRUNK INTEGRATION WAVE 5: Trunk Health Monitoring ---
     # Track trunk provider health from dispatcher OPTIONS probes (setid 100)

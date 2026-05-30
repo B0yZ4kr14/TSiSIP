@@ -192,19 +192,35 @@ def metrics():
     return generate_latest()
 
 
+VALID_EVENT_TYPES = {"pike_blocked", "auth_failure", "dispatcher_status"}
+
 @app.route("/api/v1/event", methods=["POST"])
 def receive_event():
     auth_error = require_api_key()
     if auth_error:
         return auth_error
-    """Receive OpenSIPS event."""
+    """Receive OpenSIPS event with validation."""
     data = request.get_json() or {}
+
+    # T004: Input validation
+    event_type = data.get("event_type")
+    source_ip = data.get("source_ip")
+    timestamp = data.get("timestamp")
+
+    if not event_type or not source_ip or timestamp is None:
+        logger.warning("Invalid event payload: %s", data)
+        return jsonify({"status": "bad_request", "error": "event_type, source_ip, and timestamp are required"}), 400
+
+    if event_type not in VALID_EVENT_TYPES:
+        logger.warning("Unknown event type: %s", event_type)
+        return jsonify({"status": "bad_request", "error": f"event_type must be one of {VALID_EVENT_TYPES}"}), 400
+
     detector.record_event(
-        event_type=data.get("event_type", "unknown"),
-        source_ip=data.get("source_ip", "0.0.0.0"),
+        event_type=event_type,
+        source_ip=source_ip,
         sip_method=data.get("sip_method")
     )
-    return jsonify({"status": "ok"})
+    return jsonify({"status": "accepted"}), 202
 
 
 @app.route("/api/v1/status")

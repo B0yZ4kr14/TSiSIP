@@ -1969,4 +1969,61 @@ docker exec tsisip-ocp-1 php /var/www/html/cli/auto-healer.php
 
 ### Role-Based Visibility
 - Admin/DevOps: All widgets visible
+
+## Anomaly Detection Response
+
+### Overview
+
+The TSiSIP anomaly detector consumes OpenSIPS events (`pike_blocked`, `auth_failure`, `dispatcher_status`) and maintains a 24-hour rolling baseline. When the Z-score exceeds the configured threshold (default 3.0) for 2 consecutive windows, an alert is fired to Alertmanager.
+
+### Interpreting Z-Score
+
+| Z-Score Range | Meaning | Action |
+|---|---|---|
+| 0–3.0 | Normal traffic | Monitor |
+| 3.0–6.0 | Elevated activity | Investigate source IPs |
+| > 6.0 | Severe anomaly | Enable global throttle, review bans |
+
+### Responding to Anomaly Alerts
+
+1. **Check current status**:
+   ```bash
+   curl -fsSL http://anomaly-detector:8080/api/v1/status
+   ```
+
+2. **Review recent events**:
+   ```bash
+   curl -fsSL http://anomaly-detector:8080/metrics | grep tsisip_anomaly_events_received_total
+   ```
+
+3. **Check pike bans**:
+   ```bash
+   docker compose exec opensips opensipsctl fifo list_blocked
+   ```
+
+4. **Enable global anomaly throttle** (reduces ratelimit to 250 RPS):
+   ```bash
+   docker compose exec opensips opensipsctl fifo cache_store local anomaly_state_global_throttle 1
+   ```
+
+5. **Disable global throttle when resolved**:
+   ```bash
+   docker compose exec opensips opensipsctl fifo cache_remove local anomaly_state_global_throttle
+   ```
+
+### Tuning Threshold
+
+Edit `docker-compose.yml`:
+```yaml
+anomaly_detector:
+  environment:
+    ANOMALY_Z_THRESHOLD: 4.0  # Less sensitive
+    ANOMALY_WINDOW_SECONDS: 120  # Longer window
+```
+
+Restart the detector:
+```bash
+docker compose up -d --force-recreate anomaly_detector
+```
+
 - Readonly: Live Metrics only (no trunk/alerts/autoheal)

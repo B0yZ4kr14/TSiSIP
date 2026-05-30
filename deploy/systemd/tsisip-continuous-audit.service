@@ -1,0 +1,14 @@
+[Unit]
+Description=TSiSIP Continuous Audit Orchestrator
+After=network.target
+
+[Service]
+Type=oneshot
+User=tsi
+Group=tsi
+WorkingDirectory=/opt/tsisip
+Environment="PATH=/usr/local/bin:/usr/bin:/bin"
+Environment="HOME=/home/tsi"
+ExecStart=/usr/bin/python3 /opt/tsisip/scripts/continuous-audit/orchestrator.py --single-cycle
+StandardOutput=append:/opt/tsisip/logs/continuous-audit/service.log
+StandardError=append:/opt/tsisip/logs/continuous-audit/service.log

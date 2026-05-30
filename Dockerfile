@@ -20,8 +20,8 @@ RUN git clone --depth 1 --branch ${OPENSIPS_VERSION} https://github.com/OpenSIPS
 
 WORKDIR /usr/src/opensips
 # Build with standard modules including db_postgres, auth, dialog, dispatcher, rtpengine, topology_hiding
-RUN make all include_modules="db_postgres auth auth_db dialog dispatcher rtpengine topology_hiding permissions sqlops rr tm maxfwd sipmsgops signaling sl proto_udp proto_tcp proto_ws proto_wss pike ratelimit userblacklist tls_mgm tls_openssl proto_tls acc httpd mi_http dialplan domain" \
- && make prefix=/usr/local install include_modules="db_postgres auth auth_db dialog dispatcher rtpengine topology_hiding permissions sqlops rr tm maxfwd sipmsgops signaling sl proto_udp proto_tcp proto_ws proto_wss pike ratelimit userblacklist tls_mgm tls_openssl proto_tls acc httpd mi_http dialplan domain"
+RUN make all include_modules="db_postgres auth auth_db dialog dispatcher rtpengine topology_hiding permissions sqlops rr tm maxfwd sipmsgops signaling sl proto_udp proto_tcp proto_ws proto_wss pike ratelimit userblacklist tls_mgm tls_openssl proto_tls acc httpd mi_http dialplan domain http_client" \
+ && make prefix=/usr/local install include_modules="db_postgres auth auth_db dialog dispatcher rtpengine topology_hiding permissions sqlops rr tm maxfwd sipmsgops signaling sl proto_udp proto_tcp proto_ws proto_wss pike ratelimit userblacklist tls_mgm tls_openssl proto_tls acc httpd mi_http dialplan domain http_client"
 
 # --- Runtime image ---
 FROM debian:bookworm-slim@sha256:67b30a61dc87758f0caf819646104f29ecbda97d920aaf5edc834128ac8493d3

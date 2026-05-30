@@ -1,0 +1,10 @@
+[Unit]
+Description=TSiSIP Continuous Audit Timer (every 15min for 12h)
+
+[Timer]
+OnBootSec=1min
+OnUnitActiveSec=15min
+AccuracySec=1min
+
+[Install]
+WantedBy=timers.target
