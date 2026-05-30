@@ -70,3 +70,22 @@ Operator
 | OpenSIPS `evi` TCP socket (complex, firewall issues) | HTTP POST via `rest_client` module |
 | Direct email from detector | Alertmanager as central router |
 | Anomaly auto-ban (risk of false positives) | Alert only, manual remediation |
+
+## E2E Validation Results (2026-05-30)
+
+| Test | Result |
+|------|--------|
+| OpenSIPS 3.6.6 container healthy | ✅ PASS |
+| Anomaly detector container healthy | ✅ PASS |
+| OPTIONS probe → SIP/2.0 200 OK | ✅ PASS |
+| Event `pike_blocked` accepted | ✅ PASS |
+| Event `auth_failure` accepted | ✅ PASS |
+| Event `dispatcher_status` accepted | ✅ PASS |
+| OpenSIPS config validation (`opensips -c`) | ✅ PASS |
+| Docker-compose config validation | ✅ PASS |
+
+### Issues Found & Fixed During E2E
+
+1. **`$avp(ad_resp)` must be unquoted in `rest_post`** — OpenSIPS 3.6.6 expects the 4th parameter (response variable) as a bare variable, not a string literal.
+2. **`dispatcher_status` must use `source_ip` field** — The anomaly detector validates `source_ip` presence; changed OpenSIPS template to send `source_ip` (mapped from `$param(address)`) instead of `address`.
+
